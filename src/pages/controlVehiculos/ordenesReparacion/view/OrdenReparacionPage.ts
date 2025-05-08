@@ -18,7 +18,7 @@ import { useAuthenticationStore } from 'stores/authentication'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { ServicioController } from 'pages/controlVehiculos/servicios/infraestructure/ServicioController'
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
-import { required } from 'shared/i18n-validators'
+import {required, requiredIf} from 'shared/i18n-validators'
 import useVuelidate from '@vuelidate/core'
 import { obtenerFechaActual, ordenarLista } from 'shared/utils'
 import { acciones, autorizaciones, maskFecha } from 'config/utils'
@@ -109,6 +109,8 @@ export default defineComponent({
       vehiculo: { required },
       fecha: { required },
       autorizacion: { required },
+      num_factura: {required: requiredIf(()=>acciones.editar==accion.value)},
+      servicios: { required },
       observacion: { required }
     }
     const v$ = useVuelidate(reglas, orden)
@@ -186,7 +188,7 @@ export default defineComponent({
         if (store.esMecanicoGeneral) {
           orden.solicitante_id = store.user.id
           orden.solicitante = store.nombreUsuario
-          orden.autorizacion = 2
+          orden.autorizacion = 1
         } else {
           orden.autorizacion = 1
         }

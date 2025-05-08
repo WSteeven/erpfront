@@ -730,7 +730,6 @@
             </div>
           </div>
 
-          {{v$.$errors}}
 
           <!-- Tabla -->
           <div class="col-12">
