@@ -1,7 +1,9 @@
+import { Capacitor } from '@capacitor/core';
 //Dependencies
 import relativeTime from 'dayjs/plugin/relativeTime'
 import es from 'dayjs/locale/es'
 import dayjs from 'dayjs'
+import { PushNotifications } from '@capacitor/push-notifications'
 
 import { useAuthenticationStore } from 'stores/authentication'
 import loginJson from 'src/assets/lottie/welcome.json'
@@ -69,6 +71,14 @@ export default defineComponent({
   },
 
   setup() {
+    const tabsOptions = {
+      NOTICIAS: 'Noticias',
+      MIS_MODULOS: 'Mis módulos',
+      DEPARTAMENTOS: 'Departamentos',
+      EVENTOS: 'Eventos',
+      AREA_PERSONAL: 'Área personal',
+    }
+    const tabs = ref(tabsOptions.NOTICIAS)
     const departamentos: Ref<Departamento[]> = ref([])
     const departamentoSeleccionado = 1
     const empleados: Ref<Empleado[]> = ref([])
@@ -296,14 +306,14 @@ export default defineComponent({
         name: 'Instructivos',
         icon: 'fa-solid fa-book-journal-whills',
         link: 'https://drive.google.com/drive/folders/1ILsatqtyrkV5tfofM2cTinLOfhIQMO-h?usp=drive_link',
-        color: '#FF5733'
+        color: 'teal-8'
       },
       {
         id: 2,
         name: 'Reglamentos y Normativas',
         icon: 'fa-solid fa-book-bookmark',
         link: 'https://drive.google.com/drive/folders/1k7WjBVUbYf4FY5wX0xoUP8r5gvWNA64e?usp=sharing',
-        color: '#581845'
+        color: 'teal-8'
       }
     ])
 
@@ -524,12 +534,12 @@ export default defineComponent({
     const getImagePerfil = usuario => {
       return usuario.foto_url == null
         ? `https://ui-avatars.com/api/?name=${usuario.nombres.slice(
-            0,
-            1
-          )}+${usuario.apellidos.slice(
-            0,
-            1
-          )}&bold=true&background=008000&color=ffff`
+          0,
+          1
+        )}+${usuario.apellidos.slice(
+          0,
+          1
+        )}&bold=true&background=008000&color=ffff`
         : usuario.foto_url
     }
 
@@ -546,9 +556,29 @@ export default defineComponent({
     }
 
     //ACCIONES DE BUSQUEDA DE MODULO
+    const token = ref('')
+
+    onMounted(async () => {
+      if (Capacitor.isNativePlatform()) {
+        await PushNotifications.requestPermissions().then(result => {
+          if (result.receive === 'granted') {
+            PushNotifications.register()
+          }
+        })
+
+        PushNotifications.addListener('registration', t => {
+          console.log('Push registration success, token:', t.value)
+          token.value = t.value
+        })
+
+        PushNotifications.addListener('registrationError', err => {
+          console.error('Registration error:', err)
+        })
+      }
+    })
 
     return {
-      correo: computed(() => 'https://'+configuracionGeneralStore.configuracion?.sitio_web+'/webmail'),
+      correo: computed(() => 'https://' + configuracionGeneralStore.configuracion?.sitio_web + '/webmail'),
 
       logoClaro: computed(
         () => configuracionGeneralStore.configuracion?.logo_claro
@@ -620,7 +650,15 @@ export default defineComponent({
       configuracion,
       cerrarModal() {
         modalNoticia.value = false
-      }
+      },
+      tabs,
+      tabsOptions,
+      tabsMenu: [tabsOptions.NOTICIAS,
+      tabsOptions.MIS_MODULOS,
+      tabsOptions.DEPARTAMENTOS,
+      tabsOptions.EVENTOS,
+      tabsOptions.AREA_PERSONAL],
+      token,
     }
   }
 })

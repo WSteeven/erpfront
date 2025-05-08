@@ -14,6 +14,7 @@
       :accion2="botonImprimir"
       :ajustarCeldas="true"
       :tabDefecto="tabDefecto"
+      class="borde rounded custom-shadow"
     ></essential-table-tabs>
 
     <modal-entidad

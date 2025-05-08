@@ -1,12 +1,10 @@
 <template>
   <q-page padding>
-    <div class="column q-mb-mdd text-center">
-      <div class="q-mb-md text-primary">
-        Productos que tienen asignados los empleados
-      </div>
+    <div class="text-h5 text-bold q-mb-md">
+      Productos que tienen asignados los empleados
     </div>
 
-    <q-card class="rounded q-mb-md">
+    <q-card class="rounded q-mb-md bg-body no-border" flat>
       <q-card-section class="row q-col-gutter-x-sm">
         <div class="col-10 q-mb-md">
           <label class="q-mb-sm block"

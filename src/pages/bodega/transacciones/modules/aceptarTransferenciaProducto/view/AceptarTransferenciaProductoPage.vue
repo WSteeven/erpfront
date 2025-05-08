@@ -1,5 +1,9 @@
 <template>
-  <q-page>
+  <q-page padding>
+    <div class="text-h5 text-bold q-mb-md">
+      Aceptar transferencia de productos
+    </div>
+
     <essential-table-tabs
       titulo="Transferencias realizadas"
       :configuracionColumnas="[...configuracionColumnas, accionesTabla]"
@@ -14,6 +18,7 @@
       :accion2="botonImprimir"
       :ajustarCeldas="true"
       :tabDefecto="tabDefecto"
+      class="borde custom-shadow rounded"
     ></essential-table-tabs>
 
     <modal-entidad

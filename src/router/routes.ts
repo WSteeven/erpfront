@@ -29,18 +29,18 @@ const routes: RouteRecordRaw[] = [
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
     children: [
+      /* {
+       path: '',
+       name: 'tablero_personal',
+       component: () =>
+         import('pages/tableroPersonal/view/TableroPersonalPage.vue'),
+       meta: { requiresAuth: true, permissionRequired: false },
+     }, */
       {
         path: '',
-        name: 'tablero_personal',
-        component: () =>
-          import('pages/tableroPersonal/view/TableroPersonalPage.vue'),
-        meta: { requiresAuth: true, permissionRequired: false },
-      },
-      {
-        path: 'intranet',
         name: 'intranet',
         component: () => import('pages/intranet/intranet/view/IntranetPage.vue'),
-        meta: { requiresAuth: false },
+        meta: { requiresAuth: true, permissionRequired: false },
       },
       {
         path: '/blog',
@@ -436,7 +436,7 @@ const routes: RouteRecordRaw[] = [
       /*********************************************
        * COMPRAS Y PROVEEDORES
        *********************************************/
-        ...rutasComprasProveedores,
+      ...rutasComprasProveedores,
 
 
 

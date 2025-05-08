@@ -12,7 +12,7 @@
   >
     <template #formulario>
       <q-form @submit.prevent>
-        <div class="row q-col-gutter-sm q-pb-xl">
+        <div class="row q-col-gutter-sm q-pa-md">
           <div class="col-12 q-mb-md">
             <div class="row justify-end">
               <q-chip color="grey-3" class="text-green">

@@ -1,18 +1,22 @@
 <template>
   <!-- :padding="!$q.screen.xs" -->
-  <component :is="full ? 'q-page' : 'div'">
+  <q-page padding>
+    <!-- <component :is="full ? 'q-page' : 'div'" > -->
     <!-- <transition name="scale" mode="out-in"> -->
     <slot name="modales" />
     <!-- </transition> -->
+    <div v-if="tituloPagina" class="text-h5 text-bold q-mb-md">
+      {{ tituloPagina }}
+    </div>
 
     <!-- Tabs -->
     <q-tabs
       v-model="tabs"
       align="left"
-      switch-indicator
       active-class="tab-active"
-      indicator-color="transparent"
+      indicator-color="primary"
       dense
+      class="border-bottom"
     >
       <q-tab
         v-if="mostrarFormulario"
@@ -38,19 +42,20 @@
     </q-tabs>
 
     <!-- Tab content -->
+    <!-- class="bg-desenfoque border-white" -->
     <q-tab-panels
       v-model="tabs"
       animated
       transition-prev="scale"
       transition-next="scale"
-      class="bg-desenfoque border-white"
+      class="bodrde roundded cusdtom-shadow q-mt-lg"
       keep-alive
-      :class="{ 'rounded-tabpanel': !$q.screen.xs }"
     >
+      <!-- :class="{ 'rounded-tabpanel': !$q.screen.xs }" -->
       <!-- Formulario -->
-      <q-tab-panel name="formulario">
+      <q-tab-panel name="formulario" class="q-pa-none">
         <slot name="formulario" />
-        <div :class="{ 'q-pa-md': full }">
+        <div>
           <div class="row justify-end q-col-gutter-x-xs">
             <span>
               <slot name="custom-buttons"></slot>
@@ -72,7 +77,7 @@
       </q-tab-panel>
 
       <!-- Listado -->
-      <q-tab-panel name="listado">
+      <q-tab-panel name="listado" class="q-pa-none">
         <!-- :paginate="paginate" -->
         <essential-table-pagination
           v-if="paginate"
@@ -80,6 +85,7 @@
           :titulo="tituloTabla"
           :configuracionColumnas="columnas"
           :datos="listado"
+          :grid="grid"
           :permitirConsultar="puedeVer"
           :permitirEditar="puedeEditar"
           :permitirEliminar="puedeEliminar"
@@ -99,6 +105,7 @@
           :accion4Header="accion4Header"
           :permitirFiltrar="puedeFiltrar"
           :mostrarExportar="puedeExportar"
+          :mostrarColumnasVisibles="mostrarColumnasVisibles"
           :ajustarCeldas="ajustarCeldas"
           @consultar="accionTabla.consultar"
           @editar="accionTabla.editar"
@@ -137,6 +144,7 @@
           :accion4Header="accion4Header"
           :permitirFiltrar="puedeFiltrar"
           :mostrarExportar="puedeExportar"
+          :mostrarColumnasVisibles="mostrarColumnasVisibles"
           :ajustarCeldas="ajustarCeldas"
           @consultar="accionTabla.consultar"
           @editar="accionTabla.editar"
@@ -154,7 +162,8 @@
         <slot name="custom-listado" />
       </q-tab-panel>
     </q-tab-panels>
-  </component>
+    <!-- </component> -->
+  </q-page>
 </template>
 
 <script src="./TabLayout.ts"></script>

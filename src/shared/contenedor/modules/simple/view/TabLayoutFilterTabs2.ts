@@ -270,6 +270,7 @@ export default defineComponent({
       accionTabla,
       seleccionado,
       columnas,
+      tituloPagina: tituloTabla[0].toUpperCase() + tituloTabla.substring(1),
       // Acciones tabla
       consultar,
       editar,

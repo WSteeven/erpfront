@@ -61,6 +61,7 @@
 /* Puntos de navegación (si usas bullets) */
 .introjs-bullets ul li a {
   background: #ccc;
+  
 }
 .introjs-bullets ul li a.active {
   background: #0879dc;
@@ -87,8 +88,9 @@
   z-index: 19999 !important;
 }
 
-.q-toggle {
+// comento este código porque al abrir el q-drawer se muestra hasta arriba
+/* .q-toggle {
   z-index: 9999999999 !important;
   position: relative !important;
   pointer-events: auto !important;
-}
+} */

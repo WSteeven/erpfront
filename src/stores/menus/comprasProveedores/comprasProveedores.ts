@@ -1,8 +1,8 @@
-import {computed, Ref} from 'vue';
-import {MenuOption} from 'shared/menu/MenuOption';
-import {useAuthenticationStore} from 'stores/authentication';
+import { computed, Ref } from 'vue';
+import { MenuOption } from 'shared/menu/MenuOption';
+import { useAuthenticationStore } from 'stores/authentication';
 
-const comprasProveedores: Ref<MenuOption[]> = computed((()=>{
+const comprasProveedores: Ref<MenuOption[]> = computed((() => {
     const store = useAuthenticationStore()
     return [
         {
@@ -14,7 +14,7 @@ const comprasProveedores: Ref<MenuOption[]> = computed((()=>{
                 {
                     title: 'Dashboard',
                     link: 'dashboard-ordenes-compras',
-                    icon: 'bi-bar-chart-fill',
+                    icon: 'bi-bar-chart',
                     can: store.can('puede.acceder.dashboard_ordenes_compras')
                 },
                 {
@@ -38,13 +38,13 @@ const comprasProveedores: Ref<MenuOption[]> = computed((()=>{
                 {
                     title: 'Proveedores',
                     link: 'proveedores',
-                    icon: 'bi-people-fill',
+                    icon: 'bi-people',
                     can: store.can('puede.acceder.proveedores') || store.esAdministrador
                 },
                 {
                     title: 'Proveedores Internacionales',
                     link: 'proveedores-internacionales',
-                    icon: 'bi-people-fill',
+                    icon: 'bi-people',
                     can:
                         store.can('puede.acceder.proveedores_internacionales') ||
                         store.esAdministrador
@@ -60,7 +60,7 @@ const comprasProveedores: Ref<MenuOption[]> = computed((()=>{
                 {
                     title: 'Contactos de Proveedores',
                     link: 'contactos-proveedores',
-                    icon: 'bi-person-lines-fill',
+                    icon: 'bi-person-lines',
                     can:
                         store.can('puede.acceder.contactos_proveedores') ||
                         store.esAdministrador
@@ -68,7 +68,7 @@ const comprasProveedores: Ref<MenuOption[]> = computed((()=>{
                 {
                     title: 'Criterios de Calificacion de Proveedores',
                     link: 'criterios-calificaciones',
-                    icon: 'bi-check-circle-fill',
+                    icon: 'bi-check-circle',
                     can:
                         store.can('puede.acceder.criterios_calificaciones') ||
                         store.esAdministrador
@@ -76,7 +76,7 @@ const comprasProveedores: Ref<MenuOption[]> = computed((()=>{
                 {
                     title: 'Categorias Tipo Oferta',
                     link: 'categorias-ofertas',
-                    icon: 'bi-tags-fill',
+                    icon: 'bi-tags',
                     can:
                         store.can('puede.acceder.categorias_ofertas') ||
                         store.esAdministrador
@@ -84,7 +84,7 @@ const comprasProveedores: Ref<MenuOption[]> = computed((()=>{
                 {
                     title: 'Preordenes de Compras',
                     link: 'preordenes-compras',
-                    icon: 'bi-cart-fill',
+                    icon: 'bi-cart',
                     can:
                         store.can('puede.acceder.preordenes_compras') ||
                         store.esAdministrador
@@ -92,7 +92,7 @@ const comprasProveedores: Ref<MenuOption[]> = computed((()=>{
                 {
                     title: 'Ordenes de Compras',
                     link: 'ordenes-compras',
-                    icon: 'bi-cart-plus-fill',
+                    icon: 'bi-cart-plus',
                     can:
                         store.can('puede.acceder.ordenes_compras') || store.esAdministrador
                 },
@@ -115,19 +115,19 @@ const comprasProveedores: Ref<MenuOption[]> = computed((()=>{
                         {
                             title: 'Reporte de Proveedores',
                             link: 'reporte-proveedores',
-                            icon: 'bi-bar-chart-fill',
+                            icon: 'bi-bar-chart',
                             can: store.can('puede.acceder.reporte_proveedores')
                         },
                         {
                             title: 'Reporte de Calificaciones y Recalificaciones',
                             link: 'reporte-calificaciones-proveedores',
-                            icon: 'bi-bar-chart-fill',
+                            icon: 'bi-bar-chart',
                             can: store.can('puede.acceder.reporte_calificaciones_proveedores')
                         },
                         {
                             title: 'Reporte de Ordenes de Compras',
                             link: 'reporte-ordenes-compras',
-                            icon: 'bi-file-earmark-bar-graph-fill',
+                            icon: 'bi-file-earmark-bar-graph',
                             can: store.can('puede.acceder.reporte_ordenes_compras')
                         }
                     ]
@@ -140,7 +140,7 @@ const comprasProveedores: Ref<MenuOption[]> = computed((()=>{
                         {
                             title: 'Contactos de Proveedores',
                             link: 'logs-contactos-proveedores',
-                            icon: 'bi-person-lines-fill',
+                            icon: 'bi-person-lines',
                             can: true
                         }
                     ]

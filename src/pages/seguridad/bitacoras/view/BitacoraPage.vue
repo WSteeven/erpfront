@@ -3,6 +3,7 @@
     :mixin="mixin"
     :configuracion-columnas="configuracionColumnasBitacora"
     :mostrar-button-submits="tabsPage == 1"
+    :mostrarColumnasVisibles="!$q.screen.xs"
     :accion1="btnRegistrarActividades"
     :accion2="btnFinalizarBitacora"
     :permitir-editar="false"
@@ -10,8 +11,18 @@
     full
   >
     <template #formulario>
-      <multiple-page-layout :mixin="mixin" regresar-principio>
+      <multiple-page-layout
+        :mixin="mixin"
+        :tabsOptions="tabsOptions"
+        regresar-principio
+        :mostrarRegresar="false"
+      >
         <template #tab1>
+          <callout
+            mensaje="La <b>selección de prendas recibidas</b> se activará luego de que <b>seleccione la zona</b>."
+            tipo="info"
+            class="q-mb-xl"
+          ></callout>
           <q-form @submit.prevent>
             <div class="row q-col-gutter-sm q-mb-md">
               <div class="col-12 text-bold q-py-sm">
@@ -29,8 +40,6 @@
                 <q-select
                   v-model="bitacora.zona"
                   :options="zonas"
-                  transition-show="jump-up"
-                  transition-hide="jump-down"
                   :disable="disabled"
                   options-dense
                   dense
@@ -56,13 +65,8 @@
                   </template>
 
                   <template #after>
-                    <q-btn
-                      color="positive"
-                      :icon="iconos.recargar"
-                      @click="recargarZonas()"
-                      unelevated
-                      dense
-                    >
+                    <q-btn color="primary" @click="recargarZonas()" dense>
+                      <q-icon :name="iconos.recargar" class="q-pad-xs"></q-icon>
                       <q-tooltip>Recargar zonas</q-tooltip>
                     </q-btn>
                   </template>
@@ -95,7 +99,7 @@
                 </q-select>
               </div>
 
-              <div class="col-12 col-md-3">
+              <div v-if="accion === acciones.consultar" class="col-12 col-md-3">
                 <fecha-hora-automatica-input
                   v-model="bitacora.fecha_hora_inicio_turno"
                   :disable="disabled"
@@ -105,7 +109,7 @@
                 ></fecha-hora-automatica-input>
               </div>
 
-              <div class="col-12 col-md-3">
+              <div v-if="accion === acciones.consultar" class="col-12 col-md-3">
                 <label class="q-mb-sm block"
                   >Fecha y hora de fin de turno</label
                 >
@@ -118,7 +122,7 @@
                 ></q-input>
               </div>
 
-              <div class="col-12 col-md-3">
+              <div v-if="accion === acciones.consultar" class="col-12 col-md-3">
                 <label class="q-mb-sm block">Agente de turno</label>
                 <q-input
                   v-model="criterioBusqueda"
@@ -169,13 +173,8 @@
                   </template>
 
                   <template #after>
-                    <q-btn
-                      color="positive"
-                      :icon="iconos.buscar"
-                      @click="listarProtector"
-                      unelevated
-                      dense
-                    >
+                    <q-btn color="primary" @click="listarProtector" dense>
+                      <q-icon :name="iconos.buscar"></q-icon>
                       <q-tooltip>Recargar protector</q-tooltip>
                     </q-btn>
                   </template>
@@ -217,13 +216,8 @@
                   </template>
 
                   <template #after>
-                    <q-btn
-                      color="positive"
-                      :icon="iconos.buscar"
-                      @click="listarConductor"
-                      unelevated
-                      dense
-                    >
+                    <q-btn color="primary" @click="listarConductor" dense>
+                      <q-icon :name="iconos.buscar"></q-icon>
                       <q-tooltip>Recargar protector</q-tooltip>
                     </q-btn>
                   </template>
@@ -266,8 +260,8 @@
                 <q-separator class="q-my-xs"></q-separator>
               </div>
 
-              <i v-if="!prendas.length"
-                >Seleccione una zona para mostrar el listado de prendas.</i
+              <span v-if="!prendas.length" class="bg-body q-pa-md rounded"
+                >Seleccione una zona para mostrar el listado de prendas.</span
               >
 
               <div
@@ -298,22 +292,22 @@
         </template>
 
         <template #tab2>
-          <div class="row">
+          <div v-if="bitacora.id" class="row">
             <div class="col-12 q-mb-sm">
               <callout
                 tipo="info"
-                mensaje="Las actividades registradas se guardan automáticamente."
+                mensaje="Las actividades registradas <b>se guardan automáticamente</b>."
               ></callout>
             </div>
 
-            <div class="col-12">
+            <div class="col-12 q-mb-md">
               <callout
                 v-if="!!bitacora.fecha_hora_fin_turno"
-                mensaje="Ya no tiene permitido registrar actividades debido a que la bitácora ha sido finalizada."
+                mensaje="<b>Ya no tiene permitido registrar actividades</b> debido a que la <b>bitácora ha sido finalizada</b>."
               ></callout>
             </div>
 
-            <div class="col-12 text-pdrimary text-bold q-py-sm q-my-sm">
+            <div class="col-12 text-bold q-py-sm q-my-sm">
               <q-icon
                 name="bi-x-diamond"
                 class="q-mr-sm"
@@ -337,18 +331,36 @@
                 :permitir-consultar="false"
                 :permitir-editar="false"
                 :permitir-eliminar="false"
+                :mostrar-footer="false"
                 permitirEditarModal
                 :editar-fila-local="false"
                 permitir-editar-celdas
+                :mostrarColumnasVisibles="!$q.screen.xs"
                 @guardar-fila-nueva="guardarActividad"
               ></essential-table>
             </div>
+          </div>
+
+          <div v-else class="column">
+            <callout
+              tipo="info"
+              mensaje="Primero <b>cree una bitácora</b> para poder <b>registrar actividades</b>."
+              class="q-mb-md"
+            ></callout>
+            <q-btn
+              color="primary"
+              label="Ir a formulario para crear bitácora"
+              icon="bi-list"
+              @click="tabsPage = '1'"
+              no-caps
+              unelevated
+            ></q-btn>
           </div>
         </template>
       </multiple-page-layout>
     </template>
 
-    <template #custom-buttons>
+    <!--  <template #custom-buttons>
       <q-btn
         v-if="tabsPage == 1 && bitacora.id"
         color="teal"
@@ -363,7 +375,7 @@
         no-caps
         push
       ></q-btn>
-    </template>
+    </template> -->
 
     <template #modales>
       <essential-selectable-table

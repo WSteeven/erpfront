@@ -1,7 +1,10 @@
 <template>
   <q-layout view="lHh Lpr lFf">
     <!-- Navbar -->
-    <q-header class="bg-desenfoque">
+    <q-header
+      class="bg-body-background my-font"
+      :class="{ 'q-px-lg': !$q.screen.xs }"
+    >
       <transition name="slide-fade" mode="out-in">
         <div v-if="mostrarBuscar" class="q-pa-xs">
           <q-input
@@ -61,17 +64,19 @@
         </div>
       </transition>
 
-      <q-toolbar class="row justify-between q-py-sm border-bottom">
+      <q-toolbar class="row justify-between border-bottom q-py-md">
         <span class="row q-gutter-x-sm">
           <q-btn
             v-if="route.name !== 'intranet'"
             dense
             aria-label="Menu"
             @click="toggleLeftDrawer"
-            class="custom-shadow bg-primary"
-            unelevated
+            color="primary"
+            icon="menu"
+            :class="{ 'q-mr-sm': !$q.screen.xs }"
+            flat
           >
-            <svg
+            <!-- <svg
               width="24"
               height="24"
               viewBox="0 0 24 24"
@@ -99,26 +104,27 @@
                 style="fill: #fff; stroke-width: 1.04881"
                 d="M 8.9160156 16.658203 C 8.3637368 16.658203 7.9160156 17.150284 7.9160156 17.757812 C 7.9160156 18.365342 8.3637368 18.859375 8.9160156 18.859375 L 14.916016 18.859375 C 15.468314 18.859375 15.916016 18.365342 15.916016 17.757812 C 15.916016 17.150284 15.468314 16.658203 14.916016 16.658203 L 8.9160156 16.658203 z "
               />
-            </svg>
+            </svg> -->
           </q-btn>
 
-          <img
+          <!-- <img
             alt="Logo FIRSTRED"
             v-if="route.name === 'intranet'"
             :src="!$q.dark.isActive ? logoClaro : logoOscuro"
             height="30"
             class="custom-shadow"
-          />
+          /> -->
 
           <!-- Barra de Busqueda -->
-          <div class="row q-col-gutter-x-xs">
-            <q-btn @click="mostrarBuscar = !mostrarBuscar" unelevated no-caps>
-              <q-icon
-                name="bi-search"
-                size="xs"
-                class="bg-icon color-icon-navbar q-pa-xs rounded-field q-mr-xs"
-              ></q-icon>
-              <span v-if="!$q.screen.xs" class="text-color">Buscar</span>
+          <div class="row">
+            <q-btn
+              @click="mostrarBuscar = !mostrarBuscar"
+              color="primary"
+              no-caps
+              no-wrap
+            >
+              <q-icon name="las la-search" size="xs"></q-icon>
+              <span v-if="!$q.screen.xs" class="q-ml-xs">Buscar</span>
             </q-btn>
           </div>
         </span>
@@ -126,28 +132,25 @@
         <span
           class="row"
           :class="{
-            'q-gutter-x-sm': $q.screen.xs,
+            'q-gutter-x-xfs': $q.screen.xs,
             'q-gutter-x-md': !$q.screen.xs
           }"
         >
           <!-- Boton transferir tareas -->
           <q-btn
             v-if="mostrarTransferirTareas"
-            dense
+            dense7
             unelevated
             no-caps
-            class="q-px-sm bg-grey-4d"
+            class="q-px-sm color-icon-navbar"
             @click="abrirTransferirTareas()"
           >
             <q-icon
-              name="bi-arrow-left-right"
+              name="las la-exchange-alt"
               :class="{ 'q-mx-sm': !$q.screen.xs }"
-              class="bg-icon color-icon-navbar q-pa-xs rounded-field"
-              size="xs"
+              class="bg-icon q-pa-xs rounded-field"
             ></q-icon>
-            <span v-if="!$q.screen.xs" class="text-color"
-              >Transferir tareas activas</span
-            >
+            <span v-if="$q.screen.md">Transferir tareas activas</span>
             <q-tooltip class="bg-dark">Transferir tareas activas</q-tooltip>
           </q-btn>
 
@@ -156,16 +159,15 @@
             dense
             unelevated
             no-caps
-            class="q-px-sm"
+            class="q-px-sm color-icon-navbar"
             @click="abrirMovilizacionSubtarea()"
           >
             <q-icon
-              name="bi-car-front"
+              name="las la-truck-pickup"
               :class="{ 'q-mr-sm': !$q.screen.xs }"
-              class="bg-icon color-icon-navbar q-pa-xs rounded-field"
-              size="xs"
+              class="bg-icon q-pa-xs rounded-field"
             ></q-icon>
-            <span v-if="!$q.screen.xs" class="text-color">Movilización</span>
+            <span v-if="!$q.screen.xs">Movilización</span>
             <q-tooltip class="bg-dark">Movilización</q-tooltip>
           </q-btn>
 
@@ -174,16 +176,15 @@
             dense
             unelevated
             no-caps
-            class="q-px-sm"
+            class="q-px-sm color-icon-navbar"
             :to="{ name: 'mi_bodega' }"
           >
             <q-icon
-              name="bi-box-seam"
+              name="las la-box"
               :class="{ 'q-mr-sm': !$q.screen.xs }"
-              class="bg-icon color-icon-navbar q-pa-xs rounded-field"
-              size="xs"
+              class="bg-icon q-pa-xs rounded-field"
             ></q-icon>
-            <span v-if="!$q.screen.xs" class="text-color">Mi bodega</span>
+            <span v-if="!$q.screen.xs">Mi bodega</span>
             <q-tooltip class="bg-dark">Mi bodega</q-tooltip>
           </q-btn>
 
@@ -196,10 +197,9 @@
             @click.self="mostrarCrearTicket = true"
           >
             <q-icon
-              name="bi-tags"
+              name="las la-tags"
               :class="{ 'q-mr-sm': !$q.screen.xs }"
               class="bg-icon color-icon-navbar q-pa-xs rounded-field"
-              size="xs"
             ></q-icon>
 
             <q-tooltip class="bg-dark">Crear ticket</q-tooltip>
@@ -235,20 +235,19 @@
             dense
             unelevated
             no-caps
-            class="q-pl-sm"
+            class="q-pr-sm"
             @click.self="mostrarNotificaciones = true"
           >
             <q-icon
-              name="bi-bell"
+              name="las la-bell"
               :class="{ 'q-mr-sm': !$q.screen.xs }"
               class="bg-icon color-icon-navbar q-pa-xs rounded-field"
-              size="xs"
             ></q-icon>
 
             <!-- <span v-if="!$q.screen.xs">Notificaciones</span> -->
             <q-tooltip class="bg-dark">Notificaciones</q-tooltip>
 
-            <q-badge v-if="notificaciones.length > 0" color="positive" floating
+            <q-badge v-if="notificaciones.length > 0" color="primary" floating
               ><span>{{ notificaciones.length }}</span>
             </q-badge>
 
@@ -258,7 +257,7 @@
               transition-show="slide-left"
               transition-hide="slide-right"
               :style="{ width: width }"
-              class="window-height bg-desenfoque-2 custom-shadow"
+              class="window-height full-width bg-desenfoque custom-shadow"
               max-height="100vh"
               anchor="center middle"
             >
@@ -363,7 +362,6 @@
 
           <!-- Perfil -->
           <q-btn dense round flat glossy @click.self="mostrarMenu = true">
-            <q-badge color="positive" rounded floating> </q-badge>
             <img
               alt="Profile image"
               :src="imagenPerfil"
@@ -507,34 +505,38 @@
     <!-- Drawer -->
     <q-drawer
       v-model="leftDrawerOpen"
-      class="bg-drawer border-right q-px-sm q-py-sm"
+      class="bg-drawer border-right q-px-sm q-py-sm my-font zindex-drawer"
       show-if-above
       v-if="route.name !== 'intranet'"
     >
       <!-- Drawer Header -->
-      <div class="absolute-top q-pa-sm q-ma-sm rounded-card">
+      <div
+        class="row items-center absolute-top q-pa-sm q-ma-md rounfded-card zindex-drawer"
+      >
         <img
-          alt="Logo FirstRed"
+          alt="Logo"
           :src="!$q.dark.isActive ? logoClaro : logoOscuro"
-          height="60"
-          class="q-mx-auto block"
+          height="54"
+          class="block bg-solid q-pa-sm borde q-mr-sm"
+          style="border-radius: 8px"
         />
+        <span class="column">
+          <b class="text-thin text-h5 elegant-blue-gradient-text">FIRSTRED</b>
+          <small class="text-color">System</small>
+        </span>
       </div>
 
       <!-- Drawer Body -->
       <q-scroll-area
-        style="
-          height: calc(94% - 120px);
-          margin-top: 100px;
-          margin-bottom: 20px;
-        "
+        style="height: calc(96% - 90px); margin-top: 80px; margin-bottom: 12px"
+        class="zindex-drawer"
       >
         <q-list>
           <div v-for="item in links" :key="item.title">
             <q-item-label
               v-if="item.hasOwnProperty('header')"
               header
-              class="text-bold text-primary"
+              class="text-color-drawer"
               >{{ item.header }}
             </q-item-label>
 
@@ -552,13 +554,14 @@
       </q-scroll-area>
 
       <q-btn
-        color="primary"
+        color="blue-14"
         no-caps
         class="full-width q-mb-md"
-        outline
-        rounded
+        label="Descarga la app móvil"
+        icon="bi-google-play"
+        target="_blank"
         @click="logout()"
-        >Cerrar sesión
+      >
       </q-btn>
     </q-drawer>
 
@@ -566,7 +569,10 @@
 
     <ScrollToTopButton></ScrollToTopButton>
 
-    <q-page-container :class="{ 'bg-body': true }" class="q-ma-md">
+    <q-page-container
+      class="my-font bg-body-background"
+      :style="pageContainerStyle"
+    >
       <router-view v-slot="{ Component }">
         <!-- <transition name="scale" mode="out-in">
           <essential-loading></essential-loading>

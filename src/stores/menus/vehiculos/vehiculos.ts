@@ -7,7 +7,7 @@ const vehiculos: Ref<MenuOption[]> = computed(() => {
   return [
     {
       title: 'Vehículos',
-      icon: 'fa-solid fa-car',
+      icon: 'las la-car-side',
       can: store.esAdministrador || store.can('puede.acceder.modulo_vehiculos'),
       module: true,
       children: [

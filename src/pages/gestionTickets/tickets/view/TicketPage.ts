@@ -460,7 +460,7 @@ export default defineComponent({
       }, 100);
     }
 
-    onMounted(() => nextTick(() => startTour()))
+    // onMounted(() => nextTick(() => startTour())) <- NO SE USA
 
     /*************
      * Observers

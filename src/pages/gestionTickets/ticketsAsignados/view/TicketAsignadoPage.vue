@@ -1,5 +1,5 @@
 <template>
-  <q-page>
+  <q-page padding>
     <div class="row q-mb-md">
       <div
         class="col-12 row items-center justify-between q-px-md q-mb-sm q-py-sm"
@@ -32,10 +32,10 @@
       animated
       transition-prev="scale"
       transition-next="scale"
-      class="bg-body-background-gradient border-whdite rounded custom-shadow"
+      class="bg-body-background-gradient border-white rounded custom-shadow"
       keep-alive
     >
-      <q-tab-panel :name="opcionesFiltrado.listado">
+      <q-tab-panel :name="opcionesFiltrado.listado" class="q-pa-none">
         <essential-table-tabs
           :titulo="
             'Tienes ' + listado.length + ' ticket(s) en estado ' + tabActual

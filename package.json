@@ -12,6 +12,9 @@
   },
   "dependencies": {
     "@balkangraph/orgchart.js": "^8.14.48",
+    "@capacitor/camera": "^7.0.1",
+    "@capacitor/push-notifications": "^7.0.1",
+    "@capacitor/status-bar": "^7.0.1",
     "@formkit/tempo": "^0.0.16",
     "@quasar/extras": "^1.0.0",
     "@types/vuelidate": "^0.7.15",
@@ -47,6 +50,7 @@
     "vue3-lottie": "^2.3.0"
   },
   "devDependencies": {
+    "@capacitor/assets": "^3.0.5",
     "@quasar/app-vite": "^1.11.0",
     "@quasar/quasar-app-extension-qcalendar": "^4.0.0-beta.15",
     "@types/i18n": "^0.13.6",

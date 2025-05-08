@@ -17,12 +17,17 @@
           />
         </div>
 
+        <div v-if="actividad.fecha_hora_fin" class="col-12 col-md-3">
+          <label class="q-mb-sm block">Fecha y hora de fin</label>
+          <q-input v-model="actividad.fecha_hora_fin" outlined disable dense />
+        </div>
+
         <!-- <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Fecha y hora de fin</label>
           <q-input v-model="actividad.fecha_hora_fin" outlined disable dense />
         </div> -->
 
-        <div class="col-12 col-md-3">
+        <div class="col-12 col-md-6">
           <label class="q-mb-sm block">Tipo de evento</label>
           <q-select
             v-model="actividad.tipo_evento_bitacora"
@@ -63,7 +68,7 @@
           </q-select>
         </div>
 
-        <div class="col-12 col-md-3">
+        <!-- <div class="col-12 col-md-3">
           <label class="block q-mb-sm">{{ '' }}</label>
           <q-toggle
             keep-color
@@ -73,9 +78,9 @@
             color="positive"
             icon="bi-bell-fill"
           />
-        </div>
+        </div> -->
 
-        <div class="col-12 col-md-3">
+        <div v-if="actividad.medio_notificacion" class="col-12 col-md-3">
           <label class="q-mb-sm block">Medio por el cual se notificó</label>
           <q-input
             v-model="actividad.medio_notificacion"
@@ -128,7 +133,7 @@
           />
         </div>
       </div>
-        
+
       <div class="row q-col-gutter-sm">
         <div class="col-12 text-pdrimary text-bold q-py-sm q-mt-sm">
           <q-icon name="bi-x-diamond" class="q-mr-sm" color="primary"></q-icon>

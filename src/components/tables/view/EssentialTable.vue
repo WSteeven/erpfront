@@ -29,13 +29,13 @@
     :hide-bottom="!mostrarFooter"
     color="primary"
     flat
-    dense
     bordered
+    dense
     square
     :selection="tipoSeleccion"
     v-model:selected="selected"
     :style="estilos"
-    class="bg-body-table my-sticky-column-table my-sticky-header-column-table borde rounded"
+    class="bg-body-table my-sticky-column-table my-sticky-header-column-table"
     :class="{
       'alto-fijo-desktop': !inFullscreen && altoFijo && !$q.screen.xs,
       'alto-fijo-mobile': !inFullscreen && altoFijo && $q.screen.xs,
@@ -89,7 +89,7 @@
                 'number',
                 'date',
                 'time',
-                'search',
+                'search'
               ].includes(props.col.type))
           "
           v-model="props.row[props.col.name]"
@@ -253,20 +253,19 @@
           keep-color
           color="positive"
           :disable="disable || props.col.disableTable"
-          />
-          <!-- :label="props.row[props.col.name] ? 'SI' : 'NO'" -->
+        />
+        <!-- :label="props.row[props.col.name] ? 'SI' : 'NO'" -->
       </q-td>
 
       <q-td v-else :props="props">
         <span
-        v-if="!['selecdt', 'boolean', 'toggle'].includes(props.col.type)"
+          v-if="!['selecdt', 'boolean', 'toggle'].includes(props.col.type)"
           :class="{
             'text-white': $q.dark.isActive,
             'text-dark': !$q.dark.isActive
           }"
           v-html="props.row[props.col.name]"
-          ></span
-        >
+        ></span>
       </q-td>
     </template>
 
@@ -284,7 +283,7 @@
 
       <div
         v-if="titulo"
-        class="row text-primary text-subtitle2 q-mb-lg items-center justify-between col-12"
+        class="row text-subtitle2 q-mb-lg items-center justify-between col-12"
         :class="{
           'titulo-tabla2': !$q.screen.xs,
           'justify-center': $q.screen.xs,
@@ -295,7 +294,6 @@
           <q-icon
             v-if="!$q.screen.xs"
             name="bi-grip-vertical"
-            color="info"
             class="q-mr-sm"
           ></q-icon>
           <span>{{ titulo }}</span>
@@ -377,13 +375,22 @@
         v-if="permitirFiltrar || mostrarCantidadElementos"
         class="row full-width justify-between q-col-gutter-x-sm items-center q-mb-md"
       >
-        <span class="row items-center q-px-md">
+        <!-- <span class="row items-center q-px-md">
           <q-icon
             name="bi-circle-fill"
             color="positive"
             class="q-mr-sm"
           ></q-icon>
           {{ 'Total de elementos: ' }} <b>{{ datos.length }}</b>
+        </span> -->
+        <span class="row items-center text-black q-mb-md">
+          {{ '# registros: ' }}
+          <q-icon
+            name="bi-check-circle-fill"
+            color="primary"
+            class="q-mx-sm"
+          ></q-icon>
+          <b>{{ datos.length }}</b>
         </span>
 
         <div class="row q-gutter-xs justify-end q-mb-md">
@@ -487,17 +494,17 @@
       </div>
 
       <!-- Botones Header -->
-      <div class="row full-width q-gutter-xs">
+      <div class="row full-width q-gutter-xs q-mb-sm">
         <!-- Boton 1 Header -->
         <!-- :disable="extraerDisable(accion1Header, props)" -->
         <q-btn
           v-if="extraerVisible(accion1Header, props)"
           :color="accion1Header?.color ?? 'primary'"
           :class="{ 'q-mb-sm': $q.screen.xs, 'full-width': $q.screen.xs }"
-          push
-          rounded
+          unelevated
           no-caps
           @click="accion1Header.accion(identificador)"
+          class="text-icon"
         >
           <q-icon
             :name="extraerIcono(accion1Header) ?? ''"
@@ -695,8 +702,9 @@
       <q-card
         v-if="$q.screen.xs"
         :class="props.selected ? 'bg-grey-2' : ''"
-        class="q-py-xs q-my-none custom-shadows full-width border-bottom no-border srodunded-card"
+        class="q-py-xs q-my-none custom-shadows full-width border-bottom no srodunded-card q-mb-xs"
         :style="props.selected ? 'transform: scale(0.95);' : ''"
+        style="font-size: 0.7rem"
       >
         <q-card-section v-if="tipoSeleccion !== 'none'">
           <q-checkbox dense v-model="props.selected" :label="props.row.name" />
@@ -1809,10 +1817,10 @@
       </q-td>
     </template>
     <template #body-cell-revisado="props">
-    <q-td :props="props">
-      <campo-boleano :propsTable="props" />
-    </q-td>
-  </template>
+      <q-td :props="props">
+        <campo-boleano :propsTable="props" />
+      </q-td>
+    </template>
     <template #body-cell-tengo_conocimientos_requeridos="props">
       <q-td :props="props">
         <campo-boleano :propsTable="props" />
@@ -2114,11 +2122,11 @@
   display: block;
   width: 100%;
 } */
-/*.bg-header-table {
+.bg-header-table {
   .q-table__top {
     background-color: $grey-4 !important;
   }
-}*/
+}
 
 .my-sticky-dynamic {
   /* height or max-height is important */

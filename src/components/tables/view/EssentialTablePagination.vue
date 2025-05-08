@@ -30,7 +30,7 @@
     :separator="$q.screen.xs ? 'horizontal' : separador"
     :hide-bottom="!mostrarFooter"
     :style="estilos"
-    class="bg-body-table my-sticky-column-table my-sticky-header-column-table borde rounded"
+    class="bg-body-table my-sticky-column-table my-sticky-header-column-table"
     :class="{
       'alto-fijo-desktop': !inFullscreen && altoFijo && !$q.screen.xs,
       'alto-fijo-mobile': !inFullscreen && altoFijo && $q.screen.xs,
@@ -176,8 +176,8 @@
             'text-white': $q.dark.isActive,
             'text-dark': !$q.dark.isActive
           }"
-          v-html="props.row[props.col.name]"></span
-        >
+          v-html="props.row[props.col.name]"
+        ></span>
       </q-td>
     </template>
 
@@ -285,13 +285,22 @@
       <div
         class="row full-width justify-between q-col-gutter-x-sm items-center q-mb-md"
       >
-        <span class="row items-center q-px-md">
+        <!-- <span class="row items-center q-px-md">
           <q-icon
             name="bi-circle-fill"
             color="positive"
             class="q-mr-sm"
           ></q-icon>
           {{ 'Total de elementos: ' }} <b>{{ pagination.total }}</b>
+        </span> -->
+        <span class="row items-center text-black q-mb-md">
+          {{ '# registros: ' }}
+          <q-icon
+            name="bi-check-circle-fill"
+            color="primary"
+            class="q-mx-sm"
+          ></q-icon>
+          <b>{{ pagination.total }}</b>
         </span>
 
         <div class="row q-gutter-xs justify-end q-mb-md">
@@ -373,7 +382,10 @@
           <!-- :color="mostrarFiltros ? 'negative' : 'white'" -->
           <q-btn
             v-if="permitirFiltrar"
-            :class="{ 'text-primary bg-white': !mostrarFiltros, 'text-negative bg-white': mostrarFiltros }"
+            :class="{
+              'text-primary bg-white': !mostrarFiltros,
+              'text-negative bg-white': mostrarFiltros
+            }"
             no-caps
             rounded
             unelevated
@@ -420,8 +432,8 @@
           v-if="extraerVisible(accion1Header, props)"
           :color="accion1Header?.color ?? 'primary'"
           :class="{ 'q-mb-sm': $q.screen.xs, 'full-width': $q.screen.xs }"
-          push
-          rounded
+          
+          
           no-caps
           @click="accion1Header.accion"
         >
@@ -545,7 +557,7 @@
 
     <!-- Botones de acciones Desktop -->
     <template #body-cell-acciones="props">
-      <q-td v-if="!$q.screen.xs" :props="props">
+      <q-td v-if="!$q.screen.xs || !grid" :props="props">
         <div class="row inline full-width block q-col-gutter-x-xs text-left">
           <q-btn-group
             v-if="permitirConsultar || permitirEditar || permitirEliminar"
@@ -617,8 +629,9 @@
       <q-card
         v-if="$q.screen.xs"
         :class="props.selected ? 'bg-grey-2' : ''"
-        class="q-py-xs q-my-none custom-shadows full-width border-bottom no-border srodunded-card"
+        class="q-py-xs q-my-none custom-shadows full-width srodunded-card q-mb-xs"
         :style="props.selected ? 'transform: scale(0.95);' : ''"
+        style="font-size: .7rem;"
       >
         <q-card-section v-if="tipoSeleccion !== 'none'">
           <q-checkbox dense v-model="props.selected" :label="props.row.name" />

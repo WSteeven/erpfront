@@ -1,3 +1,4 @@
+import { useMenuAppMovilStore } from './../stores/menuAppMovil';
 // Dependencias
 import { Notificacion } from 'pages/administracion/notificaciones/domain/Notificacion'
 import { useNotificationRealtimeStore } from 'stores/notificationRealtime'
@@ -7,16 +8,20 @@ import {
   defineComponent,
   Ref,
   ref,
+  watch,
   watchEffect
 } from 'vue'
 import { useAuthenticationStore } from 'src/stores/authentication'
-import { LocalStorage, useQuasar } from 'quasar'
+import { LocalStorage, Platform, useQuasar } from 'quasar'
 import { useMenuStore } from 'src/stores/menu'
 import { useRoute, useRouter } from 'vue-router'
 import Swal from 'sweetalert2'
 import dayjs from 'dayjs'
 import es from 'dayjs/locale/es'
 import relativeTime from 'dayjs/plugin/relativeTime'
+import fondo from 'src/assets/img/bg.svg'
+import { StatusBar, Style } from '@capacitor/status-bar'
+import { Capacitor } from '@capacitor/core'
 
 // Componentes
 import ScrollToTopButton from 'components/buttonSubmits/ScrollToTopButton.vue'
@@ -60,7 +65,7 @@ export default defineComponent({
 
   setup() {
     const leftDrawerOpen = ref(false)
-    const menu = useMenuStore()
+    //const menu = useMenuStore()
 
     const menuVisible = ref(false)
 
@@ -74,7 +79,7 @@ export default defineComponent({
     const authenticationStore = useAuthenticationStore()
     const movilizacionSubtareaStore = useMovilizacionSubtareaStore()
     const configuracionGeneralStore = useConfiguracionGeneralStore()
-    const {notificarCorrecto, notificarAdvertencia}=useNotificaciones()
+    const { notificarCorrecto, notificarAdvertencia } = useNotificaciones()
     const mainLayoutStore = useMainLayoutStore()
     const modoNoDisponible = ref(false)
     const permisoModoNoDisponible = computed(() =>
@@ -310,8 +315,8 @@ export default defineComponent({
             LocalStorage.set(
               'ultima_conexion',
               formatearFechaTexto(lastActive.value) +
-                ' ' +
-                new Date(lastActive.value).toLocaleTimeString('en-US')
+              ' ' +
+              new Date(lastActive.value).toLocaleTimeString('en-US')
             )
             Swal.fire({
               icon: 'error',
@@ -337,17 +342,17 @@ export default defineComponent({
     )
     watchEffect(
       () =>
-        (document.title =
-          (notificaciones.value.length
-            ? `(${notificaciones.value.length})`
-            : '') +
-          ' ' +
-          nombreEmpresa.value)
+      (document.title =
+        (notificaciones.value.length
+          ? `(${notificaciones.value.length})`
+          : '') +
+        ' ' +
+        nombreEmpresa.value)
     )
 
     // función para obtener los módulos permitidos
     function obtenerModulosPermitidos() {
-      const modulosPermitidos = menuStore.links.filter(
+      const modulosPermitidos = (Capacitor.isNativePlatform() ? menuAppMovilStore.links : menuStore.links).filter(
         (link: MenuOption) => link.can
       )
 
@@ -364,6 +369,7 @@ export default defineComponent({
 
     // barra de búsqueda
     const menuStore = useMenuStore()
+    const menuAppMovilStore = useMenuAppMovilStore()
     const resultadosBusqueda = ref<MenuOption[]>([])
 
     function filtrarMenu(val) {
@@ -423,6 +429,30 @@ export default defineComponent({
         posicionResultados.value++
     }
 
+    /**
+     * StatusBar - Android
+     */
+    // Función para actualizar el color de la barra de estado
+    const updateStatusBarColor = async () => {
+      if (Capacitor.isNativePlatform()) {
+        await StatusBar.setOverlaysWebView({ overlay: false }); // el contenido ya no se dibuja debajo
+
+        const color = $q.dark.isActive ? '#060606' : '#FFFFFF' // Ajusta los colores según tus necesidades
+        await StatusBar.setBackgroundColor({ color })
+
+        // Cambiar el color del texto de la barra de estado
+        const style = $q.dark.isActive ? Style.Dark : Style.Light // Texto blanco en tema oscuro, negro en tema claro
+        StatusBar.setStyle({ style }) // Cambiar el estilo del texto
+      }
+    }
+
+    watch(
+      computed(() => $q.dark.isActive),
+      updateStatusBarColor
+    )
+    // Llamamos a la función para establecer el color al inicio
+    updateStatusBarColor()
+
     return {
       // logoClaro: `${process.env.API_URL}/storage/configuracion_general/logo_claro.jpeg`,
       logoClaro: computed(
@@ -437,7 +467,7 @@ export default defineComponent({
       route,
       abrirMovilizacionSubtarea,
       abrirTransferirTareas,
-      links: menu.links,
+      links: Capacitor.isNativePlatform() ? menuAppMovilStore.links : menuStore.links,
       leftDrawerOpen,
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value
@@ -485,7 +515,15 @@ export default defineComponent({
       onKeyEnter,
       refListadoBusqueda,
       resetearBuscador,
-      posicionResultados
+      posicionResultados,
+      fondo,
+      pageContainerStyle: { marginTop: '10px' },/* Capacitor.isNativePlatform() || $q.screen.xs ? { marginTop: '10px' } : {
+        backgroundImage: `url(${fondo})`,
+        backgroundSize: 'auto',
+        backgroundPosition: 'top right',
+        marginTop: '90px',
+        backgroundRepeat: 'no-repeat',
+      } */
       // idledFor,
       // tiempoInactividad,
       // mostrarAlertaInactividad,

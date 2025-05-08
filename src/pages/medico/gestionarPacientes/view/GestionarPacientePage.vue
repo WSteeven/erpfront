@@ -24,8 +24,9 @@
           v-model="tabs"
           align="justify"
           active-color="primary"
-          indicator-color="transparent"
+          indicator-color="primary"
           active-class="tab-active"
+          class="border-bottom"
           dense
         >
           <q-tab
