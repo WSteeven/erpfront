@@ -257,7 +257,7 @@
               transition-show="slide-left"
               transition-hide="slide-right"
               :style="{ width: width }"
-              class="window-height full-width bg-desenfoque custom-shadow"
+              class="window-height bg-desenfoque custom-shadow"
               max-height="100vh"
               anchor="center middle"
             >
@@ -554,15 +554,24 @@
       </q-scroll-area>
 
       <q-btn
-        color="blue-14"
-        no-caps
-        class="full-width q-mb-md"
-        label="Descarga la app móvil"
-        icon="bi-google-play"
-        target="_blank"
-        @click="logout()"
-      >
-      </q-btn>
+          color="primary"
+          no-caps
+          class="full-width q-mb-md"
+          label="Cerrar sesión"
+          icon="bi-x"
+          target="_blank"
+          @click="logout()"
+      />
+<!--      <q-btn-->
+<!--        color="blue-14"-->
+<!--        no-caps-->
+<!--        class="full-width q-mb-md"-->
+<!--        label="Descarga la app móvil"-->
+<!--        icon="bi-google-play"-->
+<!--        target="_blank"-->
+<!--        @click="logout()"-->
+<!--      >-->
+<!--      </q-btn>-->
     </q-drawer>
 
     <modales-entidad :comportamiento="modales" @guardado="guardado" />
