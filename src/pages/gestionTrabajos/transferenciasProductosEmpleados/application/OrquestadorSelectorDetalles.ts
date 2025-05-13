@@ -30,6 +30,7 @@ export function useOrquestadorSelectorDetalles(entidad: TransferenciaProductoEmp
     const seleccionar = (items: DetalleProducto[]) => {
         let ids: any = []
         ids = entidad.listado_productos.map((entidad: DetalleProducto) => entidad.id)
+        items.forEach((item:any)=>{item.recibido=0})
         const datos = items.filter((v) => !ids.includes(v.id))
 
         singleSelector.seleccionar(datos)

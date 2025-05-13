@@ -1,5 +1,5 @@
 // Dependencias
-import { AxiosResponse } from 'axios'
+import {AxiosError, AxiosResponse} from 'axios'
 import { configuracionColumnasRolPago } from '../../rol-pago/domain/configuracionColumnasRolPago'
 import { required } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
@@ -89,7 +89,7 @@ export default defineComponent({
     const { onConsultado } = mixin.useHooks()
     useCargandoStore().setQuasar(useQuasar())
     useNotificacionStore().setQuasar(useQuasar())
-    const { notificarAdvertencia, notificarCorrecto, confirmar, promptItems } =
+    const { notificarAdvertencia, notificarCorrecto, notificarError, confirmar, promptItems } =
       useNotificaciones()
 
     const { btnFinalizarRolPago, btnActivarRolPago } =
@@ -353,6 +353,10 @@ export default defineComponent({
       }
     }
 
+    /**
+     * Enviar rol de pago individual a un empleado
+     * @param entidad
+     */
     async function enviar_rol_pago_empleado(entidad): Promise<void> {
       try {
         cargando.activar()
@@ -366,13 +370,17 @@ export default defineComponent({
         console.log(response)
         if (response.status === 200) notificarCorrecto(response.data.mensaje)
         else notificarAdvertencia(response.data.mensaje)
-      } catch (e) {
-        console.error(e)
+      } catch (e: any) {
+        notificarError(e.response.data.message||'Ha ocurrido un error al enviar el mail')
       } finally {
         cargando.desactivar()
       }
     }
 
+    /**
+     * Enviar correos con roles de pagos masivos, a todos los empleados del rol actual
+     * @param entidad
+     */
     async function enviar_rol_pago(entidad): Promise<void> {
       try {
         cargando.activar()
@@ -385,7 +393,7 @@ export default defineComponent({
         const response: AxiosResponse = await axios.get(url_pdf)
         if (response.status === 200) {
           notificarCorrecto('Roles de Pagos enviado correctamente!')
-          console.log(data)
+          console.log(response.data)
         } else notificarAdvertencia(response.data.mensaje)
       } catch (e) {
         console.error(e)
