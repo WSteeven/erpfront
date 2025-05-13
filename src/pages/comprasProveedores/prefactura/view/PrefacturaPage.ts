@@ -3,7 +3,7 @@ import { configuracionColumnasPrefactura } from '../domain/configuracionColumnas
 import { configuracionColumnasDetallesPrefactura } from '../domain/configuracionColumnasDetallesPrefactura'
 import { required } from 'shared/i18n-validators'
 import { useVuelidate } from '@vuelidate/core'
-import { computed, defineComponent, ref, watch } from 'vue'
+import { computed, defineComponent, onMounted, ref, watch } from 'vue'
 
 // Componentes
 import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
@@ -43,6 +43,7 @@ import { usePrefacturaStore } from 'stores/comprasProveedores/prefactura'
 import { EmpleadoPermisoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoPermisosController'
 import { useRouter } from 'vue-router'
 import { useProformaStore } from 'stores/comprasProveedores/proforma'
+import { useConfiguracionGeneralStore } from 'stores/configuracion_general'
 
 export default defineComponent({
   name: 'PrefacturaPage',
@@ -79,8 +80,13 @@ export default defineComponent({
     const proformaStore = useProformaStore()
     const prefacturaStore = usePrefacturaStore()
     const router = useRouter()
+    const configuracionGeneralStore = useConfiguracionGeneralStore()
 
     //variables
+    const configuracion_iva = computed(
+      () => configuracionGeneralStore.configuracion?.iva
+    )
+
     const subtotal_sin_impuestos = computed(() =>
       prefactura.listadoProductos
         .reduce(
@@ -173,6 +179,7 @@ export default defineComponent({
     /*****************************************************************************************
      * Hooks
      ****************************************************************************************/
+    onMounted(() => (prefactura.iva = computed(() => configuracion_iva.value)))
     onReestablecer(() => {
       prefactura.created_at = formatearFecha(
         new Date().getDate().toLocaleString()
@@ -464,7 +471,7 @@ export default defineComponent({
       actualizarProforma,
       llenarPrefactura,
       actualizarDescuento,
-
+      configuracionGeneralStore,
       //variables computadas
       subtotal_sin_impuestos,
       subtotal_con_impuestos,

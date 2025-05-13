@@ -14,7 +14,7 @@ export class Proforma extends EntidadAuditable {
     descuento_general: number
     estado: number | null
     forma: string | null
-    iva: number
+    iva: number | null
     listadoProductos: any[]
     observacion_aut: string | null
     solicitante_id: number | null

@@ -19,7 +19,7 @@ export class OrdenCompra extends EntidadAuditable {
   causa_anulacion: string | null
   fecha: string | null
   created_at: string | null
-  iva: number
+  iva: number | null
   categorias: [] //| null
   listadoProductos: any[]
   realizada: boolean

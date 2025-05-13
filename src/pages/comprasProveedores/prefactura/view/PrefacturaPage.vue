@@ -266,6 +266,7 @@
               dense
             ></q-checkbox>
           </div>
+
           <!-- IVA general -->
           <div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">IVA general</label>

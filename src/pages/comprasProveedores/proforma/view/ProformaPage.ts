@@ -1,55 +1,78 @@
 // Dependencias
-import { configuracionColumnasProformas } from '../domain/configuracionColumnasProforma';
-import { configuracionColumnasDetallesProforma } from '../domain/configuracionColumnasDetallesProforma';
+import { configuracionColumnasProformas } from '../domain/configuracionColumnasProforma'
+import { configuracionColumnasDetallesProforma } from '../domain/configuracionColumnasDetallesProforma'
 import { required } from 'shared/i18n-validators'
 import { useVuelidate } from '@vuelidate/core'
-import { computed, defineComponent, ref, watch, } from 'vue'
-
+import { computed, defineComponent, onMounted, ref, watch } from 'vue'
 
 // Componentes
-import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue';
-import EssentialTable from 'components/tables/view/EssentialTable.vue';
+import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
+import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
-import ModalesEntidad from 'components/modales/view/ModalEntidad.vue';
+import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 import EssentialPopupEditableTable from 'components/tables/view/EssentialPopupEditableTable.vue'
 
 // Logica y controladores
-import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
-import { Proforma } from '../domain/Proforma';
-import { ProformaController } from '../infraestructure/ProformaController';
-import { useNotificaciones } from 'shared/notificaciones';
-import { useNotificacionStore } from 'stores/notificacion';
-import { LocalStorage, useQuasar } from 'quasar';
-import { useCargandoStore } from 'stores/cargando';
-import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController';
-import { acciones, accionesTabla, } from 'config/utils';
-import { tabOptionsProformas, opcionesForma, opcionesTiempo } from 'config/utils_compras_proveedores';
-import { useAuthenticationStore } from 'stores/authentication';
-import { calcularDescuento, calcularSubtotalConImpuestosLista, calcularSubtotalSinImpuestosLista, encontrarUltimoIdListado, formatearFecha } from 'shared/utils';
-import { CustomActionTable } from 'components/tables/domain/CustomActionTable';
-import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
-import { usePreordenStore } from 'stores/comprasProveedores/preorden';
-import { ValidarListadoProductos } from '../application/validaciones/ValidarListadoProductos';
-import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt';
-import { ClienteController } from 'sistema/clientes/infraestructure/ClienteController';
-import { ItemProforma } from '../domain/ItemProforma';
-import { useProformaStore } from 'stores/comprasProveedores/proforma';
-import { EmpleadoPermisoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoPermisosController';
-import { useRouter } from 'vue-router';
-import { requiredIf } from '@vuelidate/validators';
-import { UnidadMedidaController } from 'pages/bodega/unidades_medidas/infraestructure/UnidadMedidaController';
-import { UnidadMedida } from 'pages/bodega/unidades_medidas/domain/UnidadMedida';
-
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { Proforma } from '../domain/Proforma'
+import { ProformaController } from '../infraestructure/ProformaController'
+import { useNotificaciones } from 'shared/notificaciones'
+import { useNotificacionStore } from 'stores/notificacion'
+import { LocalStorage, useQuasar } from 'quasar'
+import { useCargandoStore } from 'stores/cargando'
+import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
+import { acciones, accionesTabla } from 'config/utils'
+import {
+  tabOptionsProformas,
+  opcionesForma,
+  opcionesTiempo
+} from 'config/utils_compras_proveedores'
+import { useAuthenticationStore } from 'stores/authentication'
+import {
+  calcularDescuento,
+  calcularSubtotalConImpuestosLista,
+  calcularSubtotalSinImpuestosLista,
+  encontrarUltimoIdListado,
+  formatearFecha
+} from 'shared/utils'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
+import { usePreordenStore } from 'stores/comprasProveedores/preorden'
+import { ValidarListadoProductos } from '../application/validaciones/ValidarListadoProductos'
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
+import { ClienteController } from 'sistema/clientes/infraestructure/ClienteController'
+import { ItemProforma } from '../domain/ItemProforma'
+import { useProformaStore } from 'stores/comprasProveedores/proforma'
+import { EmpleadoPermisoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoPermisosController'
+import { useRouter } from 'vue-router'
+import { requiredIf } from '@vuelidate/validators'
+import { UnidadMedidaController } from 'pages/bodega/unidades_medidas/infraestructure/UnidadMedidaController'
+import { UnidadMedida } from 'pages/bodega/unidades_medidas/domain/UnidadMedida'
+import { useConfiguracionGeneralStore } from 'stores/configuracion_general'
 
 export default defineComponent({
-  components: { TabLayoutFilterTabs2, EssentialSelectableTable, EssentialTable, ModalesEntidad, EssentialPopupEditableTable },
+  components: {
+    TabLayoutFilterTabs2,
+    EssentialSelectableTable,
+    EssentialTable,
+    ModalesEntidad,
+    EssentialPopupEditableTable
+  },
   emits: ['actualizar', 'fila-modificada'],
   setup(props, { emit }) {
     const mixin = new ContenedorSimpleMixin(Proforma, new ProformaController())
-    const { entidad: proforma, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
-    const { setValidador, obtenerListados, cargarVista, listar } = mixin.useComportamiento()
+    const {
+      entidad: proforma,
+      disabled,
+      accion,
+      listadosAuxiliares,
+      listado
+    } = mixin.useReferencias()
+    const { setValidador, obtenerListados, cargarVista, listar } =
+      mixin.useComportamiento()
     const { onReestablecer, onConsultado, onModificado } = mixin.useHooks()
-    const { confirmar, prompt, notificarCorrecto, notificarError } = useNotificaciones()
+    const { confirmar, prompt, notificarCorrecto, notificarError } =
+      useNotificaciones()
 
     //Stores
     useNotificacionStore().setQuasar(useQuasar())
@@ -58,19 +81,57 @@ export default defineComponent({
     const preordenStore = usePreordenStore()
     const proformaStore = useProformaStore()
     const router = useRouter()
-
+    const configuracionGeneralStore = useConfiguracionGeneralStore()
 
     //variables
+    const configuracion_iva = computed(
+      () => configuracionGeneralStore.configuracion?.iva
+    )
+
     const subtotal_sin_impuestos = computed(() =>
-      proforma.listadoProductos.reduce((prev, curr) => prev + calcularSubtotalSinImpuestosLista(curr), 0).toFixed(2)
+      proforma.listadoProductos
+        .reduce(
+          (prev, curr) => prev + calcularSubtotalSinImpuestosLista(curr),
+          0
+        )
+        .toFixed(2)
     )
     const subtotal_con_impuestos = computed(() =>
-      proforma.listadoProductos.reduce((prev, curr) => prev + calcularSubtotalConImpuestosLista(curr), 0).toFixed(2)
+      proforma.listadoProductos
+        .reduce(
+          (prev, curr) => prev + calcularSubtotalConImpuestosLista(curr),
+          0
+        )
+        .toFixed(2)
     )
-    const subtotal = computed(() => proforma.listadoProductos.reduce((prev, curr) => prev + parseFloat(curr.subtotal), 0).toFixed(2))
-    const descuento = computed(() => proforma.descuento_general == 0 ? proforma.listadoProductos.reduce((prev, curr) => prev + parseFloat(curr.descuento), 0).toFixed(2) : proforma.descuento_general)
-    const iva = computed(() => (subtotal_con_impuestos.value * proforma.iva / 100).toFixed(2))
-    const total = computed(() => proforma.descuento_general > 0 ? (Number(subtotal.value) + Number(iva.value) - Number(descuento.value)).toFixed(2) : (Number(subtotal_con_impuestos.value) + Number(subtotal_sin_impuestos.value) + Number(iva.value)).toFixed(2))
+    const subtotal = computed(() =>
+      proforma.listadoProductos
+        .reduce((prev, curr) => prev + parseFloat(curr.subtotal), 0)
+        .toFixed(2)
+    )
+    const descuento = computed(() =>
+      proforma.descuento_general == 0
+        ? proforma.listadoProductos
+            .reduce((prev, curr) => prev + parseFloat(curr.descuento), 0)
+            .toFixed(2)
+        : proforma.descuento_general
+    )
+    const iva = computed(() =>
+      ((subtotal_con_impuestos.value * proforma.iva) / 100).toFixed(2)
+    )
+    const total = computed(() =>
+      proforma.descuento_general > 0
+        ? (
+            Number(subtotal.value) +
+            Number(iva.value) -
+            Number(descuento.value)
+          ).toFixed(2)
+        : (
+            Number(subtotal_con_impuestos.value) +
+            Number(subtotal_sin_impuestos.value) +
+            Number(iva.value)
+          ).toFixed(2)
+    )
 
     // Flags
     const tabDefecto = ref('1')
@@ -79,9 +140,9 @@ export default defineComponent({
     const puedeEditar = ref(false)
     const refItems = ref()
 
-
     //Filtros y listados
-    const { clientes, filtrarClientes } = useFiltrosListadosSelects(listadosAuxiliares)
+    const { clientes, filtrarClientes } =
+      useFiltrosListadosSelects(listadosAuxiliares)
 
     //Obtener listados
     const empleados = ref([])
@@ -96,60 +157,75 @@ export default defineComponent({
           controller: new EmpleadoController(),
           params: {
             campos: 'id,nombres,apellidos,cargo_id',
-            estado: 1,
+            estado: 1
           }
         },
         autorizadores: {
           controller: new EmpleadoPermisoController(),
           params: {
-            permisos: ['puede.autorizar.proformas'],
+            permisos: ['puede.autorizar.proformas']
           }
         },
         clientes: {
           controller: new ClienteController(),
           params: {
-            'estado': 1,
+            estado: 1
           }
-        },
+        }
       })
       proforma.autorizacion = 1
 
-      configuracionColumnasDetallesProforma.find((item) => item.field === 'unidad_medida')!.options = listadosAuxiliares.unidades_medidas.map((v: UnidadMedida) => { return { value: v.id, label: v.nombre } })
+      configuracionColumnasDetallesProforma.find(
+        item => item.field === 'unidad_medida'
+      )!.options = listadosAuxiliares.unidades_medidas.map(
+        (v: UnidadMedida) => {
+          return { value: v.id, label: v.nombre }
+        }
+      )
     })
 
     /*****************************************************************************************
      * Hooks
      ****************************************************************************************/
+    onMounted(() => (proforma.iva = computed(() => configuracion_iva.value)))
     onReestablecer(() => {
-      proforma.created_at = formatearFecha(new Date().getDate().toLocaleString())
+      proforma.created_at = formatearFecha(
+        new Date().getDate().toLocaleString()
+      )
       proforma.solicitante = store.user.id
       soloLectura.value = false
       proforma.autorizacion = 1
     })
     onConsultado(() => {
-      if (accion.value === acciones.editar && (store.user.id === proforma.autorizador || store.user.id === proforma.solicitante)) {
+      if (
+        accion.value === acciones.editar &&
+        (store.user.id === proforma.autorizador ||
+          store.user.id === proforma.solicitante)
+      ) {
         soloLectura.value = false
         proforma.autorizacion = null
-      }
-      else
-        soloLectura.value = true
+      } else soloLectura.value = true
     })
     onModificado(() => {
       filtrarProformas('1')
     })
-
-
 
     /*****************************************************************************************
      * Validaciones
      ****************************************************************************************/
     const reglas = {
       cliente: { required },
-      autorizacion: { requiredIfEdita: requiredIf(() => accion.value === acciones.editar && proforma.autorizador === store.user.id) },
+      autorizacion: {
+        requiredIfEdita: requiredIf(
+          () =>
+            accion.value === acciones.editar &&
+            proforma.autorizador === store.user.id
+        )
+      },
       autorizador: { required },
       descripcion: { required },
       forma: { required },
-      tiempo: { required },
+      tiempo: { required }
     }
 
     const v$ = useVuelidate(reglas, proforma)
@@ -161,8 +237,6 @@ export default defineComponent({
     proforma.created_at = formatearFecha(new Date().getDate().toLocaleString())
     proforma.solicitante = store.user.id
 
-
-
     /*******************************************************************************************
      * Funciones
      ******************************************************************************************/
@@ -170,11 +244,13 @@ export default defineComponent({
       tabDefecto.value = tab
       tabSeleccionado.value = tab
       // if (tab == '1' && proforma.autorizador_id===store.user.id) puedeEditar.value = true
-      puedeEditar.value = tab == '1' || tab == '2';
+      puedeEditar.value = tab == '1' || tab == '2'
       listar({ autorizacion_id: tab, solicitante_id: store.user.id })
     }
     function eliminar({ posicion }) {
-      confirmar('¿Está seguro de continuar?', () => proforma.listadoProductos.splice(posicion, 1))
+      confirmar('¿Está seguro de continuar?', () =>
+        proforma.listadoProductos.splice(posicion, 1)
+      )
     }
 
     /**
@@ -184,12 +260,31 @@ export default defineComponent({
      * propiedades:
      */
     function calcularValores(data: any) {
-      data.subtotal = data.facturable ? (Number(data.cantidad) * Number(data.precio_unitario)).toFixed(4) : 0
+      data.subtotal = data.facturable
+        ? (Number(data.cantidad) * Number(data.precio_unitario)).toFixed(4)
+        : 0
       // data.descuento = data.facturable ? (Number(data.subtotal) * Number(data.porcentaje_descuento | 0) / 100).toFixed(4) : 0
-      data.descuento = data.facturable && proforma.descuento_general == 0 ? calcularDescuento(data.subtotal, data.porcentaje_descuento, 4) : 0
+      data.descuento =
+        data.facturable && proforma.descuento_general == 0
+          ? calcularDescuento(data.subtotal, data.porcentaje_descuento, 4)
+          : 0
       // data.iva = data.grava_iva && data.facturable ? ((Number(data.cantidad) * Number(data.precio_unitario)+Number(data.descuento)) * proforma.iva / 100).toFixed(4) : 0
-      data.iva = data.grava_iva && data.facturable ? ((Number(data.cantidad) * Number(data.precio_unitario) - Number(data.descuento)) * proforma.iva / 100).toFixed(4) : 0
-      data.total = data.facturable ? (Number(data.cantidad) * Number(data.precio_unitario) + Number(data.iva) - Number(data.descuento)).toFixed(4) : 0
+      data.iva =
+        data.grava_iva && data.facturable
+          ? (
+              ((Number(data.cantidad) * Number(data.precio_unitario) -
+                Number(data.descuento)) *
+                proforma.iva) /
+              100
+            ).toFixed(4)
+          : 0
+      data.total = data.facturable
+        ? (
+            Number(data.cantidad) * Number(data.precio_unitario) +
+            Number(data.iva) -
+            Number(data.descuento)
+          ).toFixed(4)
+        : 0
     }
 
     /**
@@ -197,7 +292,7 @@ export default defineComponent({
      * objeto 'orden' y llama a la función 'calcularValores' para cada fila.
      */
     function actualizarListado() {
-      proforma.listadoProductos.forEach((fila) => {
+      proforma.listadoProductos.forEach(fila => {
         calcularValores(fila)
       })
     }
@@ -207,7 +302,7 @@ export default defineComponent({
      */
     function actualizarDescuento() {
       if (proforma.descuento_general > 0) {
-        proforma.listadoProductos.forEach((fila) => {
+        proforma.listadoProductos.forEach(fila => {
           fila.porcentaje_descuento = 0
           calcularValores(fila)
         })
@@ -215,12 +310,16 @@ export default defineComponent({
     }
     async function cargarProformaBD() {
       if (proforma.id_aux) {
-        const { result } = await new ProformaController().consultar(proforma.id_aux)
+        const { result } = await new ProformaController().consultar(
+          proforma.id_aux
+        )
         // await console.log(result)
         await proforma.hydrate(result)
         proforma.id = null
         proforma.solicitante = store.user.id
-        proforma.created_at = formatearFecha(new Date().getDate().toLocaleString())
+        proforma.created_at = formatearFecha(
+          new Date().getDate().toLocaleString()
+        )
         proforma.autorizacion = 1
         proforma.estado = 1
         proforma.observacion_aut = null
@@ -231,7 +330,7 @@ export default defineComponent({
 
     /*******************************************************************************************
      * Botones de tabla
-    *******************************************************************************************/
+     *******************************************************************************************/
     const btnAddRow: CustomActionTable = {
       titulo: 'Agregar ítem',
       icono: 'bi-arrow-bar-down',
@@ -239,22 +338,28 @@ export default defineComponent({
       tooltip: 'Agregar elemento',
       accion: () => {
         const fila = new ItemProforma()
-        fila.id = proforma.listadoProductos.length ? encontrarUltimoIdListado(proforma.listadoProductos) + 1 : 1
+        fila.id = proforma.listadoProductos.length
+          ? encontrarUltimoIdListado(proforma.listadoProductos) + 1
+          : 1
         fila.unidad_medida = 1
         proforma.listadoProductos.push(fila)
 
         emit('actualizar', proforma.listadoProductos)
       },
-      visible: () => accion.value === acciones.nuevo || (accion.value === acciones.editar && proforma.solicitante === store.user.id)
+      visible: () =>
+        accion.value === acciones.nuevo ||
+        (accion.value === acciones.editar &&
+          proforma.solicitante === store.user.id)
     }
     const btnEliminarFila: CustomActionTable = {
       titulo: 'Eliminar',
       icono: 'bi-x',
       color: 'negative',
-      accion: ({  posicion }) => {
+      accion: ({ posicion }) => {
         eliminar({ posicion })
       },
-      visible: () => accion.value == acciones.nuevo || accion.value == acciones.editar
+      visible: () =>
+        accion.value == acciones.nuevo || accion.value == acciones.editar
     }
     const btnImprimir: CustomActionTable = {
       titulo: 'Imprimir',
@@ -274,7 +379,7 @@ export default defineComponent({
         proformaStore.proforma = entidad
         router.push('prefacturas')
       },
-      visible: () => tabSeleccionado.value == 2,
+      visible: () => tabSeleccionado.value == 2
     }
     const btnAnularProforma: CustomActionTable = {
       titulo: 'Anular',
@@ -285,16 +390,20 @@ export default defineComponent({
           const data: CustomActionPrompt = {
             titulo: 'Causa de anulación',
             mensaje: 'Ingresa el motivo de anulación',
-            accion: async (data) => {
+            accion: async data => {
               try {
                 proformaStore.idProforma = entidad.id
-                const response = await proformaStore.anularProforma({ motivo: data })
+                const response = await proformaStore.anularProforma({
+                  motivo: data
+                })
                 if (response!.status == 200) {
                   notificarCorrecto('Se ha anulado correctamente la proforma')
                   listado.value.splice(posicion, 1)
                 }
               } catch (e: any) {
-                notificarError('No se pudo anular, debes ingresar un motivo para la anulación')
+                notificarError(
+                  'No se pudo anular, debes ingresar un motivo para la anulación'
+                )
               }
             }
           }
@@ -303,9 +412,18 @@ export default defineComponent({
       },
       visible: ({ entidad }) => {
         if (tabSeleccionado.value == 1) {
-          return entidad.autorizacion_id == 1 && (entidad.solicitante_id == store.user.id || entidad.autorizador_id == store.user.id)
+          return (
+            entidad.autorizacion_id == 1 &&
+            (entidad.solicitante_id == store.user.id ||
+              entidad.autorizador_id == store.user.id)
+          )
         }
-        return tabSeleccionado.value == 2 && store.esCompras || tabSeleccionado.value == 2 && (entidad.solicitante_id == store.user.id || entidad.autorizador_id == store.user.id)
+        return (
+          (tabSeleccionado.value == 2 && store.esCompras) ||
+          (tabSeleccionado.value == 2 &&
+            (entidad.solicitante_id == store.user.id ||
+              entidad.autorizador_id == store.user.id))
+        )
       }
     }
 
@@ -318,12 +436,21 @@ export default defineComponent({
     empleados.value = listadosAuxiliares.empleados
     categorias.value = listadosAuxiliares.categorias
     clientes.value = listadosAuxiliares.clientes
-    autorizaciones.value = JSON.parse(LocalStorage.getItem('autorizaciones')!.toString())
+    autorizaciones.value = JSON.parse(
+      LocalStorage.getItem('autorizaciones')!.toString()
+    )
     empleadosAutorizadores.value = listadosAuxiliares.autorizadores
-    estados.value = JSON.parse(LocalStorage.getItem('estados_transacciones')!.toString())
+    estados.value = JSON.parse(
+      LocalStorage.getItem('estados_transacciones')!.toString()
+    )
 
     return {
-      mixin, proforma, disabled, accion, v$, acciones,
+      mixin,
+      proforma,
+      disabled,
+      accion,
+      v$,
+      acciones,
       configuracionColumnas: configuracionColumnasProformas,
       accionesTabla,
       configuracionColumnasDetallesProforma,
@@ -351,13 +478,11 @@ export default defineComponent({
       btnAddRow,
       btnHacerPrefactura,
 
-
       //tabla de detalles
       //Tabs
       tabOptionsProformas,
       tabDefecto,
       puedeEditar,
-
 
       //funciones
       filtrarProformas,
@@ -367,10 +492,14 @@ export default defineComponent({
       actualizarDescuento,
       cargarProformaBD,
 
-
       //variables computadas
-      subtotal_sin_impuestos, subtotal_con_impuestos, subtotal,
-      total, descuento, iva,
+       configuracionGeneralStore,
+      subtotal_sin_impuestos,
+      subtotal_con_impuestos,
+      subtotal,
+      total,
+      descuento,
+      iva
     }
   }
 })
