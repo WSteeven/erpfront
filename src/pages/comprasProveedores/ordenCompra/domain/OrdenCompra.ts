@@ -59,7 +59,7 @@ export class OrdenCompra extends EntidadAuditable {
     this.causa_anulacion = null
     this.fecha = null
     this.id_aux = null
-    this.iva = 15
+    this.iva = null
     this.categorias = []
     this.listadoProductos = []
     this.tiene_preorden = false

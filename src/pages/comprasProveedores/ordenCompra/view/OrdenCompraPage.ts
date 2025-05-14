@@ -5,7 +5,7 @@ import { configuracionColumnasDetallesProductos } from '../domain/configuracionC
 import { configuracionColumnasItemOrdenCompra } from 'pages/comprasProveedores/itemsOrdenCompra/domain/configuracionColumnasItemOrdenCompra'
 import { required, requiredIf } from 'shared/i18n-validators'
 import { useVuelidate } from '@vuelidate/core'
-import { computed, defineComponent, onMounted, ref } from 'vue'
+import { computed, defineComponent, ref, watchEffect } from 'vue'
 
 // Componentes
 import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
@@ -33,9 +33,9 @@ import {
   estados
 } from 'config/utils'
 import {
-  tabOptionsOrdenCompra,
   opcionesForma,
-  opcionesTiempo
+  opcionesTiempo,
+  tabOptionsOrdenCompra
 } from 'config/utils_compras_proveedores'
 import { useAuthenticationStore } from 'stores/authentication'
 import {
@@ -104,10 +104,6 @@ export default defineComponent({
     const configuracionGeneralStore = useConfiguracionGeneralStore()
 
     //variables
-    const configuracion_iva = computed(
-      () => configuracionGeneralStore.configuracion?.iva
-    )
-
     const subtotal_sin_impuestos = computed(() =>
       orden.listadoProductos
         .reduce(
@@ -228,13 +224,14 @@ export default defineComponent({
     /*****************************************************************************************
      * Hooks
      ****************************************************************************************/
-    onMounted(() => (orden.iva = computed(() => configuracion_iva.value)))
+    watchEffect(() => (orden.iva =  configuracionGeneralStore.configuracion?.iva))
 
     onReestablecer(() => {
       orden.fecha = formatearFecha(new Date().getDate().toLocaleString())
       orden.solicitante = store.user.id
       soloLectura.value = false
       orden.autorizacion = 1
+      orden.iva =  configuracionGeneralStore.configuracion?.iva
 
       refArchivo.value.limpiarListado()
       obtenerTareas(false)
@@ -814,7 +811,6 @@ export default defineComponent({
       },
 
       //variables computadas
-      useConfiguracionGeneralStore,
       subtotal_sin_impuestos,
       subtotal_con_impuestos,
       subtotal,

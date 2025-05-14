@@ -3,7 +3,7 @@ import { configuracionColumnasProformas } from '../domain/configuracionColumnasP
 import { configuracionColumnasDetallesProforma } from '../domain/configuracionColumnasDetallesProforma'
 import { required } from 'shared/i18n-validators'
 import { useVuelidate } from '@vuelidate/core'
-import { computed, defineComponent, onMounted, ref, watch } from 'vue'
+import { computed, defineComponent, ref, watch, watchEffect } from 'vue'
 
 // Componentes
 import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
@@ -23,9 +23,9 @@ import { useCargandoStore } from 'stores/cargando'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { acciones, accionesTabla } from 'config/utils'
 import {
-  tabOptionsProformas,
   opcionesForma,
-  opcionesTiempo
+  opcionesTiempo,
+  tabOptionsProformas
 } from 'config/utils_compras_proveedores'
 import { useAuthenticationStore } from 'stores/authentication'
 import {
@@ -84,10 +84,6 @@ export default defineComponent({
     const configuracionGeneralStore = useConfiguracionGeneralStore()
 
     //variables
-    const configuracion_iva = computed(
-      () => configuracionGeneralStore.configuracion?.iva
-    )
-
     const subtotal_sin_impuestos = computed(() =>
       proforma.listadoProductos
         .reduce(
@@ -187,11 +183,13 @@ export default defineComponent({
     /*****************************************************************************************
      * Hooks
      ****************************************************************************************/
-    onMounted(() => (proforma.iva = computed(() => configuracion_iva.value)))
+    watchEffect(() => (proforma.iva =  configuracionGeneralStore.configuracion?.iva))
+
     onReestablecer(() => {
       proforma.created_at = formatearFecha(
         new Date().getDate().toLocaleString()
       )
+      proforma.iva =  configuracionGeneralStore.configuracion?.iva
       proforma.solicitante = store.user.id
       soloLectura.value = false
       proforma.autorizacion = 1
@@ -493,7 +491,6 @@ export default defineComponent({
       cargarProformaBD,
 
       //variables computadas
-       configuracionGeneralStore,
       subtotal_sin_impuestos,
       subtotal_con_impuestos,
       subtotal,

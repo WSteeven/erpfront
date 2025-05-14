@@ -392,8 +392,10 @@ export default defineComponent({
           entidad.id
         const response: AxiosResponse = await axios.get(url_pdf)
         if (response.status === 200) {
-          notificarCorrecto('Roles de Pagos enviado correctamente!')
-          console.log(response.data)
+          // notificarCorrecto('Roles de Pagos enviado correctamente!')
+          notificarCorrecto(response.data.mensaje)
+          notificarAdvertencia(response.data.correos)
+          // console.log(response.data)
         } else notificarAdvertencia(response.data.mensaje)
       } catch (e) {
         console.error(e)
