@@ -1,4 +1,4 @@
-import { defineComponent, reactive } from 'vue'
+import { defineComponent } from 'vue'
 import { TipoFondo } from '../domain/TipoFondo'
 
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'

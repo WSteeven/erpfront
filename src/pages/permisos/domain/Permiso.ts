@@ -1,18 +1,19 @@
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 
 export class Permiso extends EntidadAuditable {
-  id: number | null;
+  id: number | null
   name: string | null
   role_id: number | null
   roles: any[] | null
+  empleados: any[] | null
   autorizar: boolean
   acceder: boolean
   ver: boolean
+  boton: boolean
   crear: boolean
   editar: boolean
   eliminar: boolean
   permiso_personalizado: boolean
-
 
   constructor() {
     super()
@@ -20,12 +21,14 @@ export class Permiso extends EntidadAuditable {
     this.name = null
     this.role_id = null
     this.roles = null
-    this.autorizar=false
-    this.acceder=false
-    this.ver=false
-    this.crear=false
-    this.editar=false
-    this.eliminar=false
-    this.permiso_personalizado=false //falso si es normal, true si es personalizado
+    this.empleados = null
+    this.autorizar = false
+    this.acceder = false
+    this.ver = false
+    this.boton = false
+    this.crear = false
+    this.editar = false
+    this.eliminar = false
+    this.permiso_personalizado = false //falso si es normal, true si es personalizado
   }
 }

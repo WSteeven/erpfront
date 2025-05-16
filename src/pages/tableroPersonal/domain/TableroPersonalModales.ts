@@ -1,16 +1,18 @@
 // Dependencias
 import { ComponenteModal } from 'components/modales/domain/ComponenteModal.domain'
 import { markRaw } from 'vue'
+import VisualizarEventoPage from '../modules/visualizarEvento/VisualizarEventoPage.vue'
+// import { ComponenteModal } from 'components/modales/domain/ComponenteModal.domain'
+// import { markRaw } from 'vue'
 
 // Paginas
-// import SubtareaAsignadaPage from 'pages/tareas/trabajoAsignado/modules/subtareasAsignadas/view/SubtareaAsignadaPage.vue'
 
 export class TableroPersonalModales {
-    // SubtareaAsignadaPage: ComponenteModal
+     VisualizarEventoPage: ComponenteModal
 
     constructor() {
-        /* this.SubtareaAsignadaPage = markRaw(
-            new ComponenteModal('CONSTRUCRED', SubtareaAsignadaPage)
-        ) */
+         this.VisualizarEventoPage = markRaw(
+            new ComponenteModal('CONSTRUCRED', VisualizarEventoPage)
+        )
     }
 }

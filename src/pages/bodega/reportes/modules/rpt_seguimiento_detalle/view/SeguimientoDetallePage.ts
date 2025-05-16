@@ -1,7 +1,7 @@
 import { DetalleProducto } from './../../../../detalles_productos/domain/DetalleProducto';
 import EssentialTable from 'components/tables/view/EssentialTable.vue';
-import { DetalleProductoController } from "pages/bodega/detalles_productos/infraestructure/DetalleProductoController"
-import { defineComponent, reactive, ref } from "vue"
+import { DetalleProductoController } from 'pages/bodega/detalles_productos/infraestructure/DetalleProductoController'
+import { defineComponent, onMounted, reactive, ref } from 'vue'
 import { configuracionColumnasSeguimientoDetalle } from '../../rpt_inventario/domain/configuracionColumnasSeguimientoDetalle';
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
 import { useNotificaciones } from 'shared/notificaciones';
@@ -14,6 +14,10 @@ import { imprimirArchivo } from 'shared/utils';
 import { useNotificacionStore } from 'stores/notificacion';
 import { useCargandoStore } from 'stores/cargando';
 import { useQuasar } from 'quasar';
+import { SucursalesDetalleController } from '../infraestructure/SucursalesDetalleController';
+import { configuracionColumnasItemPreingreso } from 'pages/bodega/preingresoMateriales/domain/configuracionColumnasItemsPreingreso';
+import { columnasTransferencias } from '../domain/columnasTransferencias';
+import { maskFecha } from 'config/utils';
 
 export default defineComponent({
   components: { EssentialTable },
@@ -22,24 +26,30 @@ export default defineComponent({
     //stores
     useNotificacionStore().setQuasar(useQuasar())
     useCargandoStore().setQuasar(useQuasar())
+    const cargando = new StatusEssentialLoading()
 
     const kardex = reactive({
-      detalle: '',
+      detalle_id: '',
       fecha_inicio: '',
       fecha_fin: '',
       tipo_rpt: '',
+      sucursal_id: '',
     })
+    const sucursales = ref([])
     const detalles = ref([])
     const results = ref([])
     const listado = ref([])
+    const listadoPreingreso = ref([])
+    const listadoTransferencias = ref([])
     const { notificarError } = useNotificaciones()
     async function cargarDetalles() {
-      const { result } = await new DetalleProductoController().listar()
+      cargando.activar()
+      const { result } = await new DetalleProductoController().listar({ tipo_busqueda: 'only_inventario' })
       results.value = result
       detalles.value = result
+      cargando.desactivar()
     }
-
-    cargarDetalles()
+    onMounted(async () => await cargarDetalles())
 
     const reglas = {
       fecha_inicio: { required },
@@ -49,14 +59,18 @@ export default defineComponent({
     // setValidador(v$.value)
 
     async function buscarKardex() {
-      const cargando = new StatusEssentialLoading()
       try {
         cargando.activar()
         const axios = AxiosHttpRepository.getInstance()
         const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.reporte_inventario) + '/kardex'
         const response: AxiosResponse = await axios.post(url, kardex)
-        console.log(response)
-        if (response.data.results) listado.value = response.data.results
+        // console.log(response)
+        if (response.data.results) {
+          listado.value = response.data.results
+          listadoPreingreso.value = response.data.preingresos
+          listadoTransferencias.value = response.data.transferencias
+        }
+
         cargando.desactivar()
       }
       catch (e) {
@@ -85,13 +99,49 @@ export default defineComponent({
       }
 
     }
+    async function obtenerSucursales() {
+      kardex.sucursal_id = ''
+      sucursales.value = []
+      try {
+
+        cargando.activar()
+        const response = await new SucursalesDetalleController().listar({ detalle_id: kardex.detalle_id })
+        sucursales.value = response.result
+      } catch (error) {
+        console.log(error)
+      } finally {
+        cargando.desactivar()
+      }
+    }
+
+    configuracionColumnasItemPreingreso.splice(1, 0, {
+      name: 'preingreso',
+      field: 'preingreso',
+      label: 'Preingreso',
+      align: 'left',
+      sortable: true,
+    },
+      {
+        name: 'created_at',
+        field: 'created_at',
+        label: 'Fecha',
+        align: 'left',
+        sortable: true,
+      },)
 
     return {
       kardex, v$,
       detalles,
       listado,
+      listadoPreingreso,
+      listadoTransferencias,
       configuracionColumnasSeguimientoDetalle,
+      columnasPreingresos: configuracionColumnasItemPreingreso,
+      columnasTransferencias,
+      maskFecha,
+      sucursales,
       imprimirReporte,
+      obtenerSucursales,
       buscarKardex,
       filtrarDetalle(val, update) {
         if (val === '') {
@@ -101,7 +151,7 @@ export default defineComponent({
           return
         }
         update(() => {
-          detalles.value = results.value.filter((v: DetalleProducto) => v.descripcion!.toLowerCase().indexOf(val.toLowerCase()) > -1 || v.serial?.toLowerCase().indexOf(val.toLowerCase())>-1)
+          detalles.value = results.value.filter((v: DetalleProducto) => v.descripcion!.toLowerCase().indexOf(val.toLowerCase()) > -1 || (v.serial ?? '').toLowerCase().indexOf(val.toLowerCase()) > -1)
         })
       },
     }

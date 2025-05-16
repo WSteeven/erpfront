@@ -1,5 +1,5 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { ItemPreingresoMaterial } from "./ItemPreingresoMaterial";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
+import { ItemPreingresoMaterial } from './ItemPreingresoMaterial';
 
 export const configuracionColumnasItemPreingreso: ColumnConfig<ItemPreingresoMaterial>[] = [
     {
@@ -30,6 +30,13 @@ export const configuracionColumnasItemPreingreso: ColumnConfig<ItemPreingresoMat
         sortable: true
     },
     {
+        name: 'descripcion_original',
+        field: 'descripcion_original',
+        label: 'Descripción Original',
+        editable: false,
+        visible: false,
+    },
+    {
         name: 'descripcion',
         field: 'descripcion',
         label: 'Descripción',
@@ -46,6 +53,15 @@ export const configuracionColumnasItemPreingreso: ColumnConfig<ItemPreingresoMat
         align: 'left',
         type: 'select',
         editable: false,
+        sortable: false
+    },
+    {
+        name: 'condicion',
+        field: 'condicion',
+        label: 'Condición',
+        align: 'left',
+        type: 'select',
+        editable: true,
         sortable: false
     },
     {
@@ -84,5 +100,21 @@ export const configuracionColumnasItemPreingreso: ColumnConfig<ItemPreingresoMat
         type: 'imagen',
         visible: false,
         hint: 'Opcional',
+    },
+    {
+        name: 'nombre_alternativo',
+        field: 'nombre_alternativo',
+        label: 'Nombre alternativo',
+        align: 'left',
+        editable: true,
+        visible: false,
+        hint: 'Opcional, llena este campo solo en caso de que el ítem sea genérico',
+    },
+    {
+        name: 'es_generico',
+        field: 'es_generico',
+        label: 'es_generico',
+        editable: false,
+        visible: false,
     },
 ]

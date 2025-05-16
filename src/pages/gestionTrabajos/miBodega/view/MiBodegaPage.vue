@@ -21,6 +21,12 @@
         inline-label
       >
         <q-tab
+          :name="destinosTareas.personal"
+          label="Stock personal"
+          icon="bi-person"
+        >
+        </q-tab>
+        <q-tab
           :name="destinosTareas.paraClienteFinal"
           label="Material para cliente final y mantenimiento"
           icon="bi-pin-angle"
@@ -30,7 +36,6 @@
           label="Material para proyectos"
           icon="bi-diagram-2"
         />
-        <q-tab name="personal" label="Stock personal" icon="bi-person"> </q-tab>
       </q-tabs>
 
       <q-tab-panels v-model="tab" animated>
@@ -51,10 +56,8 @@
                 options-dense
                 dense
                 outlined
-                :option-label="
-                  (item) => item.codigo_tarea + ' - ' + item.titulo
-                "
-                :option-value="(item) => item.id"
+                :option-label="item => item.codigo_tarea + ' - ' + item.titulo"
+                :option-value="item => item.id"
                 @update:model-value="seleccionarTarea()"
                 emit-value
                 map-options
@@ -96,8 +99,8 @@
                 options-dense
                 dense
                 outlined
-                :option-label="(item) => item.razon_social"
-                :option-value="(item) => item.cliente_id"
+                :option-label="item => item.razon_social"
+                :option-value="item => item.cliente_id"
                 emit-value
                 map-options
               >
@@ -143,8 +146,8 @@
                 options-dense
                 dense
                 outlined
-                :option-label="(item) => item.nombre"
-                :option-value="(item) => item.id"
+                :option-label="item => item.nombre"
+                :option-value="item => item.id"
                 @update:model-value="seleccionarProyecto()"
                 use-input
                 input-debounce="0"
@@ -201,8 +204,8 @@
                 options-dense
                 dense
                 outlined
-                :option-label="(item) => item.nombre"
-                :option-value="(item) => item.id"
+                :option-label="item => item.nombre"
+                :option-value="item => item.id"
                 use-input
                 input-debounce="0"
                 emit-value
@@ -232,8 +235,8 @@
                 options-dense
                 dense
                 outlined
-                :option-label="(item) => item.razon_social"
-                :option-value="(item) => item.cliente_id"
+                :option-label="item => item.razon_social"
+                :option-value="item => item.cliente_id"
                 emit-value
                 map-options
               >
@@ -280,7 +283,7 @@
           </div>
         </q-tab-panel>
 
-        <q-tab-panel name="personal">
+        <q-tab-panel :name="destinosTareas.personal">
           <div class="row justify-center q-gutter-sm q-mb-md">
             <div class="col-12">
               <label class="q-mb-sm block"
@@ -296,8 +299,8 @@
                 options-dense
                 dense
                 outlined
-                :option-label="(item) => item.razon_social"
-                :option-value="(item) => item.cliente_id"
+                :option-label="item => item.razon_social"
+                :option-value="item => item.cliente_id"
                 emit-value
                 map-options
               >
@@ -350,7 +353,7 @@
           </q-btn>
 
           <!-- Boton transferir a stock personal -->
-          <q-btn
+          <!-- <q-btn
             v-if="mostrarBtnTransferirStockPersonal"
             class="bg-grey-4 text-primary"
             @click="
@@ -363,7 +366,7 @@
           >
             <q-icon name="bi-box-seam" size="xs" class="q-pr-sm"></q-icon>
             <span>Transferir a stock personal</span>
-          </q-btn>
+          </q-btn> -->
 
           <!-- Boton transferir a otro técnico -->
           <!-- color="grey-4" -->
@@ -379,13 +382,13 @@
               size="xs"
               class="q-pr-sm"
             ></q-icon>
-            <span>Transferir a otro técnico</span>
+            <span>Transferir a otro empleado</span>
           </q-btn>
         </div>
 
-        <div class="col-12 q-px-md">
+        <div class="col-12 q-px-md q-mb-md">
           <essential-table
-            titulo="Listado de materiales para tarea"
+            titulo="Productos"
             :configuracionColumnas="configuracionColumnasMaterialEmpleadoTarea"
             :datos="listadosAuxiliares.productos"
             :permitirConsultar="false"

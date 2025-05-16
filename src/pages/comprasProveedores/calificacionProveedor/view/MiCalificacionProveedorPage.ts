@@ -1,30 +1,28 @@
 // Dependencies
-import { defineComponent, ref, onMounted, computed } from "vue"
+import { computed, defineComponent, onMounted, ref } from 'vue'
 
 //Components
-import EssentialTable from "components/tables/view/EssentialTable.vue"
-import GestorArchivos from "components/gestorArchivos/GestorArchivos.vue"
+import EssentialTable from 'components/tables/view/EssentialTable.vue'
+import GestorArchivos from 'components/gestorArchivos/GestorArchivos.vue'
 
 //Logica y controladores
-import { useProveedorStore } from "stores/comprasProveedores/proveedor"
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin"
-import { CalificacionProveedor } from "../domain/CalificacionProveedor"
-import { CalificacionProveedorController } from "../infraestructure/CalificacionProveedorController"
-import { OfertaProveedorController } from "sistema/proveedores/modules/ofertas_proveedores/infraestructure/OfertaProveedorController"
-import { configuracionColumnasCriteriosCalificacionesConCalificacion } from "pages/comprasProveedores/criteriosCalificaciones/domain/configuracionColumnasCriteriosCalificacionesConCalificacion"
-import { useCalificacionProveedorStore } from "stores/comprasProveedores/calificacionProveedor"
-import { DetalleDepartamentoProveedorController } from "pages/comprasProveedores/detallesDepartamentosProveedor/infraestructure/DetalleDepartamentoProveedorController"
-import { DetalleDepartamentoProveedor } from "pages/comprasProveedores/detallesDepartamentosProveedor/domain/DetalleDepartamentoProveedor"
-
-//Logica y controladores
-
+import { useProveedorStore } from 'stores/comprasProveedores/proveedor'
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { CalificacionProveedor } from '../domain/CalificacionProveedor'
+import { CalificacionProveedorController } from '../infraestructure/CalificacionProveedorController'
+import { configuracionColumnasCriteriosCalificacionesConCalificacion } from 'pages/comprasProveedores/criteriosCalificaciones/domain/configuracionColumnasCriteriosCalificacionesConCalificacion'
+import { useCalificacionProveedorStore } from 'stores/comprasProveedores/calificacionProveedor'
+import { DetalleDepartamentoProveedorController } from 'pages/comprasProveedores/detallesDepartamentosProveedor/infraestructure/DetalleDepartamentoProveedorController'
+import { DetalleDepartamentoProveedor } from 'pages/comprasProveedores/detallesDepartamentosProveedor/domain/DetalleDepartamentoProveedor'
 
 export default defineComponent({
     components: { EssentialTable, GestorArchivos },
-    setup() {
+    props: {datos:{type: Object, required:true }},
+    setup(props) {
         const mixin = new ContenedorSimpleMixin(CalificacionProveedor, new CalificacionProveedorController())
-        const { listadosAuxiliares } = mixin.useReferencias()
-        const { cargarVista, obtenerListados } = mixin.useComportamiento()
+        // const { listadosAuxiliares } = mixin.useReferencias()
+        const { listadosAuxiliares: listadosAuxiliaresProveedor } = props.datos.mixin.useReferencias()
+        const { cargarVista } = mixin.useComportamiento()
         const mixinArchivos = new ContenedorSimpleMixin(DetalleDepartamentoProveedor, new DetalleDepartamentoProveedorController())
         /**************************************************************
          * Stores
@@ -36,38 +34,15 @@ export default defineComponent({
         /**************************************************************
          * Variables
          **************************************************************/
-        const calificacion_dada = ref()
+        const mi_calificacion = ref()
         const refArchivo = ref()
-        const criteriosBienes = ref([])
-        const criteriosServicios = ref([])
-        const departamentosCalificadores = ref([])
-        const calificacionesDepartamentos = ref<any>([])
         const idDetalleDepartamentoProveedor = computed(() => proveedorStore.idDetalleDepartamento)
 
-        calificacion_dada.value = { calificacion: 0, fecha_calificacion: Date.now() }
-
-        calificacionProveedorStore.departamentosCalificadoresProveedor = []
 
         cargarVista(async () => {
-            obtenerListados({
-                ofertas: new OfertaProveedorController(),
-            })
-            // console.log('INFO CALIFICACION', proveedorStore.idProveedor, proveedorStore.idDepartamento)
             calificacionProveedorStore.idProveedor = proveedorStore.proveedor.id
             calificacionProveedorStore.idDepartamento = proveedorStore.idDepartamento
-            await calificacionProveedorStore.consultarCalificacionMiDepartamento()
-            departamentosCalificadores.value = calificacionProveedorStore.departamentosCalificadoresProveedor
-                console.log(departamentosCalificadores.value)
-
-            await calificacionProveedorStore.departamentosCalificadoresProveedor.forEach(async (v: any, index) => {
-                console.log(v)
-                calificacionesDepartamentos.value[index] = [v, await calificacionProveedorStore.consultarCalificacionesProveedorDepartamento(v.id)]
-            })
-
-            //aqui consulta el departamento y la calificación
-            calificacion_dada.value = calificacionProveedorStore.detalleDepartamentoProveedor
-
-
+             mi_calificacion.value = await calificacionProveedorStore.obtenerCalificacionIndividual()
         })
 
 
@@ -82,24 +57,19 @@ export default defineComponent({
             cargarArchivos()
         )
         return {
-            ofertas: listadosAuxiliares.ofertas,
+            ofertas: listadosAuxiliaresProveedor.ofertas,
             proveedor: proveedorStore.proveedor,
             columnasCriteriosConCalificacion: configuracionColumnasCriteriosCalificacionesConCalificacion,
 
-            //listados
-            calificacionesDepartamentos,
-            criteriosServicios,
-            criteriosBienes,
 
             listadoFiltrado(listado, tipo) {
-                const listadoFiltrado = listado.filter((v) => v.tipo.toLowerCase().indexOf(tipo.toLowerCase()) > -1)
-                return listadoFiltrado
+              return listado.filter(
+                v => v.tipo.toLowerCase().indexOf(tipo.toLowerCase()) > -1
+              )
             },
-
-            calificacion_dada,
+            mi_calificacion,
             refArchivo,
             mixinArchivos,
-            cargarArchivos,
 
             idDetalleDepartamentoProveedor,
         }

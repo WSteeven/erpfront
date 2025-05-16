@@ -6,10 +6,11 @@
       'column justify-end q-gutter-y-sm': $q.screen.xs,
     }"
   > -->
-  <span class="text-left">
+  <span class="blockd text-center">
     <q-btn-group
-      v-if="totalAcciones <= 2"
+      v-if="totalAcciones <= desplegarDesde"
       dense
+      unelevated
       :rounded="$q.screen.sm || $q.screen.md || $q.screen.lg || $q.screen.xl"
       :square="$q.screen.xs"
       :class="{ 'column q-gutter-y-xs': $q.screen.xs }"
@@ -19,9 +20,9 @@
         :color="extraerColor(accion1) || 'primary'"
         dense
         rounded
+        :disable="disable && !accion1?.forzarEditable || extraerDisable(accion1)"
         no-caps
         no-wrap
-        unelevated
         class="q-px-sm"
         @click="ejecutarAccion(accion1)"
       >
@@ -43,6 +44,7 @@
         :color="extraerColor(accion2) || 'primary'"
         dense
         rounded
+        :disable="disable || extraerDisable(accion2)"
         no-caps
         no-wrap
         unelevated
@@ -67,6 +69,7 @@
         :color="extraerColor(accion3) || 'primary'"
         dense
         rounded
+        :disable="disable"
         no-caps
         no-wrap
         unelevated
@@ -252,6 +255,30 @@
           accion10.tooltip
         }}</q-tooltip>
       </q-btn>
+
+      <!-- Accion 11 -->
+      <q-btn
+        v-if="extraerVisible(accion11)"
+        :color="extraerColor(accion11) || 'primary'"
+        dense
+        rounded
+        no-caps
+        no-wrap
+        unelevated
+        class="q-px-sm"
+        @click="ejecutarAccion(accion11)"
+      >
+        <q-icon
+          v-if="accion11?.icono"
+          :name="extraerIcono(accion11) ?? ''"
+          size="xs"
+          class="q-mr-xs"
+        ></q-icon>
+        <span>{{ extraerTitulo(accion11) }}</span>
+        <q-tooltip v-if="accion11?.tooltip" class="bg-dark">{{
+          accion11.tooltip
+        }}</q-tooltip>
+      </q-btn>
     </q-btn-group>
 
     <!-- :rounded="$q.screen.sm || $q.screen.md || $q.screen.lg || $q.screen.xl" -->
@@ -268,6 +295,7 @@
         push
         label="Acciones"
         icon="bi-list"
+        :disable="disable"
         no-caps
         dense
       >
@@ -514,6 +542,30 @@
               accion10.tooltip
             }}</q-tooltip>
           </q-btn>
+
+          <!-- Accion 11 -->
+          <q-btn
+            v-if="extraerVisible(accion11)"
+            :color="extraerColor(accion11) || 'primary'"
+            dense
+            rounded
+            no-caps
+            no-wrap
+            unelevated
+            class="q-px-sm"
+            @click="ejecutarAccion(accion11)"
+          >
+            <q-icon
+              v-if="accion11?.icono"
+              :name="extraerIcono(accion11) ?? ''"
+              size="xs"
+              class="q-mr-xs"
+            ></q-icon>
+            <span>{{ extraerTitulo(accion11) }}</span>
+            <q-tooltip v-if="accion11?.tooltip" class="bg-dark">{{
+              accion11.tooltip
+            }}</q-tooltip>
+          </q-btn>
         </q-list>
       </q-btn-dropdown>
     </q-btn-group>
@@ -521,58 +573,68 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { useQuasar } from 'quasar'
 import { CustomActionTable } from '../domain/CustomActionTable'
 
 const props = defineProps({
+  identificador: { type: Number, default: -1 },
   propsTable: {
     type: Object,
-    required: true,
+    required: true
   },
+  desplegarDesde: {
+    type: Number,
+    default: 2
+  },
+  disable: { type: Boolean, default: false },
   accion1: {
     type: Object as () => CustomActionTable,
-    required: false,
+    required: false
   },
   accion2: {
     type: Object as () => CustomActionTable,
-    required: false,
+    required: false
   },
   accion3: {
     type: Object as () => CustomActionTable,
-    required: false,
+    required: false
   },
   accion4: {
     type: Object as () => CustomActionTable,
-    required: false,
+    required: false
   },
   accion5: {
     type: Object as () => CustomActionTable,
-    required: false,
+    required: false
   },
   accion6: {
     type: Object as () => CustomActionTable,
-    required: false,
+    required: false
   },
   accion7: {
     type: Object as () => CustomActionTable,
-    required: false,
+    required: false
   },
   accion8: {
     type: Object as () => CustomActionTable,
-    required: false,
+    required: false
   },
   accion9: {
     type: Object as () => CustomActionTable,
-    required: false,
+    required: false
   },
   accion10: {
     type: Object as () => CustomActionTable,
-    required: false,
+    required: false
+  },
+  accion11: {
+    type: Object as () => CustomActionTable,
+    required: false
   },
   listado: {
     type: Array,
-    required: true,
-  },
+    required: true
+  }
 })
 
 /* function extraerVisible(accion?: any) {
@@ -593,6 +655,8 @@ const props = defineProps({
   }
 } */
 
+const $q = useQuasar()
+
 function extraerVisible(accion?: any) {
   //CustomActionTable): boolean {
   if (accion) {
@@ -600,7 +664,7 @@ function extraerVisible(accion?: any) {
       if (typeof accion.visible === 'function') {
         return accion.visible({
           entidad: props.propsTable.row,
-          posicion: props.propsTable.rowIndex,
+          posicion: props.propsTable.rowIndex
         })
       } else {
         return accion.visible
@@ -613,11 +677,34 @@ function extraerVisible(accion?: any) {
   }
 }
 
+function extraerDisable(accion?: any) {
+  //CustomActionTable): boolean {
+  if (accion) {
+    if (accion.hasOwnProperty('disable')) {
+      if (typeof accion.disable === 'function') {
+        console.log('evaluando funcione')
+        const res = accion.disable({
+          entidad: props.propsTable.row,
+          posicion: props.propsTable.rowIndex
+        })
+        console.log('Devuelvo resultado', res)
+        return res
+      } else {
+        return accion.disable
+      }
+    } else {
+      return false
+    }
+  } else {
+    return true
+  }
+}
+
 function extraerIcono(accion?: CustomActionTable) {
   return typeof accion?.icono === 'function'
     ? accion.icono({
         entidad: props.propsTable.row,
-        posicion: props.propsTable.rowIndex,
+        posicion: props.propsTable.rowIndex
       })
     : accion?.icono
 }
@@ -626,7 +713,7 @@ function extraerTitulo(accion?: CustomActionTable) {
   return typeof accion?.titulo === 'function'
     ? accion.titulo({
         entidad: props.propsTable.row,
-        posicion: props.propsTable.rowIndex,
+        posicion: props.propsTable.rowIndex
       })
     : accion?.titulo
 }
@@ -635,7 +722,7 @@ function extraerColor(accion?: CustomActionTable) {
   return typeof accion?.color === 'function'
     ? accion.color({
         entidad: props.propsTable.row,
-        posicion: props.propsTable.rowIndex,
+        posicion: props.propsTable.rowIndex
       })
     : accion?.color
 }
@@ -644,9 +731,12 @@ function ejecutarAccion(accion?: CustomActionTable) {
   const posicion = props.listado.findIndex(
     (fila: any) => fila.id === props.propsTable.row.id
   )
+  // console.log(props.identificador)
+  // También se devuelve el identificador, -1 en caso de que no se esté proporcionando en el EssentialTable
   accion?.accion({
     entidad: props.propsTable.row,
     posicion, //: props.propsTable.rowIndex,
+    identificador: props.identificador
   })
 }
 

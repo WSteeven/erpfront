@@ -1,4 +1,4 @@
-import { defineComponent, ref } from 'vue'
+import { defineComponent } from 'vue'
 import { Umbral } from '../domain/Umbral'
 
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
@@ -9,71 +9,64 @@ import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/applicat
 import { UmbralController } from '../infrestructure/UmbralController'
 import { configuracionColumnasUmbral } from '../domain/configuracionColumnasUmbral'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
-
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 
 export default defineComponent({
   components: { TabLayout },
   setup() {
     /*********
-    * Stores
-    *********/
+     * Stores
+     *********/
     useNotificacionStore().setQuasar(useQuasar())
     /***********
-    * Mixin
-    ************/
+     * Mixin
+     ************/
     const mixin = new ContenedorSimpleMixin(Umbral, new UmbralController())
-    const { entidad: umbral, disabled, accion,listadosAuxiliares } = mixin.useReferencias()
-    const { setValidador ,obtenerListados, cargarVista} = mixin.useComportamiento()
-    const empleados= ref([]);
+    const {
+      entidad: umbral,
+      disabled,
+      accion,
+      listadosAuxiliares
+    } = mixin.useReferencias()
+    const { setValidador, obtenerListados, cargarVista } =
+      mixin.useComportamiento()
+    const { empleados, filtrarEmpleados } =
+      useFiltrosListadosSelects(listadosAuxiliares)
 
     cargarVista(async () => {
       await obtenerListados({
         empleados: {
           controller: new EmpleadoController(),
-          params: { campos: 'id,nombres,apellidos',estado: 1 },
-        },
+          params: { campos: 'id,nombres,apellidos', estado: 1 }
+        }
       })
-        empleados.value = listadosAuxiliares.empleados
+      empleados.value = listadosAuxiliares.empleados
     })
     /*************
-    * Validaciones
-    **************/
+     * Validaciones
+     **************/
     const reglas = {
       empleado: {
         required: true
       },
       valor_minimo: {
-        required: true,
+        required: true
       },
       referencia: {
-        required: true,
-      },
+        required: true
+      }
     }
     const v$ = useVuelidate(reglas, umbral)
     setValidador(v$.value)
-    function filtrarEmpleados(val, update) {
-      if (val === '') {
-        update(() => {
-          empleados.value = listadosAuxiliares.empleados
-        })
-        return
-      }
-      update(() => {
-        const needle = val.toLowerCase()
-        empleados.value = listadosAuxiliares.empleados.filter(
-          (v) =>
-            v.nombres.toLowerCase().indexOf(needle) > -1 ||
-            v.apellidos.toLowerCase().indexOf(needle) > -1
-        )
-      })
-    }
     return {
       mixin,
       umbral,
       filtrarEmpleados,
       empleados,
-      disabled, accion, v$,
-      configuracionColumnas: configuracionColumnasUmbral,
+      disabled,
+      accion,
+      v$,
+      configuracionColumnas: configuracionColumnasUmbral
     }
   }
 })

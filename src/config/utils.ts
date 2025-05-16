@@ -1,27 +1,36 @@
+import { SelectOption } from 'components/tables/domain/SelectOption'
 import { TabOption } from 'components/tables/domain/TabOption'
 
 export const maskFecha = 'YYYY-MM-DD'
+export const maskFechaHora = 'YYYY-MM-DD HH:mm:ss'
 // export const maskFecha = 'DD-MM-YYYY'
 //export const maskFecha = 'YYYY/MM/DD'
+
 // Tipos
+export type Accion = 'NUEVO' | 'ELIMINAR' | 'CONSULTAR' | 'EDITAR'
 export type TipoSeleccion = 'none' | 'single' | 'multiple'
 
-export type TipoSeparador = 'none' | 'horizontal' | 'vertical' | 'cell' | undefined
+export type TipoSeparador =
+  | 'none'
+  | 'horizontal'
+  | 'vertical'
+  | 'cell'
+  | undefined
 
 export const acciones = {
   nuevo: 'NUEVO',
   eliminar: 'ELIMINAR',
   consultar: 'CONSULTAR',
   editar: 'EDITAR',
-}
+} as const
 
-export const tiposElementos = [
-  'POSTE',
-  'POZO',
-  'AMERICANO',
-  'NODO',
+export const tiposElementos = ['POSTE', 'POZO', 'AMERICANO', 'NODO']
+export const tiposTension = [
+  'BAJA TENSIÓN',
+  'MEDIA TENSIÓN',
+  'ALTA TENSIÓN',
+  'DATOS',
 ]
-export const tiposTension = ['BAJA TENSIÓN', 'MEDIA TENSIÓN', 'ALTA TENSIÓN', 'DATOS']
 export const propietariosElementos = [
   'CNEL',
   'CNT',
@@ -32,7 +41,7 @@ export const propietariosElementos = [
   'SETEL',
   'PRIVADO',
   'EERRS',
-  'CENTRO SUR'
+  'CENTRO SUR',
 ]
 
 export const estadoElementos = ['BUENO', 'MALO']
@@ -58,6 +67,12 @@ export const regiones = ['R1', 'R2', 'R3', 'R4', 'R5']
 
 export const atenciones = ['URBANO', 'INTERURBANO']
 
+export const tabOptionsSolicitudesViaticos: TabOption[] = [
+  { label: 'Pendientes', value: '1' }, //autorizacion PENDIENTE
+  { label: 'Completadas', value: '2' }, //autorizacion APROBADO
+  { label: 'Anuladas', value: '4' },  //estado ANULADO
+]
+
 export const tabOptionsTransaccionesIngresos: TabOption[] = [
   { label: 'Todo', value: 'TODO' },
   { label: 'Pendiente', value: 'PENDIENTE' },
@@ -74,6 +89,7 @@ export const tabOptionsTransferencias: TabOption[] = [
   { label: 'Pendientes', value: 'PENDIENTE' },
   { label: 'Tránsito', value: 'TRANSITO' },
   { label: 'Completadas', value: 'COMPLETADO' },
+  { label: 'Anuladas', value: 'ANULADO' },
 ]
 export const tabOptionsPedidos: TabOption[] = [
   { label: 'Por autorizar', value: 'PENDIENTE' },
@@ -82,11 +98,7 @@ export const tabOptionsPedidos: TabOption[] = [
   { label: 'Cancelados', value: 'CANCELADO' },
   { label: 'Completados', value: 'COMPLETA' },
 ]
-export const tabOptionsTransferenciaProductoEmpleado: TabOption[] = [
-  { label: 'Pendientes', value: 'PENDIENTE', icono: 'bi-app-indicator', color_icono: 'yellow-10', bg_color: 'yellow-1' },
-  { label: 'Aprobados', value: 'APROBADO', icono: 'bi-check-circle-fill', color_icono: 'positive', bg_color: 'green-1' },
-  { label: 'Cancelados', value: 'CANCELADO', icono: 'bi-x-circle-fill', color_icono: 'negative', bg_color: 'pink-1' },
-]
+
 export const tabOptionsSolicitudPedido: TabOption[] = [
   { label: 'Pendiente', value: '1' },
   { label: 'Validado', value: '4' },
@@ -100,13 +112,16 @@ export const tabOptionsLicencias: TabOption[] = [
 ]
 export const tabOptionsVacaciones: TabOption[] = [
   { label: 'Pendiente', value: '1' },
-  { label: 'Aprobados', value: '2' },
-  { label: 'Cancelados', value: '3' },
+  { label: 'Aprobadas', value: '2' },
+  { label: 'Canceladas', value: '3' },
+  { label: 'Anuladas', value: '5' },
 ]
+
 export const tabOptionsPermiso: TabOption[] = [
   { label: 'Pendiente', value: '1' },
   { label: 'Aprobados', value: '2' },
   { label: 'Cancelados', value: '3' },
+  { label: 'Recuperados', value: '4' }
 ]
 export const tabOptionsTraspasos: TabOption[] = [
   { label: 'Pendientes', value: '0' },
@@ -133,7 +148,6 @@ export const tabPrestamoEmpresarial: TabOption[] = [
   { label: 'ACTIVO', value: 'ACTIVO' },
   { label: 'FINALIZADO', value: 'FINALIZADO' },
   { label: 'INACTIVO', value: 'INACTIVO' },
-
 ]
 export const tabGestionarEgresos: TabOption[] = [
   { label: 'Aprobada', value: 'ACEPTADA' },
@@ -146,13 +160,12 @@ export const tabAutorizarTransferenciaSaldo: TabOption[] = [
   { label: 'Pendiente', value: '3' },
 ]
 
-
 export const accionesTabla = {
   name: 'acciones',
   field: 'acciones',
   label: 'Acciones',
   align: 'center',
-  //style: 'width: 1000px'
+  // style: 'width: 1000px'
 }
 
 export const tiposTrabajosEstaticos = {
@@ -218,7 +231,6 @@ export const autorizacionesTransacciones = {
   pendiente: 'PENDIENTE',
   aprobado: 'APROBADO',
   cancelado: 'CANCELADO',
-
 }
 
 export const estadosTransacciones = {
@@ -254,7 +266,20 @@ export const estadosCondicionesValue = {
   buen_estado: 'BUEN ESTADO',
 }
 
-export const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
+export const meses = [
+  'Enero',
+  'Febrero',
+  'Marzo',
+  'Abril',
+  'Mayo',
+  'Junio',
+  'Julio',
+  'Agosto',
+  'Septiembre',
+  'Octubre',
+  'Noviembre',
+  'Diciembre',
+]
 
 export const sistemasCoordenadas = ['DMS', 'UTM']
 
@@ -271,7 +296,7 @@ export const estadosTrabajos = {
   EJECUTANDO: 'EJECUTANDO',
   PAUSADO: 'PAUSADO',
   SUSPENDIDO: 'SUSPENDIDO',
-  //PENDIENTE: 'PENDIENTE',
+  PENDIENTE: 'PENDIENTE',
   CANCELADO: 'CANCELADO',
   REALIZADO: 'REALIZADO',
   FINALIZADO: 'FINALIZADO',
@@ -290,6 +315,55 @@ export const estadosGastos = {
   RECHAZADO: 2,
   PENDIENTE: 3,
   ANULADO: 4,
+}
+export const tipoReportes = {
+  PDF: 'pdf',
+  EXCEL: 'excel',
+}
+export const tipos_saldos = [
+  { value: '1', label: 'Acreditacion' },
+  { value: '2', label: 'Gasto' },
+  { value: '3', label: 'Consolidado' },
+  { value: '4', label: 'Estado de Cuenta' },
+  { value: '5', label: 'Transferencia de Saldos' },
+  { value: '6', label: 'Gastos con Fotografia' },
+  { value: '7', label: 'Fotografias OYM' },
+]
+
+export const tipos_filtros = [
+  { value: '0', name: 'Todos' },
+  { value: '1', name: 'Proyecto' },
+  { value: '2', name: 'Tarea' },
+  { value: '3', name: 'Detalle' },
+  { value: '4', name: 'SubDetalle' },
+  { value: '5', name: 'Autorizacion' },
+  { value: '6', name: 'Empleado' },
+  { value: '7', name: 'RUC' },
+  { value: '8', name: 'SIN FACTURA' },
+  { value: '9', name: 'CIUDAD' },
+  { value: '10', name: 'GRUPO' },
+]
+export const tipo_filtro = {
+  TODOS: '0',
+  PROYECTO: '1',
+  TAREA: '2',
+  DETALLE: '3',
+  SUBDETALLE: '4',
+  AUTORIZACIONES: '5',
+  EMPLEADO: '6',
+  RUC: '7',
+  SIN_FACTURA: '8',
+  CIUDAD: '9',
+  GRUPO: '10',
+}
+export const tipo_saldo = {
+  ACREDITACIONES: '1',
+  GASTO: '2',
+  CONSOLIDADO: '3',
+  ESTADO_CUENTA: '4',
+  TRANSFERENCIA_SALDOS: '5',
+  GASTOS_FOTOGRAFIA: '6',
+  FOTOGRAFIAS_OYM: '7'
 }
 export const estadosTransferencias = {
   APROBADO: 1,
@@ -312,10 +386,13 @@ export const estadosTrabajoArray = [
 export const rolesSistema = {
   activos_fijos: 'ACTIVOS FIJOS',
   administrador: 'ADMINISTRADOR',
+  administradorVehiculos: 'ADMINISTRADOR_VEHICULOS',
+  mecanicoGeneral: 'MECANICO_GENERAL',
   bodega: 'BODEGA',
   bodegaTelconet: 'BODEGA TELCONET',
   compras: 'COMPRAS',
   contabilidad: 'CONTABILIDAD',
+  chofer: 'CHOFER',
   supervisor: 'SUPERVISOR_CAMPO',
   coordinador: 'COORDINADOR',
   coordinadorBodega: 'COORDINADOR DE BODEGA',
@@ -329,10 +406,14 @@ export const rolesSistema = {
   tecnico_lider: 'LIDER DE GRUPO',
   tecnico: 'TECNICO',
   autorizador: 'AUTORIZADOR',
+  medico: 'MEDICO',
   //Roles de ventas de Claro
   jefe_ventas: 'JEFE_VENTAS',
   supervisor_ventas: 'SUPERVISOR_VENTAS',
   vendedor: 'VENDEDOR',
+  financiero: 'FINANCIERO',
+  esSupervisorTecnico: 'SUPERVISOR_TECNICO',
+  sso: 'SEGURIDAD Y SALUD OCUPACIONAL',
 }
 
 export const cargosSistema = {
@@ -347,14 +428,19 @@ export const tiposMovimientos = {
   egreso: 'EGRESO',
 }
 
+export const opcionesTiposMovimientos = [
+  { value: 'Ingreso', label: 'INGRESO' },
+  { value: 'Egreso', label: 'EGRESO' },
+]
+
 export const opcionesEstadosTransferenciasBodega = [
   { value: 'PENDIENTE', label: 'PENDIENTE' },
   { value: 'TRANSITO', label: 'TRANSITO' },
-  { value: 'COMPLETADO', label: 'COMPLETADO' }
+  { value: 'COMPLETADO', label: 'COMPLETADO' },
 ]
 export const opcionesEstados = [
   { value: 1, label: 'ACTIVO' },
-  { value: 0, label: 'INACTIVO' }
+  { value: 0, label: 'INACTIVO' },
 ]
 export const tiposProductos = [
   { value: 'BIEN', label: 'BIEN' },
@@ -386,6 +472,26 @@ export const tiposReportesIngresos = {
   tarea: 5,
   transferencia: 6,
 }
+export const numDiaSemana = {
+  domingo: 0,
+  lunes: 1,
+  martes: 2,
+  miercoles: 3,
+  jueves: 4,
+  viernes: 5,
+  sabado: 6
+}
+
+export const optionsDias = [
+  { label: 'Lunes', value: 'lunes' },
+  { label: 'Martes', value: 'martes' },
+  { label: 'Miércoles', value: 'miercoles' },
+  { label: 'Jueves', value: 'jueves' },
+  { label: 'Viernes', value: 'viernes' },
+  { label: 'Sábado', value: 'sabado' },
+  { label: 'Domingo', value: 'domingo' }
+]
+
 
 export const opcionesReportesEgresos = [
   { value: 0, label: 'POR SOLICITANTE' },
@@ -399,6 +505,7 @@ export const opcionesReportesEgresos = [
   { value: 8, label: 'POR CLIENTE' },
   { value: 9, label: 'POR TAREA' },
   { value: 10, label: 'POR TRANSFERENCIA' },
+  { value: 11, label: 'POR CATEGORIAS DE MATERIALES' },
 ]
 
 export const tiposReportesEgresos = {
@@ -413,6 +520,7 @@ export const tiposReportesEgresos = {
   cliente: 8,
   tarea: 9,
   transferencia: 10,
+  categorias: 11,
 }
 
 export const opcionesDepartamentos = {
@@ -449,12 +557,6 @@ export function convertir_fecha(fecha: Date) {
   const year = fecha.getFullYear()
   return year + '/' + month + '/' + day
 }
-export function convertir_fecha_guion(fecha) {
-  const partes = fecha.split(' '); // Dividir en fecha y hora
-  const fechaPartes = partes[0].split('-'); // Dividir la fecha en día, mes y año
-  const nuevaFecha = `${fechaPartes[2]}/${fechaPartes[1]}/${fechaPartes[0]}`; // Construir la nueva fecha en formato dd/mm/yyyy
-  return nuevaFecha;
-}
 export function convertir_fecha_hora(fecha) {
   const dateParts = fecha.split('-') // Dividir el string en partes usando el guión como separador
   let tiempo = dateParts[2]
@@ -466,11 +568,20 @@ export function convertir_fecha_hora(fecha) {
   const fecha_convert = new Date(anio, mes, dia, tiempo[0], tiempo[1], 0)
   return fecha_convert
 }
-export const niveles_academicos = [
-  { nombre: 'ESTUDIO PRIMARIO' },
-  { nombre: 'ESTUDIO SECUNDARIO' },
-  { nombre: 'TITULO SUPERIOR' },
+export const tiposDocumentosIdentificaciones = [
+  { nombre: 'Cedula', value: 'CEDULA' },
+  { nombre: 'R.U.C.', value: 'RUC' },
+  { nombre: 'Pasaporte', value: 'PASAPORTE' },
 ]
+
+export const niveles_academicos = [
+  { nombre: 'NINGUNA' },
+  { nombre: 'BÁSICA' },
+  { nombre: 'BACHILLER' },
+  { nombre: 'TERCER NIVEL' },
+  { nombre: 'CUARTO NIVEL' },
+]
+
 export const tipos_sangre = [
   { nombre: 'A +' },
   { nombre: 'B +' },
@@ -483,9 +594,9 @@ export const tipos_sangre = [
   // Puedes agregar aquí más tipos de sangre si es necesario
 ]
 export const tipos_vendedores = [
-  { nombre: 'VENDEDOR', descripcion:'VENDEDOR' },
-  { nombre: 'SUPERVISOR_VENTAS', descripcion:'SUPERVISOR DE VENTAS' },
-  { nombre: 'JEFE_VENTAS', descripcion:'JEFE DE VENTAS' },
+  { nombre: 'VENDEDOR', descripcion: 'VENDEDOR' },
+  { nombre: 'SUPERVISOR_VENTAS', descripcion: 'SUPERVISOR DE VENTAS' },
+  { nombre: 'JEFE_VENTAS', descripcion: 'JEFE DE VENTAS' },
   // Puedes agregar aquí más tipos de vendedor si es necesario
 ]
 export const talla_letras = [
@@ -498,45 +609,86 @@ export const talla_letras = [
   // Puedes agregar aquí más tallas si es necesario
 ]
 
-
 export const tabOptionsPreingresoMateriales = [
   { label: 'Pendientes', value: '1' }, //autorizacion PENDIENTE
   { label: 'Autorizadas', value: '2' }, //autorizacion APROBADO
-  { label: 'Canceladas', value: '3' }  //autorizacion CANCELADO
+  { label: 'Canceladas', value: '3' }, //autorizacion CANCELADO
 ]
-export const formas_pagos =[
-  {label: 'EFECTIVO', value: 'EFECTIVO'},
-  {label: 'TC', value: 'TARJETA DE CREDITO'},
-  {label: 'D. BANCARIO', value: 'DEBITO BANCARIO'},
+export const formas_pagos = [
+  { label: 'EFECTIVO', value: 'EFECTIVO' },
+  { label: 'TC', value: 'TARJETA DE CREDITO' },
+  { label: 'D. BANCARIO', value: 'DEBITO BANCARIO' },
 ]
 export const estados_activaciones = [
   // { label: 'PENDIENTE', value: 'PENDIENTE' },
   { label: 'APROBADO', value: 'APROBADO' },
   { label: 'ACTIVADO', value: 'ACTIVADO' },
   // { label: 'RECHAZADA', value: 'RECHAZADA' },
-
 ]
 export const estadosVentas = {
   APROBADO: 'APROBADO',
   RECHAZADO: 'RECHAZADO',
   PENDIENTE: 'PENDIENTE', // Se usa en vez de ASIGNADO en el dashboard
 }
+export const autorizacionesId = {
+  PENDIENTE: 1,
+  APROBADO: 2,
+  CANCELADO: 3,
+  VALIDADO: 4
+}
 export const autorizaciones = [
   { nombre: 'Pendiente', id: 1 }, //autorizacion PENDIENTE
   { nombre: 'Aprobado', id: 2 }, //autorizacion APROBADO
-  { nombre: 'Cancelado', id: 3 }  //autorizacion CANCELADO
+  { nombre: 'Cancelado', id: 3 }, //autorizacion CANCELADO
 ]
 export const estados = [
   { nombre: 'Pendiente', id: 1 }, //estado PENDIENTE
   { nombre: 'Completa', id: 2 }, //estado COMPLETA
   { nombre: 'Parcial', id: 3 }, //estado PARCIAL
-  { nombre: 'Anulado', id: 4 }  //estado ANULADO
+  { nombre: 'Anulado', id: 4 }, //estado ANULADO
 ]
-
 
 export const tabOptionsTransaccionesEgresos: TabOption[] = [
   { label: 'Pendientes', value: 'PENDIENTE' },
   { label: 'Parciales', value: 'PARCIAL' },
   { label: 'Completas', value: 'COMPLETA' },
-  { label: 'Anuladas', value: 'ANULADA' }
+  { label: 'Anuladas', value: 'ANULADA' },
 ]
+
+export const tabOptionsEstadosEmpleados: TabOption[] = [
+  { label: 'Activos', value: '1' },
+  { label: 'Inactivos', value: '0' },
+]
+
+export const tabOptionsValoresAcreditar: TabOption[] = [
+  // { label: 'Todo', value: '' },
+  { label: 'Activas', value: '1' },
+  { label: 'Inactivas', value: '0' },
+]
+
+// INTRANET
+
+//Noticias
+export const tabOptionsNoticias: TabOption[] = [
+  { label: 'Noticias Registradas', value: '1' },
+]
+
+//Organigrama
+export const tabOptionsOrganigrama: TabOption[] = [
+  { label: 'Organigrama Registrado', value: '1' },
+]
+
+export const selectOptionsSiNo: SelectOption[] = [
+  { label: 'Sí', value: true },
+  { label: 'No', value: false },
+]
+
+export const opcionesGrafico = {
+  grafico: 'grafico',
+  listado: 'listado'
+}
+
+export const tipoAutenticacion = {
+  empleado: 'private',
+  usuario_externo: 'external'
+}

@@ -1,8 +1,7 @@
-import { opcionesUnidadesMedidas } from 'config/utils';
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
 import { ItemProforma } from './ItemProforma';
 
-export const configuracionColumnasDetallesProforma: ColumnConfig<ItemProforma>[] =[
+export const configuracionColumnasDetallesProforma: ColumnConfig<ItemProforma>[] = [
     {
         name: 'cantidad',
         field: 'cantidad',
@@ -26,7 +25,7 @@ export const configuracionColumnasDetallesProforma: ColumnConfig<ItemProforma>[]
         field: 'unidad_medida',
         label: 'Medida',
         align: 'left',
-        type:'select',
+        type: 'select',
         // options: opcionesUnidadesMedidas,
         editable: true,
         sortable: true

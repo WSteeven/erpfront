@@ -1,13 +1,13 @@
 import { route } from 'quasar/wrappers'
 import { useAuthenticationStore } from 'src/stores/authentication'
-import {
-  createMemoryHistory,
-  createRouter,
-  createWebHashHistory,
-  createWebHistory,
-} from 'vue-router'
+import { useAuthenticationExternalStore } from 'src/stores/authenticationExternal'
+
+import { createMemoryHistory, createRouter, createWebHashHistory, createWebHistory, RouteLocationNormalized, } from 'vue-router'
 
 import routes from './routes'
+import { LocalStorage } from 'quasar'
+import { tipoAutenticacion } from 'config/utils'
+import { permisoRequerido } from 'shared/helpers/verifyAuthenticatedUser'
 
 /*
  * If not building with SSR mode, you can
@@ -36,27 +36,67 @@ export default route(function (/* { store, ssrContext } */) {
   })
 
   const authentication = useAuthenticationStore()
+  const authenticationExternal = useAuthenticationExternalStore()
+  let method_access = LocalStorage.getItem('method_access') // esto indica si el usuario accede como empleado (private) o como usuario externo (external)
 
-  Router.beforeEach(async (to, _, next) => {
+  async function routerInternal(to: RouteLocationNormalized, _, next) {
     const sessionIniciada = await authentication.isUserLoggedIn()
     // Si la ruta requiere autenticacion
     if (to.matched.some((ruta) => ruta.meta.requiresAuth)) {
       if (sessionIniciada) {
-        if (authentication.can('puede.ver.' + to.name?.toString())) {
+        if (authentication.can('puede.acceder.' + to.name?.toString()) && permisoRequerido(to)) {
+          next()
+        } else if (!permisoRequerido(to)) {
           next()
         } else {
           next({ name: '404' })
         }
       } else {
-        next({ name: 'Login' })
+        if (to.query.q == 'external') next({ name: 'LoginPostulante' }) //esto ayuda a decidir a qué login redirigir al usuario
+        else next({ name: 'Login', query:{redirect:to.fullPath} })
       }
     } else if (
       sessionIniciada &&
       ['Login', 'ResetPassword', 'Register'].includes(to.name?.toString() ?? '')
     ) {
-      next({ name: 'tablero_personal' })
+      next({ name: 'intranet' })
     } else {
       next()
+    }
+  }
+  async function routerExternal(to, _, next) {
+    const sessionIniciada = await authenticationExternal.isUserLoggedIn()
+
+    // Si la ruta requiere autenticacion
+    if (to.matched.some((ruta) => ruta.meta.requiresAuth)) {
+      if (sessionIniciada) {
+        if (authentication.can('puede.acceder.' + to.name?.toString()) && permisoRequerido(to)) {
+          next()
+        } else if (!permisoRequerido(to)) {
+          next()
+        } else {
+          next({ name: '404' })
+        }
+      } else {
+        next({ name: 'LoginPostulante', query:{redirect:to.fullPath} })
+      }
+    } else if (sessionIniciada && ['LoginPostulante', 'RegistroPostulante'].includes(to.name?.toString() ?? '')) {
+      next({ name: 'puestos_disponibles' })
+    } else {
+      next()
+    }
+  }
+  Router.beforeEach(async (to, _, next) => {
+    method_access = LocalStorage.getItem('method_access')
+    switch (method_access) {
+      case tipoAutenticacion.usuario_externo:
+        await routerExternal(to, _, next)
+        break
+      case tipoAutenticacion.empleado:
+        await routerInternal(to, _, next)
+        break
+      default:
+        await routerInternal(to, _, next)
     }
   })
   return Router

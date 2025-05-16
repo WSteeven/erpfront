@@ -1,5 +1,5 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { TipoChargeBack } from "./TipoChargeBack";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
+import { TipoChargeBack } from './TipoChargeBack';
 
 export const configuracionColumnasTipoChargeBack: ColumnConfig<TipoChargeBack>[] = [
   {

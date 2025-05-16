@@ -4,10 +4,13 @@
     :configuracionColumnas="configuracionColumnas"
     titulo-pagina="Transacciones - Egresos"
     :permitirEditar="false"
-    :accion1="botonImprimir"
-    :accion2="botonAnular"
+    :accion1="botonEditarEgreso"
+    :accion2="botonImprimir"
+    :accion3="botonImprimirActaEntregaRecepcion"
+    :accion4="botonAnular"
     :tab-options="tabOptionsTransaccionesEgresos"
     :ajustarCeldas="true"
+    paginate
     :tabDefecto="tabDefecto"
     :filtrar="filtrarTransacciones"
   >
@@ -67,8 +70,8 @@
               :disable="disabled || (soloLectura && !esBodeguero)"
               :error="!!v$.motivo.$errors.length"
               error-message="Debes seleccionar un motivo"
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.nombre"
+              :option-value="v => v.id"
+              :option-label="v => v.nombre"
               emit-value
               map-options
             >
@@ -83,7 +86,7 @@
           </div>
           <!-- Select autorizacion -->
           <div
-            v-if="transaccion.autorizacion || esVisibleAutorizacion"
+            v-if="transaccion.autorizacion "
             class="col-12 col-md-3 q-mb-md"
           >
             <label class="q-mb-sm block">Autorizacion</label>
@@ -97,18 +100,12 @@
               outlined
               :disable="disabled || (soloLectura && !esCoordinador)"
               :readonly="disabled || (soloLectura && !esCoordinador)"
-              :error="!!v$.autorizacion.$errors.length"
               error-message="Debes seleccionar una autorizacion"
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.nombre"
+              :option-value="v => v.id"
+              :option-label="v => v.nombre"
               emit-value
               map-options
             >
-              <template v-slot:error>
-                <div v-for="error of v$.autorizacion.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
               <template v-slot:no-option>
                 <q-item>
                   <q-item-section class="text-grey">
@@ -170,51 +167,7 @@
             >
             </q-input>
           </div>
-          <!-- Tiene observacion de autorizacion -->
-          <div
-            v-if="
-              transaccion.tiene_observacion_aut ||
-              transaccion.observacion_aut ||
-              esVisibleAutorizacion
-            "
-            class="col-12 col-md-3"
-          >
-            <q-checkbox
-              class="q-mt-lg q-pt-md"
-              v-model="transaccion.tiene_observacion_aut"
-              label="Tiene observación"
-              :disable="disabled || soloLectura"
-              outlined
-              dense
-            ></q-checkbox>
-          </div>
-          <!-- observacion autorizacion -->
-          <div
-            v-if="
-              transaccion.tiene_observacion_aut || transaccion.observacion_aut
-            "
-            class="col-12 col-md-3"
-          >
-            <label class="q-mb-sm block">Observacion</label>
-            <q-input
-              v-model="transaccion.observacion_aut"
-              placeholder="Obligatorio"
-              :disable="disabled || soloLectura"
-              :readonly="disabled || soloLectura"
-              :error="!!v$.observacion_aut.$errors.length"
-              outlined
-              dense
-            >
-              <template v-slot:error>
-                <div
-                  v-for="error of v$.observacion_aut.$errors"
-                  :key="error.$uid"
-                >
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
-            </q-input>
-          </div>
+
           <!-- Select sucursal -->
           <div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Sucursal</label>
@@ -235,8 +188,8 @@
               input-debounce="0"
               @filter="filtrarSucursales"
               @popup-show="ordenarSucursales"
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.lugar"
+              :option-value="v => v.id"
+              :option-label="v => v.lugar"
               emit-value
               map-options
             >
@@ -304,8 +257,8 @@
               outlined
               :disable="disabled || soloLectura"
               :readonly="disabled || soloLectura"
-              :option-label="(v) => v.nombres + ' ' + v.apellidos"
-              :option-value="(v) => v.id"
+              :option-label="v => v.nombres + ' ' + v.apellidos"
+              :option-value="v => v.id"
               emit-value
               map-options
             >
@@ -342,8 +295,8 @@
               :error="!!v$.responsable.$errors.length"
               :disable="disabled || soloLectura"
               :readonly="disabled || soloLectura"
-              :option-label="(v) => v.apellidos + ' ' + v.nombres"
-              :option-value="(v) => v.id"
+              :option-label="v => v.apellidos + ' ' + v.nombres"
+              :option-value="v => v.id"
               emit-value
               map-options
             >
@@ -361,6 +314,7 @@
               </template>
             </q-select>
           </div>
+
           <!-- Retira un tercero -->
           <div
             v-if="
@@ -401,8 +355,8 @@
               @popup-show="ordenarLista(empleados, 'apellidos')"
               :disable="disabled || soloLectura"
               :readonly="disabled || soloLectura"
-              :option-label="(v) => v.apellidos + ' ' + v.nombres"
-              :option-value="(v) => v.id"
+              :option-label="v => v.apellidos + ' ' + v.nombres"
+              :option-value="v => v.id"
               emit-value
               map-options
             >
@@ -417,12 +371,7 @@
           </div>
           <!-- Es para una tarea -->
           <div
-            v-if="
-              (esVisibleTarea && !transaccion.es_transferencia) ||
-              (accion === 'NUEVO' && !transaccion.es_transferencia)
-            "
-            class="col-12 col-md-3"
-          >
+            v-if="accion === acciones.nuevo && !transaccion.es_transferencia" class="col-12 col-md-3" >
             <q-checkbox
               class="q-mt-lg q-pt-md"
               v-model="transaccion.es_tarea"
@@ -456,8 +405,8 @@
               dense
               outlined
               clearable
-              :option-label="(item) => item.nombre"
-              :option-value="(item) => item.id"
+              :option-label="item => item.nombre"
+              :option-value="item => item.id"
               use-input
               input-debounce="0"
               emit-value
@@ -501,8 +450,8 @@
               dense
               clearable
               outlined
-              :option-label="(item) => item.nombre"
-              :option-value="(item) => item.id"
+              :option-label="item => item.nombre"
+              :option-value="item => item.id"
               use-input
               input-debounce="0"
               emit-value
@@ -540,7 +489,7 @@
           </div>
           <!-- Tarea -->
           <div
-            v-if="esVisibleTarea || transaccion.es_tarea"
+            v-if="transaccion.es_tarea"
             class="col-12 col-md-3"
           >
             <label class="q-mb-sm block">Tarea</label>
@@ -560,8 +509,8 @@
               input-debounce="0"
               @filter="filtrarTareas"
               @update:model-value="obtenerDatosTareaSeleccionada"
-              :option-label="(item) => item.codigo_tarea + ' - ' + item.titulo"
-              :option-value="(item) => item.id"
+              :option-label="item => item.codigo_tarea + ' - ' + item.titulo"
+              :option-value="item => item.id"
               emit-value
               map-options
               ><template v-slot:option="scope">
@@ -607,8 +556,8 @@
               @filter="filtrarClientes"
               @popup-show="ordenarClientes"
               @update:model-value="buscarListadoPedidoEnInventario"
-              :option-value="(item) => item.id"
-              :option-label="(item) => item.razon_social"
+              :option-value="item => item.id"
+              :option-label="item => item.razon_social"
               emit-value
               map-options
             >
@@ -625,6 +574,48 @@
                 </q-item>
               </template>
             </q-select>
+          </div>
+
+          <!-- observacion autorizacion -->
+          <div
+            v-if="transaccion.observacion_aut || accion===acciones.nuevo"
+            class="col-12 col-md-3"
+          >
+            <label class="q-mb-sm block">Observacion</label>
+            <q-input
+              v-model="transaccion.observacion_aut"
+              placeholder="Obligatorio"
+              :disable="disabled || soloLectura"
+              outlined autogrow
+              dense
+            />
+          </div>
+
+          <!-- Codigo permiso -->
+          <div v-if="transaccion.se_traslada_arma && existeItemArmaFuego" class="col-12 col-md-3">
+            <label class="q-mb-sm block">Código permiso SINCOAR</label>
+            <q-input
+              type="textarea"
+              autogrow
+              v-model="transaccion.codigo_permiso_traslado"
+              placeholder="Obligatorio"
+              hint="*Requerido para traslados de armamento"
+              :disable="disabled || soloLectura"
+              :readonly="disabled || soloLectura"
+              :error="!!v$.codigo_permiso_traslado.$errors.length"
+              lazy-rules
+              outlined
+              dense
+            >
+              <template v-slot:error>
+                <div
+                  v-for="error of v$.codigo_permiso_traslado.$errors"
+                  :key="error.$uid"
+                >
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
           </div>
 
           <!-- observacion estado -->
@@ -647,6 +638,25 @@
               </template>
             </q-input>
           </div>
+
+          <div
+            v-if="existeItemArmaFuego"
+            class="col-12 bg-amber-2 border-warning q-pb-sm q-my-md"
+          >
+          <div class="q-mb-md">
+            <q-icon name="bi-exclamation-circle-fill" color="amber"></q-icon>
+              Tiene armas de fuego en el listado de productos seleccionados.
+            </div>
+
+
+            <q-checkbox
+              v-model="transaccion.se_traslada_arma"
+              label="¿Se van a trasladar el/las arma(s)?"
+              :disable="disabled || soloLectura"
+              dense
+            ></q-checkbox>
+          </div>
+
           <!-- Listado del pedido -->
           <div
             v-if="listadoPedido !== undefined && listadoPedido.length > 0"
@@ -685,7 +695,7 @@
                     listarProductos({
                       sucursal_id: transaccion.sucursal,
                       cliente_id: transaccion.cliente,
-                      search: criterioBusquedaProducto,
+                      search: criterioBusquedaProducto
                     })
                   "
                   @blur="
@@ -703,7 +713,7 @@
                       sucursal_id: transaccion.sucursal,
                       cliente_id: transaccion.cliente,
                       search: criterioBusquedaProducto,
-                      zeros: false,
+                      zeros: false
                     })
                   "
                   icon="search"
@@ -719,14 +729,20 @@
               </div>
             </div>
           </div>
+
+
           <!-- Tabla -->
           <div class="col-12">
             <essential-table
               titulo="Productos Seleccionados"
-              :configuracionColumnas="[
-                ...configuracionColumnasProductosSeleccionados,
-                accionesTabla,
-              ]"
+              :configuracionColumnas="
+                accion == acciones.consultar
+                  ? configuracionColumnasProductosSeleccionadosDespachados
+                  : [
+                      ...configuracionColumnasProductosSeleccionados,
+                      accionesTabla
+                    ]
+              "
               :datos="transaccion.listadoProductosTransaccion"
               :permitirConsultar="false"
               :permitirEditar="false"
@@ -756,7 +772,12 @@
   </tab-layout-filter-tabs2>
   <modales-entidad
     :comportamiento="modalesEmpleado"
+    :persistente="false"
     :confirmarCerrar="false"
+  ></modales-entidad>
+  <modales-entidad
+    :comportamiento="modales"
+    :persistente="false"
   ></modales-entidad>
 </template>
 <script src="./TransaccionEgresoPage.ts" />

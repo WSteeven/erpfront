@@ -1,5 +1,5 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { Prefactura } from "./Prefactura";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
+import { Prefactura } from './Prefactura';
 
 export const configuracionColumnasPrefactura: ColumnConfig<Prefactura>[] = [
   {
@@ -52,5 +52,5 @@ export const configuracionColumnasPrefactura: ColumnConfig<Prefactura>[] = [
     align: 'left',
     sortable: true,
   },
-  
+
 ]

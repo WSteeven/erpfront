@@ -7,15 +7,18 @@ import { tabOptionsEstadosTickets, tiposPrioridades, estadosTickets } from 'conf
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { configuracionColumnasTicket } from '../domain/configuracionColumnasTicket'
+import { required, minLength, requiredIf } from 'shared/i18n-validators'
 import { accionesTabla, maskFecha } from 'config/utils'
-import { computed, defineComponent, ref, watch } from 'vue'
+import { computed, defineComponent, nextTick, onMounted, ref, watch } from 'vue'
 import { useCargandoStore } from 'stores/cargando'
-import { required } from 'shared/i18n-validators'
 import { useTareaStore } from 'stores/tarea'
 import useVuelidate from '@vuelidate/core'
 import { endpoints } from 'config/api'
 import { AxiosResponse } from 'axios'
 import { useQuasar } from 'quasar'
+
+import introJs from 'intro.js'
+import 'intro.js/minified/introjs.min.css'
 
 // Componentes
 import DesignarResponsableTrabajo from 'gestionTrabajos/subtareas/modules/designarResponsableTrabajo/view/DesignarResponsableTrabajo.vue'
@@ -30,6 +33,7 @@ import LabelAbrirModal from 'components/modales/modules/LabelAbrirModal.vue'
 import EstadosSubtareas from 'components/tables/view/EstadosSubtareas.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
+import EssentialEditor from 'components/editores/EssentialEditor.vue'
 import SolicitarImagen from 'shared/prompts/SolicitarImagen.vue'
 import VisorImagen from 'components/VisorImagen.vue'
 
@@ -43,16 +47,19 @@ import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/applicat
 import { Archivo } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/domain/Archivo'
 import { EmpleadoController } from 'recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { ComportamientoModalesTicket } from '../application/ComportamientoModalesTicket'
+import { useDestinatariosTickets } from '../application/CategoriaTipoTicket.application'
 import { ArchivoTicketController } from '../infraestructure/ArchivoTicketController '
 import { useFiltrosListadosTickets } from '../application/FiltrosListadosTicket'
 import { TipoTicket } from 'pages/gestionTickets/tiposTickets/domain/TipoTicket'
 import { useBotonesTablaTicket } from '../application/BotonesTablaTicket'
-import { formatearFechaHora, obtenerFechaHoraActual } from 'shared/utils'
 import { TicketController } from '../infraestructure/TicketController'
 import { useAuthenticationStore } from 'stores/authentication'
 import { TicketModales } from '../domain/TicketModales'
+import { obtenerFechaHoraActual } from 'shared/utils'
 import { Ticket } from '../domain/Ticket'
-import { useDestinatariosTickets } from '../application/CategoriaTipoTicket.application'
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
+import { isArray } from 'lodash'
+import { DestinatarioTicket } from '../domain/DestinatarioTicket'
 
 export default defineComponent({
   components: {
@@ -70,6 +77,7 @@ export default defineComponent({
     VisorImagen,
     ArchivoSeguimiento,
     EstadosSubtareas,
+    EssentialEditor,
   },
   emits: ['cerrar-modal'],
   setup(props, { emit }) {
@@ -84,10 +92,9 @@ export default defineComponent({
      * Mixin
      *********/
     const mixin = new ContenedorSimpleMixin(Ticket, new TicketController())
-    const { entidad: ticket, listadosAuxiliares, accion, disabled } = mixin.useReferencias()
-    const { guardar, editar, eliminar, reestablecer, setValidador, obtenerListados, cargarVista, listar } =
-      mixin.useComportamiento()
-    const { onBeforeGuardar, onGuardado, onModificado, onConsultado, onReestablecer } = mixin.useHooks()
+    const { entidad: ticket, listadosAuxiliares, accion, disabled, filtros } = mixin.useReferencias()
+    const { guardar, editar, eliminar, reestablecer, setValidador, obtenerListados, cargarVista, listar } = mixin.useComportamiento()
+    const { onBeforeGuardar, onGuardado, onConsultado, onReestablecer } = mixin.useHooks()
 
     const mixinArchivoTicket = new ContenedorSimpleMixin(Archivo, new ArchivoTicketController())
 
@@ -105,6 +112,11 @@ export default defineComponent({
         motivosCancelados: {
           controller: new MotivoCanceladoTicketController(),
           params: { activo: 1 },
+        },
+        empleados: [],
+        empleadosOrigen: {
+          controller: new EmpleadoController(),
+          params: { campos: 'id,nombres,apellidos', estado: 1 },
         },
       })
 
@@ -124,12 +136,36 @@ export default defineComponent({
     const tabActual = ref()
     const departamentoDeshabilitado = ref(false)
     const responsableDeshabilitado = ref(false)
+    // Opciones
+    const frequencyOptions = [
+      {
+        label: 'Diario',
+        value: 'DAILY'
+      },
+      {
+        label: 'Semanal',
+        value: 'WEEKLY'
+      },
+      {
+        label: 'Mensual',
+        value: 'MONTHLY'
+      }
+    ]
+
+    const daysOfWeek = [
+      'Domingo', 'Lunes', 'Martes', 'Miércoles',
+      'Jueves', 'Viernes', 'Sábado'
+    ];
+    const daysOfWeekOptions = daysOfWeek.map((day, index) => ({
+      label: day,
+      value: index
+    }));
 
     /************
     * Computeds
     *************/
     const responsables = computed(() => {
-      const responsables = listadosAuxiliares.departamentos?.filter((departamento: any) => ticket.departamento_responsable.includes(departamento.id))
+      const responsables = listadosAuxiliares.departamentos?.filter((departamento: any) => isArray(ticket.departamento_responsable) ? ticket.departamento_responsable.includes(departamento.id) : false)
       return responsables?.map((departamento: any) => {
         return {
           empleado: departamento.responsable,
@@ -141,9 +177,39 @@ export default defineComponent({
     const filtroResponsableDepartamento = computed(() => { return { departamento_id: ticket.departamento_responsable, es_responsable_departamento: true } })
     const filtroDepartamento = computed(() => { return { departamento_id: ticket.departamento_responsable[0] } })
 
-    const categoriasTiposTickets = computed(() => listadosAuxiliares.categoriasTiposTickets.filter((categoria: CategoriaTipoTicket) => categoria.departamento_id === ticket.departamento_responsable[0]))
-    const tiposTickets = computed(() => listadosAuxiliares.tiposTickets.filter((tipo: TipoTicket) => tipo.categoria_tipo_ticket_id === ticket.categoria_tipo_ticket))
     const esResponsableDepartamento = authenticationStore.user.es_responsable_departamento
+
+    const filtrarCategoriasTiposTickets = (val, update, destinatario: DestinatarioTicket) => {
+      let nuevoListado: any[] = []
+
+      if (val === '') {
+        update(() => nuevoListado = destinatario.categorias ?? [])
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        nuevoListado = (destinatario.categorias ?? []).filter(
+          (v: any) => v['nombre'].toLowerCase().indexOf(needle) > -1
+        )
+      })
+
+      return nuevoListado
+    }
+
+    const filtrarTiposTickets = (val, update, destinatario: DestinatarioTicket) => {
+      let nuevoListado: any[] = []
+
+      if (val === '') {
+        update(() => nuevoListado = destinatario.tipos_tickets ?? [])
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        nuevoListado = (destinatario.tipos_tickets ?? []).filter(
+          (v: any) => v['nombre'].toLowerCase().indexOf(needle) > -1
+        )
+      })
+
+      return nuevoListado
+    }
 
     /*************
     * Validaciones
@@ -154,6 +220,7 @@ export default defineComponent({
       prioridad: { required },
       responsable: { required },
       departamento_responsable: { required },
+      recurrence_frequency: { requiredIf: requiredIf(() => ticket.is_recurring) },
     }
 
     const v$ = useVuelidate(reglas, ticket)
@@ -178,16 +245,19 @@ export default defineComponent({
     const {
       filtrarDepartamentos,
       filtrarEmpleados,
-      filtrarTiposTickets,
+      // filtrarTiposTickets,
       departamentos,
       empleados,
     } = useFiltrosListadosTickets(listadosAuxiliares)
 
+    const { empleadosOrigen, filtrarEmpleadosOrigen, filtrarLista } = useFiltrosListadosSelects(listadosAuxiliares)
+
     /************
     * Funciones
     ************/
-    const { btnReasignar, btnSeguimiento, btnCalificarSolicitante, btnCancelar, btnAsignar } = useBotonesTablaTicket(mixin, modalesTicket)
+    const { btnReasignar, btnSeguimiento, btnCalificarSolicitante, btnCancelar, btnAsignar, btnPausarRecurrente } = useBotonesTablaTicket(mixin, modalesTicket)
     const { destinatarios, agregarDestinatario, quitarDestinatario, obtenerTiposTickets, mapearIdsDestinatarios, reestablecerDestinatarios, setDestinatarios } = useDestinatariosTickets(listadosAuxiliares)
+    // const { categoriasTiposTickets, tiposTickets, filtrarCategoriasTiposTickets, filtrarTiposTickets } = useFiltrosListadosSelects(listadosAuxiliares)
 
     async function toggleTicketInterno() {
       if (ticket.ticket_interno) {
@@ -245,9 +315,10 @@ export default defineComponent({
       await refArchivoTicket.value.subir({ tickets_id: id })
     }
 
-    function filtrarTickets(tab: string) {
-      listar({ solicitante_id: authenticationStore.user.id, estado: tab })
-      tabActual.value = tab
+    function filtrarTickets(tabSeleccionado: string) {
+      listar({ solicitante_id: authenticationStore.user.id, estado: tabSeleccionado, paginate: true })
+      tabActual.value = tabSeleccionado
+      filtros.fields = { solicitante_id: authenticationStore.user.id, estado: tabSeleccionado }
     }
 
     filtrarTickets(estadosTickets.ASIGNADO)
@@ -296,6 +367,101 @@ export default defineComponent({
       modalesTicket.cerrarModalEntidad()
     }
 
+    const obtenerDestinatarioAutomatico = (tipoTicket: number) => {
+      return listadosAuxiliares.tiposTickets.find((t: TipoTicket) => t.id === tipoTicket)?.destinatario
+    }
+
+    const establecerIdDestinatarioAutomatico = (destinatario: any) => {
+      const idDestinatario = listadosAuxiliares.tiposTickets.find((t: TipoTicket) => t.id === destinatario.tipo_ticket_id)?.destinatario_id
+      destinatario.destinatario_automatico = idDestinatario
+      console.log(destinatario)
+    }
+
+    /**
+     * Tour
+     */
+    const TOUR_KEY = 'tutorial_visto';
+    let intro
+    const step3 = ref()
+
+    // 👀 Detectar cambio en el toggle
+    watch(computed(() => ticket.is_recurring), (val) => {
+      // console.log(val)
+      if (val && intro) {//} && intro._currentStep === 0) {
+        intro.nextStep()
+      }
+    });
+
+    const startTour = (force = false) => {
+      const tutorialVisto = localStorage.getItem(TOUR_KEY);
+
+      if (tutorialVisto && !force) {
+        return; // Ya lo vio, y no se forzó
+      }
+
+      intro = introJs()
+      intro.setOptions({
+        steps: [
+          {
+            element: '#step1',
+            intro: 'Ahora puedes filtrar las categorias y los tipos de tickets, solo escribe en los listados para filtrar.',
+          },
+          {
+            element: '#step2',
+            intro: 'Si deseas crear el mismo ticket periódicamente puedes realizarlo desde aquí.',
+          },
+          {
+            element: step3.value?.$el,// '#step3',
+            intro: 'Haz clic en este checkbox para continuar',
+            disableInteraction: false, // IMPORTANTE
+            tooltipClass: 'no-block-tooltip',
+            highlightClass: 'no-block-highlight',
+            position: 'right'
+          },
+          {
+            element: '#step4',
+            intro: 'Aquí puedes configurar la frecuencia en que deseas que se cree el ticket.',
+          },
+          {
+            element: '#step4',
+            intro: 'Aquí puedes configurar la frecuencia en que deseas que se cree el ticket.',
+          },
+        ],
+        showProgress: true,
+        showBullets: false,
+        exitOnOverlayClick: false,
+        nextLabel: 'Siguiente',
+        prevLabel: 'Anterior',
+        doneLabel: 'Finalizar',
+        showStepNumbers: true,
+      })
+        .oncomplete(() => {
+          localStorage.setItem(TOUR_KEY, 'true');
+        })
+        .onexit(() => {
+          localStorage.setItem(TOUR_KEY, 'true');
+        })
+
+      intro.onchange(() => {
+        if (intro._currentStep === 0) {
+          step3.value?.$el?.classList.add('highlight-pulse');
+        } else {
+          step3.value?.$el?.classList.remove('highlight-pulse');
+        }
+      })
+
+      intro.start()
+
+      setTimeout(() => {
+        const overlay = document.querySelector('.introjs-overlay');
+        if (overlay) {
+          overlay.style.display = 'none';
+        }
+      }, 100);
+    }
+
+    // onMounted(() => nextTick(() => startTour())) <- NO SE USA
+
     /*************
      * Observers
      *************/
@@ -331,8 +497,8 @@ export default defineComponent({
       fechaLimite.value = ticket.fecha_hora_limite?.split(' ')[0]
       horaLimite.value = ticket.fecha_hora_limite?.split(' ')[1]
       ticket.establecer_hora_limite = !!horaLimite.value
-      fechaHoraActual.value = ticket.fecha_hora_solicitud
       clearInterval(tiempoActualInterval)
+      fechaHoraActual.value = ticket.fecha_hora_solicitud
       refArchivoTicket.value.listarArchivos({ ticket_id: ticket.id })
       refArchivoTicket.value.quiero_subir_archivos = false
       obtenerPausas()
@@ -366,7 +532,12 @@ export default defineComponent({
       reestablecerDestinatarios()
     })
 
+    /**
+     * Init
+     */
+
     return {
+      toolbar,
       v$,
       ticket,
       accion,
@@ -389,8 +560,8 @@ export default defineComponent({
       filtrarTickets,
       filtrarDepartamentos,
       filtrarEmpleados,
-      filtrarTiposTickets,
-      tiposTickets,
+      // filtrarTiposTickets,
+      // tiposTickets,
       tiposPrioridades,
       departamentos,
       empleados,
@@ -409,7 +580,7 @@ export default defineComponent({
       pausas,
       rechazos,
       obtenerTexto,
-      categoriasTiposTickets,
+      // categoriasTiposTickets,
       toggleTicketInterno,
       departamentoDeshabilitado,
       esResponsableDepartamento,
@@ -425,6 +596,15 @@ export default defineComponent({
       obtenerTiposTickets,
       agregarDepartamento,
       quitarDepartamento,
+      empleadosOrigen, filtrarEmpleadosOrigen,
+      frequencyOptions,
+      daysOfWeekOptions,
+      btnPausarRecurrente,
+      obtenerDestinatarioAutomatico,
+      establecerIdDestinatarioAutomatico,
+      filtrarCategoriasTiposTickets,
+      filtrarTiposTickets,
+      step3,
     }
   },
 })

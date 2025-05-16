@@ -1,5 +1,5 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { FondoRotativoContabilidad } from "./FondoRotativoContabilidad";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
+import { FondoRotativoContabilidad } from './FondoRotativoContabilidad';
 
 export const ConfiguracionColumnasContabilidad: ColumnConfig<FondoRotativoContabilidad>[] = [
   {

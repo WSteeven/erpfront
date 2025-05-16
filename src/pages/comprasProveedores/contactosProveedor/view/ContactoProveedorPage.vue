@@ -284,10 +284,6 @@
       </q-form>
     </template>
   </tab-layout>
-  <modales-entidad
-    :comportamiento="modales"
-    @guardado="guardado"
-  ></modales-entidad>
   <modal-entidad
     :comportamiento="modales"
     :confirmarCerrar="false"

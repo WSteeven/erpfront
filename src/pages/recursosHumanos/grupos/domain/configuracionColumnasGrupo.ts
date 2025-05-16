@@ -7,6 +7,7 @@ export const configuracionColumnasGrupo: ColumnConfig<Grupo>[] = [
     field: 'nombre',
     label: 'Nombre',
     align: 'left',
+    sortable: true,
   },
   {
     name: 'region',
@@ -19,6 +20,13 @@ export const configuracionColumnasGrupo: ColumnConfig<Grupo>[] = [
     field: 'coordinador',
     label: 'Coordinador',
     align: 'left',
+  },
+  {
+    name: 'cant_empleados',
+    field: 'cant_empleados',
+    label: 'Cant. Miembros',
+    align: 'center',
+    sortable: true,
   },
   {
     name: 'activo',

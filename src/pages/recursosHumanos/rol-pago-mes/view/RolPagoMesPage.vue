@@ -4,17 +4,19 @@
     :configuracionColumnas="configuracionColumnas"
     :full="true"
     :permitirEditar="false"
-    :permitirEliminar="false"
-    :mostrarButtonSubmits="tab === 'rol_pago'"
+
+    :mostrarButtonSubmits="tab === 'rol_pago' && !enviar_masivo"
     :tabOptions="tabOptionsEstadosRolPago"
     :accion1="btnFinalizarRolPago"
     :accion2="btnImprimirRolPago"
     :accion3="btnEnviarRolPago"
     :accion4="btnCashRolPago"
+    :accion5="btnActivarRolPago"
     :filtrar="filtrarRolPagoMes"
     :tabDefecto="tabActualRolPago"
     :ajustarCeldas="true"
   >
+<!--    :permitirEliminar="false"-->
     <template #formulario>
       <q-tabs
         v-model="tab"
@@ -49,7 +51,7 @@
                   :value="rolpago.mes"
                   mask="##-####"
                   :error="!!v$.mes.$errors.length"
-                  :disable="accion == 'CONSULTAR' || accion == 'EDITAR'"
+                  :disable="accion == acciones.consultar  || accion == acciones.editar"
                   @blur="v$.mes.$touch"
                   readonly
                   outlined
@@ -87,7 +89,7 @@
                 </q-input>
               </div>
               <!-- Nombre -->
-              <div class="col-12 col-md-3">
+              <div class="col-12 col-md-6">
                 <label class="q-mb-sm block">Nombre</label>
                 <q-input
                   v-model="rolpago.nombre"
@@ -100,7 +102,7 @@
                 >
                 </q-input>
               </div>
-              <!-- Aceptar Sugerencias -->
+              <!-- Es quincena -->
               <div class="col-12 col-md-3">
                 <q-checkbox
                   class="q-mt-lg q-pt-md"
@@ -140,7 +142,7 @@
             :permitirEliminar="false"
             :mostrar-botones="false"
             :mostrarFooter="true"
-            :permitirFiltrar="true"
+            :permitirFiltrar="false"
             @tab-seleccionado="filtrarRolPagoEmpleado"
             :tabDefecto="tabActual"
             :alto-fijo="true"

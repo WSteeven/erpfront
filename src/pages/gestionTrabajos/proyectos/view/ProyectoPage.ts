@@ -1,8 +1,14 @@
 // Dependencias
 import { configuracionColumnasProyecto } from '../domain/configuracionColumnasProyectos'
 import { required, requiredIf, maxLength, helpers } from 'shared/i18n-validators'
+import { acciones, accionesTabla, maskFecha, rolesSistema } from 'config/utils'
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { useAuthenticationStore } from 'stores/authentication'
 import { useNotificacionStore } from 'stores/notificacion'
+import { useNotificaciones } from 'shared/notificaciones'
 import { defineComponent, ref, computed } from 'vue'
+import { useEtapaStore } from 'stores/tareas/etapa'
 import useVuelidate from '@vuelidate/core'
 import { useQuasar } from 'quasar'
 
@@ -15,23 +21,13 @@ import ModalesEntidad from 'components/modales/view/ModalEntidad.vue';
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { CantonController } from 'pages/sistema/ciudad/infraestructure/CantonControllerontroller'
+import { configuracionColumnasEtapa } from '../modules/etapas/domain/configuracionColumnasEtapas'
+import { ComportamientoModalesProyectos } from '../application/ComportamientoModalesProyectos'
 import { ClienteController } from 'pages/sistema/clientes/infraestructure/ClienteController'
+import { CambiarEstadoEtapa } from '../modules/etapas/application/CambiarEstadoEtapa'
+import { EtapaController } from '../modules/etapas/infraestructure/EtapaController'
 import { ProyectoController } from '../infraestructure/ProyectoController'
 import { Proyecto } from '../domain/Proyecto'
-import { acciones, accionesTabla, rolesSistema } from 'config/utils'
-import { useAuthenticationStore } from 'stores/authentication'
-import { configuracionColumnasEtapa } from '../modules/etapas/domain/configuracionColumnasEtapas'
-import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { Etapa } from '../modules/etapas/domain/Etapa'
-import { ComportamientoModalesProyectos } from '../application/ComportamientoModalesProyectos'
-import { EtapaController } from '../modules/etapas/infraestructure/EtapaController'
-import { useNotificaciones } from 'shared/notificaciones'
-import { AxiosInstance, AxiosResponse, ResponseType } from 'axios'
-import { HttpResponseDelete, ResponseData } from 'shared/http/domain/HttpResponse'
-import { ResponseItem } from 'shared/controller/domain/ResponseItem'
-import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
-import { CambiarEstadoEtapa } from '../modules/etapas/application/CambiarEstadoEtapa'
-import { useEtapaStore } from 'stores/tareas/etapa'
 
 export default defineComponent({
   components: {
@@ -49,7 +45,7 @@ export default defineComponent({
     const { cargarVista, obtenerListados, setValidador } =
       mixin.useComportamiento()
     const { onConsultado } = mixin.useHooks()
-    const { confirmar, prompt, notificarCorrecto, notificarError } = useNotificaciones()
+    const { confirmar, prompt, notificarCorrecto } = useNotificaciones()
 
     const store = useAuthenticationStore()
     const etapaStore = useEtapaStore()
@@ -180,14 +176,6 @@ export default defineComponent({
       })
     }
 
-    // async function eliminarEtapa({ entidad, posicion }) {
-    //   confirmar('¿Está seguro de continuar?', async () => {
-    //     // const response:ResponseItem<Etapa, HttpResponseDelete<Etapa>> = await new EtapaController().eliminar(entidad.id)
-    //     const response = await new EtapaController().eliminar(entidad.id)
-    //     notificarCorrecto(response.response.data.mensaje)
-    //     proyecto.etapas.splice(posicion, 1)
-    //   })
-    // }
     /****************************
      * Botones de tablas
      ***************************/
@@ -201,22 +189,13 @@ export default defineComponent({
       },
       visible: () => accion.value === acciones.nuevo || accion.value === acciones.editar
     }
-    // const btnEliminar: CustomActionTable = {
-    //   titulo: 'Eliminar',
-    //   color: 'negative',
-    //   icono: 'bi-trash',
-    //   tooltip: 'Eliminar la etapa',
-    //   accion: ({ entidad, posicion }) => {
-    //     console.log('Diste clic  en eliminar, se eliminará la etapa')
-    //     eliminarEtapa({ entidad, posicion })
-    //   }
-    // }
+
     const btnEditar: CustomActionTable = {
       titulo: 'Editar',
-      color:'secondary',
+      color: 'secondary',
       tooltip: 'Editar una etapa',
       icono: 'bi-pencil-square',
-      accion: ({entidad, posicion})=>{
+      accion: ({ entidad, posicion }) => {
         etapaStore.idEtapa = entidad.id
         modales.abrirModalEntidad('EditarEtapaPage')
       }
@@ -238,21 +217,21 @@ export default defineComponent({
                 notificarCorrecto('Etapa anulada exitosamente!')
                 proyecto.etapas.splice(posicion, 1, result)
               } catch (error: any) {
-                console.log(error+'')
+                console.log(error + '')
               }
             }
           }
           prompt(data)
         })
       },
-      visible: ({entidad}) => entidad.activo
+      visible: ({ entidad }) => entidad.activo
     }
     const btnActivar: CustomActionTable = {
       titulo: 'Activar',
       icono: 'bi-toggle2-off',
       color: 'positive',
       tooltip: 'Activar proveedor',
-      accion: ({entidad, posicion}) => {
+      accion: ({ entidad, posicion }) => {
         confirmar('¿Está seguro de activar la etapa?', () => {
           const data: CustomActionPrompt = {
             titulo: 'Motivo',
@@ -263,14 +242,14 @@ export default defineComponent({
                 notificarCorrecto('Etapa anulada exitosamente!')
                 proyecto.etapas.splice(posicion, 1, result)
               } catch (error: any) {
-                console.log(error+'')
+                console.log(error + '')
               }
             }
           }
           prompt(data)
         })
       },
-      visible: ({entidad}) => !entidad.activo
+      visible: ({ entidad }) => !entidad.activo
     }
 
 
@@ -299,7 +278,7 @@ export default defineComponent({
       mostrarCoordinador,
       tieneEtapa,
       accionesTabla,
-
+      maskFecha,
       //modales
       modales,
 

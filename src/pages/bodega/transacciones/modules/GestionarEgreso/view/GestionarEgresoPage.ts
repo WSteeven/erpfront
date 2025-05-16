@@ -35,7 +35,7 @@ export default defineComponent({
     /*******************************************************************************************
     * Funciones
     ******************************************************************************************/
-    async function filtrarTabs(tabSeleccionado) {
+    async function filtrarTabs(tabSeleccionado:string) {
       cargando.activar()
       const result = await transaccionStore.filtrarEgresosComprobantes(tabSeleccionado)
       listado.value = result
@@ -54,7 +54,7 @@ export default defineComponent({
       color: 'primary',
       accion: async ({ entidad }) => {
         transaccionStore.idTransaccion = entidad.id
-        transaccionStore.estadoPendiente = entidad.estado_comprobante === 'PENDIENTE' ? true : false
+        transaccionStore.estadoPendiente = entidad.estado_comprobante === 'PENDIENTE'
         await transaccionStore.showPreview()
         modales.abrirModalEntidad('VisualizarEgresoPage')
       }

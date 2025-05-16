@@ -3,12 +3,13 @@
     :mixin="mixin"
     :configuracion-columnas="configuracionColumnasDepartamento"
     :permitir-eliminar="false"
+    ajustar-celdas
   >
     <template #formulario>
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-py-md">
           <!-- Nombre -->
-          <div class="col-12 col-md-6">
+          <div class="col-12 col-md-4">
             <label class="q-mb-sm block">Nombre del departamento</label>
             <q-input
               v-model="departamento.nombre"
@@ -28,7 +29,7 @@
           </div>
 
           <!-- Responsable -->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-4">
             <label class="q-mb-sm block">Responsable</label>
             <q-select
               v-model="departamento.responsable"
@@ -66,7 +67,7 @@
             </q-select>
           </div>
 
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-4">
             <br />
             <q-toggle
               v-model="departamento.activo"
@@ -75,6 +76,48 @@
               label="Activo"
               color="positive"
             />
+          </div>
+
+          <!-- Telefono -->
+          <div class="col-12 col-md-4">
+            <label class="q-mb-sm block">Teléfono del departamento <q-icon name="bi-info-circle"/> <q-tooltip class="bg-dark">Ingresa el número de teléfono en formato +593 99 999 9999 </q-tooltip></label>
+            <q-input
+              v-model="departamento.telefono"
+              placeholder="Opcional"
+              :disable="disabled"
+              autofocus
+              outlined
+              dense
+            />
+          </div>
+
+          <!-- Correo -->
+          <div class="col-12 col-md-4">
+            <label class="q-mb-sm block">Correo Principal del departamento</label>
+            <q-input
+              v-model="departamento.correo"
+              placeholder="Opcional"
+              :disable="disabled"
+              autofocus
+              outlined
+              dense
+            />
+          </div>
+
+          <!-- Listado de productos -->
+          <div
+              v-if="departamento.empleados?.length > 0"
+              class="col-12 col-md-12 q-mt-xl"
+          >
+            <essential-table
+                titulo="Empleados del departamento"
+                :datos="departamento.empleados"
+                :configuracionColumnas="configuracionColumnasEmpleadosLite"
+                ajustarCeldas
+                :altoFijo="false"
+                :mostrarBotones="false"
+            >
+            </essential-table>
           </div>
         </div>
       </q-form>

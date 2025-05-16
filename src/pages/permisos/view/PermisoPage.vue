@@ -17,8 +17,8 @@
             use-input
             input-debounce="0"
             @filter="filtrarRol"
-            :option-value="(v) => v.id"
-            :option-label="(v) => v.name"
+            :option-value="v => v.id"
+            :option-label="v => v.name"
             emit-value
             map-options
           >

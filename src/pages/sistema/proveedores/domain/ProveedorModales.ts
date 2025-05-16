@@ -3,9 +3,10 @@ import { ComponenteModal } from 'components/modales/domain/ComponenteModal.domai
 import { markRaw } from 'vue'
 
 //Paginas
-import EmpresaPage from "pages/administracion/empresas/view/EmpresaPage.vue"
-import ContactoProveedorPage from "pages/comprasProveedores/contactosProveedor/view/ContactoProveedorPage.vue"
+import EmpresaPage from 'pages/administracion/empresas/view/EmpresaPage.vue'
+import ContactoProveedorPage from 'pages/comprasProveedores/contactosProveedor/view/ContactoProveedorPage.vue'
 import CalificacionProveedorPage from 'pages/comprasProveedores/calificacionProveedor/view/CalificacionProveedorPage.vue'
+import RecalificacionProveedorPage from 'pages/comprasProveedores/recalificacionProveedor/view/RecalificacionProveedorPage.vue'
 import InfoCalificacionProveedorPage from 'pages/comprasProveedores/calificacionProveedor/view/InfoCalificacionProveedorPage.vue'
 import MiCalificacionProveedorPage from 'pages/comprasProveedores/calificacionProveedor/view/MiCalificacionProveedorPage.vue'
 import CategoriaOfertaPage from 'pages/comprasProveedores/categoriaOfertas/view/CategoriaOfertaPage.vue'
@@ -16,6 +17,7 @@ export class ProveedorModales {
   EmpresaPage: ComponenteModal
   ContactoProveedorPage: ComponenteModal
   CalificacionProveedorPage: ComponenteModal
+    RecalificacionProveedorPage: ComponenteModal
   InfoCalificacionProveedorPage: ComponenteModal
   CategoriaOfertaPage: ComponenteModal
   DatoBancarioPage: ComponenteModal
@@ -26,6 +28,7 @@ export class ProveedorModales {
     this.EmpresaPage = markRaw(new ComponenteModal('Información Tributaria', EmpresaPage))
     this.ContactoProveedorPage = markRaw(new ComponenteModal('Contacto de Proveedor', ContactoProveedorPage))
     this.CalificacionProveedorPage = markRaw(new ComponenteModal('Calificación del Proveedor', CalificacionProveedorPage))
+    this.RecalificacionProveedorPage = markRaw(new ComponenteModal('Recalificación del Proveedor', RecalificacionProveedorPage))
     this.InfoCalificacionProveedorPage = markRaw(new ComponenteModal('Resultados de la Calificación del Proveedor', InfoCalificacionProveedorPage))
     this.CategoriaOfertaPage = markRaw(new ComponenteModal('Categoria de Oferta', CategoriaOfertaPage))
     this.DatoBancarioPage = markRaw(new ComponenteModal('Datos Bancarios del Proveedor', DatoBancarioPage))

@@ -29,6 +29,7 @@
           :disable="disabled"
         />
       </div>
+
       <!-- Nombre -->
       <div class="col-12 col-md-2 q-mb-md">
         <label class="q-mb-sm block">Nombre</label>
@@ -53,12 +54,21 @@
       <div v-if="!permiso.permiso_personalizado" class="col-12 col-md-5">
         <label class="block">Acciones</label>
         <div class="row q-pt-md">
-          <!-- Autorizar permiso -->
+          <!-- Ver boton -->
           <q-checkbox
             class=""
+            v-model="permiso.boton"
+            label="Boton"
+            :disable="disabled "
+            outlined
+            dense
+          ></q-checkbox>
+          <!-- Autorizar permiso -->
+          <q-checkbox
+            class="q-ml-lg"
             v-model="permiso.autorizar"
             label="Autorizar"
-            :disable="disabled || soloLectura"
+            :disable="disabled "
             outlined
             dense
           ></q-checkbox>
@@ -67,7 +77,7 @@
             class="q-ml-lg"
             v-model="permiso.acceder"
             label="Acceder"
-            :disable="disabled || soloLectura"
+            :disable="disabled "
             outlined
             dense
           ></q-checkbox>
@@ -76,7 +86,7 @@
             class="q-ml-lg"
             v-model="permiso.ver"
             label="Ver"
-            :disable="disabled || soloLectura"
+            :disable="disabled "
             outlined
             dense
           ></q-checkbox>
@@ -85,7 +95,7 @@
             class="q-ml-lg"
             v-model="permiso.crear"
             label="Crear"
-            :disable="disabled || soloLectura"
+            :disable="disabled "
             outlined
             dense
           ></q-checkbox>
@@ -94,7 +104,7 @@
             class="q-ml-lg"
             v-model="permiso.editar"
             label="Editar"
-            :disable="disabled || soloLectura"
+            :disable="disabled "
             outlined
             dense
           ></q-checkbox>
@@ -103,7 +113,7 @@
             class="q-ml-lg"
             v-model="permiso.eliminar"
             label="Eliminar"
-            :disable="disabled || soloLectura"
+            :disable="disabled "
             outlined
             dense
           ></q-checkbox>
@@ -124,7 +134,7 @@
           dense
           use-chips
           outlined
-          @filter="filtrarRol"
+          @filter="filtrarRoles"
           use-input
           input-debounce="0"
           :error="!!v$.roles.$errors.length"
@@ -166,7 +176,7 @@
     <button-submits
       accion="NUEVO"
       :permitirCancelar="false"
-      @guardar="crear(entidad)"
+      @guardar="crear()"
     />
   </q-form>
 </template>

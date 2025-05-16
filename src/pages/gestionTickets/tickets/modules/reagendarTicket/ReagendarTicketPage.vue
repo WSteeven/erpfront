@@ -18,8 +18,8 @@
             options-dense
             dense
             outlined
-            :option-label="(item) => item.nombre"
-            :option-value="(item) => item.id"
+            :option-label="item => item.nombre"
+            :option-value="item => item.id"
             use-input
             input-debounce="0"
             emit-value
@@ -64,8 +64,8 @@
             options-dense
             dense
             outlined
-            :option-label="(item) => `${item.nombres} ${item.apellidos}`"
-            :option-value="(item) => item.id"
+            :option-label="item => `${item.nombres} ${item.apellidos}`"
+            :option-value="item => item.id"
             use-input
             input-debounce="0"
             emit-value
@@ -86,6 +86,45 @@
                 <div class="error-msg">{{ error.$message }}</div>
               </div>
             </template>
+          </q-select>
+        </div>
+
+        <div class="col-12 col-md-3">
+          <br />
+          <q-checkbox
+            v-model="modificarCc"
+            label="Modificar Cc"
+            outlined
+            dense
+          ></q-checkbox>
+        </div>
+
+        <div v-if="modificarCc" class="col-12">
+          <label class="q-mb-sm block"
+            ><q-icon name="bi-people" class="q-mr-sm"></q-icon>Cc - Las personas
+            especificadas aqui podrán agregar y leer comentarios en el
+            seguimiento del ticket</label
+          >
+          <q-select
+            v-model="ticket.cc"
+            :options="empleadosOrigen"
+            @filter="filtrarEmpleadosOrigen"
+            transition-show="scale"
+            transition-hide="scale"
+            hint="Opcional"
+            options-dense
+            dense
+            outlined
+            :disable="disabled"
+            :option-label="item => `${item.nombres} ${item.apellidos}`"
+            :option-value="item => item.id"
+            use-input
+            input-debounce="0"
+            emit-value
+            map-options
+            use-chips
+            multiple
+          >
           </q-select>
         </div>
       </div>

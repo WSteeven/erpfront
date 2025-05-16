@@ -266,6 +266,7 @@
               dense
             ></q-checkbox>
           </div>
+
           <!-- IVA general -->
           <div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">IVA general</label>
@@ -278,6 +279,37 @@
               suffix="%"
               :disable="!prefactura.modificar_iva"
               @update:model-value="actualizarListado"
+            >
+            </q-input>
+          </div>
+
+          <!-- Modificar Descuento -->
+          <div
+            class="col-12 col-md-3 q-mb-xl"
+            v-if="accion === acciones.nuevo || accion === acciones.editar"
+          >
+            <q-checkbox
+              class="q-mt-lg q-pt-md"
+              v-model="prefactura.modificar_descuento"
+              label="¿Aplicar descuento a toda la prefactura?"
+              :disable="disabled"
+              outlined
+              dense
+            ></q-checkbox>
+          </div>
+          <!-- DESCUENTO general -->
+          <div class="col-12 col-md-3 q-mb-md">
+            <label class="q-mb-sm block">Descuento general</label>
+            <q-input
+              v-model="prefactura.descuento_general"
+              outlined
+              dense
+              placeholder="OPCIONAL"
+              hint="INGRESA LA CANTIDAD DE DESCUENTO EN $"
+              type="number"
+              step=".01"
+              :disable="!prefactura.modificar_descuento"
+              @update:model-value="actualizarDescuento"
             >
             </q-input>
           </div>
@@ -313,6 +345,7 @@
             >
             </essential-popup-editable-table>
           </div>
+          <!-- {{ prefactura.listadoProductos }} -->
           <!-- Tabla con el resumen -->
           <div class="col-12">
             <div class="row q-col-xs-4 q-col-xs-offset-8 flex-end justify-end">
@@ -327,7 +360,22 @@
                   <q-separator vertical></q-separator>
                   <q-item-section avatar>{{ subtotal }}</q-item-section>
                 </q-item>
-
+                <q-item>
+                  <q-item-section>Subtotal 0%: </q-item-section>
+                  <q-separator vertical></q-separator>
+                  <q-item-section avatar>{{
+                    subtotal_sin_impuestos
+                  }}</q-item-section>
+                </q-item>
+                <q-item>
+                  <q-item-section
+                    >Subtotal ({{ prefactura.iva }} %):
+                  </q-item-section>
+                  <q-separator vertical></q-separator>
+                  <q-item-section avatar>{{
+                    subtotal_con_impuestos
+                  }}</q-item-section>
+                </q-item>
                 <q-item>
                   <q-item-section class="q-mr-md">Descuento: </q-item-section>
                   <q-separator vertical></q-separator>

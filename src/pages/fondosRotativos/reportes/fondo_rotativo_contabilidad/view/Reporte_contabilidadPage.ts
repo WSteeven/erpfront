@@ -1,4 +1,4 @@
-import { defineComponent, reactive, ref, watchEffect } from 'vue'
+import { defineComponent, ref, watchEffect } from 'vue'
 
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import { useNotificacionStore } from 'stores/notificacion'
@@ -8,7 +8,6 @@ import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/applicat
 import { TipoFondoController } from 'pages/fondosRotativos/tipoFondo/infrestructure/TipoFonfoController'
 import { FondoRotativoContabilidad } from '../domain/FondoRotativoContabilidad'
 import { FondoRotativoContabilidadController } from '../infrestructure/FondoRotativoContabilidadController'
-import { UsuarioController } from 'pages/fondosRotativos/usuario/infrestructure/UsuarioController'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import { ConfiguracionColumnasContabilidad } from '../domain/ConfiguracionColumnasContabilidad'
 import ModalEntidad from 'components/modales/view/ModalEntidad.vue'
@@ -17,6 +16,7 @@ import { useFondoRotativoStore } from 'stores/fondo_rotativo'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { accionesTabla, maskFecha } from 'config/utils'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
+import { format } from '@formkit/tempo'
 
 export default defineComponent({
   components: { TabLayout, EssentialTable, ModalEntidad },
@@ -40,7 +40,7 @@ export default defineComponent({
       listadosAuxiliares,
       listado,
     } = mixin.useReferencias()
-    const { setValidador, obtenerListados, cargarVista,listar } =
+    const { setValidador, obtenerListados, cargarVista, listar } =
       mixin.useComportamiento()
 
     /*************
@@ -76,7 +76,7 @@ export default defineComponent({
       await obtenerListados({
         usuarios: {
           controller: new EmpleadoController(),
-          params: { campos: 'id,nombres,apellidos',estado: 1 },
+          params: { campos: 'id,nombres,apellidos', estado: 1 },
         },
         tiposFondos: {
           controller: new TipoFondoController(),
@@ -104,17 +104,20 @@ export default defineComponent({
       update(() => {
         const needle = val.toLowerCase()
         usuarios.value = listadosAuxiliares.usuarios.filter(
-          (v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1
+          (v) =>
+            v.nombres.toLowerCase().indexOf(needle) > -1 ||
+            v.apellidos.toLowerCase().indexOf(needle) > -1
         )
       })
     }
     async function abrir_reporte(
       valor: FondoRotativoContabilidad
     ): Promise<void> {
-      listar({ usuario: valor.usuario,
-         fecha_inicio: valor.fecha_inicio,
-          fecha_fin: valor.fecha_fin })
-
+      await listar({
+        usuario: valor.usuario,
+        fecha_inicio: valor.fecha_inicio,
+        fecha_fin: valor.fecha_fin,
+      })
     }
     /**Modales */
     const modales = new ComportamientoModalesFondoRotativoContabilidad()
@@ -123,10 +126,9 @@ export default defineComponent({
       icono: 'bi-eye',
       color: 'indigo',
       accion: ({ entidad }) => {
-        fondoRotativoStore.id_gasto = entidad.id
-        fondoRotativoStore.existeFactura = entidad.factura ==null? false:true
+        fondoRotativoStore.gasto = entidad
         modales.abrirModalEntidad('VisualizarGastoPage')
-      }
+      },
     }
     async function mostrarInactivos(val) {
       if (val === 'true') {
@@ -158,6 +160,20 @@ export default defineComponent({
         )
       }
     }
+    function optionsFechaInicio(date){
+      const fecha_actual = format(new Date(), 'YYYY/MM/DD')
+      return  date <= fecha_actual
+    }
+    function optionsFechaFin(date) {
+      const fecha_actual = format(new Date(), 'YYYY/MM/DD')
+      const fecha_inicio = format(
+        fondo_rotativo_contabilidad.fecha_inicio !== null
+          ? fondo_rotativo_contabilidad.fecha_inicio
+          : new Date(),
+        'YYYY/MM/DD'
+      )
+      return date >= fecha_inicio &&  date <= fecha_actual
+    }
     return {
       mixin,
       fondo_rotativo_contabilidad,
@@ -175,6 +191,8 @@ export default defineComponent({
       abrir_reporte,
       filtrarUsuarios,
       watchEffect,
+      optionsFechaInicio,
+      optionsFechaFin,
       modales,
       listado,
       botonVerModalGasto,

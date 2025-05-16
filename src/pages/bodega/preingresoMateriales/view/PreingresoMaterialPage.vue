@@ -101,7 +101,7 @@
                   >
                     <q-date
                       v-model="preingreso.fecha"
-                      mask="DD-MM-YYYY"
+                      :mask="maskFecha"
                       today-btn
                     >
                       <div class="row items-center justify-end">
@@ -562,8 +562,6 @@
               :accion1="btnVerFotografia"
               :accion2="btnEliminarFila"
             >
-              <!-- @guardarFila="(fila) => guardarFilaEditada(fila)" -->
-              <!-- :accion1Header="btnAddRow" -->
             </essential-popup-editable-table>
           </div>
         </div>

@@ -3,12 +3,14 @@ import { Ref, computed, defineComponent, onMounted, ref, watch, watchEffect } fr
 import { regiones, atenciones } from 'config/utils'
 import useVuelidate from '@vuelidate/core'
 import { endpoints } from 'config/api'
+import relativeTime from 'dayjs/plugin/relativeTime'
+import dayjs from 'dayjs'
+import es from 'dayjs/locale/es'
 
 // Componentes
 import ArchivoSeguimiento from 'gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/view/ArchivoSeguimiento.vue'
 import TablaObservaciones from 'gestionTrabajos/formulariosTrabajos/tablaObservaciones/view/TablaObservacion.vue'
 import DetalleTicket from 'ticketsAsignados/modules/detalleTicketAsignado/view/DetalleTicket.vue'
-import TablaDevolucionProducto from 'components/tables/view/TablaDevolucionProducto.vue'
 import TablaFilasDinamicas from 'components/tables/view/TablaFilasDinamicas.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
@@ -28,13 +30,14 @@ import { useTicketStore } from 'stores/ticket'
 import { estadosTickets } from 'config/tickets.utils'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { AxiosResponse } from 'axios'
+import { ComentarioTicket } from '../../comentariosTickets/domain/ComentarioTicket'
+import { ComentarioTicketController } from '../../comentariosTickets/infraestructure/ComentarioTicketController'
 
 export default defineComponent({
   components: {
     EssentialTable,
     SelectorImagen,
     ButtonSubmits,
-    TablaDevolucionProducto,
     TablaFilasDinamicas,
     TablaObservaciones,
     ArchivoSeguimiento,
@@ -59,6 +62,11 @@ export default defineComponent({
     const mixinArchivoSeguimiento = new ContenedorSimpleMixin(Archivo, new ArchivoSeguimientoTicketController())
     const { listar: listarArchivosTickets } = mixinArchivoSeguimiento.useComportamiento()
 
+    const mixinComentarioTicket = new ContenedorSimpleMixin(ComentarioTicket, new ComentarioTicketController())
+    const { entidad: comentarioTicket, listado: comentarios } = mixinComentarioTicket.useReferencias()
+    const { guardar: guardarComentario, listar: listarComentariosTickets } = mixinComentarioTicket.useComportamiento()
+    const { onReestablecer: onReestablecerComentario } = mixinComentarioTicket.useHooks()
+
     /************
      * Variables
      ************/
@@ -71,12 +79,16 @@ export default defineComponent({
     const permitirSubir = authenticationStore.user.id == ticketStore.filaTicket.responsable_id && ticket.estado === estadosTickets.EJECUTANDO
     const position = ref(0)
     const scrollAreaRef = ref()
+    const comentario = ref()
 
     /************
      * Init
      ************/
     listarActividades({ ticket_id: ticketStore.filaTicket.id })
     listarArchivosTickets({ ticket_id: ticketStore.filaTicket.id })
+
+    dayjs.extend(relativeTime)
+    dayjs.locale(es)
 
     /****************
      * Botones tabla
@@ -163,7 +175,26 @@ export default defineComponent({
       }
     })
 
+    /********
+     * Hooks
+     ********/
+    onReestablecerComentario(() => {
+      comentarioTicket.empleado = authenticationStore.user.id
+      comentarioTicket.ticket = ticket.id
+    })
+
+    /********
+     * Init
+     ********/
+    comentarioTicket.empleado = authenticationStore.user.id
+    comentarioTicket.ticket = ticket.id
+
+    listarComentariosTickets({
+      ticket_id: ticket.id,
+    })
+
     return {
+      comentarios,
       v$,
       refEditarModal,
       refTrabajos,
@@ -199,6 +230,10 @@ export default defineComponent({
       filtrado,
       indice,
       mensajeFiltro,
+      comentario,
+      guardarComentario,
+      comentarioTicket,
+      dayjs,
     }
   }
 })

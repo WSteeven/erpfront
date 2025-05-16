@@ -14,9 +14,15 @@
       :accion2="botonImprimir"
       :ajustarCeldas="true"
       :tabDefecto="tabDefecto"
+      class="borde rounded custom-shadow"
     ></essential-table-tabs>
 
-    <modal-entidad :comportamiento="modales" @guardado="(data) => guardado(data)"></modal-entidad>
+    <modal-entidad
+      :comportamiento="modales"
+      :persistente="false"
+      :mostrarListado="false"
+      @guardado="(data) => guardado(data)"
+    ></modal-entidad>
   </q-page>
 </template>
 <script src="./GestionarEgresoPage.ts"></script>

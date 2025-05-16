@@ -4,7 +4,7 @@ import { DestinatarioTicket } from './DestinatarioTicket'
 export class Ticket extends EntidadAuditable {
   codigo: string | null
   asunto: string | null
-  descripcion: string | null
+  descripcion: string
   prioridad: string | null
   fecha_hora_limite: string | null
   estado: string | null
@@ -33,12 +33,21 @@ export class Ticket extends EntidadAuditable {
   subtarea_id: number | null
   fotografia?: string | null
   para_sso?: boolean
+  cc: number[]
+
+  // Ticket recurrente
+  is_recurring = false
+  recurrence_active = true
+  recurrence_frequency = ''
+  recurrence_time = '08:00:00'
+  recurrence_day_of_week = ''
+  recurrence_day_of_month = ''
 
   constructor() {
     super()
     this.codigo = null
     this.asunto = null
-    this.descripcion = null
+    this.descripcion = ''
     this.prioridad = null
     this.fecha_hora_limite = null
     this.estado = null
@@ -67,5 +76,6 @@ export class Ticket extends EntidadAuditable {
     this.subtarea_id = null
     this.fotografia = null
     this.para_sso = false
+    this.cc = []
   }
 }

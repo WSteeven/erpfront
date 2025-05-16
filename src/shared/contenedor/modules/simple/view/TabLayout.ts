@@ -11,8 +11,10 @@ import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/applicat
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
+import EssentialTablePagination from 'components/tables/view/EssentialTablePagination.vue'
 import { useCargandoStore } from 'stores/cargando'
 import { useMainLayoutStore } from 'stores/mainLayout'
+import { getCurrentInstance } from 'vue'
 
 export default defineComponent({
   props: {
@@ -129,31 +131,39 @@ export default defineComponent({
     },
     full: {
       type: Boolean,
-      default: false,
+      default: true,
     },
     labelGuardar: {
       type: String,
       default: 'Guardar',
     },
-    listar: {
-      type: Boolean,
-      default: true,
-    },
     ajustarCeldas: { //valor que se envia para que el contenido de la celda se autoaujuste al tamaño de la celda en lugar de aumentar su tamaño
       type: Boolean,
       default: false,
     },
+    paginate: {
+      type: Boolean,
+      default: false,
+    },
+    grid: {
+      type: Boolean,
+      default: true
+    },
+    mostrarColumnasVisibles: {
+      type: Boolean,
+      default: true
+    },
   },
-  components: { EssentialTable, ButtonSubmits },
+  components: { EssentialTable, EssentialTablePagination, ButtonSubmits },
   setup(props) {
+    const refTabla = ref()
     const { listar, filtrar, guardar, editar, eliminar, consultar, reestablecer } = props.mixin.useComportamiento()
 
     const { entidad, listado, accion, filtros, tabs } = props.mixin.useReferencias()
 
     const Router = useRouter()
-    let listadoCargado = false
 
-    let columnas: any = props.configuracionColumnas
+    let columnas: any = props.configuracionColumnas ?? []
 
     if (props.mostrarAcciones) {
       columnas = [...columnas, {
@@ -165,9 +175,13 @@ export default defineComponent({
       }]
     }
 
-    if (!listadoCargado && props.mostrarListado && props.listar) {
-      listar()
-      listadoCargado = true
+    // console.log(props.mostrarListado)
+    if (props.mostrarListado) {
+      if (props.paginate) {
+        listar({ paginate: 1 })
+      } else {
+        listar()
+      }
     }
 
     const seleccionado = ref()
@@ -177,7 +191,7 @@ export default defineComponent({
     })
 
     const nombre = Router.currentRoute.value.name?.toString().replaceAll('_', ' ') ?? ''
-    const tituloTabla = nombre.toLowerCase().substring(0, 1).toUpperCase() + nombre.toLowerCase().substring(1, nombre.length)
+    const tituloTabla = props.tituloPagina ?? nombre.toLowerCase().substring(0, 1).toUpperCase() + nombre.toLowerCase().substring(1, nombre.length)
 
     const accionTabla = {
       consultar: ({ entidad }) => {
@@ -198,11 +212,15 @@ export default defineComponent({
     const store = useAuthenticationStore()
     const mainLayoutStore = useMainLayoutStore()
 
+    const currentInstance = getCurrentInstance()
+    const componentName = currentInstance?.parent?.type.name
+
     const puedeVer = computed(() =>
       store.can(`puede.ver.${router.name?.toString()}`) && props.permitirConsultar
     )
     const puedeCrear = computed(() =>
-      store.can(`puede.crear.${router.name?.toString()}`)
+      // store.can(`puede.crear.${router.name?.toString()}`)
+      store.can(`puede.crear.${componentName ?? router.name?.toString()}`)
     )
     const puedeEditar = computed(() =>
       store.can(`puede.editar.${router.name?.toString()}`) && props.permitirEditar
@@ -227,17 +245,18 @@ export default defineComponent({
     }
 
     const obtenerListadoFiltros = () => {
-      filtros.search = busqueda.value === "" ? null : busqueda.value
+      filtros.search = busqueda.value === '' ? null : busqueda.value
       const newParams = {...filtrosBusqueda.value}
       newParams.limit = 100
       listar({...filtros, ...newParams}, false)
     }
     const obtenerTodoListadoFiltros = () => {
-      filtros.search = busqueda.value === "" ? null : busqueda.value
+      filtros.search = busqueda.value === '' ? null : busqueda.value
       listar({...filtros, ...filtrosBusqueda.value}, false)
     } */
 
     return {
+      refTabla,
       filtrarTodos,
       tabs,
       tituloTabla,
@@ -248,7 +267,7 @@ export default defineComponent({
       accion,
       filtros,
       accionTabla,
-      // tituloPagina: tituloTabla[0].toUpperCase() + tituloTabla.substring(1),
+      tituloPagina: tituloTabla[0].toUpperCase() + tituloTabla.substring(1),
       seleccionado,
       columnas,
       // acciones tabla
@@ -264,8 +283,8 @@ export default defineComponent({
 
       //acciones personalizadas
       // accion1: props.accion1
-      puedeFiltrar: props.puedeFiltrar,
-      puedeExportar: props.puedeExportar
+      // puedeFiltrar: props.puedeFiltrar,
+      // puedeExportar: props.puedeExportar
     }
   },
 })

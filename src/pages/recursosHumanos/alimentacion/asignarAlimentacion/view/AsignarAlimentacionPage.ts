@@ -18,6 +18,7 @@ import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import SolicitarFecha from 'shared/prompts/SolicitarFecha.vue'
 import { useAuthenticationStore } from 'stores/authentication'
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 
 export default defineComponent({
   components: { TabLayout, ModalesEntidad, SolicitarFecha },
@@ -45,7 +46,7 @@ export default defineComponent({
       useNotificaciones()
       const authenticationStore = useAuthenticationStore()
 
-    const empleados = ref([])
+    const { empleados, filtrarEmpleados } = useFiltrosListadosSelects(listadosAuxiliares)
     const visualizar_corte = ref(false)
     const modales = new ComportamientoModalesSeleccionEmpleado()
 
@@ -75,22 +76,6 @@ export default defineComponent({
     setValidador(v$.value)
     const asignacionAlimentacionStore = useAsignacionAlimentacionStore()
 
-    function filtrarEmpleados(val, update) {
-      if (val === '') {
-        update(() => {
-          empleados.value = listadosAuxiliares.empleados
-        })
-        return
-      }
-      update(() => {
-        const needle = val.toLowerCase()
-        empleados.value = listadosAuxiliares.empleados.filter(
-          (v) =>
-            v.nombres.toLowerCase().indexOf(needle) > -1 ||
-            v.apellidos.toLowerCase().indexOf(needle) > -1
-        )
-      })
-    }
 
     const btnSeleccionarEmpleado: CustomActionTable = {
       titulo: 'Seleccionar',
@@ -181,7 +166,7 @@ export default defineComponent({
       },
       visible: () => authenticationStore.can('puede.ver.detalle_alimentaciones'),
     }
-    async function guardado(data) {
+    async function guardado() {
       await listar()
     }
     function fechaSubida(fecha?) {
@@ -190,7 +175,7 @@ export default defineComponent({
         confirmar(
           'Esto realizara los cortes de valores de alimentacion de los empleados. ¿Desea continuar?',
           async () => {
-            asignacionAlimentacionStore.realizarCorte()
+            await asignacionAlimentacionStore.realizarCorte()
             modales.abrirModalEntidad('DetalleAlimentacionPage')
           }
         )

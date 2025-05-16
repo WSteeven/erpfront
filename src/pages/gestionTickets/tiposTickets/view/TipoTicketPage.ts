@@ -6,8 +6,10 @@ import { required } from 'shared/i18n-validators'
 import { computed, defineComponent } from 'vue'
 import useVuelidate from '@vuelidate/core'
 import { useQuasar } from 'quasar'
+import { iconos } from 'config/iconos'
 
 // Componentes
+import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
@@ -24,11 +26,15 @@ import { isAxiosError, notificarMensajesError } from 'shared/utils'
 import { useAuthenticationStore } from 'stores/authentication'
 import { useNotificaciones } from 'shared/notificaciones'
 import { TipoTicket } from '../domain/TipoTicket'
+import { useOrquestadorSelectorEmpleados } from 'pages/seguridad/bitacoras/application/useOrquestadorSelectorEmpleados'
+import { configuracionColumnasEmpleadosLite } from 'pages/recursosHumanos/empleados/domain/configuracionColumnasEmpleadosLite'
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 
 export default defineComponent({
   components: {
     TabLayout,
     EssentialTable,
+    EssentialSelectableTable,
   },
   setup() {
     /*********
@@ -47,7 +53,7 @@ export default defineComponent({
     )
     const { entidad: tipoTicket, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
     const { setValidador, cargarVista, obtenerListados } = mixin.useComportamiento()
-    const { onReestablecer } = mixin.useHooks()
+    const { onReestablecer, onConsultado } = mixin.useHooks()
 
     cargarVista(async () => {
       await obtenerListados({
@@ -62,16 +68,17 @@ export default defineComponent({
      * Variables
      ************/
     const notificaciones = useNotificaciones()
-    const categoriasTiposTickets = computed(() => listadosAuxiliares.categoriasTiposTickets.filter((tipo: CategoriaTipoTicket) => tipo.departamento_id === tipoTicket.departamento))
+    // const categoriasTiposTickets = computed(() => listadosAuxiliares.categoriasTiposTickets.filter((tipo: CategoriaTipoTicket) => tipo.departamento_id === tipoTicket.departamento))
+    const categoriasTiposTicketsComputed = computed(() => categoriasTiposTickets.value.filter((tipo: CategoriaTipoTicket) => tipo.departamento_id === tipoTicket.departamento))
     const cargando = new StatusEssentialLoading()
 
-    const departamentos = computed(() => listadosAuxiliares.departamentos.filter((departamento: Departamento) => {
+    /* const departamentos = computed(() => listadosAuxiliares.departamentos.filter((departamento: Departamento) => {
       if (authenticationStore.esAdministrador) {
         return true
       } else {
-        return departamento.id === authenticationStore.user.departamento
+        return departamento.responsable_id === authenticationStore.user.id
       }
-    }))
+    })) */
 
 
     /****************
@@ -102,13 +109,32 @@ export default defineComponent({
       }
     }
 
-    /*********
-    * Filtros
-    **********/
-    const {
+    /************
+    * Funciones
+    *************/
+    /*const {
       filtrarDepartamentos,
-    } = useFiltrosListadosTickets(listadosAuxiliares)
+    } = useFiltrosListadosTickets(listadosAuxiliares)*/
+    const { filtrarDepartamentos, departamentos, categoriasTiposTickets, filtrarCategoriasTiposTickets } = useFiltrosListadosSelects(listadosAuxiliares)
 
+    const departamentosComputed = computed(() => {
+      return departamentos.value.filter((departamento: Departamento) => {
+        if (authenticationStore.esAdministrador) {
+          return true
+        } else {
+          return departamento.responsable_id === authenticationStore.user.id
+        }
+      })
+    })
+
+    const resetearDestinatario = () => {
+      criterioBusquedaDestinatario.value = criterioBusquedaDestinatario.value ?? null
+      tipoTicket.destinatario = criterioBusquedaDestinatario.value ? tipoTicket.destinatario : null
+    }
+
+    /*********
+     * Reglas
+     ********/
     const rules = {
       nombre: { required },
       departamento: { required },
@@ -124,6 +150,21 @@ export default defineComponent({
      * Hooks
      ********/
     onReestablecer(() => tipoTicket.departamento = authenticationStore.user.departamento)
+    onConsultado(() => {
+      criterioBusquedaDestinatario.value = tipoTicket.destinatario
+      tipoTicket.destinatario = tipoTicket.destinatario_id
+    })
+
+    /********
+     * Hooks
+     ********/
+    const {
+      refListadoSeleccionable: refListadoSeleccionableDestinatario,
+      criterioBusqueda: criterioBusquedaDestinatario,
+      listado: listadoDestinatario,
+      listar: listarDestinatario,
+      seleccionar: seleccionarDestinatario,
+    } = useOrquestadorSelectorEmpleados(tipoTicket, 'empleados', 'destinatario')
 
     return {
       v$,
@@ -132,10 +173,21 @@ export default defineComponent({
       disabled,
       accion,
       configuracionColumnasTipoTicket,
+      configuracionColumnasEmpleadosLite,
       filtrarDepartamentos,
       departamentos,
-      categoriasTiposTickets,
+      categoriasTiposTicketsComputed,
+      filtrarCategoriasTiposTickets,
       btnToggleActivar,
+      iconos,
+      resetearDestinatario,
+      departamentosComputed,
+      // orquestador
+      refListadoSeleccionableDestinatario,
+      criterioBusquedaDestinatario,
+      listadoDestinatario,
+      listarDestinatario,
+      seleccionarDestinatario,
     }
   },
 })

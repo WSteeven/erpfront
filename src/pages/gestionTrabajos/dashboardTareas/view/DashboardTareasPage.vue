@@ -1,7 +1,22 @@
 <template>
   <q-page padding>
-    <q-card class="q-mb-md rounded no-border custom-shadow">
-      <q-card-section>
+    <q-card class="q-mb-md rounded no-border bg-desenfoque custom-shadow">
+        <q-card-section>
+        <div class="col-12 col-md-6">
+            <q-btn-toggle
+                v-model="tipoDashboard"
+                class="toggle-button-primary"
+                spread
+                no-caps
+                rounded
+                toggle-color="primary"
+                unelevated
+                :options="tiposDashboard"
+            />
+        </div>
+        </q-card-section>
+
+        <q-card-section v-if="tipoDashboard === SISTEMA">
         <div class="border-1 text-primary text-bold q-mb-lg">
           <q-icon name="bi-graph-up-arrow" class="q-mr-sm"></q-icon>
           Análisis de datos: Módulo de tareas
@@ -98,27 +113,27 @@
             <label class="block q-mb-sm">Filtrar por</label>
             <q-btn-toggle
               v-model="filtro.grupo_empleado"
-              class="toggle-button-grey"
+              class="toggle-button-primary"
               spread
               no-caps
               rounded
-              toggle-color="grey-9"
+              toggle-color="primary"
               unelevated
               @click="limpiarDatosConsultados()"
               :options="[
                 {
                   label: 'Por coordinador',
-                  value: opcionesFiltroGrupoEmpleado.porEmpleado,
+                  value: opcionesFiltroGrupoEmpleado.porEmpleado
                 },
                 {
                   label: 'Por grupo',
-                  value: opcionesFiltroGrupoEmpleado.porGrupo,
-                },
+                  value: opcionesFiltroGrupoEmpleado.porGrupo
+                }
               ]"
             />
           </div>
 
-          <div v-if="mostrarSeccionEmpleado" class="col-12">
+          <div v-if="mostrarSeccionEmpleado" class="col-12 col-md-10">
             <label class="q-mb-sm block"
               >Seleccione un coordinador para consultar</label
             >
@@ -137,8 +152,8 @@
               @update:model-value="consultar()"
               @filter="filtrarEmpleados"
               @popup-show="ordenarEmpleados(empleados)"
-              :option-label="(v) => v.apellidos + ' ' + v.nombres"
-              :option-value="(v) => v.id"
+              :option-label="v => v.apellidos + ' ' + v.nombres"
+              :option-value="v => v.id"
               emit-value
               map-options
             >
@@ -158,6 +173,17 @@
             </q-select>
           </div>
 
+          <div class="col-12 col-md-2 q-pt-lg">
+              <q-checkbox
+                class="q-mt-sm q-pt-sm"
+                v-model="mostrarInactivos"
+                label="Inactivos"
+                outlined
+                @update:model-value="checkMostrarInactivos"
+                dense
+              ></q-checkbox>
+          </div>
+
           <!-- Grupo -->
           <div v-show="mostrarSeccionGrupo" class="col-12">
             <label class="q-mb-sm block"
@@ -172,8 +198,8 @@
               options-dense
               dense
               outlined
-              :option-label="(item) => item.nombre"
-              :option-value="(item) => item.id"
+              :option-label="item => item.nombre"
+              :option-value="item => item.id"
               use-input
               input-debounce="0"
               emit-value
@@ -199,11 +225,25 @@
           </div>
         </div>
       </q-card-section>
+        <q-card-section v-if="tipoDashboard===APPENATE">
+            <div class="border-1 text-primary text-bold q-mb-lg">
+                <q-icon name="bi-graph-up-arrow" class="q-mr-sm"></q-icon>
+                Análisis de datos: Módulo de tareas del APPENATE
+            </div>
+            <!-- Tiempos -->
+            <div class="row q-col-gutter-sm">
+                <iframe title="Dashboard de Tareas de Técnicos"
+                        :width="$q.screen.width" :height="$q.screen.height"
+                        src="https://app.powerbi.com/view?r=eyJrIjoiZWIwM2ZlZDgtY2NiOS00YjJhLTllOGMtNzBkZTBiZTNkZDBhIiwidCI6IjhiODI2NjQwLTRkZTQtNDEyOS04MWNlLTU3NjE0MTIwZjAwMCIsImMiOjR9"
+                        frameborder="0"
+                        allowFullScreen="true"></iframe>
+            </div>
+        </q-card-section>
     </q-card>
 
     <q-card
       v-if="mostrarTitulosSeccion && mostrarCantidades"
-      class="q-mb-md rounded no-border custom-shadow q-pa-md"
+      class="q-mb-md rounded no-border custom-shadow bg-desenfoque q-pa-md"
     >
       <div
         v-if="mostrarTitulosSeccion"
@@ -349,7 +389,7 @@
         graficoLineaTiempoSubtareasRealizadasCoordinador ||
         graficoLineaTiempoSubtareasFinalizadasCoordinador
       "
-      class="q-mb-md rounded q-pa-md no-border custom-shadow"
+      class="q-mb-md rounded q-pa-md no-border custom-shadow bg-desenfoque"
     >
       <div
         v-if="mostrarTitulosSeccion"
@@ -370,7 +410,7 @@
               :data="graficoLineaTiempoSubtareasRealizadasCoordinador"
               :options="optionsLine"
               tipo="line"
-              @click="(data) => clickGraficoLineaTiempo(data)"
+              @click="data => clickGraficoLineaTiempo(data)"
             />
           </div>
         </div>
@@ -385,7 +425,7 @@
               :data="graficoLineaTiempoSubtareasFinalizadasCoordinador"
               :options="optionsLine"
               tipo="line"
-              @click="(data) => clickGraficoLineaTiempo(data)"
+              @click="data => clickGraficoLineaTiempo(data)"
             />
           </div>
         </div>
@@ -394,7 +434,7 @@
 
     <q-card
       v-if="mostrarTitulosSeccion && cantidadesPorEstadosSubtareasBar"
-      class="q-mb-md rounded no-border custom-shadow"
+      class="q-mb-md rounded no-border bg-desenfoque custom-shadow"
     >
       <div
         v-if="mostrarTitulosSeccion"
@@ -410,6 +450,7 @@
         transition-prev="scale"
         transition-next="scale"
         keep-alive
+        class="bg-desenfoque"
         :class="{ 'rounded-tabpanel': !$q.screen.xs }"
       >
         <q-tab-panel
@@ -464,6 +505,7 @@
                 :alto-fijo="false"
                 :accion1="botonVer"
                 :accion2="btnSeguimiento"
+                :mostrar-exportar="true"
               ></essential-table>
             </div>
           </div>
@@ -477,7 +519,7 @@
         (graficosCoordinadorSubordinadosPorGrupo.length ||
           graficosCoordinadorSubordinadosPorCoordinador.length)
       "
-      class="q-mb-md rounded no-border custom-shadow"
+      class="q-mb-md rounded no-border bg-desenfoque custom-shadow"
     >
       <div class="row text-bold text-primary q-pa-md rounded items-center">
         <q-icon name="bi-pie-chart" class="q-mr-sm"></q-icon>
@@ -490,6 +532,7 @@
         animated
         transition-prev="scale"
         transition-next="scale"
+        class="bg-desenfoque"
         keep-alive
       >
         <!-- Graficos -->
@@ -507,12 +550,12 @@
                 :options="[
                   {
                     label: 'Por grupo',
-                    value: modosAsignacionTrabajo.por_grupo,
+                    value: modosAsignacionTrabajo.por_grupo
                   },
                   {
                     label: 'Por empleado',
-                    value: modosAsignacionTrabajo.por_empleado,
-                  },
+                    value: modosAsignacionTrabajo.por_empleado
+                  }
                 ]"
               />
             </div>
@@ -556,7 +599,7 @@
                   :data="grafico"
                   :options="optionsPie"
                   @click="
-                    (data) =>
+                    data =>
                       clickCantidadesSubtareasSubordinados(data, grafico.titulo)
                   "
                 />
@@ -585,7 +628,7 @@
                   :data="grafico"
                   :options="optionsPie"
                   @click="
-                    (data) =>
+                    data =>
                       clickGraficoEmpleadoSubordinado(data, grafico.titulo)
                   "
                 />
@@ -620,6 +663,7 @@
                 :alto-fijo="false"
                 :accion1="botonVer"
                 :accion2="btnSeguimiento"
+                :mostrar-exportar="true"
               ></essential-table>
             </div>
           </div>
@@ -651,6 +695,7 @@
                 :alto-fijo="false"
                 :accion1="botonVer"
                 :accion2="btnSeguimiento"
+                :mostrar-exportar="true"
               ></essential-table>
             </div>
           </div>
@@ -685,7 +730,7 @@
                 <grafico-generico
                   :data="grafico"
                   :options="optionsPie"
-                  @click="(data) => clickGraficoEstadosGrupo(data)"
+                  @click="data => clickGraficoEstadosGrupo(data)"
                 />
               </div>
             </div>
@@ -718,6 +763,7 @@
                 :alto-fijo="false"
                 :accion1="botonVer"
                 :accion2="btnSeguimiento"
+                :mostrar-exportar="true"
               ></essential-table>
             </div>
           </div>

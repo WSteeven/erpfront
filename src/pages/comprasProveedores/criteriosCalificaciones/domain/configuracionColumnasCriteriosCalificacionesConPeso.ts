@@ -1,13 +1,11 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { CriterioCalificacion } from "./CriterioCalificacion";
-import { opcionesOfertas } from "config/utils_compras_proveedores";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
+import { opcionesOfertas } from 'config/utils_compras_proveedores';
 
 export const configuracionColumnasCriteriosCalificacionesConPeso: ColumnConfig<any>[] = [
     {
         name: 'nombre',
         field: 'nombre',
         label: 'Nombre',
-        style: 'max-width: 150px; overflow: auto;',
         align: 'left',
         sortable: true
     },
@@ -15,7 +13,6 @@ export const configuracionColumnasCriteriosCalificacionesConPeso: ColumnConfig<a
         name: 'descripcion',
         field: 'descripcion',
         label: 'Descripción',
-        style: 'max-width: 250px; overflow: auto;',
         align: 'left',
         sortable: true
     },

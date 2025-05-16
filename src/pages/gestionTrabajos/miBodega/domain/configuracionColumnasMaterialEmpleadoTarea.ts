@@ -25,19 +25,26 @@ export const configuracionColumnasMaterialEmpleadoTarea: ColumnConfig<MaterialEm
       sortable: true,
     },
     {
+      name: 'categoria',
+      field: 'categoria',
+      label: 'Categoria',
+      align: 'left',
+      sortable: true
+    },
+    {
       name: 'cliente',
       field: 'cliente',
       label: 'Cliente',
       align: 'left',
       sortable: true,
     },
-    /* {
-      name: 'etapa',
-      field: 'etapa',
-      label: 'Etapa',
+    {
+      name: 'transacciones',
+      field: 'transacciones',
+      label: 'Transacciones',
       align: 'left',
       sortable: true,
-    }, */
+    },
     {
       name: 'stock_actual',
       field: 'stock_actual',

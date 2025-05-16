@@ -5,7 +5,7 @@ import { descargarArchivoUrl, formatBytes } from 'shared/utils'
 import { useNotificaciones } from 'shared/notificaciones'
 import { AxiosError, AxiosResponse } from 'axios'
 import { accionesTabla } from 'config/utils'
-import { defineComponent, ref, watchEffect } from 'vue'
+import { defineComponent, ref } from 'vue'
 import { apiConfig } from 'config/api'
 
 // Componentes
@@ -56,6 +56,10 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
+    mostrarListado: {
+      type: Boolean,
+      default: true,
+    },
   },
   setup(props) {
     /********
@@ -70,7 +74,7 @@ export default defineComponent({
       notificarAdvertencia,
       confirmar,
     } = useNotificaciones()
-
+    const notificaciones = useNotificaciones()
     function listarArchivos(params: ParamsType) {
       listar(params)
     }
@@ -109,7 +113,7 @@ export default defineComponent({
     /************
      * Funciones
      *************/
-    const quiero_subir_archivos = ref(false)
+    const quiero_subir_archivos = ref(props.esObligatorio)
     const esConsultado = ref(false)
     async function factoryFn(files) {
       const fd = new FormData()
@@ -126,21 +130,24 @@ export default defineComponent({
         notificarCorrecto(response.data.mensaje)
 
         // Restablecer el componente q-uploader para mostrar el botón de "añadir archivos" nuevamente
-        refGestor.value.reset()
-
+        quiero_subir_archivos.value = props.esObligatorio;
       } catch (error: unknown) {
+        console.log('error en el catch', error)
         const axiosError = error as AxiosError
-        notificarError(axiosError.response?.data.mensaje)
+        console.log(axiosError)
+        notificarError(axiosError.response?.data.message)
       }
     }
-    function subir(params: ParamsType) {
-      paramsForm = params
-      if (refGestor.value) {
-        refGestor.value.upload()
-        refGestor.value.reset()
-        refGestor.value.removeUploadedFiles()
-        refGestor.value.removeQueuedFiles()
-      }
+    async function subir(params: ParamsType) {
+      try {
+        paramsForm = params
+        if (refGestor.value) {
+          refGestor.value.upload()
+          refGestor.value.reset()
+          refGestor.value.removeUploadedFiles()
+          refGestor.value.removeQueuedFiles()
+        }
+      } catch (error) {console.log(error)}
     }
 
     function onRejected(rejectedEntries) {
@@ -161,7 +168,7 @@ export default defineComponent({
     function limpiarListado() {
       listado.value = []
     }
-    watchEffect(() => (quiero_subir_archivos.value = props.esObligatorio))
+    // watchEffect(() => (quiero_subir_archivos.value = props.esObligatorio))
     return {
       listado,
       refGestor,
@@ -169,7 +176,6 @@ export default defineComponent({
       formatBytes,
       onFileAdded,
       onFileRemoved,
-      watchEffect,
       quiero_subir_archivos,
       esConsultado,
       columnas: [...configuracionColumnasDocumento, accionesTabla],

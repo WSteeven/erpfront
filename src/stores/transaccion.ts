@@ -6,8 +6,7 @@ import { AxiosResponse } from 'axios'
 import { defineStore } from 'pinia'
 import { reactive, ref } from 'vue'
 import { acciones } from 'config/utils'
-import { imprimirArchivo, notificarMensajesError } from 'shared/utils'
-import { Comprobante } from 'pages/bodega/comprobantes/domain/Comprobante'
+import { imprimirArchivo, notificarErrores, notificarMensajesError } from 'shared/utils'
 import { ApiError } from 'shared/error/domain/ApiError'
 import { useNotificaciones } from 'shared/notificaciones'
 
@@ -16,6 +15,7 @@ export const useTransaccionStore = defineStore('transaccion', () => {
     const transaccion = reactive(new Transaccion()) //la transaccion
     const transaccionReset = new Transaccion()
     const idTransaccion = ref()
+    const tab = ref('')
 
     const notificaciones = useNotificaciones()
     const accionTransaccion = acciones.nuevo
@@ -54,11 +54,44 @@ export const useTransaccionStore = defineStore('transaccion', () => {
         imprimirArchivo(url, 'GET', 'blob', 'pdf', filename)
         console.log('Egreso impreso con éxito.')
     }
+    async function imprimirActaEntregaRecepcion() {
+        const axios = AxiosHttpRepository.getInstance()
+        const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.transacciones_egresos) + '/imprimir-entrega-recepcion/' + idTransaccion.value
+        const filename = 'acta_entrega_recepcion_' + idTransaccion.value + '_' + Date.now()
+        imprimirArchivo(url, 'GET', 'blob', 'pdf', filename)
+    }
     async function showPreview() {
+        statusLoading.activar()
         const axios = AxiosHttpRepository.getInstance()
         const ruta = axios.getEndpoint(endpoints.transacciones_ingresos) + '/show-preview/' + idTransaccion.value
         const response: AxiosResponse = await axios.get(ruta)
         transaccion.hydrate(response.data.modelo)
+        statusLoading.desactivar()
+    }
+    async function showPreviewEgreso() {
+        statusLoading.activar()
+        const axios = AxiosHttpRepository.getInstance()
+        const ruta = axios.getEndpoint(endpoints.transacciones_egresos) + '/show-preview/' + idTransaccion.value
+        const response: AxiosResponse = await axios.get(ruta)
+        transaccion.hydrate(response.data.modelo)
+        statusLoading.desactivar()
+    }
+    async function editarItemEgreso(data) {
+        try {
+            statusLoading.activar()
+            const axios = AxiosHttpRepository.getInstance()
+            const ruta = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.modificar_item_egreso)+'/'+idTransaccion.value
+            const response: AxiosResponse = await axios.patch(ruta, data)
+            console.log(response)
+            if (response.status === 200) notificaciones.notificarCorrecto('Item actualizado correctamente')
+        } catch (error: any) {
+            const errorApi = new ApiError(error)
+            const mensajes: string[] = errorApi.erroresValidacion
+            await notificarMensajesError(mensajes, notificaciones)
+        } finally {
+            statusLoading.desactivar()
+        }
+
     }
 
 
@@ -96,12 +129,19 @@ export const useTransaccionStore = defineStore('transaccion', () => {
      * transaction and then hydrates the response data into a transaction object.
      */
     async function anularIngreso() {
-        const axios = AxiosHttpRepository.getInstance()
-        const ruta = axios.getEndpoint(endpoints.transacciones_ingresos) + '/anular/' + idTransaccion.value
-        const response: AxiosResponse = await axios.get(ruta)
-        // console.log(response.data)
-        notificaciones.notificarCorrecto(response.data.mensaje)
-        transaccion.hydrate(response.data.modelo)
+        try {
+            statusLoading.activar();
+            const axios = AxiosHttpRepository.getInstance()
+            const ruta = axios.getEndpoint(endpoints.transacciones_ingresos) + '/anular/' + idTransaccion.value
+            const response: AxiosResponse = await axios.get(ruta)
+            // console.log(response.data)
+            notificaciones.notificarCorrecto(response.data.mensaje)
+            transaccion.hydrate(response.data.modelo)
+        } catch (error) {
+            notificarErrores(error)
+        } finally {
+            statusLoading.desactivar();
+        }
     }
 
     async function anularEgreso() {
@@ -122,16 +162,18 @@ export const useTransaccionStore = defineStore('transaccion', () => {
         // State
         transaccion,
         accionTransaccion,
+        tab,
         cargarTransaccion,
         resetearTransaccion,
         imprimirIngreso,
         imprimirEgreso,
         idTransaccion,
         showPreview,
+        showPreviewEgreso,
+        editarItemEgreso,
         firmarComprobante,
         anularIngreso,
         anularEgreso,
-
-
+        imprimirActaEntregaRecepcion,
     }
 })

@@ -246,7 +246,6 @@ export default defineComponent({
     const pedido = pedidoStore.pedido
     const opciones_estados = ref([])
 
-    const accion = 'editar'
 
     //limpiar cantidades de pedido que se va a corregir
     pedido.listadoProductos = pedidoStore.pedido.listadoProductos.filter(

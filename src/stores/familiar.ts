@@ -11,7 +11,7 @@ export const useFamiliarStore = defineStore('familiar', () => {
   const nombres = ref()
   const apellidos = ref()
   const accion = ref()
-  const listar_familiares = ref()
+  const listar_familiares = ref(true)
 
 
   return {

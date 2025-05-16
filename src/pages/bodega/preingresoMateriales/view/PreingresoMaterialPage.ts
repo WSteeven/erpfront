@@ -1,53 +1,55 @@
 //Depedencias
-import { configuracionColumnasProductos } from "pages/comprasProveedores/ordenCompra/domain/configuracionColumnasProductos";
-import { configuracionColumnasPreingresosMateriales } from "../domain/configuracionColumnasPreingresosMateriales";
-import { configuracionColumnasItemPreingreso } from "../domain/configuracionColumnasItemsPreingreso";
-import { configuracionColumnasDetallesProductos } from "../domain/configuracionColumnasDetallesProductos";
-import { required, requiredIf } from "shared/i18n-validators";
+import { configuracionColumnasProductos } from 'pages/comprasProveedores/ordenCompra/domain/configuracionColumnasProductos';
+import { configuracionColumnasPreingresosMateriales } from '../domain/configuracionColumnasPreingresosMateriales';
+import { configuracionColumnasItemPreingreso } from '../domain/configuracionColumnasItemsPreingreso';
+import { configuracionColumnasDetallesProductos } from '../domain/configuracionColumnasDetallesProductos';
+import { required, requiredIf } from 'shared/i18n-validators';
 import { defineComponent, ref } from 'vue'
-import { acciones, accionesTabla, rolesSistema, tabOptionsPreingresoMateriales } from 'config/utils'
+import { acciones, accionesTabla, maskFecha, rolesSistema, tabOptionsPreingresoMateriales } from 'config/utils'
 import useVuelidate from '@vuelidate/core'
 
 //Components
-import TabLayoutFilterTabs2 from "shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue";
+import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue';
 import TabLayoutFilterTabs from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 import SelectorImagen from 'components/SelectorImagen.vue'
-import EssentialPopupEditableTable from "components/tables/view/EssentialPopupEditableTable.vue"
+import EssentialPopupEditableTable from 'components/tables/view/EssentialPopupEditableTable.vue'
 import VisorImagen from 'components/VisorImagen.vue'
 import GestorArchivos from 'components/gestorArchivos/GestorArchivos.vue';
 
 //Logica y controladores
-import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
 import { PreingresoMaterial } from '../domain/PreingresoMaterial'
 import { PreingresoMaterialController } from '../infraestructure/PreingresoMaterialController'
 import { useNotificaciones } from 'shared/notificaciones'
-import { useAuthenticationStore } from "stores/authentication";
-import { CustomActionTable } from "components/tables/domain/CustomActionTable";
-import { LocalStorage, useQuasar } from "quasar";
-import { useOrquestadorSelectorProductos } from "../application/OrquestadorSelectorProductos";
-import { ItemPreingresoMaterial } from "../domain/ItemPreingresoMaterial";
-import { encontrarUltimoIdListado, filtrarEmpleadosPorRoles, filtrarLista, ordenarLista } from "shared/utils";
-import { UnidadMedidaController } from "pages/bodega/unidades_medidas/infraestructure/UnidadMedidaController";
-import { UnidadMedida } from "pages/bodega/unidades_medidas/domain/UnidadMedida";
-import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
-import { useCargandoStore } from "stores/cargando";
-import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
-import { ValidarListadoProductos } from "../application/validation/ValidarListadoProductos";
-import { ClienteController } from "sistema/clientes/infraestructure/ClienteController";
-import { ArchivoController } from "pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/infraestructure/ArchivoController";
-import { Empleado } from "pages/recursosHumanos/empleados/domain/Empleado";
-import { ProyectoController } from "pages/gestionTrabajos/proyectos/infraestructure/ProyectoController";
-import { Etapa } from "pages/gestionTrabajos/proyectos/modules/etapas/domain/Etapa";
-import { Proyecto } from "pages/gestionTrabajos/proyectos/domain/Proyecto";
-import { usePreingresoStore } from "stores/bodega/preingreso";
-import { useNotificacionStore } from "stores/notificacion";
-import { Tarea } from "pages/gestionTrabajos/tareas/domain/Tarea";
-import { TareaController } from "pages/gestionTrabajos/tareas/infraestructure/TareaController";
-import { EmpleadoController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoController";
-import { EtapaController } from "pages/gestionTrabajos/proyectos/modules/etapas/infraestructure/EtapaController";
+import { useAuthenticationStore } from 'stores/authentication';
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable';
+import { LocalStorage, useQuasar } from 'quasar';
+import { useOrquestadorSelectorProductos } from '../application/OrquestadorSelectorProductos';
+import { ItemPreingresoMaterial } from '../domain/ItemPreingresoMaterial';
+import { encontrarUltimoIdListado, filtrarEmpleadosPorRoles, ordenarLista } from 'shared/utils';
+import { UnidadMedidaController } from 'pages/bodega/unidades_medidas/infraestructure/UnidadMedidaController';
+import { UnidadMedida } from 'pages/bodega/unidades_medidas/domain/UnidadMedida';
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
+import { useCargandoStore } from 'stores/cargando';
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
+import { ValidarListadoProductos } from '../application/validation/ValidarListadoProductos';
+import { ClienteController } from 'sistema/clientes/infraestructure/ClienteController';
+import { ArchivoController } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/infraestructure/ArchivoController';
+import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado';
+import { ProyectoController } from 'pages/gestionTrabajos/proyectos/infraestructure/ProyectoController';
+import { Etapa } from 'pages/gestionTrabajos/proyectos/modules/etapas/domain/Etapa';
+import { Proyecto } from 'pages/gestionTrabajos/proyectos/domain/Proyecto';
+import { usePreingresoStore } from 'stores/bodega/preingreso';
+import { useNotificacionStore } from 'stores/notificacion';
+import { Tarea } from 'pages/gestionTrabajos/tareas/domain/Tarea';
+import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController';
+import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController';
+import { EtapaController } from 'pages/gestionTrabajos/proyectos/modules/etapas/infraestructure/EtapaController';
+import { Condicion } from 'pages/administracion/condiciones/domain/Condicion';
+import { CondicionController } from 'pages/administracion/condiciones/infraestructure/CondicionController';
 
 
 export default defineComponent({
@@ -55,13 +57,13 @@ export default defineComponent({
   emits: ['actualizar', 'fila-modificada', 'cargado'],
   setup(props, { emit }) {
     const mixin = new ContenedorSimpleMixin(PreingresoMaterial, new PreingresoMaterialController(), new ArchivoController())
-    const { entidad: preingreso, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
+    const { entidad: preingreso, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista, listar } = mixin.useComportamiento()
     const { onReestablecer, onConsultado, onGuardado, onModificado, onBeforeGuardar } = mixin.useHooks()
-    const { confirmar, prompt, notificarCorrecto, notificarError } = useNotificaciones()
-    let tabSeleccionado = ref()
-    let componenteCargado = ref(false)
-    let puedeEditar = ref(false)
+    const { confirmar } = useNotificaciones()
+    const tabSeleccionado = ref()
+    const componenteCargado = ref(false)
+    const puedeEditar = ref(false)
     const refVisorImagen = ref()
     const refArchivo = ref()
     const idPreingreso = ref()
@@ -105,6 +107,7 @@ export default defineComponent({
       cargarDatosDefecto()
       await obtenerListados({
         etapas: [],
+        condiciones: new CondicionController(),
         unidades_medidas: new UnidadMedidaController(),
         empleados: { controller: new EmpleadoController(), params: { estado: 1 } },
         // coordinadores: { controller: new EmpleadoRoleController(), params: { roles: [rolesSistema.jefe_tecnico, rolesSistema.supervisor, rolesSistema.coordinador, rolesSistema.fiscalizador] } },
@@ -129,7 +132,8 @@ export default defineComponent({
       coordinadores.value = listadosAuxiliares.coordinadores
       tecnicos.value = listadosAuxiliares.tecnicos
       clientes.value = listadosAuxiliares.clientes
-      configuracionColumnasItemPreingreso.find((item) => item.field === 'unidad_medida')!.options = listadosAuxiliares.unidades_medidas.map((v: UnidadMedida) => { return { value: v.id, label: v.nombre } })
+      configuracionColumnasItemPreingreso.find((item) => item.field === 'unidad_medida')!.options = listadosAuxiliares.unidades_medidas.map((v: UnidadMedida) => { return { label: v.nombre } })
+      configuracionColumnasItemPreingreso.find((item) => item.field === 'condicion')!.options = listadosAuxiliares.condiciones.map((v: Condicion) => { return { label: v.nombre } })
       componenteCargado.value = true
       // console.log('Se ha cargado el listado de opciones en la configuracion de columnas')
     })
@@ -224,10 +228,10 @@ export default defineComponent({
     }
 
     /**
-     * La función "limpiarCampos" borra los campos "etapa" o "tarea" si los parámetros correspondientes
+     * La función 'limpiarCampos' borra los campos 'etapa' o 'tarea' si los parámetros correspondientes
      * son verdaderos.
-     * @param [etapa=false] - Si se establece en verdadero, el campo "etapa" se establecerá en nulo.
-     * @param [tarea=false] - Si se establece en verdadero, la propiedad "tarea" se establecerá en nula.
+     * @param [etapa=false] - Si se establece en verdadero, el campo 'etapa' se establecerá en nulo.
+     * @param [tarea=false] - Si se establece en verdadero, la propiedad 'tarea' se establecerá en nula.
      */
     function limpiarCampos(etapa = false, tarea = false) {
       if (accion.value == acciones.nuevo) {
@@ -238,7 +242,7 @@ export default defineComponent({
 
 
     /**
-     * La función "obtenerEtapasProyecto" recupera las etapas de un proyecto y realiza diversas
+     * La función 'obtenerEtapasProyecto' recupera las etapas de un proyecto y realiza diversas
      * operaciones según el rol del usuario.
      */
     async function obtenerEtapasProyecto(limpiarEtapa, limpiarTarea) {
@@ -279,12 +283,12 @@ export default defineComponent({
     }
 
     /**
-     * La función "obtenerTareasEtapa" recupera una lista de tareas según el ID de etapa proporcionado
+     * La función 'obtenerTareasEtapa' recupera una lista de tareas según el ID de etapa proporcionado
      * y actualiza la lista de tareas.
      * @param {string | number | null} idEtapa - La ID de la etapa para la cual desea obtener tareas.
      * @param [limpiarTarea=true] - El parámetro `limpiarTarea` es un valor booleano que determina si
-     * la tarea actual debe borrarse o no. Si "limpiarTarea" es "verdadero", la tarea actual se
-     * establecerá en "nula". Caso contrario no sucede nada.
+     * la tarea actual debe borrarse o no. Si 'limpiarTarea' es 'verdadero', la tarea actual se
+     * establecerá en 'nula'. Caso contrario no sucede nada.
      */
     async function obtenerTareasEtapa(idEtapa: string | number | null, limpiarTarea = true) {
       cargando.activar()
@@ -298,8 +302,8 @@ export default defineComponent({
     }
 
     /**
-     * La función "obtenerDatosTareaSeleccionada" recupera datos de una tarea seleccionada y los asigna
-     * a los campos correspondientes en el objeto "preingreso".
+     * La función 'obtenerDatosTareaSeleccionada' recupera datos de una tarea seleccionada y los asigna
+     * a los campos correspondientes en el objeto 'preingreso'.
      */
     async function obtenerDatosTareaSeleccionada() {
       const tareaSeleccionada = tareas.value.filter((v: Tarea) => v.id == preingreso.tarea)[0]
@@ -317,8 +321,8 @@ export default defineComponent({
 
 
     /**
-     * La función "obtenerCoordinadorEtapa" asigna el ID de un supervisor a la propiedad "coordinador"
-     * del objeto "preingreso" en función del ID de etapa seleccionado.
+     * La función 'obtenerCoordinadorEtapa' asigna el ID de un supervisor a la propiedad 'coordinador'
+     * del objeto 'preingreso' en función del ID de etapa seleccionado.
      * @param {string | number | null} idEtapa - El parámetro `idEtapa` es un número que se usa para
      * filtrar la etapa y obtener el ID  del supervisor que se asignará a preingreso.coordinador.
      */
@@ -331,7 +335,7 @@ export default defineComponent({
     }
 
     /**
-     * La función "obtenerProyectosTareasTecnico" recupera una lista de proyectos y tareas de un
+     * La función 'obtenerProyectosTareasTecnico' recupera una lista de proyectos y tareas de un
      * técnico concreto.
      */
     async function obtenerProyectosTareasTecnico(limpiarProyecto = true) {
@@ -350,8 +354,8 @@ export default defineComponent({
 
 
     /**
-     * La función "obtenerTareasTecnico" recupera una lista de tareas para un empleado, proyecto y
-     * etapa específicos, y actualiza la variable "tareas" con el resultado.
+     * La función 'obtenerTareasTecnico' recupera una lista de tareas para un empleado, proyecto y
+     * etapa específicos, y actualiza la variable 'tareas' con el resultado.
      */
     async function obtenerTareasTecnico() {
       cargando.activar()
@@ -379,7 +383,7 @@ export default defineComponent({
       titulo: 'Eliminar',
       icono: 'bi-trash',
       color: 'negative',
-      accion: ({ entidad, posicion }) => {
+      accion: ({ posicion }) => {
         //: props.propsTable.rowIndex,
         eliminar({ posicion })
       },
@@ -404,7 +408,7 @@ export default defineComponent({
       titulo: 'Imprimir',
       color: 'secondary',
       icono: 'bi-printer',
-      accion: async ({ entidad, posicion }) => {
+      accion: async ({ entidad }) => {
         preingresoStore.idPreingreso = entidad.id
         await preingresoStore.imprimirPdf()
       },
@@ -428,6 +432,7 @@ export default defineComponent({
       soloLectura,
       refArchivo,
       idPreingreso,
+      maskFecha,
       //listados
       coordinadores,
       tecnicos,

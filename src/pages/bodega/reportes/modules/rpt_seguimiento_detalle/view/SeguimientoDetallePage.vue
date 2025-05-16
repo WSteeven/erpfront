@@ -7,9 +7,10 @@
           <div class="col-12 col-md-4">
             <label class="q-mb-sm block">Seleccione un detalle</label>
             <q-select
-              v-model="kardex.detalle"
+              v-model="kardex.detalle_id"
               :options="detalles"
               @filter="filtrarDetalle"
+              @update:model-value="obtenerSucursales"
               transition-show="scale"
               transition-hide="scale"
               use-input
@@ -51,7 +52,7 @@
                   >
                     <q-date
                       v-model="kardex.fecha_inicio"
-                      mask="DD-MM-YYYY"
+                      :mask="maskFecha"
                       today-btn
                     >
                       <div class="row items-center justify-end">
@@ -97,7 +98,7 @@
                   >
                     <q-date
                       v-model="kardex.fecha_fin"
-                      mask="DD-MM-YYYY"
+                      :mask="maskFecha"
                       today-btn
                     >
                       <div class="row items-center justify-end">
@@ -123,54 +124,81 @@
               </template>
             </q-input>
           </div>
-          <div class="col-12 col-md-2">
-            <label class="q-mb-sm block">&nbsp;</label>
-            <q-btn
-              color="positive"
-              class="full-width"
-              no-caps
-              push
-              glossy
-              @click="buscarKardex"
+
+          <!-- Sucursal -->
+          <div class="col-12 col-md-4" v-if="sucursales.length">
+            <label class="q-mb-sm block">Sucursal</label>
+            <q-select
+              v-model="kardex.sucursal_id"
+              :options="sucursales"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              dense
+              outlined
+              :option-label="(item) => item.lugar"
+              :option-value="(item) => item.id"
+              emit-value
+              map-options
             >
-              <q-icon name="bi-search" size="xs" class="q-pr-sm"></q-icon>
-              <span>Buscar</span>
-            </q-btn>
+            </q-select>
           </div>
-          <div class="col-6 col-md-1">
-            <label class="q-mb-sm block">&nbsp;</label>
-            <q-btn
-              color="positive"
-              no-caps
-              push
-              @click="imprimirReporte('excel')"
-            >
-              <q-icon
-                name="bi-file-earmark-excel-fill"
-                size="xs"
-                class="q-mr-sm"
-              ></q-icon
-              >EXCEL</q-btn
-            >
-          </div>
-          <div class="col-6 col-md-1">
-            <label class="q-mb-sm block">&nbsp;</label>
-            <q-btn
-              color="negative"
-              no-caps
-              push
-              @click="imprimirReporte('pdf')"
-            >
-              <q-icon
-                name="bi-file-earmark-pdf-fill"
-                size="xs"
-                class="q-mr-sm"
-              ></q-icon>
-              PDF</q-btn
-            >
+
+          <!-- Grupo de botones -->
+          <div class="col-12 col-md-12 q-mt-md">
+            <div class="text-center">
+              <q-btn-group push>
+                <!-- Boton consultar -->
+                <q-btn
+                  color="primary"
+                  class="full-width"
+                  no-caps
+                  no-wrap
+                  push
+                  glossy
+                  @click="buscarKardex"
+                >
+                  <q-icon name="bi-search" size="xs" class="q-pr-sm"></q-icon>
+                  <span>Buscar</span>
+                </q-btn>
+                <!-- Boton excel -->
+                <q-btn
+                  color="positive"
+                  class="full-width"
+                  no-caps
+                  no-wrap
+                  push
+                  glossy
+                  @click="imprimirReporte('excel')"
+                >
+                  <q-icon
+                    name="bi-file-earmark-excel-fill"
+                    size="xs"
+                    class="q-mr-sm"
+                  ></q-icon
+                  >EXCEL</q-btn
+                >
+                <!-- Boton pdf -->
+                <q-btn
+                  color="negative"
+                  class="full-width"
+                  no-caps
+                  no-wrap
+                  push
+                  glossy
+                  @click="imprimirReporte('pdf')"
+                >
+                  <q-icon
+                    name="bi-file-earmark-pdf-fill"
+                    size="xs"
+                    class="q-mr-sm"
+                  ></q-icon>
+                  PDF</q-btn
+                >
+              </q-btn-group>
+            </div>
           </div>
         </div>
-
         <div v-if="listado.length" class="row">
           <div class="col-12">
             <essential-table
@@ -184,10 +212,56 @@
               :mostrarBotones="false"
               :permitir-buscar="false"
               :alto-fijo="false"
+              ajustarCeldas
             ></essential-table>
           </div>
         </div>
-        <div v-else>&nbsp;&nbsp; Aún no hay movimientos de este detalle.</div>
+        <div v-else>
+          &nbsp;&nbsp; Aún no hay movimientos de este detalle en inventarios.
+        </div>
+        <!-- Listado de preingresos -->
+        <div v-if="listadoPreingreso.length" class="row">
+          <div class="col-12">
+            <essential-table
+              v-if="listadoPreingreso.length"
+              titulo="Listado de movimientos del detalle"
+              :configuracionColumnas="columnasPreingresos"
+              :datos="listadoPreingreso"
+              :permitirConsultar="false"
+              :permitirEliminar="false"
+              :permitirEditar="false"
+              :mostrarBotones="false"
+              :permitir-buscar="false"
+              :alto-fijo="false"
+              ajustarCeldas
+            ></essential-table>
+          </div>
+        </div>
+        <div v-else>
+          &nbsp;&nbsp; Aún no hay movimientos de este detalle en preingresos.
+        </div>
+
+        <!-- Listado de transferencias -->
+        <div v-if="listadoTransferencias.length" class="row">
+          <div class="col-12">
+            <essential-table
+              v-if="listadoTransferencias.length"
+              titulo="Listado de transferencias del detalle"
+              :configuracionColumnas="columnasTransferencias"
+              :datos="listadoTransferencias"
+              :permitirConsultar="false"
+              :permitirEliminar="false"
+              :permitirEditar="false"
+              :mostrarBotones="false"
+              :permitir-buscar="false"
+              :alto-fijo="false"
+              ajustarCeldas
+            ></essential-table>
+          </div>
+        </div>
+        <div v-else>
+          &nbsp;&nbsp; Aún no hay movimientos de este detalle en transferencias.
+        </div>
       </q-card>
     </div>
   </q-page>

@@ -2,17 +2,21 @@
   <!-- Tratar de no usar -->
   <!-- Es necesario trasladar algunas funciones de aqui a GestorArchivo.vue -->
   <!-- Esto es necesario debido a que ese componente trabaja de forma más generica -->
-  <div v-if="permitirSubir && !esObligatorio" class="col-12 col-md-3 q-mb-lg">
+  <div class="col-12 col-md-3 q-mb-lg">
     <br />
-    <q-checkbox
+    <q-toggle
+      v-if="permitirSubir"
       v-model="quiero_subir_archivos"
       label="Quiero compartir archivos"
       :disable="disable"
+      checked-icon="bi-eye"
+      color="positive"
       outlined
       dense
-    ></q-checkbox>
+    ></q-toggle>
   </div>
-  <div v-if="quiero_subir_archivos && !esConsultado" class="col-12 q-mb-sm">
+
+  <div v-if="quiero_subir_archivos" class="col-12 q-mb-sm">
     <q-uploader
       ref="refGestor"
       :label="
@@ -49,9 +53,9 @@
       :mostrar-footer="false"
       :mostrar-botones="false"
       :permitir-buscar="false"
+      ajustarCeldas
       :accion1="btnDescargar"
     ></essential-table>
-    <!-- :accion2="btnEliminar" -->
   </div>
 </template>
 

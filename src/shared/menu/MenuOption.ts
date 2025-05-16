@@ -5,4 +5,5 @@ export interface MenuOption {
   link?: string
   children?: MenuOption[]
   can?: boolean
+  module?: boolean
 }

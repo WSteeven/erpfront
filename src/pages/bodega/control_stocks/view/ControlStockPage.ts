@@ -6,7 +6,7 @@ import { defineComponent, ref } from 'vue'
 
 //Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
-import ModalesEntidad from "components/modales/view/ModalEntidad.vue"
+import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 
 //Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
@@ -39,7 +39,7 @@ export default defineComponent({
     const opciones_sucursales = ref([])
     const opciones_productos = ref([])
     const opciones_detalles = ref([])
-    const {clientes} = useFiltrosListadosSelects(listadosAuxiliares)
+    const { clientes } = useFiltrosListadosSelects(listadosAuxiliares)
     //Obtener listados
     cargarVista(async () => {
       await obtenerListados({

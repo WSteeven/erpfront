@@ -1,7 +1,6 @@
 <template>
   <q-page :padding="!$q.screen.xs">
     <div class="text-center q-pb-md">
-      <div class="q-mb-md">{{ fecha }}</div>
       <div class="q-mb-md">
         Bienvenido, <strong>{{ authenticationStore.nombreUsuario }}</strong>
       </div>
@@ -24,12 +23,15 @@
       :mostrar-botones="false"
       :tab-options="tabAutorizarTransferenciaSaldo"
       @tab-seleccionado="filtrarAutorizacionesTransferencia"
-      tab-defecto="PENDIENTE"
+      tab-defecto="3"
     ></essential-table-tabs>
     <modal-entidad
-    :comportamiento="modales"
-    @guardado="guardado"
-    >  </modal-entidad>
+      :comportamiento="modales"
+      :persistente="false"
+      :mostrarListado="false"
+      @guardado="guardado"
+    >
+    </modal-entidad>
   </q-page>
 </template>
 

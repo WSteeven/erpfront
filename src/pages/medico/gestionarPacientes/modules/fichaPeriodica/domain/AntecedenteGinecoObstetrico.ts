@@ -1,0 +1,23 @@
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
+
+export class AntecedenteGinecoObstetrico extends EntidadAuditable {
+  menarquia: string | null
+  ciclos: string | null
+  fecha_ultima_menstruacion: string | null
+  gestas: string | null
+  partos: string | null
+  cesareas: string | null
+  abortos: string | null
+
+  constructor() {
+    super()
+    this.menarquia = null
+    this.ciclos = null
+    this.fecha_ultima_menstruacion = null
+    this.gestas = null
+    this.partos = null
+    this.cesareas = null
+    this.abortos = null
+
+  }
+}

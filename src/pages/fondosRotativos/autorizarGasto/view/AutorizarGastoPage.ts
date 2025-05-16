@@ -1,30 +1,32 @@
 // Dependencias
 
 import { useAuthenticationStore } from 'stores/authentication'
-import {  defineComponent, ref } from 'vue'
-import {
-  accionesTabla,
-  tabAutorizarGasto,
-  estadosGastos,
-  acciones,
-} from 'config/utils'
+import { defineComponent, ref } from 'vue'
+import { accionesTabla, tabAutorizarGasto, estadosGastos, acciones, } from 'config/utils'
 
 // Componentes
+import ModalEntidad from 'components/modales/view/ModalEntidad.vue'
 import ConfirmarDialog from 'gestionTrabajos/trabajoAsignado/view/ConfirmarDialog.vue'
 import EssentialTableTabs from 'components/tables/view/EssentialTableTabs.vue'
+
+// Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { Gasto } from 'pages/fondosRotativos/gasto/domain/Gasto'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { configuracionColumnasAutorizarGasto } from '../domain/configuracionColumnasAutorizarGasto'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { AutorizarGastoController } from '../infrestructure/AutorizarGastoController'
-import ModalEntidad from 'components/modales/view/ModalEntidad.vue'
 import { ComportamientoModalesAutorizarGasto } from '../application/ComportamientoModalesAutorizarGasto'
 import { useFondoRotativoStore } from 'stores/fondo_rotativo'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useQuasar } from 'quasar'
 import { useCargandoStore } from 'stores/cargando'
-import { GastoController } from 'pages/fondosRotativos/gasto/infrestructure/GastoController'
+import { parse } from '@formkit/tempo'
+import { VehiculoController } from 'pages/controlVehiculos/vehiculos/infraestructure/VehiculoController'
+import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
+import { ProyectoController } from 'pages/gestionTrabajos/proyectos/infraestructure/ProyectoController'
+import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController'
+
 export default defineComponent({
   name: 'AutorizarGastoPage',
   components: {
@@ -34,16 +36,13 @@ export default defineComponent({
   },
   setup() {
     const controller = new AutorizarGastoController()
-    const gastos_controller = new GastoController()
     const tabActual = ref()
     /***********
      * Mixin
      ************/
     const mixin = new ContenedorSimpleMixin(Gasto, controller)
-    const mixin_gastos = new ContenedorSimpleMixin(Gasto, gastos_controller)
-    const { listado, accion } = mixin.useReferencias()
-    const { listar } = mixin.useComportamiento()
-    const { consultar } = mixin_gastos.useComportamiento()
+    const { listado } = mixin.useReferencias()
+    const cargando = new StatusEssentialLoading()
 
     /*********
      * Stores
@@ -53,13 +52,15 @@ export default defineComponent({
     useCargandoStore().setQuasar(useQuasar())
     const authenticationStore = useAuthenticationStore()
     const fondoRotativoStore = useFondoRotativoStore()
+    const vehiculos = ref([])
+    const empleados = ref([])
+    const proyectos = ref([])
+    const tareas = ref([])
     /***************
      * Botones tabla
      ***************/
     const autorizarGastoController = new AutorizarGastoController()
     async function filtrarAutorizacionesGasto(tabSeleccionado) {
-      const cargando = new StatusEssentialLoading()
-
       cargando.activar()
 
       const { result } = await autorizarGastoController.listar({
@@ -70,7 +71,37 @@ export default defineComponent({
 
       cargando.desactivar()
     }
+    async function obtenerListados() {
+      vehiculos.value = (
+        await new VehiculoController().listar({
+          campos: 'id,placa',
+        })
+      ).result
+      empleados.value = (
+        await new EmpleadoController().listar({ estado: 1 })
+      ).result
+    }
+    async function obtenerListadosDependientesEmpleado(empleado_id: number) {
+      cargando.activar()
+      proyectos.value = (
+        await new ProyectoController().listar({
+          campos: 'id,nombre,codigo_proyecto',
+          finalizado: 0,
+          empleado_id: empleado_id,
+        })
+      ).result
+      tareas.value = (
+        await new TareaController().listar({
+          campos: 'id,codigo_tarea,titulo,cliente_id,proyecto_id',
+          empleado_id: empleado_id,
+          activas_empleado: 1,
+          formulario: true,
+        })
+      ).result
+      cargando.desactivar()
+    }
     filtrarAutorizacionesGasto(estadosGastos.PENDIENTE)
+    obtenerListados()
 
     /**Modales */
     const modales = new ComportamientoModalesAutorizarGasto()
@@ -79,48 +110,52 @@ export default defineComponent({
       titulo: 'Consultar',
       icono: 'bi-eye',
       color: 'indigo',
-      accion: ({ entidad }) => {
-        fondoRotativoStore.existeFactura =
-          entidad.factura == null ? false : true
-        fondoRotativoStore.id_gasto = entidad.id
-
-        fondoRotativoStore.estaSemanAC = estaEnSemanaActual(entidad.fecha_viat)
-        fondoRotativoStore.existeFactura = entidad.tiene_factura
-        fondoRotativoStore.accionForm =
-        authenticationStore.user.id === entidad.aut_especial &&
-        entidad.estado === estadosGastos.PENDIENTE
-        ? acciones.editar
-        : acciones.consultar
-        fondoRotativoStore.empleado_id= entidad.id_usuario
+      accion: async ({ entidad }) => {
+        cargando.activar()
+        fondoRotativoStore.gasto = entidad
+        fondoRotativoStore.vehiculos = vehiculos.value
+        fondoRotativoStore.empleados = empleados.value
+        fondoRotativoStore.habilitar_observacion_autorizador = authenticationStore.user.id === entidad.aut_especial && [estadosGastos.PENDIENTE, estadosGastos.APROBADO].includes(entidad.estado) && permitirAnular(entidad.fecha_viat)
+        fondoRotativoStore.accion_form =
+          authenticationStore.user.id === entidad.aut_especial &&
+            entidad.estado === estadosGastos.PENDIENTE
+            ? acciones.editar
+            : acciones.consultar
+        if (entidad.estado === estadosGastos.PENDIENTE) {
+          await obtenerListadosDependientesEmpleado(entidad.id_usuario)
+        }
+        fondoRotativoStore.proyectos = proyectos.value
+        fondoRotativoStore.tareas = tareas.value
         modales.abrirModalEntidad('VisualizarGastoPage')
+        cargando.desactivar()
       },
     }
 
-    function estaEnSemanaActual(fecha) {
-      const fechaActual = new Date()
-      const dia = String(fechaActual.getDate()).padStart(2, '0')
-      const mes = String(fechaActual.getMonth() + 1).padStart(2, '0') // Los meses comienzan desde 0
-      const anio = fechaActual.getFullYear()
-      const fechaFormateada = `${dia}-${mes}-${anio}`
-      const fechaInicio = convertir_fecha(fechaFormateada)
-      const fechaFin = convertir_fecha(fecha)
+    function permitirAnular(date) {
+      const currentDate = new Date()
+      // Obtén el primer día del mes actual
+      const firstDayOfCurrentMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1)
+      // Obtén el último día del mes anterior
+      const lastDayOfPreviousMonth = new Date(firstDayOfCurrentMonth)
+      lastDayOfPreviousMonth.setDate(firstDayOfCurrentMonth.getDate() - 1)
+      // Obtén el primer día del mes anterior
+      const firstDayOfPreviousMonth = new Date(
+        lastDayOfPreviousMonth.getFullYear(),
+        lastDayOfPreviousMonth.getMonth(),
+        1
+      )
+      //obtener la ultima fecha del mes actula
+      const lastDayOfMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0);
+      // Convierte la fecha dada a un objeto Date si no lo es ya
+      const givenDate = parse(date, 'YYYY-MM-DD', 'America/Guayaquil')
 
-      // Calcula la diferencia en días
-      const diferenciaDias = fechaInicio.getDate() - fechaFin.getDate()
-      if (diferenciaDias <= 15 || authenticationStore.esAdministrador) {
-        return true
-      } else {
-        return false
-      }
-    }
 
-    function convertir_fecha(fecha) {
-      const dateParts = fecha.split('-') // Dividir el string en partes usando el guión como separador
-      const dia = parseInt(dateParts[0], 10) // Obtener el día como entero
-      const mes = parseInt(dateParts[1], 10) - 1 // Obtener el mes como entero (restar 1 porque en JavaScript los meses comienzan desde 0)
-      const anio = parseInt(dateParts[2], 10)
-      const fecha_convert = new Date(anio, mes, dia, 0)
-      return fecha_convert
+
+      // Compara la fecha dada con el rango del mes anterior
+      return (
+        givenDate >= firstDayOfPreviousMonth &&
+        givenDate <= lastDayOfMonth
+      ) || authenticationStore.esAdministrador
     }
 
     async function guardado() {

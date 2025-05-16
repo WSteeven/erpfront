@@ -1,9 +1,7 @@
-import Pusher from 'pusher-js'
 import { useNotificaciones } from 'shared/notificaciones'
 import { pushEventMesaggeServiceWorker } from 'shared/utils'
 import { useAuthenticationStore } from 'stores/authentication'
 import { useNotificationRealtimeStore } from 'stores/notificationRealtime'
-import { Ref } from 'vue'
 
 export class TransferenciaSaldoPusherEvent {
    authenticationStore = useAuthenticationStore()
@@ -16,7 +14,7 @@ export class TransferenciaSaldoPusherEvent {
     pusher.subscribe('transferencia-saldo-'+this.usuario.id)
     pusher.bind('transferencia-saldo-event', function (e) {
       notificacionStore.agregar(e.notificacion)
-      notificarCorrecto('Tienes una transferencia esperando ser aceptada')
+      notificarCorrecto(e.notificacion.mensaje)
       pushEventMesaggeServiceWorker({
         titulo: 'Aprobacion de Transferencias de Saldos',
         mensaje: e.notificacion.mensaje,

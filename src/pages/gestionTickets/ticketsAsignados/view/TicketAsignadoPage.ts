@@ -1,10 +1,10 @@
 // Dependencias
 import { configuracionColumnasTicketAsignado } from '../domain/configuracionColumnasTicketAsignado'
+import { tabOptionsEstadosTicketsAsignados, estadosTickets } from 'config/tickets.utils'
 import { useAuthenticationStore } from 'stores/authentication'
 import { accionesTabla, estadosTrabajos } from 'config/utils'
-import { tabOptionsEstadosTicketsAsignados, estadosTickets } from 'config/tickets.utils'
-import { computed, defineComponent, ref } from 'vue'
 import { useTicketStore } from 'stores/ticket'
+import { defineComponent, ref } from 'vue'
 import { date } from 'quasar'
 
 // Componentes
@@ -12,17 +12,18 @@ import ConfirmarDialog from 'gestionTrabajos/trabajoAsignado/view/ConfirmarDialo
 import EssentialTableTabs from 'components/tables/view/EssentialTableTabs.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
+import Callout from 'components/CalloutComponent.vue'
 
 // Logica y controladores
 import { ComportamientoModalesTicketAsignado } from '../application/ComportamientoModalesTicketAsignado'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { SubtareaListadoPusherEvent } from '../application/SubtareaPusherEvent'
 import { TicketController } from 'pages/gestionTickets/tickets/infraestructure/TicketController'
 import { Ticket } from 'pages/gestionTickets/tickets/domain/Ticket'
 import { useBotonesTablaTicket } from 'pages/gestionTickets/tickets/application/BotonesTablaTicket'
 import { MotivoPausaTicketController } from 'pages/gestionTickets/motivosPausasTickets/infraestructure/MotivoPausaTicketController'
 import { TicketModales } from 'pages/gestionTickets/tickets/domain/TicketModales'
+import { TicketPusherEvent } from 'src/pusherEvents/TicketPusherEvent'
 
 export default defineComponent({
   components: {
@@ -30,6 +31,7 @@ export default defineComponent({
     EssentialTable,
     ModalesEntidad,
     ConfirmarDialog,
+    Callout,
   },
   setup() {
     /***********
@@ -42,7 +44,7 @@ export default defineComponent({
     * Mixin
     ********/
     const mixin = new ContenedorSimpleMixin(Ticket, new TicketController())
-    const { listado } = mixin.useReferencias()
+    const { listado, filtros } = mixin.useReferencias()
     const { listar, cargarVista, obtenerListados } = mixin.useComportamiento()
 
     cargarVista(async () => {
@@ -67,14 +69,14 @@ export default defineComponent({
       individual: 'individual',
     }
     const tabsOpcionesFiltrado = ref(opcionesFiltrado.listado)
+    const imagenPerfil = authenticationStore.user.foto_url ?? `https://ui-avatars.com/api/?name=${authenticationStore.user.nombres.substr(0, 1)}+${authenticationStore.user.apellidos.substr(0, 1)}&bold=true&background=0879dc28&color=0879dc`
 
     /*********
      * Pusher
      *********/
-    const puedeEjecutar = computed(() => tabActual.value === estadosTickets.ASIGNADO)
+    // const puedeEjecutar = computed(() => tabActual.value === estadosTickets.ASIGNADO)
 
-    const subtareaPusherEvent = new SubtareaListadoPusherEvent(filtrarTrabajoAsignado, puedeEjecutar)
-    subtareaPusherEvent.start()
+    // const subtareaPusherEvent = new SubtareaListadoPusherEvent(filtrarTrabajoAsignado, puedeEjecutar)
 
     /***************
      * Botones tabla
@@ -92,11 +94,15 @@ export default defineComponent({
     * Funciones
     *************/
     async function filtrarTrabajoAsignado(tabSeleccionado) {
-      listar({ responsable_id: authenticationStore.user.id, estado: tabSeleccionado })
+      await listar({ responsable_id: authenticationStore.user.id, estado: tabSeleccionado, paginate: true, para_mi: true })
       tabActual.value = tabSeleccionado
+      filtros.fields = { estado: tabSeleccionado, responsable_id: authenticationStore.user.id, para_mi: true }
     }
 
     filtrarTrabajoAsignado(estadosTrabajos.ASIGNADO)
+
+    const ticketPusherEvent = new TicketPusherEvent(filtrarTrabajoAsignado)
+    ticketPusherEvent.start()
 
     async function guardado(paginaModal: keyof TicketModales) {
       switch (paginaModal) {
@@ -114,6 +120,7 @@ export default defineComponent({
     return {
       mixin,
       listado,
+      imagenPerfil,
       configuracionColumnasTicketAsignado,
       tabOptionsEstadosTicketsAsignados,
       filtrarTrabajoAsignado,
