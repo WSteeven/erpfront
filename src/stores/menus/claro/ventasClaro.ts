@@ -83,7 +83,7 @@ const ventasClaro: Ref<MenuOption[]> = computed(() => {
                             can: store.can('puede.acceder.planes')
                         },
                         {
-                            title: 'Umbral de ventas',
+                            title: 'Modalidad de Vendedores',
                             link: 'modalidades',
                             icon: 'bi-arrow-up',
                             can: store.can('puede.acceder.modalidades')
