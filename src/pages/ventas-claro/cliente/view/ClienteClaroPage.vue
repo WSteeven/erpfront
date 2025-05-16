@@ -262,6 +262,7 @@
             <selector-imagen
               :mostrar-campo="true"
               :disable="disabled"
+              placeholder="Obligatorio"
               file_extensiones=".jpg, image/*"
               :imagen="cliente.foto_cedula_frontal"
               :alto="'400px'"
@@ -275,6 +276,7 @@
             <selector-imagen
               :mostrar-campo="true"
               :disable="disabled"
+              placeholder="Obligatorio"
               file_extensiones=".jpg, image/*"
               :imagen="cliente.foto_cedula_posterior"
               :alto="'400px'"
