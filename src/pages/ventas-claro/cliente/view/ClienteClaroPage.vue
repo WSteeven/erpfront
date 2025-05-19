@@ -227,6 +227,8 @@
             </q-select>
           </div>
 
+
+
           <div class="col-12 col-md-4">
             <label class="q-mb-sm block">Teléfono 2</label>
             <q-input
