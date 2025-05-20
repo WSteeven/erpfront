@@ -267,6 +267,7 @@ export default defineComponent({
       accion,
       filtros,
       accionTabla,
+      // eslint-disable-next-line vue/no-dupe-keys
       tituloPagina: tituloTabla[0].toUpperCase() + tituloTabla.substring(1),
       seleccionado,
       columnas,

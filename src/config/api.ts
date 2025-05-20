@@ -9,6 +9,7 @@ import { vehiculos } from 'config/endpoints/vehiculos'
 import { sso } from './endpoints/sso'
 import { seguridad } from './endpoints/seguridad'
 import { fondosRotativos } from 'config/endpoints/fondosRotativos'
+import {appenate} from 'config/endpoints/appenate/telconet';
 
 export const apiConfig = {
   // URL_BASE: 'http://localhost:8000',
@@ -71,6 +72,10 @@ export const endpoints = {
    ******************************/
   ...vehiculos,
 
+  /******************************
+   * Modulo de APPENATE (progresivas de Telconet)
+   ******************************/
+  ...appenate,
 
   //Modulo de compras y proveedores
   ...comprasProveedores,
