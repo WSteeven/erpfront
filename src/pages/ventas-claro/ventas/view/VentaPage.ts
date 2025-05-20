@@ -12,7 +12,7 @@ import { useQuasar } from 'quasar'
 import { useVuelidate } from '@vuelidate/core'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { VentaController } from '../infrestructure/VentaController'
-import { acciones, estados, estados_activaciones, formas_pagos, maskFecha } from 'config/utils'
+import { acciones, estados_activaciones, formas_pagos, maskFecha } from 'config/utils'
 import { VendedorController } from 'pages/ventas-claro/vendedores/infrestructure/VendedorController'
 import { ProductoVentasController } from 'pages/ventas-claro/productoVentas/infrestructure/ProductoVentasController'
 import { ClienteClaroController } from 'pages/ventas-claro/cliente/infrestucture/ClienteClaroController'
@@ -56,6 +56,7 @@ export default defineComponent({
     const mostrarLabelModal = computed(() => accion.value === acciones.nuevo || accion.value === acciones.editar)
     const mostrarSolicitarFecha = ref(false)
 
+    const requiereDatosTarjeta = computed(() => venta.forma_pago?.toUpperCase().includes('TARJETA'))
 
 
     /*************
@@ -289,6 +290,7 @@ export default defineComponent({
       tabDefecto,
       tabOptionsVentas,
       mostrarSolicitarFecha,
+      requiereDatosTarjeta,
 
       productos, filtrarProductos, recargarClientes,
       vendedores, filtrarVendedores, recargarVendedores,

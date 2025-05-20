@@ -38,8 +38,8 @@
               use-input
               input-debounce="0"
               @filter="filtrarVendedores"
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.empleado_info"
+              :option-value="v => v.id"
+              :option-label="v => v.empleado_info"
               emit-value
               map-options
             >
@@ -97,8 +97,8 @@
               use-input
               input-debounce="0"
               @filter="filtrarClientes"
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.cliente_info"
+              :option-value="v => v.id"
+              :option-label="v => v.cliente_info"
               emit-value
               map-options
             >
@@ -137,9 +137,9 @@
             <label class="q-mb-sm block">#Orden</label>
             <q-input
               v-model="venta.orden_id"
-              placeholder="Obligatorio"
+              placeholder="Opcional"
               type="textarea"
-              :disable="disabled"
+              :disable="true"
               :error="!!v$.orden_id.$errors.length"
               autogrow
               @blur="v$.orden_id.$touch"
@@ -159,15 +159,13 @@
             <q-input
               v-model="venta.orden_interna"
               placeholder="Opcional"
-              type="date"
               :disable="disabled"
               :error="!!v$.orden_interna.$errors.length"
-              autogrow
-              @blur="v$.orden_interna.$touch"
+              readonly
               outlined
               dense
             >
-            <template v-slot:append>
+              <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
                   <q-popup-proxy
                     cover
@@ -201,6 +199,7 @@
               </template>
             </q-input>
           </div>
+
           <!-- Forma de Pago -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Forma de Pago</label>
@@ -213,17 +212,17 @@
               dense
               outlined
               :disable="disabled"
-              :error="!!v$.forma_pago.$errors.length"
-              @blur="v$.forma_pago.$touch"
+              :error="!!v$.forma_pago?.$errors.length"
+              @blur="v$.forma_pago?.$touch"
               error-message="Debes seleccionar una forma de pago"
               @update:model-value="obtenerComisionVenta"
-              :option-value="(v) => v.label"
-              :option-label="(v) => v.value"
+              :option-value="v => v.label"
+              :option-label="v => v.value"
               emit-value
               map-options
             >
               <template v-slot:error>
-                <div v-for="error of v$.forma_pago.$errors" :key="error.$uid">
+                <div v-for="error of v$.forma_pago?.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
@@ -235,6 +234,32 @@
                 </q-item>
               </template>
             </q-select>
+          </div>
+
+          <!-- Campos adicionales si el pago es con TARJETA -->
+          <div
+            v-if="v$.forma_pago.$model === 'Tarjeta'"
+            class="col-12 row q-col-gutter-md q-mt-md"
+          >
+            <div class="col-12 col-md-4">
+              <q-input label="Banco" v-model="venta.banco" outlined dense />
+            </div>
+            <div class="col-12 col-md-4">
+              <q-input
+                label="Número de tarjeta"
+                v-model="venta.numero_tarjeta"
+                outlined
+                dense
+              />
+            </div>
+            <div class="col-12 col-md-4">
+              <q-input
+                label="Tipo de cuenta"
+                v-model="venta.tipo_cuenta"
+                outlined
+                dense
+              />
+            </div>
           </div>
           <!-- {{ productos }} -->
           <!-- Producto -->
@@ -256,8 +281,8 @@
               use-input
               input-debounce="0"
               @update:model-value="obtenerPrecioProductoSeleccionado"
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.plan_info + ' - ' + v.bundle"
+              :option-value="v => v.id"
+              :option-label="v => v.plan_info + ' - ' + v.bundle"
               emit-value
               map-options
             >
@@ -319,8 +344,8 @@
               @blur="v$.estado_activacion.$touch"
               @filter="filtrarProductos"
               error-message="Debes seleccionar un estado"
-              :option-value="(v) => v.label"
-              :option-label="(v) => v.value"
+              :option-value="v => v.label"
+              :option-label="v => v.value"
               emit-value
               map-options
             >
@@ -343,7 +368,7 @@
           </div>
           <!-- Fecha -->
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Fecha de Activacion</label>
+            <label class="q-mb-sm block">Fecha de Activación</label>
             <q-input
               v-model="venta.fecha_activacion"
               placeholder="Opcional"
@@ -443,7 +468,7 @@
   <modales-entidad
     :comportamiento="modales"
     :persistente="false"
-    @guardado="(data) => guardado(data)"
+    @guardado="data => guardado(data)"
   ></modales-entidad>
   <solicitar-fecha
     :mostrar="mostrarSolicitarFecha"
