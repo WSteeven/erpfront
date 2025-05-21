@@ -267,7 +267,7 @@ export default defineComponent({
       accion,
       filtros,
       accionTabla,
-      tituloPagina: tituloTabla[0].toUpperCase() + tituloTabla.substring(1),
+      //tituloPagina: tituloTabla[0].toUpperCase() + tituloTabla.substring(1),
       seleccionado,
       columnas,
       // acciones tabla

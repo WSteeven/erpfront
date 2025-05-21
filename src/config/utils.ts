@@ -547,6 +547,7 @@ export const opcionesUnidadesMedidas = [
   { value: 7, label: 'LITRO' },
   { value: 8, label: 'KIT' }
 ]
+
 export function convertir_fecha(fecha: Date) {
   const day = fecha.getDate() < 10 ? '0' + fecha.getDate() : fecha.getDate()
   const month =
@@ -556,6 +557,7 @@ export function convertir_fecha(fecha: Date) {
   const year = fecha.getFullYear()
   return year + '/' + month + '/' + day
 }
+
 export function convertir_fecha_hora(fecha) {
   const dateParts = fecha.split('-') // Dividir el string en partes usando el guión como separador
   let tiempo = dateParts[2]
@@ -567,6 +569,7 @@ export function convertir_fecha_hora(fecha) {
   const fecha_convert = new Date(anio, mes, dia, tiempo[0], tiempo[1], 0)
   return fecha_convert
 }
+
 export const tiposDocumentosIdentificaciones = [
   { nombre: 'Cedula', value: 'CEDULA' },
   { nombre: 'R.U.C.', value: 'RUC' },
@@ -595,7 +598,8 @@ export const tipos_sangre = [
 export const tipos_vendedores = [
   { nombre: 'VENDEDOR', descripcion: 'VENDEDOR' },
   { nombre: 'SUPERVISOR_VENTAS', descripcion: 'SUPERVISOR DE VENTAS' },
-  { nombre: 'JEFE_VENTAS', descripcion: 'JEFE DE VENTAS' }
+  { nombre: 'JEFE_VENTAS', descripcion: 'JEFE DE VENTAS' },
+  { nombre: 'DIGITADOR', descripcion: 'DIGITADOR' }
   // Puedes agregar aquí más tipos de vendedor si es necesario
 ]
 export const talla_letras = [

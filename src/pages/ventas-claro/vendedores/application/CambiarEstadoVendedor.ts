@@ -18,4 +18,11 @@ export class CambiarEstadoVendedor {
         const response: AxiosResponse = await this.axios.post(ruta, data)
         return { response, result: response.data.modelo }
     }
+
+    async  desactivarMasivo(){
+        const ruta = this.axios.getEndpoint(endpoints.desactivar_vendedores_claro_masivo)
+        const response : AxiosResponse = await this.axios.post(ruta)
+        return { response, message: response.data.mensaje }
+
+    }
 }

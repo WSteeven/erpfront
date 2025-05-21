@@ -16,6 +16,7 @@ export class ClienteClaro extends EntidadAuditable {
   foto_cedula_frontal: string | null
   foto_cedula_posterior: string | null
   fecha_expedicion_cedula: string | null
+  estado: string | null
   activo: boolean
 
   constructor() {
@@ -35,6 +36,7 @@ export class ClienteClaro extends EntidadAuditable {
     this.foto_cedula_frontal = null
     this.foto_cedula_posterior = null
     this.fecha_expedicion_cedula = null
+    this.estado = null
     this.activo = true
   }
 }

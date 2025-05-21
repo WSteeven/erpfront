@@ -71,6 +71,34 @@
             </template>
           </div>
 
+<!--          estado -->
+          <div class="col-12 col-md-4">
+            <label class="q-mb-sm block">Estado</label>
+            <q-select
+                v-model="cliente.estado"
+                :options="estados"
+                transition-show="jump-up"
+                transition-hide="jump-down"
+                :disable="disabled"
+                options-dense
+                dense
+                outlined
+                :error="!!v$.estado.$errors.length"
+                error-message="Debes seleccionar un estado"
+                :option-value="v => v.id"
+                :option-label="v => v.nombre +' ('+v.abreviatura+')'"
+                emit-value
+                map-options
+            >
+              <template v-slot:error>
+                <error-component clave="estado" :v$="v$"/>
+              </template>
+              <template v-slot:no-option>
+                <no-option-component/>
+              </template>
+            </q-select>
+          </div>
+
           <!-- Identificación -->
           <div class="col-12 col-md-4">
             <label class="q-mb-sm block">Identificación</label>
@@ -267,6 +295,7 @@
               placeholder="Obligatorio"
               file_extensiones=".jpg, image/*"
               :imagen="cliente.foto_cedula_frontal"
+              :error="!!v$.foto_cedula_frontal.$errors.length"
               :alto="'400px'"
               @update:model-value="data => (cliente.foto_cedula_frontal = data)"
             />
@@ -281,6 +310,7 @@
               placeholder="Obligatorio"
               file_extensiones=".jpg, image/*"
               :imagen="cliente.foto_cedula_posterior"
+              :error="!!v$.foto_cedula_posterior.$errors.length"
               :alto="'400px'"
               @update:model-value="
                 data => (cliente.foto_cedula_posterior = data)
@@ -297,6 +327,7 @@
             <q-input
               v-model="cliente.fecha_expedicion_cedula"
               placeholder="Obligatorio"
+              hint="Cuando le entregaron la cedula"
               :error="!!v$.fecha_expedicion_cedula?.$errors.length"
               @blur="v$.fecha_expedicion_cedula?.$touch"
               :disable="disabled"

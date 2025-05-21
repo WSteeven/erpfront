@@ -23,6 +23,12 @@ const rutasVentasClaro: RouteRecordRaw[] = [
         component: () =>
             import('pages/ventas-claro/ventas/view/VentaPage.vue'),
         meta: { requiresAuth: true },
+    },{
+        path: '/estados-claro',
+        name: 'estados_claro',
+        component: () =>
+            import('pages/ventas-claro/estados/view/EstadoPage.vue'),
+        meta: { requiresAuth: true },
     },
     {
         path: '/chargebacks',

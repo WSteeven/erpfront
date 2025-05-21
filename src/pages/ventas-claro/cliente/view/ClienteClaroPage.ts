@@ -33,9 +33,14 @@ import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller'
 import { ParroquiaController } from 'sistema/parroquia/infraestructure/ParroquiaController'
 import { Parroquia } from 'sistema/parroquia/domain/Parroquia'
+import { EstadoController } from 'pages/ventas-claro/estados/infraestructure/EstadoController'
+import ErrorComponent from 'components/ErrorComponent.vue'
+import NoOptionComponent from 'components/NoOptionComponent.vue'
 
 export default defineComponent({
   components: {
+    NoOptionComponent,
+    ErrorComponent,
     TabLayoutFilterTabs2,
     SelectorImagen
   },
@@ -66,6 +71,7 @@ export default defineComponent({
     /**Cantones y Parroquias */
     const opciones_cantones = ref([])
     const opciones_parroquias = ref([])
+    const estados = ref([])
     const parroquias = ref([])
     const cantones = ref([])
 
@@ -78,6 +84,10 @@ export default defineComponent({
       await obtenerListados({
         cantones: new CantonController(),
         parroquias: new ParroquiaController(),
+        estados: {
+          controller: new EstadoController(),
+          params: { tipo: 'CLIENTE', activo: 1 }
+        },
         vendedores: {
           controller: new VendedorController(),
           params: store.esJefeVentasClaro
@@ -122,6 +132,7 @@ export default defineComponent({
       correo_electronico: { required },
       foto_cedula_frontal: { required },
       foto_cedula_posterior: { required },
+      estado: { required },
       fecha_expedicion_cedula: { required }
     }
     const v$ = useVuelidate(reglas, cliente)
@@ -130,6 +141,7 @@ export default defineComponent({
     //llenar listados
     opciones_cantones.value = listadosAuxiliares.cantones
     opciones_parroquias.value = listadosAuxiliares.parroquias
+    estados.value = listadosAuxiliares.estados
 
     /***********************
      * Hooks
@@ -231,6 +243,7 @@ export default defineComponent({
 
       cantones,
       parroquias,
+      estados,
 
       //funciones
       removeAccents,
@@ -239,7 +252,6 @@ export default defineComponent({
       recargarVendedores,
 
       filtrarClientes,
-
 
       //listados
       listadosAuxiliares,

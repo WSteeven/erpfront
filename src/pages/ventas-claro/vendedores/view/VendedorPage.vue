@@ -5,6 +5,7 @@
     :ajustarCeldas="true"
     :accion1="btnDesactivar"
     :accion2="btnActivar"
+    :accion1-header="btnDesactivarMasivo"
     puedeExportar
     :tab-options="tabOptionsVendedores"
     :tabDefecto="tabDefecto"
@@ -40,23 +41,14 @@
               map-options
             >
               <template v-slot:error>
-                <div
-                  v-for="error of v$.jefe_inmediato.$errors"
-                  :key="error.$uid"
-                >
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="jefe_inmediato" :v$="v$"/>
               </template>
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
+                <no-option-component/>
               </template>
             </q-select>
           </div>
-
+<!--{{empleados}}-->
           <!-- Empleados -->
           <div class="col-12 col-md-3 col-sm-6">
             <label class="q-mb-sm block">Empleado</label>
@@ -77,22 +69,17 @@
               input-debounce="0"
               @popup-show="ordenarLista(empleados, 'apellidos')"
               @filter="filtrarEmpleados"
+              :option-disable="(v)=>v.id==vendedor.jefe_inmediato"
               :option-value="(v) => v.id"
               :option-label="(v) => v.apellidos + ' ' + v.nombres"
               emit-value
               map-options
             >
               <template v-slot:error>
-                <div v-for="error of v$.empleado.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="empleado" :v$="v$"/>
               </template>
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
+                <no-option-component/>
               </template>
             </q-select>
           </div>
@@ -121,16 +108,10 @@
               map-options
             >
               <template v-slot:error>
-                <div v-for="error of v$.modalidad.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="modalidad" :v$="v$"/>
               </template>
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
+                <no-option-component/>
               </template>
             </q-select>
           </div>
@@ -157,19 +138,10 @@
               map-options
             >
               <template v-slot:error>
-                <div
-                  v-for="error of v$.tipo_vendedor.$errors"
-                  :key="error.$uid"
-                >
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="tipo_vendedor" :v$="v$"/>
               </template>
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
+                <no-option-component/>
               </template>
             </q-select>
           </div>

@@ -77,6 +77,12 @@ const ventasClaro: Ref<MenuOption[]> = computed(() => {
                     icon: 'bi-gear',
                     children: [
                         {
+                            title: 'Estados',
+                            link: 'estados-claro',
+                            icon: 'bi-card-list',
+                            can: store.can('puede.acceder.estados_claro'),
+                        },
+                        {
                             title: 'Planes',
                             link: 'planes',
                             icon: 'bi-card-list',
