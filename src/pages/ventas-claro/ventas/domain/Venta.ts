@@ -2,7 +2,9 @@ import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 export class Venta extends EntidadAuditable {
   id: number | null
   orden_id: string | null
-  orden_interna: string | null
+  //orden_interna: string | null
+  fecha_ingreso: string | null
+  fecha_agendamiento: string | null
   vendedor: number | null
   vendedor_info: string | null
   cliente: number | null
@@ -34,7 +36,9 @@ export class Venta extends EntidadAuditable {
     super()
     this.id = null
     this.orden_id = null
-    this.orden_interna = null
+    //this.orden_interna = null
+    this.fecha_ingreso = null
+    this.fecha_agendamiento = null
     this.vendedor = null
     this.vendedor_info = null
     this.cliente = null
