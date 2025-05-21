@@ -213,6 +213,14 @@ export default defineComponent({
       clientes.value = listadosAuxiliares.clientes
       cargando.desactivar()
     }
+    async function recargarBancos() {
+      cargando.activar()
+      listadosAuxiliares.bancos = (
+        await new BancoController().listar({ activo: 1 })
+      ).result
+      bancos.value = listadosAuxiliares.bancos
+      cargando.desactivar()
+    }
 
     async function generarOrdenId() {
       const response = await api.get('/ventas/generar-orden-id')
@@ -380,6 +388,7 @@ export default defineComponent({
       productos,
       filtrarProductos,
       recargarClientes,
+      recargarBancos,
       vendedores,
       filtrarVendedores,
       recargarVendedores,

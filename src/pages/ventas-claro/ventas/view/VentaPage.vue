@@ -154,7 +154,6 @@
               v-model="venta.fecha_ingreso"
               placeholder="Opcional"
               :disable="disabled"
-
               readonly
               outlined
               dense
@@ -201,7 +200,6 @@
               placeholder="Obligatorio"
               :disable="disabled"
               :error="!!v$.fecha_agendamiento.$errors.length"
-
               readonly
               outlined
               dense
@@ -290,6 +288,7 @@
               <q-separator />
             </div>
             <!--Banco -->
+            <!-- Banco -->
             <div class="col-12 col-md-3">
               <label class="q-mb-sm block">Banco</label>
               <q-select
@@ -310,11 +309,21 @@
                 emit-value
                 map-options
               >
+                <!-- Botón al final del input -->
+                <template v-slot:after>
+                  <q-btn color="positive" @click="recargarClientes">
+                  <q-icon size="xs" class="q-mr-sm" name="bi-arrow-clockwise" />
+                </q-btn>
+                </template>
+
+                <!-- Mensajes de error -->
                 <template v-slot:error>
                   <div v-for="error of v$.banco.$errors" :key="error.$uid">
                     <div class="error-msg">{{ error.$message }}</div>
                   </div>
                 </template>
+
+                <!-- Mensaje si no hay opciones -->
                 <template v-slot:no-option>
                   <q-item>
                     <q-item-section class="text-grey">
@@ -324,6 +333,7 @@
                 </template>
               </q-select>
             </div>
+
             <div class="col-12 col-md-4">
               <label class="q-mb-sm block">N° Tarjeta</label>
               <q-input
