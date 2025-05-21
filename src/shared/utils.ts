@@ -346,7 +346,7 @@ export function removeTildes(str: string) {
     .replace(/É/g, 'E')
     .replace(/Í/g, 'I')
     .replace(/Ó/g, 'O')
-    .replace(/Ú/g, 'U');
+    .replace(/Ú/g, 'U')
 }
 
 /**
@@ -366,8 +366,8 @@ export async function obtenerTiempoActual() {
       axios.getEndpoint(endpoints.fecha)
     )
     /* const hora: AxiosResponse = await axios.get(
-      axios.getEndpoint(endpoints.hora)
-    ) */
+          axios.getEndpoint(endpoints.hora)
+        ) */
 
     return {
       fecha: fechaHora.data.split(' ')[0],
@@ -487,7 +487,16 @@ export async function imprimirArchivo(
       }
     })
     .catch(async error => {
-      notificarError(error)
+      const blob = error.response?.data
+      if (blob instanceof Blob && blob.type === 'application/json') {
+        const text = await blob.text()
+        const json = JSON.parse(text)
+        Object.values(json.errors).forEach((error:string) => {
+          notificarError(error)
+        })
+      } else {
+        notificarError(error)
+      }
     })
     .finally(() => statusLoading.desactivar())
 }
@@ -882,22 +891,22 @@ export function filtarVisualizacionEmpleadosSaldos(empleados) {
   if (authenticationStore.can('puede.buscar.tecnicos')) {
     const filtrados_busqueda =
       authenticationStore.esContabilidad ||
-        authenticationStore.esCoordinador ||
-        authenticationStore.esAdministrador
+      authenticationStore.esCoordinador ||
+      authenticationStore.esAdministrador
         ? empleados
         : empleados.filter(
-          empleado =>
-            empleado.departamento === rolesSistema.tecnico &&
-            extraerRol(empleado.roles.split(', '), rolesSistema.tecnico) &&
-            !extraerRol(empleado.roles.split(', '), rolesSistema.coordinador)
-        )
+            empleado =>
+              empleado.departamento === rolesSistema.tecnico &&
+              extraerRol(empleado.roles.split(', '), rolesSistema.tecnico) &&
+              !extraerRol(empleado.roles.split(', '), rolesSistema.coordinador)
+          )
     return filtrados_busqueda
   }
 
   const filtrados =
     authenticationStore.esContabilidad ||
-      authenticationStore.esCoordinador ||
-      authenticationStore.esAdministrador
+    authenticationStore.esCoordinador ||
+    authenticationStore.esAdministrador
       ? empleados
       : empleados.filter(empleado => empleado.jefe_id === usuario.id)
 
@@ -919,7 +928,9 @@ export async function notificarErrores(err) {
   }
 }
 
-export const mapearOptionsSelect = (listado: { id: number; nombre: string }[]): SelectOption[] => {
+export const mapearOptionsSelect = (
+  listado: { id: number; nombre: string }[]
+): SelectOption[] => {
   return listado.map(opcion => ({
     label: opcion.nombre,
     value: opcion.id

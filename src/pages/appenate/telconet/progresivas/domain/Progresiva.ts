@@ -15,6 +15,8 @@ export class Progresiva extends EntidadAuditable {
   hilos: string | null
   responsable: string | null
 
+  registros_progresivas: []
+
   constructor() {
     super()
     this.metadatos = null
@@ -30,5 +32,6 @@ export class Progresiva extends EntidadAuditable {
     this.num_tarea = null
     this.hilos = null
     this.responsable = null
+    this.registros_progresivas = []
   }
 }

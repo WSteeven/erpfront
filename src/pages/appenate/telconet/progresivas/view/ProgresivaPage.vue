@@ -16,7 +16,8 @@
               v-model="progresiva.filename"
               placeholder="Obligatorio"
               :disable="disabled"
-              outlined autogrow
+              outlined
+              autogrow
               dense
             />
           </div>
@@ -25,11 +26,11 @@
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Ciudad</label>
             <q-input
-                v-model="progresiva.ciudad"
-                placeholder="Obligatorio"
-                :disable="disabled"
-                outlined
-                dense
+              v-model="progresiva.ciudad"
+              placeholder="Obligatorio"
+              :disable="disabled"
+              outlined
+              dense
             />
           </div>
 
@@ -37,11 +38,11 @@
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Proyecto</label>
             <q-input
-                v-model="progresiva.proyecto"
-                placeholder="Obligatorio"
-                :disable="disabled"
-                outlined
-                dense
+              v-model="progresiva.proyecto"
+              placeholder="Obligatorio"
+              :disable="disabled"
+              outlined
+              dense
             />
           </div>
 
@@ -49,11 +50,11 @@
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Enlace</label>
             <q-input
-                v-model="progresiva.enlace"
-                placeholder="Obligatorio"
-                :disable="disabled"
-                outlined
-                dense
+              v-model="progresiva.enlace"
+              placeholder="Obligatorio"
+              :disable="disabled"
+              outlined
+              dense
             />
           </div>
 
@@ -61,11 +62,11 @@
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Fecha Instalación</label>
             <q-input
-                v-model="progresiva.fecha_instalacion"
-                placeholder="Obligatorio"
-                :disable="disabled"
-                outlined
-                dense
+              v-model="progresiva.fecha_instalacion"
+              placeholder="Obligatorio"
+              :disable="disabled"
+              outlined
+              dense
             />
           </div>
 
@@ -73,11 +74,11 @@
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">N° Tarea</label>
             <q-input
-                v-model="progresiva.num_tarea"
-                placeholder="Obligatorio"
-                :disable="disabled"
-                outlined
-                dense
+              v-model="progresiva.num_tarea"
+              placeholder="Obligatorio"
+              :disable="disabled"
+              outlined
+              dense
             />
           </div>
 
@@ -85,11 +86,11 @@
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Cod. Bobina</label>
             <q-input
-                v-model="progresiva.cod_bobina"
-                placeholder="Obligatorio"
-                :disable="disabled"
-                outlined
-                dense
+              v-model="progresiva.cod_bobina"
+              placeholder="Obligatorio"
+              :disable="disabled"
+              outlined
+              dense
             />
           </div>
 
@@ -97,11 +98,11 @@
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Responsable</label>
             <q-input
-                v-model="progresiva.responsable"
-                placeholder="Obligatorio"
-                :disable="disabled"
-                outlined
-                dense
+              v-model="progresiva.responsable"
+              placeholder="Obligatorio"
+              :disable="disabled"
+              outlined
+              dense
             />
           </div>
 
@@ -109,11 +110,11 @@
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">FO Instalada</label>
             <q-input
-                v-model="progresiva.fo_instalada"
-                placeholder="Obligatorio"
-                :disable="disabled"
-                outlined
-                dense
+              v-model="progresiva.fo_instalada"
+              placeholder="Obligatorio"
+              :disable="disabled"
+              outlined
+              dense
             />
           </div>
 
@@ -121,11 +122,11 @@
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Mt Inicial</label>
             <q-input
-                v-model="progresiva.mt_inicial"
-                placeholder="Obligatorio"
-                :disable="disabled"
-                outlined
-                dense
+              v-model="progresiva.mt_inicial"
+              placeholder="Obligatorio"
+              :disable="disabled"
+              outlined
+              dense
             />
           </div>
 
@@ -133,11 +134,11 @@
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Mt Final</label>
             <q-input
-                v-model="progresiva.mt_final"
-                placeholder="Obligatorio"
-                :disable="disabled"
-                outlined
-                dense
+              v-model="progresiva.mt_final"
+              placeholder="Obligatorio"
+              :disable="disabled"
+              outlined
+              dense
             />
           </div>
 
@@ -145,14 +146,25 @@
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Hilos</label>
             <q-input
-                v-model="progresiva.hilos"
-                placeholder="Obligatorio"
-                :disable="disabled"
-                outlined
-                dense
+              v-model="progresiva.hilos"
+              placeholder="Obligatorio"
+              :disable="disabled"
+              outlined
+              dense
             />
           </div>
 
+          <!-- registros de progresivas -->
+          <div
+            class="col-12"
+            v-if="[acciones.consultar, acciones.editar].includes(accion)"
+          >
+            <essential-table
+              :datos="progresiva.registros_progresivas"
+              :configuracion-columnas="configuracionColumnasPostesProgresivas"
+              ajustar-celdas :alto-fijo="false"
+            />
+          </div>
         </div>
       </q-form>
     </template>
