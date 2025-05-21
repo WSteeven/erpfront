@@ -12,7 +12,7 @@ import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/applicat
 import { removeAccents } from 'shared/utils'
 import { acciones, maskFecha } from 'config/utils'
 import { useCargandoStore } from 'stores/cargando'
-import { LocalStorage, useQuasar } from 'quasar'
+import { useQuasar } from 'quasar'
 import { VendedorController } from 'pages/ventas-claro/vendedores/infrestructure/VendedorController'
 import { ClienteClaro } from '../domain/ClienteClaro'
 import { ClienteClaroController } from '../infrestucture/ClienteClaroController'
@@ -59,7 +59,7 @@ export default defineComponent({
     const { setValidador, listar, obtenerListados, cargarVista } =
       mixin.useComportamiento()
     const { onGuardado, onReestablecer } = mixin.useHooks()
-    const { confirmar, notificarCorrecto, prompt, notificarError } =
+    const { confirmar, notificarCorrecto,  notificarError } =
       useNotificaciones()
 
     useCargandoStore().setQuasar(useQuasar())
@@ -77,7 +77,8 @@ export default defineComponent({
 
     const {
       vendedores_claro: vendedores,
-      filtrarVendedoresClaro: filtrarVendedores
+      filtrarVendedoresClaro: filtrarVendedores,
+        // cantones, filtrarCantones,
     } = useFiltrosListadosSelects(listadosAuxiliares)
 
     cargarVista(async () => {

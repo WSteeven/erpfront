@@ -3,6 +3,7 @@ import {Endpoint} from 'shared/http/domain/Endpoint';
 export const ventasClaro = {
     bonos: new Endpoint('ventas-claro/bonos'),
     bonos_porcentuales: new Endpoint('ventas-claro/bono-porcentual'),
+    bases_comisiones: new Endpoint('ventas-claro/bases-comisiones'),
     comisiones: new Endpoint('ventas-claro/comisiones'),
     modalidad: new Endpoint('ventas-claro/modalidad'),
     planes: new Endpoint('ventas-claro/planes'),

@@ -49,15 +49,13 @@
                     <q-item-label>{{ scope.opt.empleado_info }}</q-item-label>
                     <q-item-label caption
                       >{{ scope.opt.tipo_vendedor }}:
-                      {{ scope.opt.modalidad_info }}</q-item-label
-                    >
+                      {{ scope.opt.modalidad_info }}
+                    </q-item-label>
                   </q-item-section>
                 </q-item>
               </template>
               <template v-slot:error>
-                <div v-for="error of v$.vendedor.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="vendedor" :v$="v$" />
               </template>
               <template v-slot:after>
                 <q-btn color="positive" @click="recargarVendedores">
@@ -65,11 +63,7 @@
                 </q-btn>
               </template>
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
+                <no-option-component />
               </template>
             </q-select>
           </div>
@@ -107,16 +101,13 @@
                   <q-item-section>
                     <q-item-label>{{ scope.opt.cliente_info }}</q-item-label>
                     <q-item-label caption
-                      >identificacion:
-                      {{ scope.opt.identificacion }}</q-item-label
-                    >
+                      >{{ scope.opt.identificacion }} - {{ scope.opt.estado }}
+                    </q-item-label>
                   </q-item-section>
                 </q-item>
               </template>
               <template v-slot:error>
-                <div v-for="error of v$.vendedor.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="cliente" :v$="v$" />
               </template>
               <template v-slot:after>
                 <q-btn color="positive" @click="recargarClientes">
@@ -124,11 +115,7 @@
                 </q-btn>
               </template>
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
+                <no-option-component />
               </template>
             </q-select>
           </div>
@@ -147,9 +134,7 @@
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.orden_id.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="orden_id" :v$="v$" />
               </template>
             </q-input>
           </div>
@@ -190,12 +175,7 @@
                 </q-icon>
               </template>
               <template v-slot:error>
-                <div
-                  v-for="error of v$.orden_interna.$errors"
-                  :key="error.$uid"
-                >
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="orden_interna" :v$="v$" />
               </template>
             </q-input>
           </div>
@@ -222,16 +202,10 @@
               map-options
             >
               <template v-slot:error>
-                <div v-for="error of v$.forma_pago?.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="forma_pago" :v$="v$" />
               </template>
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
+                <no-option-component />
               </template>
             </q-select>
           </div>
@@ -271,10 +245,9 @@
               />
             </div>
             <div class="col-12">
-                <br>
+              <br />
               <q-separator />
             </div>
-
           </div>
 
           <!-- {{ productos }} -->
@@ -307,26 +280,20 @@
                   <q-item-section>
                     <q-item-label
                       >{{ scope.opt.plan_info }} -
-                      {{ scope.opt.bundle }}</q-item-label
-                    >
+                      {{ scope.opt.bundle }}
+                    </q-item-label>
                     <q-item-label caption
                       >{{ scope.opt.nombre }}-
-                      {{ scope.opt.precio }}</q-item-label
-                    >
+                      {{ scope.opt.precio }}
+                    </q-item-label>
                   </q-item-section>
                 </q-item>
               </template>
               <template v-slot:error>
-                <div v-for="error of v$.producto.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="producto" :v$="v$" />
               </template>
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
+                <no-option-component />
               </template>
             </q-select>
           </div>
@@ -345,43 +312,62 @@
             </q-input>
           </div>
           <!-- Estado Activacion -->
+          <!--          <div class="col-12 col-md-3">-->
+          <!--            <label class="q-mb-sm block">Estado Activacion</label>-->
+          <!--            <q-select-->
+          <!--              v-model="venta.estado_activacion"-->
+          <!--              :options="estados"-->
+          <!--              transition-show="jump-up"-->
+          <!--              transition-hide="jump-down"-->
+          <!--              options-dense-->
+          <!--              dense-->
+          <!--              outlined-->
+          <!--              :disable="disabled"-->
+          <!--              :error="!!v$.estado_activacion.$errors.length"-->
+          <!--              @blur="v$.estado_activacion.$touch"-->
+          <!--              @filter="filtrarProductos"-->
+          <!--              error-message="Debes seleccionar un estado"-->
+          <!--              :option-value="v => v.id"-->
+          <!--              :option-label="v => v.nombre +' ('+v.abreviatura+')'"-->
+          <!--              emit-value-->
+          <!--              map-options-->
+          <!--            >-->
+          <!--              <template v-slot:error>-->
+          <!--                <error-component clave="estado_activacion" :v$="v$"/>-->
+          <!--              </template>-->
+          <!--              <template v-slot:no-option>-->
+          <!--                <no-option-component/>-->
+          <!--              </template>-->
+          <!--            </q-select>-->
+          <!--          </div>-->
+          <!--          estado -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Estado Activacion</label>
             <q-select
-              v-model="venta.estado_activacion"
-              :options="estados_activaciones"
+              v-model="venta.estado"
+              :options="estados"
               transition-show="jump-up"
               transition-hide="jump-down"
+              :disable="disabled"
               options-dense
               dense
               outlined
-              :disable="disabled"
-              :error="!!v$.estado_activacion.$errors.length"
-              @blur="v$.estado_activacion.$touch"
-              @filter="filtrarProductos"
+              :error="!!v$.estado.$errors.length"
               error-message="Debes seleccionar un estado"
-              :option-value="v => v.label"
-              :option-label="v => v.value"
+              :option-value="v => v.id"
+              :option-label="v => v.nombre + ' (' + v.abreviatura + ')'"
               emit-value
               map-options
             >
               <template v-slot:error>
-                <div
-                  v-for="error of v$.estado_activacion.$errors"
-                  :key="error.$uid"
-                >
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="estado" :v$="v$" />
               </template>
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
+                <no-option-component />
               </template>
             </q-select>
           </div>
+
           <!-- Fecha -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Fecha de Activación</label>
@@ -419,12 +405,7 @@
                 </q-icon>
               </template>
               <template v-slot:error>
-                <div
-                  v-for="error of v$.fecha_activacion.$errors"
-                  :key="error.$uid"
-                >
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="fecha_activacion" :v$="v$" />
               </template>
             </q-input>
           </div>
@@ -442,6 +423,21 @@
             >
             </q-input>
           </div>
+
+          <!-- adicionales -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Adicionales</label>
+            <q-input
+                v-model="venta.adicionales"
+                placeholder="Opcional"
+                hint="Coloca aqui todos los adicionales que requiere el cliente"
+                :disable="disabled"
+                outlined
+                dense
+            />
+          </div>
+
+
           <!-- Estado -->
           <div class="col-12 col-md-3" v-if="accion !== acciones.nuevo">
             <br />
