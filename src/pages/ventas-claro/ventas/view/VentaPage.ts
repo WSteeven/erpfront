@@ -2,9 +2,9 @@ import { configuracionColumnasVentas } from '../domain/configuracionColumnasVent
 import { computed, defineComponent, ref } from 'vue'
 import { Venta } from '../domain/Venta'
 
-import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue';
-import LabelAbrirModal from 'components/modales/modules/LabelAbrirModal.vue';
-import ModalesEntidad from 'components/modales/view/ModalEntidad.vue';
+import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
+import LabelAbrirModal from 'components/modales/modules/LabelAbrirModal.vue'
+import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 import SolicitarFecha from 'shared/prompts/SolicitarFecha.vue'
 
 import { useNotificacionStore } from 'stores/notificacion'
@@ -29,6 +29,19 @@ import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import ErrorComponent from 'components/ErrorComponent.vue';
 import NoOptionComponent from 'components/NoOptionComponent.vue';
 import {EstadoController} from 'pages/ventas-claro/estados/infraestructure/EstadoController';
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { useAuthenticationStore } from 'stores/authentication'
+import { useVentaStore } from 'stores/ventasClaro/venta'
+import {
+  tabOptionsVentas,
+  estadosActivacionesVentas
+} from 'config/ventas.utils'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { useNotificaciones } from 'shared/notificaciones'
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
+import { BancoController } from 'pages/recursosHumanos/banco/infrestruture/BancoController'
+import { api } from 'src/boot/axios'
 
 export default defineComponent({
   components: {
@@ -105,6 +118,8 @@ export default defineComponent({
       cliente: { required },
       estado_activacion: { required },
       estado: { required },
+      banco: { required },
+      fecha_agendamiento: { required },
       fecha_activacion: {
         requiredIf: requiredIf(() => venta.estado_activacion === 'ACTIVADO')
       }
@@ -114,6 +129,7 @@ export default defineComponent({
 
     const estados  = ref([])
     const {
+      bancos, filtrarBancos,
       productos_claro: productos,
       filtrarProductosClaro: filtrarProductos,
       vendedores_claro: vendedores,
@@ -124,6 +140,10 @@ export default defineComponent({
 
     cargarVista(async () => {
       await obtenerListados({
+        bancos: {
+          controller: new BancoController(),
+          params: { campos: 'id,nombre' }
+        },
         productos: {
           controller: new ProductoVentasController(),
           params: { campos: 'id,nombre' }
@@ -149,6 +169,7 @@ export default defineComponent({
       vendedores.value = listadosAuxiliares.vendedores
       clientes.value = listadosAuxiliares.clientes
       estados.value = listadosAuxiliares.estados
+      bancos.value = listadosAuxiliares.bancos
     })
 
     /**************************************************************
@@ -206,6 +227,11 @@ export default defineComponent({
       ).result
       clientes.value = listadosAuxiliares.clientes
       cargando.desactivar()
+    }
+
+    async function generarOrdenId() {
+      const response = await api.get('/ventas/generar-orden-id')
+      return response.data
     }
 
     async function obtenerPrecioProductoSeleccionado() {
@@ -359,10 +385,13 @@ export default defineComponent({
       comision_vendedor,
       mostrarLabelModal,
       modales,
+
       store,
       tabDefecto,
       tabOptionsVentas,
       mostrarSolicitarFecha,
+      bancos,
+      filtrarBancos,
       productos,
       filtrarProductos,
       recargarClientes,
