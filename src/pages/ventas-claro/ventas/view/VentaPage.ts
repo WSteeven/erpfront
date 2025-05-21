@@ -56,7 +56,7 @@ export default defineComponent({
     const mostrarLabelModal = computed(() => accion.value === acciones.nuevo || accion.value === acciones.editar)
     const mostrarSolicitarFecha = ref(false)
 
-    const requiereDatosTarjeta = computed(() => venta.forma_pago?.toUpperCase().includes('TARJETA'))
+
 
 
     /*************
@@ -290,8 +290,6 @@ export default defineComponent({
       tabDefecto,
       tabOptionsVentas,
       mostrarSolicitarFecha,
-      requiereDatosTarjeta,
-
       productos, filtrarProductos, recargarClientes,
       vendedores, filtrarVendedores, recargarVendedores,
       clientes, filtrarClientes,

@@ -238,9 +238,16 @@
 
           <!-- Campos adicionales si el pago es con TARJETA -->
           <div
-            v-if="v$.forma_pago.$model === 'Tarjeta'"
-            class="col-12 row q-col-gutter-md q-mt-md"
+            v-if="['TC', 'TD'].includes(venta.forma_pago)"
+            class="col-12 row q-col-gutter-md q-mt"
           >
+            <!-- Separador con título -->
+            <div class="col-12">
+              <div class="text-subtitle1 text-primary q-mb-sm">
+                Detalles de Tarjeta
+              </div>
+              <q-separator />
+            </div>
             <div class="col-12 col-md-4">
               <q-input label="Banco" v-model="venta.banco" outlined dense />
             </div>
@@ -253,14 +260,23 @@
               />
             </div>
             <div class="col-12 col-md-4">
-              <q-input
+              <q-select
                 label="Tipo de cuenta"
                 v-model="venta.tipo_cuenta"
+                :options="['Ahorros', 'Corriente']"
                 outlined
                 dense
+                emit-value
+                map-options
               />
             </div>
+            <div class="col-12">
+                <br>
+              <q-separator />
+            </div>
+
           </div>
+
           <!-- {{ productos }} -->
           <!-- Producto -->
           <div class="col-12 col-md-3">
