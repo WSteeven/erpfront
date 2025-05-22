@@ -79,7 +79,7 @@ export default defineComponent({
     const btnImprimirOT: CustomActionTable<Progresiva> = {
       titulo: 'OT',
       icono: 'bi-file-earmark-excel-fill',
-      tooltip: 'Imprimir OT',
+      tooltip: 'Imprimir Orden de Trabajo',
       color: 'positive',
       accion: async ({ entidad }) => {
         console.log('Aqui se imprime el excel')
@@ -101,6 +101,7 @@ export default defineComponent({
     const btnImprimirKML: CustomActionTable = {
       titulo: 'Imprimir KML',
       icono: 'bi-filetype-xml',
+      tooltip: 'Imprimir archivo de coordenadas',
       color: 'grey',
       accion: async ({ entidad }) => {
         console.log('Aqui se imprime el kml con las coordenadas')
