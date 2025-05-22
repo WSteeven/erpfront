@@ -12,23 +12,17 @@ import { useQuasar } from 'quasar'
 import { useVuelidate } from '@vuelidate/core'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { VentaController } from '../infrestructure/VentaController'
-import { acciones, estados_activaciones, formas_pagos, maskFecha } from 'config/utils'
+import {
+  acciones,
+  estados_activaciones,
+  formas_pagos,
+  maskFecha
+} from 'config/utils'
 import { VendedorController } from 'pages/ventas-claro/vendedores/infrestructure/VendedorController'
 import { ProductoVentasController } from 'pages/ventas-claro/productoVentas/infrestructure/ProductoVentasController'
 import { ClienteClaroController } from 'pages/ventas-claro/cliente/infrestucture/ClienteClaroController'
 import { maxLength, required, requiredIf } from 'shared/i18n-validators'
 import { ComportamientoModalesVentasClaro } from '../application/ComportamientoModalesVentasClaro'
-import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
-import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
-import { useAuthenticationStore } from 'stores/authentication';
-import { useVentaStore } from 'stores/ventasClaro/venta';
-import { tabOptionsVentas, estadosActivacionesVentas } from 'config/ventas.utils';
-import { CustomActionTable } from 'components/tables/domain/CustomActionTable';
-import { useNotificaciones } from 'shared/notificaciones';
-import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt';
-import ErrorComponent from 'components/ErrorComponent.vue';
-import NoOptionComponent from 'components/NoOptionComponent.vue';
-import {EstadoController} from 'pages/ventas-claro/estados/infraestructure/EstadoController';
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { useAuthenticationStore } from 'stores/authentication'
@@ -40,6 +34,9 @@ import {
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useNotificaciones } from 'shared/notificaciones'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
+import ErrorComponent from 'components/ErrorComponent.vue'
+import NoOptionComponent from 'components/NoOptionComponent.vue'
+import { EstadoController } from 'pages/ventas-claro/estados/infraestructure/EstadoController'
 import { BancoController } from 'pages/recursosHumanos/banco/infrestruture/BancoController'
 import { api } from 'src/boot/axios'
 
@@ -127,9 +124,10 @@ export default defineComponent({
     const v$ = useVuelidate(reglas, venta)
     setValidador(v$.value)
 
-    const estados  = ref([])
+    const estados = ref([])
     const {
-      bancos, filtrarBancos,
+      bancos,
+      filtrarBancos,
       productos_claro: productos,
       filtrarProductosClaro: filtrarProductos,
       vendedores_claro: vendedores,
@@ -177,26 +175,31 @@ export default defineComponent({
      **************************************************************/
     function filtrarVentas(tab: string) {
       tabDefecto.value = tab
+
       switch (tab) {
-        case estadosActivacionesVentas.aprobado:
+        case '1': // Activo
           listar({
             activo: 1,
-            estado_activacion: estadosActivacionesVentas.aprobado
+            estado_id: estadosActivacionesVentas.activado
           })
           break
-        case '1':
+        case '2': // Pendiente Instalar
           listar({
             activo: 1,
-            estado_activacion: estadosActivacionesVentas.activado
+            estado_id: estadosActivacionesVentas.pendienteInstalar
           })
           break
-        case '0':
-          listar({ activo: 0 })
+        case '3': // Pendiente Biometrico
+          listar({
+            activo: 1,
+            estado_id: estadosActivacionesVentas.pendienteBiometrico
+          })
           break
         default:
           listar()
       }
     }
+
     async function guardado(data) {
       if (data.formulario === 'ClienteClaroPage') {
         listadosAuxiliares.clientes.push(data.modelo)
@@ -231,15 +234,10 @@ export default defineComponent({
     async function recargarBancos() {
       cargando.activar()
       listadosAuxiliares.bancos = (
-        await new BancoController().listar({ activo: 1 })
+        await new BancoController().listar({ campos: 'id,nombre' })
       ).result
       bancos.value = listadosAuxiliares.bancos
       cargando.desactivar()
-    }
-
-    async function generarOrdenId() {
-      const response = await api.get('/ventas/generar-orden-id')
-      return response.data
     }
 
     async function obtenerPrecioProductoSeleccionado() {

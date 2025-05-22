@@ -160,6 +160,8 @@ export const tabAutorizarTransferenciaSaldo: TabOption[] = [
   { label: 'Pendiente', value: '3' }
 ]
 
+
+
 export const accionesTabla = {
   name: 'acciones',
   field: 'acciones',
@@ -624,10 +626,9 @@ export const formas_pagos = [
   { label: 'D. BANCARIO', value: 'DEBITO BANCARIO' }
 ]
 export const estados_activaciones = [
-  // { label: 'PENDIENTE', value: 'PENDIENTE' },
-  { label: 'APROBADO', value: 'APROBADO' },
-  { label: 'ACTIVADO', value: 'ACTIVADO' },
-  { label: 'RECHAZADA', value: 'RECHAZADA' }
+  { id: 1, nombre: 'Aprobado', abreviatura: 'APR' },
+  { id: 2, nombre: 'Activado', abreviatura: 'ACT' },
+  { id: 3, nombre: 'Rechazada', abreviatura: 'RECH' }
 ]
 export const estadosVentas = {
   APROBADO: 'APROBADO',

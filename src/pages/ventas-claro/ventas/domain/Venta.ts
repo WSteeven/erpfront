@@ -33,7 +33,6 @@ export class Venta extends EntidadAuditable {
   novedades: number | null
   adicionales: string | null
 
-
   constructor() {
     super()
     this.id = null
@@ -51,7 +50,7 @@ export class Venta extends EntidadAuditable {
     this.plan = null
     this.fecha_activacion = null
     this.mes = null
-    this.estado_activacion = 'ACTIVADO'
+    this.estado_activacion = null
     this.estado = null
     this.forma_pago = null
     this.banco = null
@@ -65,8 +64,8 @@ export class Venta extends EntidadAuditable {
     this.activo = true
     this.observacion = null
     this.primer_mes = false
-    this.fecha_pago_primer_mes =null
+    this.fecha_pago_primer_mes = null
     this.novedades = 0
-    this.adicionales =null
+    this.adicionales = null
   }
 }

@@ -521,7 +521,7 @@
           style="border-radius: 8px"
         />
         <span class="column">
-          <b class="text-thin text-h5 elegant-blue-gradient-text">FIRSTRED</b>
+          <b class="text-thin text-h5 elegant-blue-gradient-text"></b>
           <small class="text-color">System</small>
         </span>
       </div>

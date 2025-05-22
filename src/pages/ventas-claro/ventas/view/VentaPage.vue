@@ -260,7 +260,7 @@
             </div>
             <!--Banco -->
             <!-- Banco -->
-            <div class="col-12 col-md-3">
+            <div class="col-12 col-md-4">
               <label class="q-mb-sm block">Banco</label>
               <q-select
                 v-model="venta.banco"
@@ -282,7 +282,7 @@
               >
                 <!-- Botón al final del input -->
                 <template v-slot:after>
-                  <q-btn color="positive" @click="recargarClientes">
+                  <q-btn color="positive" @click="recargarBancos">
                   <q-icon size="xs" class="q-mr-sm" name="bi-arrow-clockwise" />
                 </q-btn>
                 </template>
@@ -360,9 +360,8 @@
               <template v-slot:option="scope">
                 <q-item v-bind="scope.itemProps">
                   <q-item-section>
-                    <q-item-label
-                      >{{ scope.opt.plan_info }} -
-                      {{ scope.opt.bundle }}
+                    <q-item-label>
+                        {{ scope.opt.plan_info }} - {{ scope.opt.bundle }}
                     </q-item-label>
                     <q-item-label caption
                       >{{ scope.opt.nombre }}-
