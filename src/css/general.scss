@@ -349,6 +349,21 @@ input[type='time']::-webkit-calendar-picker-indicator {
   min-height: 40px;
 }
 
+.elegant-blue-hard-gradient-text {
+  background: #126bc5;
+  // background: linear-gradient(135deg, #51547a, #8b90d2, #51547a);
+  // background: linear-gradient(135deg, #210463, #4361ee, #021a36);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 2rem;
+  letter-spacing: 0.4px;
+  margin: 0;
+}
+
 .elegant-blue-gradient-text {
   background: #42435e;
   // background: linear-gradient(135deg, #51547a, #8b90d2, #51547a);
