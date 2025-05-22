@@ -4,7 +4,8 @@
     :configuracion-columnas="configuracionColumnas"
     titulo-pagina="Progresivas"
     :accion1="btnImprimirOT"
-    :accion2="btnImprimirKML"
+    :accion2="btnImprimirProgresiva"
+    :accion3="btnImprimirKML"
   >
     <template #formulario>
       <q-form @submit.prevent>

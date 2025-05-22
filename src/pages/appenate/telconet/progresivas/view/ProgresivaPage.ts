@@ -52,6 +52,14 @@ export default defineComponent({
               id
             await imprimirArchivo(url, 'GET', 'blob', 'kml', filename)
             break
+          case 'progresiva':
+            url =
+                apiConfig.URL_BASE +
+                '/' +
+                axios.getEndpoint(endpoints.imprimir_progresiva) +
+                id
+            await imprimirArchivo(url, 'GET', 'blob', 'xlsx', filename+'_progresiva')
+            break
           default:
             url =
               apiConfig.URL_BASE +
@@ -69,12 +77,24 @@ export default defineComponent({
      * BOTONES DE TABLA
      ********************/
     const btnImprimirOT: CustomActionTable<Progresiva> = {
-      titulo: 'Imprimir OT',
+      titulo: 'OT',
       icono: 'bi-file-earmark-excel-fill',
+      tooltip: 'Imprimir OT',
       color: 'positive',
       accion: async ({ entidad }) => {
         console.log('Aqui se imprime el excel')
         await imprimirArchivos('excel', entidad.filename, entidad.id)
+      },
+      visible: () => true
+    }
+    const btnImprimirProgresiva: CustomActionTable<Progresiva> = {
+      titulo: 'Progresiva',
+      icono: 'bi-file-earmark-excel-fill',
+      tooltip: 'Imprimir progresiva',
+      color: 'positive',
+      accion: async ({ entidad }) => {
+        console.log('Aqui se imprime el excel de la progresiva')
+        await imprimirArchivos('progresiva', entidad.filename, entidad.id)
       },
       visible: () => true
     }
@@ -100,6 +120,7 @@ export default defineComponent({
 
       //botones de tabla
       btnImprimirOT,
+      btnImprimirProgresiva,
       btnImprimirKML
     }
   }
