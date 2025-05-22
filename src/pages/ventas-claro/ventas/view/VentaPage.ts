@@ -12,17 +12,23 @@ import { useQuasar } from 'quasar'
 import { useVuelidate } from '@vuelidate/core'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { VentaController } from '../infrestructure/VentaController'
-import {
-  acciones,
-  estados_activaciones,
-  formas_pagos,
-  maskFecha
-} from 'config/utils'
+import { acciones, estados_activaciones, formas_pagos, maskFecha } from 'config/utils'
 import { VendedorController } from 'pages/ventas-claro/vendedores/infrestructure/VendedorController'
 import { ProductoVentasController } from 'pages/ventas-claro/productoVentas/infrestructure/ProductoVentasController'
 import { ClienteClaroController } from 'pages/ventas-claro/cliente/infrestucture/ClienteClaroController'
 import { maxLength, required, requiredIf } from 'shared/i18n-validators'
 import { ComportamientoModalesVentasClaro } from '../application/ComportamientoModalesVentasClaro'
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
+import { useAuthenticationStore } from 'stores/authentication';
+import { useVentaStore } from 'stores/ventasClaro/venta';
+import { tabOptionsVentas, estadosActivacionesVentas } from 'config/ventas.utils';
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable';
+import { useNotificaciones } from 'shared/notificaciones';
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt';
+import ErrorComponent from 'components/ErrorComponent.vue';
+import NoOptionComponent from 'components/NoOptionComponent.vue';
+import {EstadoController} from 'pages/ventas-claro/estados/infraestructure/EstadoController';
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { useAuthenticationStore } from 'stores/authentication'
@@ -39,6 +45,8 @@ import { api } from 'src/boot/axios'
 
 export default defineComponent({
   components: {
+    NoOptionComponent,
+    ErrorComponent,
     TabLayoutFilterTabs2,
     ModalesEntidad,
     LabelAbrirModal,
@@ -103,13 +111,15 @@ export default defineComponent({
      **************/
     const reglas = {
       vendedor: { required },
-
-      fecha_agendamiento: { required },
+      orden_id: { required, maxLength: maxLength(15) },
+      orden_interna: { maxLength: maxLength(6) },
       forma_pago: { required },
-      banco: { required },
       producto: { required },
       cliente: { required },
       estado_activacion: { required },
+      estado: { required },
+      banco: { required },
+      fecha_agendamiento: { required },
       fecha_activacion: {
         requiredIf: requiredIf(() => venta.estado_activacion === 'ACTIVADO')
       }
@@ -117,9 +127,9 @@ export default defineComponent({
     const v$ = useVuelidate(reglas, venta)
     setValidador(v$.value)
 
+    const estados  = ref([])
     const {
-      bancos,
-      filtrarBancos,
+      bancos, filtrarBancos,
       productos_claro: productos,
       filtrarProductosClaro: filtrarProductos,
       vendedores_claro: vendedores,
@@ -138,6 +148,10 @@ export default defineComponent({
           controller: new ProductoVentasController(),
           params: { campos: 'id,nombre' }
         },
+        estados: {
+          controller: new EstadoController(),
+          params: { tipo: 'VENTA', activo: 1 }
+        },
         vendedores: {
           controller: new VendedorController(),
           params: {
@@ -154,6 +168,7 @@ export default defineComponent({
       productos.value = listadosAuxiliares.productos
       vendedores.value = listadosAuxiliares.vendedores
       clientes.value = listadosAuxiliares.clientes
+      estados.value = listadosAuxiliares.estados
       bancos.value = listadosAuxiliares.bancos
     })
 
@@ -371,7 +386,7 @@ export default defineComponent({
       v$,
       acciones,
       configuracionColumnas: configuracionColumnasVentas,
-      estados_activaciones,
+      estados,
       formas_pagos,
       maskFecha,
       precio_producto,

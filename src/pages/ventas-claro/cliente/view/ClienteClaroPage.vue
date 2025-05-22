@@ -210,11 +210,7 @@
               map-options
             >
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
+                <no-option-component/>
               </template>
             </q-select>
           </div>
@@ -241,16 +237,10 @@
               map-options
             >
               <template v-slot:error>
-                <div v-for="error of v$.parroquia.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="parroquia" :v$="v$"/>
               </template>
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
+                <no-option-component/>
               </template>
             </q-select>
           </div>
@@ -361,13 +351,7 @@
               </template>
 
               <template v-slot:error>
-                <div
-                  style="clear: inherit"
-                  v-for="error of v$.fecha_expedicion_cedula?.$errors"
-                  :key="error.$uid"
-                >
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="fecha_expedicion_cedula" :v$="v$"/>
               </template>
             </q-input>
           </div>

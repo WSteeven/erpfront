@@ -180,6 +180,28 @@ const rutasVentasClaro: RouteRecordRaw[] = [
                 ),
         meta: { requiresAuth: true },
     },
+
+    ///
+    ///
+    {
+        path: '/bases-comisiones',
+        name: 'bases_comisiones',
+        component: () =>
+            import(
+                'pages/ventas-claro/estadisticas/basesComisiones/view/BaseComisionPage.vue'
+                ),
+        meta: { requiresAuth: false },
+    },
+    {
+        path: '/seguimiento-ventas',
+        name: 'seguimiento_ventas',
+        component: () =>
+            import(
+                'pages/ventas-claro/estadisticas/seguimientoVentas/view/SeguimientoVentasPage.vue'
+                ),
+        meta: { requiresAuth: false },
+    },
+
 ]
 
 export default rutasVentasClaro
