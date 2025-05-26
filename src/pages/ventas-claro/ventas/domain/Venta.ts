@@ -17,6 +17,7 @@ export class Venta extends EntidadAuditable {
   mes: string | null
   estado_activacion: string | null
   estado: string | null
+  estado_id: string | null
   forma_pago: string | null
   banco: string | null
   numero_tarjeta: string | null
@@ -52,6 +53,7 @@ export class Venta extends EntidadAuditable {
     this.mes = null
     this.estado_activacion = null
     this.estado = null
+    this.estado_id = null
     this.forma_pago = null
     this.banco = null
     this.numero_tarjeta = null
