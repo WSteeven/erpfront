@@ -96,7 +96,7 @@ export default defineComponent({
     const noticiaCompleta = ref<Noticia | null>(null)
 
     //solicitudes
-    const { notificarError } = useNotificaciones()
+    const { notificarError, notificarInformacion } = useNotificaciones()
     const tiposSolicitudes = ref([
       { label: 'Permisos', value: 'permiso' },
       { label: 'Licencias', value: 'licencias' },
@@ -402,7 +402,7 @@ export default defineComponent({
           return empleado.extension !== null && empleado.extension !== undefined
         })
 
-        console.log(empleadosConExtension.value)
+        // console.log(empleadosConExtension.value)
       } catch (err) {
         console.log('Error al obtener empleados con extensión:', err)
       }
@@ -411,7 +411,7 @@ export default defineComponent({
     const obtenerEmpleadosCumpleaneros = async () => {
       // Obtener el mes actual
       const currentMonth = new Date().getUTCMonth()
-      console.log(currentMonth)
+      // console.log(currentMonth)
 
       try {
         const empleadoController = new EmpleadoController()
@@ -439,7 +439,7 @@ export default defineComponent({
             return dayA - dayB
           })
 
-        console.log(empleadosCumpleaneros.value)
+        // console.log(empleadosCumpleaneros.value)
       } catch (err) {
         console.log('Error al obtener empleados cumpleañeros:', err)
       }
@@ -504,9 +504,9 @@ export default defineComponent({
     useNotificaciones()
 
     const enviarSolicitud = () => {
-      console.log('Solicitud enviada:', {
-        tipo: solicitud.tipo_solicitud
-      })
+      // console.log('Solicitud enviada:', {
+      //   tipo: solicitud.tipo_solicitud
+      // })
 
       switch (solicitud.tipo_solicitud) {
         case 'permiso':
@@ -577,6 +577,10 @@ export default defineComponent({
       }
     })
 
+
+    function notificarProximamente(){
+      notificarInformacion('Próximamente disponible para iOS')
+    }
     return {
       correo: computed(() => 'https://' + configuracionGeneralStore.configuracion?.sitio_web + '/webmail'),
 
@@ -645,7 +649,7 @@ export default defineComponent({
 
       calcularAntiguedad,
       calcularEdadEsteAno,
-
+      notificarProximamente,
       eventosFormateados,
       configuracion,
       cerrarModal() {

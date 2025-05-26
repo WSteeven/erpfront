@@ -5,7 +5,7 @@ export const configuracionColumnasLicenciaEmpleado: ColumnConfig<LicenciaEmplead
     {
         name: 'justificacion',
         field: 'justificacion',
-        label: 'Juatificacion',
+        label: 'Justificación',
         align: 'left',
         sortable: true
     },

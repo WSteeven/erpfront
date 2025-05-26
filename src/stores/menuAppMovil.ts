@@ -1,4 +1,4 @@
-import { MenuOption } from './../shared/menu/MenuOption';
+import { MenuOption } from 'shared/menu/MenuOption';
 import menuSeguridad from './menus/seguridad/menuSeguridad'
 import { defineStore } from 'pinia'
 import { computed, Ref } from 'vue'

@@ -5,7 +5,7 @@ export const configuracionColumnasPermisoEmpleado: ColumnConfig<PermisoEmpleado>
     {
         name: 'justificacion',
         field: 'justificacion',
-        label: 'Juatificacion',
+        label: 'Justificación',
         align: 'left',
         sortable: true
     },
@@ -47,7 +47,7 @@ export const configuracionColumnasPermisoEmpleado: ColumnConfig<PermisoEmpleado>
 {
   name: 'fecha_hora_reagendamiento',
   field: 'fecha_hora_reagendamiento',
-  label: 'Fcha Sugerida de Permiso',
+  label: 'F. Sug. de Permiso',
   align: 'left',
   sortable: true
 }

@@ -8,6 +8,7 @@ import vehiculos from './menus/vehiculos/vehiculos'
 import menuSeguridad from './menus/seguridad/menuSeguridad'
 import comprasProveedores from 'stores/menus/comprasProveedores/comprasProveedores';
 import ventasClaro from 'stores/menus/claro/ventasClaro';
+import telconet from 'stores/menus/appenate/telconet';
 
 export const useMenuStore = defineStore('menu', () => {
   const store = useAuthenticationStore()
@@ -86,6 +87,7 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-people',
           can: store.can('puede.acceder.clientes_finales')
         },
+          ...telconet.value,
         {
           title: 'Centro de Costos',
           icon: 'bi-wallet2',

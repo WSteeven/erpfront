@@ -7,9 +7,9 @@
           :src="!$q.dark.isActive ? logoClaro : logoOscuro"
           alt="logo"
           width="100"
-        />
+        /> <br>
+       <span class="text-thin text-h5 elegant-blue-hard-gradient-text">FIRSTRED</span>
       </div>
-
       <div
         class="col-12 col-md-3 column bordfe q-py-lg rounded-card shadow-chip bg-solid"
       >

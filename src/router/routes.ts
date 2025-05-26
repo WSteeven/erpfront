@@ -11,6 +11,7 @@ import rutasVehiculos from './rutasVehiculos'
 import rutasSeguridad from './rutasSeguridad'
 import rutasComprasProveedores from './rutasComprasProveedores';
 import rutasVentasClaro from './rutasVentasClaro';
+import rutasAppenate from './rutasAppenate';
 
 console.log(process.env.VUE_APP_ID)
 const routes: RouteRecordRaw[] = [
@@ -128,6 +129,11 @@ const routes: RouteRecordRaw[] = [
        **************************/
       ...rutasSSO,
       ...rutasSeguridad,
+
+      /**************************
+       * Modulo Appenate
+       **************************/
+      ...rutasAppenate,
 
       /********
        * Otros

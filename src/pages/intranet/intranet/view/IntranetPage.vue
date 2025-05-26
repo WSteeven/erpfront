@@ -169,8 +169,8 @@
                     :key="etiqueta"
                     class="noticia-modal-badge"
                     color="green-6"
-                    >{{ etiqueta }}</q-badge
-                  >
+                    >{{ etiqueta }}
+                  </q-badge>
                 </div>
 
                 <div class="noticia-modal-autor-container">
@@ -341,6 +341,60 @@
                 </div>
               </q-expansion-item>
             </q-card>
+          </q-card>
+        </div>
+
+        <!-- Seccion descargate la app movil  -->
+        <div class="col-12 col-md-9 q-pt-md">
+          <q-card
+            class="q-pa-md q-mx-auto q-my-lg shadow-2 rounded-borders bg-primary text-white"
+            style="max-width: 900px"
+          >
+            <div class="row items-center q-col-gutter-md">
+              <div class="col-auto">
+                <q-icon name="smartphone" size="64px" />
+              </div>
+
+              <div class="col">
+                <div class="text-h6 q-mb-xs">¡Descarga nuestra App Móvil!</div>
+                <div class="text-subtitle2">
+                  Lleva la intranet contigo a donde vayas.
+                </div>
+              </div>
+
+              <q-card class="q-pa-md q-my-md  bg-grey-2" flat bordered>
+                <div class="row items-center q-col-gutter-lg justify-center">
+                  <!-- Botón Android -->
+                  <div class="column items-center">
+                    <q-btn
+                        color="green"
+                        icon="android"
+                        label="Android"
+                        href="https://sistema.jpconstrucred.com/firstred-jpconstrucred-app.apk"
+                        target="_blank"
+                        unelevated
+                        rounded
+                    />
+                  </div>
+
+                  <!-- Botón iOS con texto arriba -->
+                  <div class="column items-center">
+                    <small class="text-grey-7">Próximamente...</small>
+                    <q-btn
+                        color="white"
+                        text-color="black"
+                        icon="apple"
+                        label="iOS"
+                        target="_blank"
+                        unelevated
+                        @click="notificarProximamente"
+                        rounded
+                    />
+                  </div>
+                </div>
+              </q-card>
+
+            </div>
           </q-card>
         </div>
       </div>
@@ -735,9 +789,9 @@
 
                   <!-- Correo electrónico -->
                   <div class="custom-email text-subtitle2 q-mb-xs">
-                    <q-badge color="primary">{{
-                      selectedEmpleado.email
-                    }}</q-badge>
+                    <q-badge color="primary"
+                      >{{ selectedEmpleado.email }}
+                    </q-badge>
                   </div>
 
                   <!-- Teléfono -->
@@ -816,13 +870,13 @@
                       </q-scroll-area>
                     </q-card>
                     <div class="event-card-time">
-                      <q-badge color="green-6">{{
-                        eventoSeleccionado?.fecha_hora_inicio
-                      }}</q-badge>
+                      <q-badge color="green-6"
+                        >{{ eventoSeleccionado?.fecha_hora_inicio }}
+                      </q-badge>
                       -
-                      <q-badge color="amber">{{
-                        eventoSeleccionado?.fecha_hora_fin
-                      }}</q-badge>
+                      <q-badge color="amber"
+                        >{{ eventoSeleccionado?.fecha_hora_fin }}
+                      </q-badge>
                     </div>
                   </q-card-section>
                   <q-card-actions align="right" class="event-card-actions">
@@ -1403,10 +1457,12 @@ h5 {
 .extensiones-scroll::-webkit-scrollbar {
   width: 6px;
 }
+
 .extensiones-scroll::-webkit-scrollbar-thumb {
   background-color: #00796b;
   border-radius: 3px;
 }
+
 .extensiones-scroll::-webkit-scrollbar-track {
   background-color: #f1f1f1;
 }
