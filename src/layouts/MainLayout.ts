@@ -1,4 +1,4 @@
-import { useMenuAppMovilStore } from './../stores/menuAppMovil';
+import { useMenuAppMovilStore } from 'stores/menuAppMovil'
 // Dependencias
 import { Notificacion } from 'pages/administracion/notificaciones/domain/Notificacion'
 import { useNotificationRealtimeStore } from 'stores/notificationRealtime'
@@ -12,7 +12,7 @@ import {
   watchEffect
 } from 'vue'
 import { useAuthenticationStore } from 'src/stores/authentication'
-import { LocalStorage, Platform, useQuasar } from 'quasar'
+import { LocalStorage, useQuasar } from 'quasar'
 import { useMenuStore } from 'src/stores/menu'
 import { useRoute, useRouter } from 'vue-router'
 import Swal from 'sweetalert2'
@@ -45,7 +45,6 @@ import { StatusEssentialLoading } from 'components/loading/application/StatusEss
 
 import { MenuOption } from 'shared/menu/MenuOption'
 import { useAuthenticationExternalStore } from 'stores/authenticationExternal'
-import { EmpleadoDelegadoController } from 'recursosHumanos/empleados/modules/modoNoDisponible/infraestructure/EmpleadoDelegadoController'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { endpoints } from 'config/api'
 import { AxiosResponse } from 'axios'
@@ -352,7 +351,8 @@ export default defineComponent({
 
     // función para obtener los módulos permitidos
     function obtenerModulosPermitidos() {
-      const modulosPermitidos = (Capacitor.isNativePlatform() ? menuAppMovilStore.links : menuStore.links).filter(
+      // const modulosPermitidos = (Capacitor.isNativePlatform() ? menuAppMovilStore.links : menuStore.links).filter(
+      const modulosPermitidos = (menuStore.links).filter(
         (link: MenuOption) => link.can
       )
 
@@ -467,7 +467,8 @@ export default defineComponent({
       route,
       abrirMovilizacionSubtarea,
       abrirTransferirTareas,
-      links: Capacitor.isNativePlatform() ? menuAppMovilStore.links : menuStore.links,
+      // links: Capacitor.isNativePlatform() ? menuAppMovilStore.links : menuStore.links,
+      links: menuStore.links,
       leftDrawerOpen,
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value

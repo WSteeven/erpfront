@@ -96,7 +96,7 @@ export default defineComponent({
     const noticiaCompleta = ref<Noticia | null>(null)
 
     //solicitudes
-    const { notificarError } = useNotificaciones()
+    const { notificarError, notificarInformacion } = useNotificaciones()
     const tiposSolicitudes = ref([
       { label: 'Permisos', value: 'permiso' },
       { label: 'Licencias', value: 'licencias' },
@@ -577,6 +577,10 @@ export default defineComponent({
       }
     })
 
+
+    function notificarProximamente(){
+      notificarInformacion('Próximamente disponible para iOS')
+    }
     return {
       correo: computed(() => 'https://' + configuracionGeneralStore.configuracion?.sitio_web + '/webmail'),
 
@@ -645,7 +649,7 @@ export default defineComponent({
 
       calcularAntiguedad,
       calcularEdadEsteAno,
-
+      notificarProximamente,
       eventosFormateados,
       configuracion,
       cerrarModal() {

@@ -1,4 +1,4 @@
-import { PushNotifications } from '@capacitor/push-notifications'
+import {PushNotifications}  from '@capacitor/push-notifications'
 import { Capacitor } from '@capacitor/core'
 
 export default async () => {
@@ -9,20 +9,20 @@ export default async () => {
             }
         })
 
-        PushNotifications.addListener('registration', token => {
+        await PushNotifications.addListener('registration', token => {
             console.log('Push registration success, token:', token.value)
             // Envía este token a tu servidor
         })
 
-        PushNotifications.addListener('registrationError', err => {
+        await PushNotifications.addListener('registrationError', err => {
             console.error('Push registration error:', err)
         })
 
-        PushNotifications.addListener('pushNotificationReceived', notification => {
+        await PushNotifications.addListener('pushNotificationReceived', notification => {
             console.log('Push received: ', notification)
         })
 
-        PushNotifications.addListener('pushNotificationActionPerformed', notification => {
+        await PushNotifications.addListener('pushNotificationActionPerformed', notification => {
             console.log('Push action performed', notification)
         })
     }

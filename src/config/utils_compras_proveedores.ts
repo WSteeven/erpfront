@@ -139,6 +139,7 @@ export const opcionesEstadosPrefacturas = [
 ]
 export const opcionesEstadosOC = [
   { value: 'PENDIENTES' },
+  { value: 'AUTORIZADAS' },
   { value: 'REVISADAS' },
   { value: 'REALIZADAS', },
   { value: 'PAGADAS', },
