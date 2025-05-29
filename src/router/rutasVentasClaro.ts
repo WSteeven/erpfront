@@ -190,7 +190,7 @@ const rutasVentasClaro: RouteRecordRaw[] = [
             import(
                 'pages/ventas-claro/estadisticas/basesComisiones/view/BaseComisionPage.vue'
                 ),
-        meta: { requiresAuth: false },
+        meta: { requiresAuth: true },
     },
     {
         path: '/seguimiento-ventas',
@@ -199,7 +199,7 @@ const rutasVentasClaro: RouteRecordRaw[] = [
             import(
                 'pages/ventas-claro/estadisticas/seguimientoVentas/view/SeguimientoVentasPage.vue'
                 ),
-        meta: { requiresAuth: false },
+        meta: { requiresAuth: true },
     },
 
 ]

@@ -8,6 +8,7 @@ export const ventasClaro = {
     modalidad: new Endpoint('ventas-claro/modalidad'),
     planes: new Endpoint('ventas-claro/planes'),
     productos_ventas: new Endpoint('ventas-claro/productos-ventas'),
+    productos_ventas_lotes: new Endpoint('ventas-claro/productos-ventas-lotes'),
     vendedores_ventas_claro: new Endpoint('ventas-claro/empleados-ventas'),
     vendedores_claro: new Endpoint('ventas-claro/vendedores'),
     desactivar_vendedores_claro_masivo: new Endpoint('ventas-claro/vendedores/desactivar-masivo'),

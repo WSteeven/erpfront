@@ -80,13 +80,13 @@ const ventasClaro: Ref<MenuOption[]> = computed(() => {
               title: 'Propuesta Comisional',
               link: 'bases-comisiones',
               icon: 'bi-card-list',
-              can: store.can('puede.acceder.bases_comisiones') || true
+              can: store.can('puede.acceder.bases_comisiones')
             },
             {
               title: 'Seguimiento Ventas',
               link: 'seguimiento-ventas',
               icon: 'bi-card-list',
-              can: store.can('puede.acceder.seguimiento_ventas') || true
+              can: store.can('puede.acceder.seguimiento_ventas')
             }
           ]
         },

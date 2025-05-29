@@ -1,5 +1,5 @@
 // Dependencias
-import {AxiosError, AxiosResponse} from 'axios'
+import { AxiosResponse } from 'axios'
 import { configuracionColumnasRolPago } from '../../rol-pago/domain/configuracionColumnasRolPago'
 import { required } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
@@ -42,7 +42,6 @@ import { apiConfig, endpoints } from 'config/api'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
-import GestorDocumentos from 'components/documentos/view/GestorDocumentos.vue'
 import { useNotificacionStore } from 'stores/notificacion'
 
 export default defineComponent({
@@ -53,7 +52,6 @@ export default defineComponent({
     SelectorImagen,
     EssentialTable,
     EssentialTableTabs,
-    GestorDocumentos
   },
   setup() {
     const mixin = new ContenedorSimpleMixin(

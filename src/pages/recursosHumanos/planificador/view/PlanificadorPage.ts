@@ -26,9 +26,16 @@ import { apiConfig, endpoints } from 'config/api'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useQuasar } from 'quasar'
 import { useCargandoStore } from 'stores/cargando'
+import ErrorComponent from 'components/ErrorComponent.vue';
+import NoOptionComponent from 'components/NoOptionComponent.vue';
 
 export default defineComponent({
-  components: { TabLayoutFilterTabs2, EssentialTable },
+  components: {
+    NoOptionComponent,
+    ErrorComponent,
+    TabLayoutFilterTabs2,
+    EssentialTable
+  },
   setup() {
     const mixin = new ContenedorSimpleMixin(
       Planificador,
@@ -43,7 +50,7 @@ export default defineComponent({
     const { setValidador, listar, cargarVista, obtenerListados } =
       mixin.useComportamiento()
     const { onReestablecer } = mixin.useHooks()
-    const { confirmar,notificarAdvertencia, prompt } = useNotificaciones()
+    const { confirmar, notificarAdvertencia, prompt } = useNotificaciones()
     useNotificacionStore().setQuasar(useQuasar())
     useCargandoStore().setQuasar(useQuasar())
 
@@ -149,8 +156,14 @@ export default defineComponent({
 
     function eliminar({ posicion, identificador }) {
       confirmar('¿Está seguro de continuar?', () => {
-        planificador.actividades[identificador].subactividades.splice(posicion, 1)
-        calcularPorcentajeCompletado(planificador.actividades[identificador][0], planificador.actividades[identificador])
+        planificador.actividades[identificador].subactividades.splice(
+          posicion,
+          1
+        )
+        calcularPorcentajeCompletado(
+          planificador.actividades[identificador][0],
+          planificador.actividades[identificador]
+        )
       })
     }
 
@@ -158,7 +171,10 @@ export default defineComponent({
       const finalizados = actividad.subactividades.filter(
         (item: Subactividad) => item.estado_avance === FINALIZADO
       )
-      actividad.completado =((finalizados.length / actividad.subactividades?.length) * 100).toFixed(2)
+      actividad.completado = (
+        (finalizados.length / actividad.subactividades?.length) *
+        100
+      ).toFixed(2)
 
       //aqui se calcula el porcentaje total para que se actualice inmediatamente
       let total_subactividades = 0
@@ -169,19 +185,27 @@ export default defineComponent({
           if (subactividad.estado_avance === FINALIZADO) total_finalizadas++
         })
       })
-      planificador.completado = ((total_finalizadas / total_subactividades) * 100).toFixed(2)
+      planificador.completado = (
+        (total_finalizadas / total_subactividades) *
+        100
+      ).toFixed(2)
     }
 
-    async function imprimirPdf(entidad:Planificador){
+    async function imprimirPdf(entidad: Planificador) {
       try {
         cargando.activar()
         const axios = AxiosHttpRepository.getInstance()
-        const url = apiConfig.URL_BASE+'/'+axios.getEndpoint(endpoints.planificadores)+'/imprimir/'+entidad.id
-        const filename = entidad.nombre+'_'+Date.now()
-        await  imprimirArchivo(url, 'GET', 'blob', 'pdf', filename)
-      }catch (e){
-        notificarAdvertencia('Error al imprimir el registro '+e)
-      }finally {
+        const url =
+          apiConfig.URL_BASE +
+          '/' +
+          axios.getEndpoint(endpoints.planificadores) +
+          '/imprimir/' +
+          entidad.id
+        const filename = entidad.nombre + '_' + Date.now()
+        await imprimirArchivo(url, 'GET', 'blob', 'pdf', filename)
+      } catch (e) {
+        notificarAdvertencia('Error al imprimir el registro ' + e)
+      } finally {
         cargando.desactivar()
       }
     }
@@ -200,12 +224,25 @@ export default defineComponent({
         fila.responsable = planificador.empleado
         fila.estado_avance = NO_INICIADO
         fila.periodicidad = SEMANAL
-        fila.fecha_inicio =planificador.actividades[identificador].subactividades.at(-1)?.fecha_inicio
-        fila.fecha_fin =planificador.actividades[identificador].subactividades.at(-1)?.fecha_fin
-        fila.id = planificador.actividades[identificador].subactividades.length ? encontrarUltimoIdListado(planificador.actividades[identificador].subactividades) + 1 : 1
+        fila.fecha_inicio =
+          planificador.actividades[identificador].subactividades.at(
+            -1
+          )?.fecha_inicio
+        fila.fecha_fin =
+          planificador.actividades[identificador].subactividades.at(
+            -1
+          )?.fecha_fin
+        fila.id = planificador.actividades[identificador].subactividades.length
+          ? encontrarUltimoIdListado(
+              planificador.actividades[identificador].subactividades
+            ) + 1
+          : 1
         planificador.actividades[identificador].subactividades.push(fila)
 
-        calcularPorcentajeCompletado(fila, planificador.actividades[identificador])
+        calcularPorcentajeCompletado(
+          fila,
+          planificador.actividades[identificador]
+        )
       },
       visible: () => [acciones.nuevo, acciones.editar].includes(accion.value)
     }
@@ -220,11 +257,11 @@ export default defineComponent({
       visible: () => [acciones.nuevo, acciones.editar].includes(accion.value)
     }
 
-    const btnImprimir: CustomActionTable<Planificador>={
+    const btnImprimir: CustomActionTable<Planificador> = {
       titulo: 'Imprimir',
-      color:'secondary',
+      color: 'secondary',
       icono: 'bi-printer',
-      accion: async ({entidad})=>{
+      accion: async ({ entidad }) => {
         await imprimirPdf(entidad)
       }
     }
@@ -258,7 +295,7 @@ export default defineComponent({
       // botones de tabla
       btnEliminar,
       btnAgregarSubactividad,
-      btnImprimir,
+      btnImprimir
     }
   }
 })

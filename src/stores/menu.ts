@@ -1079,12 +1079,24 @@ export const useMenuStore = defineStore('menu', () => {
       can: store.can('puede.acceder.auditorias') // || store.esAdministrador,
     },
     {
-      title: 'Configuracion General',
-      link: 'configuracion',
-      icon: 'bi-gear-wide-connected',
-      can:
-        store.can('puede.acceder.configuracion_general') ||
-        store.esAdministrador
+      title: 'Configuracion Sistema',
+      icon: 'bi-gear',
+      children: [
+        {
+          title: 'Configuracion General',
+          link: 'configuracion',
+          icon: 'bi-gear-wide-connected',
+          can:
+              store.can('puede.acceder.configuracion_general') ||
+              store.esAdministrador
+        },
+        {
+          title: 'Plantilla de ejemplo',
+          link: 'plantillas-base',
+          icon: 'bi-card-list',
+          can: store.can('puede.acceder.plantillas_base')
+        }
+      ]
     },
     {
       title: 'Geografía General',
