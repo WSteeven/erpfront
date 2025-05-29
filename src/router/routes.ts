@@ -91,7 +91,7 @@ const routes: RouteRecordRaw[] = [
         path: 'plantillas-base',
         name: 'plantillas_base',
         component: () =>
-          import('pages/sistema/plantillasBase/view/PlantillaBlasePage.vue'),
+          import('sistema/plantillasBase/view/PlantillaBasePage.vue'),
         meta: { requiresAuth: true },
       },
       {

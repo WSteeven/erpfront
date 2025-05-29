@@ -38,7 +38,8 @@
   </q-file>
   <input-component
     v-else
-    clearable
+    :clearable="accion==acciones.editar"
+    :readonly="disable"
     v-model="model"
     :v$="v$"
     :clave="clave"

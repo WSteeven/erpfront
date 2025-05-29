@@ -76,7 +76,7 @@ import { HttpResponsePost } from '../../http/domain/HttpResponse'
 import { Endpoint } from 'shared/http/domain/Endpoint'
 import { ApiError } from '../../error/domain/ApiError'
 import { ResponseItem } from '../domain/ResponseItem'
-import { AxiosError, AxiosResponse } from 'axios'
+import {AxiosError, AxiosRequestConfig, AxiosResponse} from 'axios'
 import { ParamsType } from 'config/types'
 
 export class GuardableRepository<T> {
@@ -87,12 +87,14 @@ export class GuardableRepository<T> {
     this.endpoint = endpoint
   }
 
-  async guardar(entidad: T, params?: ParamsType): Promise<ResponseItem<T, HttpResponsePost<T>>> {
+  async guardar(entidad: T, params?: ParamsType, options?:AxiosRequestConfig): Promise<ResponseItem<T, HttpResponsePost<T>>> {
     try {
-      const ruta = this.httpRepository.getEndpoint(this.endpoint, params)
+      let ruta = this.httpRepository.getEndpoint(this.endpoint, params)
+      if(entidad._method)
+        if(entidad._method=='PUT') ruta = this.httpRepository.getEndpoint(this.endpoint)+'/'+entidad.id
       // console.log(ruta)
       // console.log(params)
-      const response: AxiosResponse = await this.httpRepository.post(ruta, entidad)
+      const response: AxiosResponse = await this.httpRepository.post(ruta, entidad, options)
 
       return {
         response,

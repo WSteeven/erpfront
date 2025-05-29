@@ -14,6 +14,7 @@ import { markRaw, } from 'vue'
 import { ParamsType } from 'config/types'
 import { Archivo } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/domain/Archivo'
 import { ArchivoController } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/infraestructure/ArchivoController'
+import {AxiosRequestConfig} from 'axios';
 
 export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedor<T, Referencias<T>, TransaccionSimpleController<T>, ArchivoController> {
   private hooks = new HooksSimples()
@@ -199,7 +200,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
 
   // Guardar
   // @noImplicitAny: false
-  private async guardar(data: T, agregarAlListado = true, params?: ParamsType): Promise<any> {
+  private async guardar(data: T, agregarAlListado = true, params?: ParamsType, options?:AxiosRequestConfig): Promise<any> {
     console.log('guardar')
     this.statusEssentialLoading.activar()
 
@@ -226,7 +227,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
         {
           ...params,
           ...this.argsDefault
-        }
+        }, options
       )
 
       this.notificaciones.notificarCorrecto(response.data.mensaje)
@@ -395,7 +396,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
 
 
   // Editar
-  private async editar(data: T, resetOnUpdated = true, params?: ParamsType) {
+  private async editar(data: T, resetOnUpdated = true, params?: ParamsType, options?:AxiosRequestConfig) {
     this.statusEssentialLoading.activar()
 
     if (this.entidad.id === null) {
@@ -420,14 +421,14 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
       throw new Error('Verifique el formulario')
     }
 
-    this.cargarVista(async () => {
+    await this.cargarVista(async () => {
       try {
-        const { response, result: modelo } = await this.controller.editar(
-          data,
-          {
-            ...params,
-            ...this.argsDefault
-          }
+        const {response, result: modelo} = await this.controller.editar(
+            data,
+            {
+              ...params,
+              ...this.argsDefault
+            }, options
         )
 
         this.notificaciones.notificarCorrecto(response.data.mensaje)

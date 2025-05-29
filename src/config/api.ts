@@ -24,7 +24,6 @@ export const endpoints = {
   usuarios: new Endpoint('usuarios'),
   configuracion: new Endpoint('configuracion'),
   plantillas_base: new Endpoint('plantillas-base'),
-  plantillas_base_file: new Endpoint('plantillas-base-file'),
   auditorias: new Endpoint('auditorias'),
   login: new Endpoint('usuarios/login'),
   login_externos: new Endpoint('usuarios-externos/login'),

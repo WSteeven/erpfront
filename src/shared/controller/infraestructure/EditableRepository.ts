@@ -4,7 +4,7 @@ import { HttpResponsePut } from '../../http/domain/HttpResponse'
 import { Endpoint } from 'shared/http/domain/Endpoint'
 import { ApiError } from '../../error/domain/ApiError'
 import { ResponseItem } from '../domain/ResponseItem'
-import { AxiosError, AxiosResponse } from 'axios'
+import { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios'
 import { ParamsType } from 'config/types'
 
 export class EditableRepository<T> {
@@ -15,25 +15,22 @@ export class EditableRepository<T> {
     this.endpoint = endpoint
   }
 
-  async editar(
-    id: number | null,
-    entidad: T,
-    params?: ParamsType
-  ): Promise<ResponseItem<T, HttpResponsePut<T>>> {
+  async editar(    id: number | null,    entidad: T,    params?: ParamsType,    options?: AxiosRequestConfig  ): Promise<ResponseItem<T, HttpResponsePut<T>>> {
     try {
       const endpoint = {
         endpoint: this.endpoint,
-        id,
+        id
       }
       const ruta = this.httpRepository.getEndpoint(endpoint, params)
       const response: AxiosResponse = await this.httpRepository.put(
         ruta,
-        entidad
+        entidad,
+        options
       )
 
       return {
         response,
-        result: response.data.modelo,
+        result: response.data.modelo
       }
     } catch (error: unknown) {
       const axiosError = error as AxiosError
@@ -46,7 +43,10 @@ export class EditableRepository<T> {
       // const patch: { [key: string]: any } = {}
       // patch[clave] = valor
 
-      const ruta = this.httpRepository.getEndpoint({ endpoint: this.endpoint, id }, args)
+      const ruta = this.httpRepository.getEndpoint(
+        { endpoint: this.endpoint, id },
+        args
+      )
       const response: AxiosResponse = await this.httpRepository.patch(
         ruta,
         data
@@ -54,7 +54,7 @@ export class EditableRepository<T> {
 
       return {
         response,
-        result: response.data.modelo,
+        result: response.data.modelo
       }
     } catch (error: unknown) {
       const axiosError = error as AxiosError

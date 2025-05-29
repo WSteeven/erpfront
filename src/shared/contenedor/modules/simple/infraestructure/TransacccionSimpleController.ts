@@ -18,6 +18,7 @@ import { GuardableActivityRepository } from 'shared/controller/infraestructure/G
 import { GuardableListadoRepository } from 'shared/controller/infraestructure/GuardableListadoRepository'
 import { EditableListadoRepository } from 'shared/controller/infraestructure/EditableListadoRepository'
 import { EliminableListadoRepository } from 'shared/controller/infraestructure/listado/EliminableListadoRepository'
+import {AxiosRequestConfig} from 'axios';
 
 export abstract class TransaccionSimpleController<T extends EntidadAuditable>
   implements Controller<T> {
@@ -87,8 +88,8 @@ export abstract class TransaccionSimpleController<T extends EntidadAuditable>
   async guardarFiles(id: number, entidad: T) {
     return await this.guardableFileRepository.guardarArchivos(id, entidad)
   }
-  async guardar(entidad: T, params?: ParamsType) {
-    return await this.guardableRepository.guardar(entidad, params)
+  async guardar(entidad: T, params?: ParamsType, options?:AxiosRequestConfig) {
+    return await this.guardableRepository.guardar(entidad, params, options)
   }
 
   async guardarListado(listado: T[], params?: ParamsType) {
@@ -96,8 +97,8 @@ export abstract class TransaccionSimpleController<T extends EntidadAuditable>
   }
 
   // Promise<ResponseItem<T, HttpResponsePut<T>>>
-  async editar(entidad: T, params?: any) {
-    return await this.editableRepository.editar(entidad.id, entidad, params)
+  async editar(entidad: T, params?: any, options?: AxiosRequestConfig) {
+    return await this.editableRepository.editar(entidad.id, entidad, params, options)
   }
 
   async editarListado(listado: T[], params?: any) {

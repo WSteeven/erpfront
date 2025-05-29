@@ -2,13 +2,16 @@ import {
   computed,
   defineComponent,
   getCurrentInstance,
-  onMounted, PropType,
+  onMounted,
+  PropType,
   ref,
   watch
 } from 'vue'
 import { useRejectedFiles } from '../../../composables/useRejectedFiles'
 import ErrorComponent from 'components/ErrorComponent.vue'
 import InputComponent from 'components/inputs/InputComponent.vue'
+import {acciones} from 'config/utils';
+import {descargarArchivoUrl} from 'shared/utils';
 
 export default defineComponent({
   components: { ErrorComponent, InputComponent },
@@ -20,6 +23,7 @@ export default defineComponent({
       type: [String, Object, File, null] as PropType<string | File | null>,
       required: true
     },
+    accion:{type:String,required: true},
     disable: Boolean,
     readonly: Boolean,
     v$: {
@@ -57,51 +61,25 @@ export default defineComponent({
 
     watch(
       () => props.modelValue,
-      newValue => {
-        console.log('newValue es:', newValue)
-        model.value = newValue
-      }
+      newValue => model.value = newValue
     )
-    const update = val => {
+    const update = (val:any) => {
       emit('update:model-value', val)
-      verificarObjeto()
     }
 
-    const verificarObjeto = () => {
-      if (typeof model.value === 'string') {
-        mostrarDescargar.value = true
-        console.log('es un string', model.value)
-      }
-      if (model.value !== null && typeof model.value === 'object') {
-        console.log('model es un objeto', model.value)
-      } else {
-        console.log('otro tipo:', typeof model.value)
-      }
-    }
-    const descargar = val => {
-      console.log('Aqui se descarga el archivo', val)
+    const descargar = () => {
+      descargarArchivoUrl(typeof model.value === 'string' ? model.value : '#')
     }
 
     const esArchivoRemoto = computed(() => typeof model.value === 'string')
 
-    const subir = async (id?: number) => {
-      if (!(model.value instanceof File)) {
-        console.log('No hay archivo nuevo para subir')
-        return
-      }
-
-      const formData = new FormData()
-      if (id != null) formData.append('id', id.toString())
-      formData.append('file', model.value)
-
-      //aqui se envia a la url el form data
-    }
-
     return {
-      subir,
       onRejected,
-      esArchivoRemoto,slotUsado,mostrarDescargar,
-      descargar, update,
+      esArchivoRemoto,
+      slotUsado,
+      mostrarDescargar, acciones,
+      descargar,
+      update,
       model
     }
   }

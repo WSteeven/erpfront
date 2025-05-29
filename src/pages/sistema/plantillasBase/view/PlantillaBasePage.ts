@@ -1,4 +1,4 @@
-import { defineComponent, ref } from 'vue'
+import { computed, defineComponent } from 'vue'
 import { required } from 'shared/i18n-validators'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { PlantillaBase } from 'sistema/plantillasBase/domain/PlantillaBase'
@@ -8,7 +8,6 @@ import ErrorComponent from 'components/ErrorComponent.vue'
 import { useVuelidate } from '@vuelidate/core'
 import { acciones } from 'config/utils'
 import GestorDocumentos from 'components/documentos/view/GestorDocumentos.vue'
-import { endpoints } from 'config/api'
 import CalloutComponent from 'components/CalloutComponent.vue'
 import { configuracionColumnasPlantillasBase } from 'sistema/plantillasBase/domain/configuracionColumnasPlantillasBase'
 import InputComponent from 'components/inputs/InputComponent.vue'
@@ -36,24 +35,41 @@ export default defineComponent({
       new PlantillaBaseController()
     )
     const { entidad: plantilla, disabled, accion } = mixin.useReferencias()
-    const { setValidador,guardar,reestablecer,editar,eliminar, listar } = mixin.useComportamiento()
-    const { onGuardado, onConsultado, onModificado } = mixin.useHooks()
-    const refArchivo = ref()
+    const { setValidador, guardar, reestablecer, editar, eliminar, listar } =
+      mixin.useComportamiento()
+    const {
+      onBeforeGuardar,
+      onGuardado,
+      onConsultado,
+      onReestablecer,
+      onBeforeModificar,
+      onModificado
+    } = mixin.useHooks()
     const cargando = new StatusEssentialLoading()
+
+    const metodo = computed(() => {
+      switch (accion.value) {
+        case acciones.nuevo:
+          return 'POST'
+        case acciones.editar:
+          return 'PUT'
+        case acciones.eliminar:
+          return 'DELETE'
+        default:
+          return 'GET'
+      }
+    })
     /*************
      * HOOKS
      **************/
-    onGuardado(async id => {
-      await subirArchivos(id)
-      await listar()
-    })
     onConsultado(() => {
       plantilla.isComponentFilesModified = true
     })
-    onModificado(async id => {
-      await subirArchivos(id)
-      await listar()
-    })
+    onGuardado(async () => await listar())
+    onModificado(async () => await listar())
+    onBeforeModificar(() => (plantilla._method = metodo.value))
+    onBeforeGuardar(() => (plantilla._method = metodo.value))
+    onReestablecer(() => (plantilla._method = metodo.value))
 
     /*************
      * Validaciones
@@ -68,9 +84,6 @@ export default defineComponent({
     /*************
      * Funciones
      **************/
-    async function subirArchivos(id: number | undefined) {
-      if (id !== undefined) await refArchivo.value.subir({ id })
-    }
 
     return {
       mixin,
@@ -82,10 +95,10 @@ export default defineComponent({
       accion,
       acciones,
       configuracionColumnas: configuracionColumnasPlantillasBase,
-      endpoint: endpoints.plantillas_base_file,
-      guardar,reestablecer,editar,eliminar,
-
-      refArchivo
+      guardar,
+      reestablecer,
+      editar,
+      eliminar
     }
   }
 })

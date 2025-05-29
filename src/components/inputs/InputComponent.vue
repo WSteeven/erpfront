@@ -9,15 +9,15 @@
     :readonly="readonly"
     :clearable="clearable"
     @update:model-value="update"
-    @blur="v$[clave].$touch"
-    :error="!!v$[clave].$errors.length"
+    @blur="v$?.[clave]?.$touch?.()"
+    :error="!!v$?.[clave]?.$errors?.length"
     :outlined="outlined"
     :dense="dense"
   >
     <template v-slot:error>
       <slot name="error" v-if="slotUsado"></slot>
       <slot name="error" v-else>
-        <error-component :clave="clave" :v$="v$" />
+        <error-component v-if="v$" :clave="clave" :v$="v$" />
       </slot>
     </template>
     <template v-slot:prepend>
@@ -81,7 +81,7 @@ watch(
   }
 )
 
-const update = val => {
+const update = (val:string) => {
   emit('update:model-value', val)
 }
 </script>
