@@ -1,18 +1,20 @@
 <template>
-  <q-page>
-    <div class="row items-center justify-between q-px-md q-mb-sm q-py-sm">
-      <!-- <div class="col-12"> -->
-      <span>
-        <q-icon
-          name="bi-person-check-fill"
-          color="primary"
-          class="q-mr-sm"
-        ></q-icon>
-        <!-- <span>{{ 'Bienvenido, ' + authenticationStore.nombreUsuario }}</span> -->
-        <span>{{ 'Tickets asignados para mi' }}</span>
-      </span>
-      <b>{{ fecha }}</b>
-      <!-- </div> -->
+  <q-page padding>
+    <div class="row q-mb-md">
+      <div
+        class="col-12 row items-center justify-between q-px-md q-mb-sm q-py-sm"
+      >
+        <span>
+          <q-icon
+            name="bi-person-check-fill"
+            color="primary"
+            class="q-mr-sm"
+          ></q-icon>
+          <!-- <span>{{ 'Bienvenido, ' + authenticationStore.nombreUsuario }}</span> -->
+          <span>{{ 'Tickets asignados para mi' }}</span>
+        </span>
+        <b>{{ fecha }}</b>
+      </div>
 
       <div
         v-if="tabActual === estadosTickets.FINALIZADO_SOLUCIONADO"
@@ -30,10 +32,10 @@
       animated
       transition-prev="scale"
       transition-next="scale"
-      class="bg-body-background-gradient border-whdite rounded custom-shadow"
+      class="bg-body-background-gradient border-white rounded custom-shadow"
       keep-alive
     >
-      <q-tab-panel :name="opcionesFiltrado.listado">
+      <q-tab-panel :name="opcionesFiltrado.listado" class="q-pa-none">
         <essential-table-tabs
           :titulo="
             'Tienes ' + listado.length + ' ticket(s) en estado ' + tabActual
@@ -57,6 +59,8 @@
           :permitirEliminar="false"
           :mostrar-botones="false"
           ajustar-celdas
+          paginate
+          :mixin="mixin"
           :tab-options="tabOptionsEstadosTicketsAsignados"
           @tab-seleccionado="filtrarTrabajoAsignado"
           :tab-defecto="tabActual"

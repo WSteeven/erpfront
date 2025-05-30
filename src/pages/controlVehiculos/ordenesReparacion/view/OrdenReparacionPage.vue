@@ -29,6 +29,7 @@
               dense
               outlined
               :disable="disabled"
+              :error="!!v$.solicitante.$errors.length"
               use-input
               input-debounce="0"
               @popup-show="ordenarLista(empleados, 'apellidos')"
@@ -38,6 +39,9 @@
               emit-value
               map-options
             >
+              <template v-slot:error>
+                <error-component clave="solicitante" :v$="v$" />
+              </template>
               <template v-slot:no-option>
                 <no-option-component />
               </template>
@@ -198,8 +202,27 @@
             />
           </div>
 
+          <!-- num_factura  -->
+          <div class="col-12 col-md-4 q-mb-md">
+            <label class="q-mb-sm block">N° Factura </label>
+            <q-input
+              autogrow
+              v-model="orden.num_factura"
+              :placeholder="[acciones.nuevo, acciones.consultar].includes(accion)?'Opcional':'Obligatorio'"
+              hint="Llena este campo con el número de factura correspondiente a la reparación realizada"
+              outlined
+              :disable="disabled"
+              :error="!!v$.num_factura.$errors.length"
+              dense
+            >
+              <template v-slot:error>
+                <error-component clave="num_factura" :v$="v$" />
+              </template>
+            </q-input>
+          </div>
+
           <!-- Servicios -->
-          <div class="col-12 col-md-12 q-mb-md">
+          <div class="col-12 col-md-8 q-mb-md">
             <label class="q-mb-sm block">Servicios a realizar</label>
             <q-select
               v-model="orden.servicios"
@@ -208,6 +231,7 @@
               clearable
               dense
               :disable="disabled"
+              :error="!!v$.servicios.$errors.length"
               outlined
               use-input
               use-chips
@@ -230,6 +254,9 @@
               </template>
               <template v-slot:no-option>
                 <no-option-component />
+              </template>
+              <template v-slot:error>
+                <error-component clave="servicios" :v$="v$" />
               </template>
             </q-select>
           </div>

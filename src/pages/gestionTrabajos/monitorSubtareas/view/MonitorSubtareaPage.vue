@@ -1,7 +1,7 @@
 <template>
   <q-page padding>
     <div class="column q-mb-md q-gutter-sm items-center">
-      <b>Monitor</b>
+      <b class="text-h5 text-bold">Monitor</b>
       <small
         >Ten una visión completa de todos los trabajos y sus estados.</small
       >
@@ -20,6 +20,7 @@
 
     <essential-table-tabs
       ref="refTabla"
+      class="custom-shadow5 borde rounded"
       :titulo="
         'Existen ' +
         listado.length +

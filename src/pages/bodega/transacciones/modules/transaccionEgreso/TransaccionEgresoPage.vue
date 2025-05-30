@@ -10,6 +10,7 @@
     :accion4="botonAnular"
     :tab-options="tabOptionsTransaccionesEgresos"
     :ajustarCeldas="true"
+    paginate
     :tabDefecto="tabDefecto"
     :filtrar="filtrarTransacciones"
   >
@@ -99,18 +100,12 @@
               outlined
               :disable="disabled || (soloLectura && !esCoordinador)"
               :readonly="disabled || (soloLectura && !esCoordinador)"
-              :error="!!v$.autorizacion.$errors.length"
               error-message="Debes seleccionar una autorizacion"
               :option-value="v => v.id"
               :option-label="v => v.nombre"
               emit-value
               map-options
             >
-              <template v-slot:error>
-                <div v-for="error of v$.autorizacion.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
               <template v-slot:no-option>
                 <q-item>
                   <q-item-section class="text-grey">
@@ -319,7 +314,7 @@
               </template>
             </q-select>
           </div>
-          
+
           <!-- Retira un tercero -->
           <div
             v-if="
@@ -734,6 +729,7 @@
               </div>
             </div>
           </div>
+
 
           <!-- Tabla -->
           <div class="col-12">

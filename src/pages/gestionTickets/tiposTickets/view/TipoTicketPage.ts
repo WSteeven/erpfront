@@ -28,6 +28,7 @@ import { useNotificaciones } from 'shared/notificaciones'
 import { TipoTicket } from '../domain/TipoTicket'
 import { useOrquestadorSelectorEmpleados } from 'pages/seguridad/bitacoras/application/useOrquestadorSelectorEmpleados'
 import { configuracionColumnasEmpleadosLite } from 'pages/recursosHumanos/empleados/domain/configuracionColumnasEmpleadosLite'
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 
 export default defineComponent({
   components: {
@@ -67,16 +68,17 @@ export default defineComponent({
      * Variables
      ************/
     const notificaciones = useNotificaciones()
-    const categoriasTiposTickets = computed(() => listadosAuxiliares.categoriasTiposTickets.filter((tipo: CategoriaTipoTicket) => tipo.departamento_id === tipoTicket.departamento))
+    // const categoriasTiposTickets = computed(() => listadosAuxiliares.categoriasTiposTickets.filter((tipo: CategoriaTipoTicket) => tipo.departamento_id === tipoTicket.departamento))
+    const categoriasTiposTicketsComputed = computed(() => categoriasTiposTickets.value.filter((tipo: CategoriaTipoTicket) => tipo.departamento_id === tipoTicket.departamento))
     const cargando = new StatusEssentialLoading()
 
-    const departamentos = computed(() => listadosAuxiliares.departamentos.filter((departamento: Departamento) => {
+    /* const departamentos = computed(() => listadosAuxiliares.departamentos.filter((departamento: Departamento) => {
       if (authenticationStore.esAdministrador) {
         return true
       } else {
         return departamento.responsable_id === authenticationStore.user.id
       }
-    }))
+    })) */
 
 
     /****************
@@ -110,9 +112,20 @@ export default defineComponent({
     /************
     * Funciones
     *************/
-    const {
+    /*const {
       filtrarDepartamentos,
-    } = useFiltrosListadosTickets(listadosAuxiliares)
+    } = useFiltrosListadosTickets(listadosAuxiliares)*/
+    const { filtrarDepartamentos, departamentos, categoriasTiposTickets, filtrarCategoriasTiposTickets } = useFiltrosListadosSelects(listadosAuxiliares)
+
+    const departamentosComputed = computed(() => {
+      return departamentos.value.filter((departamento: Departamento) => {
+        if (authenticationStore.esAdministrador) {
+          return true
+        } else {
+          return departamento.responsable_id === authenticationStore.user.id
+        }
+      })
+    })
 
     const resetearDestinatario = () => {
       criterioBusquedaDestinatario.value = criterioBusquedaDestinatario.value ?? null
@@ -163,10 +176,12 @@ export default defineComponent({
       configuracionColumnasEmpleadosLite,
       filtrarDepartamentos,
       departamentos,
-      categoriasTiposTickets,
+      categoriasTiposTicketsComputed,
+      filtrarCategoriasTiposTickets,
       btnToggleActivar,
       iconos,
       resetearDestinatario,
+      departamentosComputed,
       // orquestador
       refListadoSeleccionableDestinatario,
       criterioBusquedaDestinatario,

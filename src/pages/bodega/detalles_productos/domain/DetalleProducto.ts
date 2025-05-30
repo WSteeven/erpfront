@@ -48,6 +48,9 @@ export class DetalleProducto extends EntidadAuditable {
     tipo: string | null
     activo: boolean
 
+    es_generico: boolean
+    nombre_alternativo: string | null
+
     //variables auxiliares
     esActivo: boolean | null
     tiene_serial: boolean
@@ -100,6 +103,9 @@ export class DetalleProducto extends EntidadAuditable {
         this.punta_corte = null
         this.custodia = null
         this.puntas = null
+
+        this.es_generico = false
+        this.nombre_alternativo = null
 
         this.color = null
         this.talla = null

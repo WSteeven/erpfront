@@ -58,7 +58,6 @@ export default defineComponent({
     } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista, listar } =
       mixin.useComportamiento()
-    const { onGuardado, onReestablecer } = mixin.useHooks()
     const {
       confirmar,
       prompt,
@@ -169,7 +168,7 @@ export default defineComponent({
                 entidad
               )
               notificarAdvertencia('Se anulado Acreditacion Exitosamente')
-              filtrarAcreditacion('2')
+              await filtrarAcreditacion('2')
               accion.value = acciones.nuevo
               acreditacion.hydrate(new Acreditacion())
               cargando.desactivar()

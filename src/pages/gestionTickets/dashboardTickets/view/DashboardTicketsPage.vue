@@ -1,6 +1,6 @@
 <template>
   <q-page padding>
-    <q-card class="q-mb-md rounded no-border custom-shadow">
+    <q-card class="q-mb-md rounded no-border custom-shaddow bg-body">
       <q-card-section>
         <div class="border-1 text-primary text-bold q-mb-lg">
           <q-icon name="bi-graph-up-arrow" class="q-mr-sm"></q-icon>
@@ -206,7 +206,7 @@
               label="Reporte Excel"
               color="positive"
               class="full-width"
-              square
+              no-caps
               unelevated
               no-wrap
               @click="reporteExcel()"

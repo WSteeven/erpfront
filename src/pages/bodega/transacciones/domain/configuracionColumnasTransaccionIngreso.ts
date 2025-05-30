@@ -34,8 +34,8 @@ export const configuracionColumnasTransaccionIngreso: ColumnConfig<Transaccion>[
         sortable: true,
     },
     {
-        name: 'comprobante',
-        field: 'comprobante',
+        name: 'num_comprobante',
+        field: 'num_comprobante',
         label: 'Factura',
         align: 'left',
         sortable: true,

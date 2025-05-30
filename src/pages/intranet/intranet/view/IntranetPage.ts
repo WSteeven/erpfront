@@ -1,7 +1,9 @@
+import { Capacitor } from '@capacitor/core';
 //Dependencies
 import relativeTime from 'dayjs/plugin/relativeTime'
 import es from 'dayjs/locale/es'
 import dayjs from 'dayjs'
+import { PushNotifications } from '@capacitor/push-notifications'
 
 import { useAuthenticationStore } from 'stores/authentication'
 import loginJson from 'src/assets/lottie/welcome.json'
@@ -69,6 +71,14 @@ export default defineComponent({
   },
 
   setup() {
+    const tabsOptions = {
+      NOTICIAS: 'Noticias',
+      MIS_MODULOS: 'Mis módulos',
+      DEPARTAMENTOS: 'Departamentos',
+      EVENTOS: 'Eventos',
+      AREA_PERSONAL: 'Área personal',
+    }
+    const tabs = ref(tabsOptions.NOTICIAS)
     const departamentos: Ref<Departamento[]> = ref([])
     const departamentoSeleccionado = 1
     const empleados: Ref<Empleado[]> = ref([])
@@ -86,7 +96,7 @@ export default defineComponent({
     const noticiaCompleta = ref<Noticia | null>(null)
 
     //solicitudes
-    const { notificarError } = useNotificaciones()
+    const { notificarError, notificarInformacion } = useNotificaciones()
     const tiposSolicitudes = ref([
       { label: 'Permisos', value: 'permiso' },
       { label: 'Licencias', value: 'licencias' },
@@ -296,14 +306,14 @@ export default defineComponent({
         name: 'Instructivos',
         icon: 'fa-solid fa-book-journal-whills',
         link: 'https://drive.google.com/drive/folders/1ILsatqtyrkV5tfofM2cTinLOfhIQMO-h?usp=drive_link',
-        color: '#FF5733'
+        color: 'teal-8'
       },
       {
         id: 2,
         name: 'Reglamentos y Normativas',
         icon: 'fa-solid fa-book-bookmark',
         link: 'https://drive.google.com/drive/folders/1k7WjBVUbYf4FY5wX0xoUP8r5gvWNA64e?usp=sharing',
-        color: '#581845'
+        color: 'teal-8'
       }
     ])
 
@@ -392,7 +402,7 @@ export default defineComponent({
           return empleado.extension !== null && empleado.extension !== undefined
         })
 
-        console.log(empleadosConExtension.value)
+        // console.log(empleadosConExtension.value)
       } catch (err) {
         console.log('Error al obtener empleados con extensión:', err)
       }
@@ -401,7 +411,7 @@ export default defineComponent({
     const obtenerEmpleadosCumpleaneros = async () => {
       // Obtener el mes actual
       const currentMonth = new Date().getUTCMonth()
-      console.log(currentMonth)
+      // console.log(currentMonth)
 
       try {
         const empleadoController = new EmpleadoController()
@@ -429,7 +439,7 @@ export default defineComponent({
             return dayA - dayB
           })
 
-        console.log(empleadosCumpleaneros.value)
+        // console.log(empleadosCumpleaneros.value)
       } catch (err) {
         console.log('Error al obtener empleados cumpleañeros:', err)
       }
@@ -494,9 +504,9 @@ export default defineComponent({
     useNotificaciones()
 
     const enviarSolicitud = () => {
-      console.log('Solicitud enviada:', {
-        tipo: solicitud.tipo_solicitud
-      })
+      // console.log('Solicitud enviada:', {
+      //   tipo: solicitud.tipo_solicitud
+      // })
 
       switch (solicitud.tipo_solicitud) {
         case 'permiso':
@@ -524,12 +534,12 @@ export default defineComponent({
     const getImagePerfil = usuario => {
       return usuario.foto_url == null
         ? `https://ui-avatars.com/api/?name=${usuario.nombres.slice(
-            0,
-            1
-          )}+${usuario.apellidos.slice(
-            0,
-            1
-          )}&bold=true&background=008000&color=ffff`
+          0,
+          1
+        )}+${usuario.apellidos.slice(
+          0,
+          1
+        )}&bold=true&background=008000&color=ffff`
         : usuario.foto_url
     }
 
@@ -546,9 +556,33 @@ export default defineComponent({
     }
 
     //ACCIONES DE BUSQUEDA DE MODULO
+    const token = ref('')
 
+    onMounted(async () => {
+      if (Capacitor.isNativePlatform()) {
+        await PushNotifications.requestPermissions().then(result => {
+          if (result.receive === 'granted') {
+            PushNotifications.register()
+          }
+        })
+
+        PushNotifications.addListener('registration', t => {
+          console.log('Push registration success, token:', t.value)
+          token.value = t.value
+        })
+
+        PushNotifications.addListener('registrationError', err => {
+          console.error('Registration error:', err)
+        })
+      }
+    })
+
+
+    function notificarProximamente(){
+      notificarInformacion('Próximamente disponible para iOS')
+    }
     return {
-      correo: computed(() => 'https://'+configuracionGeneralStore.configuracion?.sitio_web+'/webmail'),
+      correo: computed(() => 'https://' + configuracionGeneralStore.configuracion?.sitio_web + '/webmail'),
 
       logoClaro: computed(
         () => configuracionGeneralStore.configuracion?.logo_claro
@@ -615,12 +649,20 @@ export default defineComponent({
 
       calcularAntiguedad,
       calcularEdadEsteAno,
-
+      notificarProximamente,
       eventosFormateados,
       configuracion,
       cerrarModal() {
         modalNoticia.value = false
-      }
+      },
+      tabs,
+      tabsOptions,
+      tabsMenu: [tabsOptions.NOTICIAS,
+      tabsOptions.MIS_MODULOS,
+      tabsOptions.DEPARTAMENTOS,
+      tabsOptions.EVENTOS,
+      tabsOptions.AREA_PERSONAL],
+      token,
     }
   }
 })

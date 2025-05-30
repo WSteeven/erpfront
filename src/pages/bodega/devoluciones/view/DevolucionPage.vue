@@ -14,6 +14,7 @@
     :accion2="botonAnular"
     :accion3="botonCorregir"
     :accion4="botonImprimir"
+    paginate
   >
     <template #formulario>
       <q-form @submit.prevent>

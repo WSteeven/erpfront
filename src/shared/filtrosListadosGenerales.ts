@@ -35,6 +35,7 @@ export const useFiltrosListadosSelects = (listadosAuxiliares) => {
   const grupos = ref(listadosAuxiliares.grupos)
   const departamentos = ref(listadosAuxiliares.departamentos)
   const tickets = ref(listadosAuxiliares.tickets)
+  const categoriasTiposTickets = ref(listadosAuxiliares.categoriasTiposTickets)
   const subdetalles = ref(listadosAuxiliares.subdetalles)
 
   //bodega
@@ -492,6 +493,7 @@ export const useFiltrosListadosSelects = (listadosAuxiliares) => {
   function filtrarTickets(val, update) {
     return filtrarLista(val, update, tickets, 'codigo', listadosAuxiliares.tickets)
   }
+  const filtrarCategoriasTiposTickets = (val, update) => filtrarLista(val, update, categoriasTiposTickets, 'nombre', listadosAuxiliares.categoriasTiposTickets)
   function filtrarCargos(val, update) {
     return filtrarLista(val, update, cargos, 'nombre', listadosAuxiliares.cargos)
   }
@@ -624,5 +626,7 @@ export const useFiltrosListadosSelects = (listadosAuxiliares) => {
     incidentes, filtrarIncidentes,
     // seguridad
     zonas, filtrarZonas,
+    // tickets
+    categoriasTiposTickets, filtrarCategoriasTiposTickets,
   }
 }

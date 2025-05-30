@@ -7,10 +7,12 @@
       tag="a"
       :to="link"
       active-class="link-active"
+      :class="{ 'border-left q-ml-lg': hasParent }"
+      class="text-color-drawer"
       exact
     >
       <q-item-section v-if="icon" avatar>
-        <q-icon :name="icon" size="xs" class="color-icono" />
+        <q-icon :name="icon" size="xs" />
       </q-item-section>
 
       <q-item-section>
@@ -19,14 +21,26 @@
     </q-item>
 
     <!-- Tiene submenus -->
-    <q-expansion-item v-else clickable tag="a" active-class="link-active" exact>
+    <q-expansion-item
+      v-else
+      clickable
+      tag="a"
+      active-class="link-active"
+      exact
+      :class="{
+        'bg-desenfoque border-white rounded q-mb-xs': false,
+        'border-left q-ml-lg': hasParent
+      }"
+    >
       <template #header>
         <q-item-section v-if="icon" avatar>
-          <q-icon :name="icon" size="xs" class="color-icono" />
+          <q-icon :name="icon" size="xs" class="text-color-drawer" />
         </q-item-section>
 
         <q-item-section>
-          <q-item-label>{{ title }}</q-item-label>
+          <q-item-label class="text-color-drawer-bold textf-bold">{{
+            title
+          }}</q-item-label>
         </q-item-section>
       </template>
 
@@ -37,7 +51,7 @@
           :icon="child.icon"
           :children="child.children"
           :can="child.can"
-          :class="{'bg-desenfoque border-white rounded q-mb-xs': !!child.children}"
+          hasParent
         ></EssentialLink>
       </div>
     </q-expansion-item>
@@ -53,24 +67,25 @@ export default defineComponent({
   props: {
     title: {
       type: String,
-      required: true,
+      required: true
     },
 
     link: {
       type: String,
-      default: '#',
+      default: '#'
     },
 
     icon: {
       type: String,
-      default: '',
+      default: ''
     },
 
     children: {
       type: Object as () => MenuOption[],
-      required: false,
+      required: false
     },
     can: { type: Boolean, default: true },
-  },
+    hasParent: { type: Boolean, default: false }
+  }
 })
 </script>

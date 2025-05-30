@@ -108,10 +108,10 @@ export default defineComponent({
     function recalcularDias() {
       vacacion.dias_tomados = vacacion.detalles.reduce(
         (sum: number, detalle: DetalleVacacion) =>
-          sum + detalle.dias_utilizados,
+          sum + (Number(detalle.dias_utilizados)||0),
         0
       )
-      vacacion.dias_disponibles = vacacion.dias - vacacion.dias_tomados
+      vacacion.dias_disponibles = vacacion.dias! - vacacion.dias_tomados
       // vacacion.completadas = vacacion.dias_disponibles==0
     }
 

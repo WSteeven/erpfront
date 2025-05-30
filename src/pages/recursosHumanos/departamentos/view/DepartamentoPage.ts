@@ -16,6 +16,7 @@ import { DepartamentoController } from '../infraestructure/DepartamentoControlle
 import { Departamento } from '../domain/Departamento'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { useFiltrosListadosTickets } from 'pages/gestionTickets/tickets/application/FiltrosListadosTicket'
+import {configuracionColumnasEmpleadosLite} from 'recursosHumanos/empleados/domain/configuracionColumnasEmpleadosLite';
 
 export default defineComponent({
   components: {
@@ -61,6 +62,7 @@ export default defineComponent({
       disabled,
       accion,
       configuracionColumnasDepartamento,
+      configuracionColumnasEmpleadosLite,
       empleados,
       filtrarEmpleados,
     }

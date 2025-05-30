@@ -1,6 +1,6 @@
 <template>
   <q-file
-    v-if="mostrarCampo"
+    v-if="mostrarCampo && !isNative"
     v-model="img"
     dense
     outlined
@@ -28,6 +28,18 @@
     </template>
   </q-file>
 
+  <!-- Solo móvil nativo -->
+  <q-btn
+    v-if="mostrarCampo && isNative"
+    label="Seleccionar Imagen"
+    icon="camera_alt"
+    class="q-mt-sm text-color full-width bg-solid borde"
+    unelevated
+    :disable="disable"
+    @click="abrirCamaraOGaleria"
+    no-caps
+  />
+
   <div class="bg-desenfoque">
     <q-img
       v-show="imagenCodificada"
@@ -40,7 +52,6 @@
     </q-img>
 
     <small v-if="imagenCodificada" class="block text-center">
-      <!-- @click="opened = true" -->
       <q-btn
         @click="refVisorImagen.abrir(imagenCodificada)"
         label="Ver en pantalla completa"
@@ -62,43 +73,13 @@
     :texto4="texto4"
     :texto5="texto5"
   ></visor-imagen>
-
-  <!-- <q-dialog v-model="opened" maximized>
-    <q-card class="bg-black rounded-card no-border" flat>
-      <q-btn
-        color="white"
-        flat
-        icon="close"
-        @click="() => (opened = false)"
-        class="closeButton"
-      />
-
-      <q-card-section v-if="texto1">
-        <div class="row q-col-gutter-sm q-mb-md q-ml-md q-mr-md text-grey-4">
-          <div class="col-12 col-md-3 text-h6">{{ texto1 }}</div>
-          <div v-if="texto2" class="col-12 col-md-3 text-h6">{{ texto2 }}</div>
-          <div v-if="texto3" class="col-12 col-md-3 text-h6">{{ texto3 }}</div>
-          <div class="col-12 col-md-3 text-h6">{{ texto4 }}</div>
-        </div>
-      </q-card-section>
-
-      <q-card-section class="rounded-footer text-center q-pa-none">
-        <q-img
-          v-show="imagenCodificada"
-          :src="imagenCodificada"
-          fit="contain"
-          width="80%"
-          height="100vh"
-        >
-        </q-img>
-      </q-card-section>
-    </q-card>
-  </q-dialog> -->
 </template>
 
 <script lang="ts" setup>
 import VisorImagen from 'components/VisorImagen.vue'
 import { computed, getCurrentInstance, onMounted, ref, watch } from 'vue'
+import { Capacitor } from '@capacitor/core'
+import { Camera, CameraResultType, CameraSource } from '@capacitor/camera'
 
 const props = defineProps({
   modelValue: String,
@@ -116,7 +97,7 @@ const props = defineProps({
   texto5: String,
   mostrarCampo: {
     type: Boolean,
-    default:true
+    default: true
   },
   comprimir: {
     type: Boolean,
@@ -137,20 +118,15 @@ const fileSize = ref()
 const img = ref()
 const imagenCodificada = computed(() => props.imagen)
 const alto = computed(() => props.alto ?? '160px')
-const opened = ref(false)
 
 const setBase64 = async (file: File) => {
   if (file !== null && file !== undefined) {
-    // console.log('Imagen sin comprimida en el archivo', file)
     fileSize.value = file.size
-    // console.log('tamaño de imagen_1', fileSize.value)
     const reader = new FileReader()
     const compressedFile = props.comprimir ? await compressImage(file) : file
 
-    // console.log('Imagen comprimida en el archivo', compressedFile)
     reader.readAsDataURL(compressedFile)
     reader.onload = () => emit('update:modelValue', reader.result)
-    // reader.onload = () => emit('update:modelValue', compressImage(file))
     fileSize.value = compressedFile.size
   } else {
     fileSize.value = null
@@ -162,7 +138,6 @@ async function compressImage(file) {
     const reader = new FileReader()
 
     reader.onload = event => {
-      // console.log(event)
       const img = new Image()
       img.src = event.target?.result?.toString() || ''
 
@@ -205,6 +180,27 @@ async function compressImage(file) {
   })
 }
 
+// Detecta si está en app móvil nativa
+const isNative = Capacitor.isNativePlatform()
+
+const abrirCamaraOGaleria = async () => {
+  try {
+    const image = await Camera.getPhoto({
+      quality: 70,
+      allowEditing: false,
+      resultType: CameraResultType.DataUrl,
+      source: CameraSource.Prompt // Prompt = galería o cámara
+    })
+
+    emit('update:modelValue', image.dataUrl)
+  } catch (err) {
+    console.warn('Usuario canceló o falló la captura de imagen', err)
+  }
+}
+
+/************
+ * Observers
+ ************/
 watch(imagenCodificada, () => {
   if (!imagenCodificada.value) img.value = null
 })
@@ -212,11 +208,6 @@ watch(imagenCodificada, () => {
 function limpiar() {
   emit('update:modelValue', null)
 }
-
-/********
- * Init
- ********/
-// onMounted(() => refVisorImagen.value.abrir(imagenCodificada.value))
 </script>
 
 <style lang="scss">

@@ -5,7 +5,7 @@ import { descargarArchivoUrl, formatBytes } from 'shared/utils'
 import { useNotificaciones } from 'shared/notificaciones'
 import { AxiosError, AxiosResponse } from 'axios'
 import { accionesTabla } from 'config/utils'
-import { defineComponent, ref, watchEffect } from 'vue'
+import { defineComponent, ref } from 'vue'
 import { apiConfig } from 'config/api'
 
 // Componentes
@@ -176,7 +176,6 @@ export default defineComponent({
       formatBytes,
       onFileAdded,
       onFileRemoved,
-      watchEffect,
       quiero_subir_archivos,
       esConsultado,
       columnas: [...configuracionColumnasDocumento, accionesTabla],

@@ -20,7 +20,7 @@ export class Referencias<T> {
   disabled: ComputedRef<boolean>
   listadosAuxiliares: UnwrapRef<any>
   errors: Ref
-  metaPagination: Ref<MetaPagination | undefined>
+  metaPagination: Ref<MetaPagination | undefined> // parece que no se usa
   pagination = ref({
     sortBy: 'desc',
     descending: false,

@@ -44,7 +44,7 @@ export default defineComponent({
     * Mixin
     ********/
     const mixin = new ContenedorSimpleMixin(Ticket, new TicketController())
-    const { listado } = mixin.useReferencias()
+    const { listado, filtros } = mixin.useReferencias()
     const { listar, cargarVista, obtenerListados } = mixin.useComportamiento()
 
     cargarVista(async () => {
@@ -94,9 +94,9 @@ export default defineComponent({
     * Funciones
     *************/
     async function filtrarTrabajoAsignado(tabSeleccionado) {
-      listar({ responsable_id: authenticationStore.user.id, estado: tabSeleccionado })
+      await listar({ responsable_id: authenticationStore.user.id, estado: tabSeleccionado, paginate: true, para_mi: true })
       tabActual.value = tabSeleccionado
-      console.log('filtrando ticket event')
+      filtros.fields = { estado: tabSeleccionado, responsable_id: authenticationStore.user.id, para_mi: true }
     }
 
     filtrarTrabajoAsignado(estadosTrabajos.ASIGNADO)

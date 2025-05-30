@@ -1,13 +1,18 @@
 <template>
-  <q-page>
+  <q-page padding>
     <!-- Tabs -->
+    <!-- switch-indicator -->
+    <div v-if="tituloPagina" class="text-h5 text-bold q-mb-md">
+      {{ tituloPagina }}
+    </div>
+
     <q-tabs
       v-model="tabs"
       align="left"
-      switch-indicator
       active-class="tab-active"
-      indicator-color="transparent"
+      indicator-color="primary"
       dense
+      class="border-bottom"
     >
       <q-tab
         v-if="mostrarFormulario"
@@ -48,14 +53,14 @@
       animated
       transition-prev="scale"
       transition-next="scale"
-      :class="{ 'bg-desenfoque border-white rounded-tabpanel': !$q.screen.xs }"
-      class="q-mb-md"
+      class="borde rounded custom-shadow5 q-mt-lg"
       keep-alive
     >
+      <!-- :class="{ 'bg-desenfoque border-white rounded-tabpanel': !$q.screen.xs }" -->
       <!-- Formulario -->
-      <q-tab-panel name="formulario" :class="{ 'q-pa-none': full }">
+      <q-tab-panel name="formulario">
         <slot name="formulario" />
-        <div :class="{ 'q-pa-md': full }">
+        <div>
           <div class="row justify-end q-col-gutter-x-xs q-mt-xl">
             <q-btn
               v-if="accionButtonSubmit && accionButtonSubmit.visible()"
@@ -93,7 +98,7 @@
       </q-tab-panel>
 
       <!-- Listado -->
-      <q-tab-panel name="listado">
+      <q-tab-panel name="listado" class="q-pa-none">
         <essential-table-tabs
           :titulo="tituloTabla"
           :configuracionColumnas="columnas"
@@ -137,11 +142,6 @@
     </q-tab-panels>
 
     <div v-show="tabs == 'formulario'">
-      <div class="text-center q-col-gutter-xs q-mb-md">
-        <q-icon name="bi-circle-fill" color="grey-7"></q-icon>
-        <q-icon name="bi-circle-fill" color="grey-6"></q-icon>
-        <q-icon name="bi-circle-fill" color="grey-7"></q-icon>
-      </div>
       <slot name="formulario-2" />
     </div>
 

@@ -26,16 +26,16 @@ export const configuracionColumnasActividadBitacora: ColumnConfig<ActividadBitac
     type: 'select',
     requerido: true,
   },
-  {
+  /* {
     name: 'notificacion_inmediata',
     field: 'notificacion_inmediata',
-    label: 'Notificación inmediata',
+    label: 'Se debe notificar',
     align: 'left',
     type: 'toggle',
     disableTable: true,
     editable: true,
     visibleModal: false,
-  },
+  }, */
   {
     name: 'medio_notificacion',
     field: 'medio_notificacion',
@@ -51,7 +51,7 @@ export const configuracionColumnasActividadBitacora: ColumnConfig<ActividadBitac
     columnClass: 'col-12 col-md-6',
     requerido: true,
   },
-  {
+  /* {
     name: 'tiene_adjuntos',
     field: 'tiene_adjuntos',
     label: 'Tiene adjuntos',
@@ -60,7 +60,7 @@ export const configuracionColumnasActividadBitacora: ColumnConfig<ActividadBitac
     visibleModal: false,
     disableTable: true,
     editable: true,
-  },
+  }, */
   {
     name: 'fotografia_evidencia_1',
     field: 'fotografia_evidencia_1',

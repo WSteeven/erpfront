@@ -15,11 +15,11 @@
     <q-tabs
       v-if="tabsOptions"
       v-model="tabsPage"
-      align="left"
-      switch-indicator
+      align="justify"
       active-class="tab-active"
-      indicator-color="transparent"
+      indicator-color="primary"
       dense
+      class="border-bottom"
     >
       <q-tab
         v-for="(tab, index) in tabsOptions"
@@ -36,7 +36,7 @@
       transition-prev="slide-right"
       transition-next="slide-left"
       keep-alive
-      class="bg-desenfoque rounded-card"
+      class="bg-desenffoque roufnded-card bg-transparent"
     >
       <!-- Formulario -->
       <q-tab-panel name="1"><slot name="tab1" /></q-tab-panel>

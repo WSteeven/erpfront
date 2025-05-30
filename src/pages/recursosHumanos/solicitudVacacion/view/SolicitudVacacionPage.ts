@@ -16,7 +16,7 @@ import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayou
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { SolicitudVacacionController } from '../infraestructure/SolicitudVacacionController'
 import { SolicitudVacacion } from '../domain/SolicitudVacacion'
-import { imprimirArchivo, ordenarLista } from 'shared/utils'
+import {imprimirArchivo, obtenerFechaActual, ordenarLista, sumarFechas} from 'shared/utils'
 import {
   acciones,
   autorizaciones,
@@ -37,9 +37,17 @@ import { useNotificaciones } from 'shared/notificaciones'
 import { useQuasar } from 'quasar'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useCargandoStore } from 'stores/cargando'
+import ErrorComponent from 'components/ErrorComponent.vue'
+import NoOptionComponent from 'components/NoOptionComponent.vue'
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 
 export default defineComponent({
-  components: { TabLayoutFilterTabs2, EssentialTable },
+  components: {
+    NoOptionComponent,
+    ErrorComponent,
+    TabLayoutFilterTabs2,
+    EssentialTable
+  },
   setup() {
     const mixin = new ContenedorSimpleMixin(
       SolicitudVacacion,
@@ -54,7 +62,13 @@ export default defineComponent({
     const { setValidador, obtenerListados, consultar, cargarVista, listar } =
       mixin.useComportamiento()
     const { onConsultado, onReestablecer } = mixin.useHooks()
-    const { notificarAdvertencia } = useNotificaciones()
+    const {
+      confirmar,
+      prompt,
+      notificarAdvertencia,
+      notificarCorrecto,
+      notificarError
+    } = useNotificaciones()
 
     /**
      * Stores
@@ -63,11 +77,11 @@ export default defineComponent({
     useCargandoStore().setQuasar(useQuasar())
     const store = useAuthenticationStore()
     const cargando = new StatusEssentialLoading()
+
     /***
      * Inicializacion de  variables
      */
     const esAutorizador = ref(false)
-
     const dias_disponibles = ref(0)
     const dias_restantes = ref(0)
     const periodos = ref([])
@@ -111,9 +125,10 @@ export default defineComponent({
      * HOOKS
      *******************************/
     onConsultado(async () => {
-      await obtenerDerechoVacaciones(solicitud.empleado)
+      await obtenerDerechoVacaciones(Number(solicitud.empleado))
       periodoSeleccionado()
-      dias_restantes.value = dias_disponibles.value - solicitud.dias_solicitados
+      dias_restantes.value =
+        dias_disponibles.value - Number(solicitud.dias_solicitados)
       esAutorizador.value = store.user.id == solicitud.autorizador
     })
     onReestablecer(async () => {
@@ -141,17 +156,23 @@ export default defineComponent({
     }
 
     const periodoSeleccionado = () => {
-      const periodo = periodos.value.filter(
-        v => v.periodo === solicitud.periodo
-      )[0]
-      dias_disponibles.value = periodo.dias_disponibles
+      const periodo: { periodo: string; dias_disponibles: number } =
+        periodos.value.filter(
+          (v: { periodo: string; dias_disponibles: number }) =>
+            v.periodo === solicitud.periodo
+        )[0]
+      dias_disponibles.value = periodo ? periodo.dias_disponibles : 0
     }
 
     const calcularFechaFin = () => {
-      dias_restantes.value = dias_disponibles.value - solicitud.dias_solicitados
-      if (solicitud.fecha_inicio !== null && solicitud.dias_solicitados > 0)
+      dias_restantes.value =
+        dias_disponibles.value - (solicitud.dias_solicitados || 0)
+      if (
+        solicitud.fecha_inicio !== null &&
+        (solicitud.dias_solicitados ?? 0) > 0
+      )
         solicitud.fecha_fin = format(
-          addDay(solicitud.fecha_inicio, solicitud.dias_solicitados - 1),
+          addDay(solicitud.fecha_inicio, (solicitud.dias_solicitados || 0) - 1),
           maskFecha
         )
     }
@@ -166,13 +187,14 @@ export default defineComponent({
       tabDefecto.value = tab
     }
 
-    function optionsFechaInicio(date) {
-      const currentDateString = format(new Date(), 'YYYY/MM/DD')
+    function optionsFechaInicio(date: string) {
+      // const currentDateString = format(new Date(), 'YYYY/MM/DD')
+      const currentDateString =sumarFechas(obtenerFechaActual(), 0,0,-15, 'YYYY/MM/DD')
 
       return date >= currentDateString
     }
 
-    async function imprimir(id, filename) {
+    async function imprimir(id: number, filename: string) {
       try {
         cargando.activar()
         const axios = AxiosHttpRepository.getInstance()
@@ -190,6 +212,38 @@ export default defineComponent({
       }
     }
 
+    async function anular(id: number, motivo: string) {
+      try {
+        cargando.activar()
+        const axios = AxiosHttpRepository.getInstance()
+        const url =
+          apiConfig.URL_BASE +
+          '/' +
+          axios.getEndpoint(endpoints.solicitudes_vacaciones) +
+          '/anular/' +
+          id
+        const response: AxiosResponse = await axios.patch(url, {
+          motivo: motivo
+        })
+        if (response.status === 200) {
+          notificarCorrecto(response.data.mensaje)
+          filtrarSolicitudes(tabDefecto.value)
+        } else notificarError(response.data.mensaje)
+      } catch (e: any) {
+        console.error(e)
+        if (e.response)
+          if (e.response.status === 422) {
+            notificarAdvertencia(
+              e.response.data.message || 'Error de validación'
+            )
+          } else
+            notificarAdvertencia('Error al anular la solicitud de vacaciones.')
+        else notificarAdvertencia('Error de red o inesperado.')
+      } finally {
+        cargando.desactivar()
+      }
+    }
+
     /**************************
      * BOTONES DE TABLAS
      **************************/
@@ -198,7 +252,8 @@ export default defineComponent({
       icono: 'bi-pencil-square',
       color: 'secondary',
       visible: ({ entidad }) =>
-        entidad.autorizador_id === store.user.id && tabDefecto.value == 1,
+        entidad.autorizador_id === store.user.id &&
+        Number(tabDefecto.value) == 1,
       accion: ({ entidad }) => {
         accion.value = 'EDITAR'
         consultar(entidad)
@@ -216,6 +271,29 @@ export default defineComponent({
         )
       },
       visible: () => ['1', '2'].includes(tabDefecto.value)
+    }
+
+    const btnAnular: CustomActionTable = {
+      titulo: 'Anular',
+      color: 'negative',
+      icono: 'bi-x',
+      accion: ({ entidad }) => {
+        confirmar(
+          '¿Está seguro que desea anular esta solicitud de vacación?',
+          async () => {
+            const data: CustomActionPrompt = {
+              titulo: 'Motivo',
+              mensaje: 'Ingrese un motivo de anulación',
+              requerido: true,
+              accion: async data => {
+                await anular(entidad.id, data)
+              }
+            }
+            prompt(data)
+          }
+        )
+      },
+      visible: () => store.esRecursosHumanos && tabDefecto.value === '2' //Aprobados
     }
 
     return {
@@ -249,7 +327,8 @@ export default defineComponent({
 
       // botones de tabla
       editarVacacion,
-      btnImprimir
+      btnImprimir,
+      btnAnular
     }
   }
 })

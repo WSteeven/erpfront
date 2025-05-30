@@ -12,7 +12,7 @@ import { useNotificacionStore } from 'stores/notificacion'
 import { useNotificaciones } from 'shared/notificaciones'
 import { jornadas } from 'pages/seguridad/config/utils'
 import { acciones, accionesTabla } from 'config/utils'
-import { computed, defineComponent, reactive, ref } from 'vue'
+import { computed, defineComponent, nextTick, reactive, ref } from 'vue'
 import { required } from 'shared/i18n-validators'
 import useVuelidate from '@vuelidate/core'
 import { endpoints } from 'config/api'
@@ -39,6 +39,7 @@ import { ActividadBitacora } from '../modules/actividadBitacora/domain/Actividad
 import { ZonaController } from 'pages/seguridad/zonas/infraestructure/ZonaController'
 import { BitacoraController } from '../infraestructure/BitacoraController'
 import { Bitacora } from '../doman/Bitacora'
+import { TabOption } from 'components/tables/domain/TabOption'
 
 export default defineComponent({
   components: { MultiplePageLayout, TabLayout, EssentialTable, FechaHoraAutomaticaInput, EssentialSelectableTable, VoiceInput, Callout, SolicitarArchivo, ModalesEntidad },
@@ -53,10 +54,11 @@ export default defineComponent({
     /********
      * Mixin
      ********/
-    const mixin = new ContenedorSimpleMixin(Bitacora, new BitacoraController())
+    const bitacoraController = new BitacoraController()
+    const mixin = new ContenedorSimpleMixin(Bitacora, bitacoraController)
     const { entidad: bitacora, disabled, listadosAuxiliares, tabsPage, tabs, accion } = mixin.useReferencias()
     const { setValidador, cargarVista, obtenerListados, consultar, editarParcial } = mixin.useComportamiento()
-    const { onConsultado, onReestablecer } = mixin.useHooks()
+    const { onConsultado, onReestablecer, onGuardado } = mixin.useHooks()
 
     const mixinActividadBitacora = new ContenedorSimpleMixin(ActividadBitacora, new ActividadBitacoraController())
     const { entidad: actividadBitacora, listado: listadoActividadBitacora, accion: accionActividadBitacora } = mixinActividadBitacora.useReferencias()
@@ -78,7 +80,7 @@ export default defineComponent({
     const refActividades = ref()
     const mostrarSolicitarArchivoActividad = ref(false)
     const modales = new ComportamientoModalesBitacora()
-    const { confirmar, promptItems } = useNotificaciones()
+    const { confirmar, promptItems, notificarAdvertencia } = useNotificaciones()
     // const prendas = computed(() => listadosAuxiliares.prendas)
     const prendas = computed(() =>
       listadosAuxiliares.prendas.map((prenda) => ({
@@ -88,6 +90,8 @@ export default defineComponent({
           .replace(/\b\w/g, (char) => char.toUpperCase()),
       }))
     )
+
+    const tabsOptions = ['1. Bitácora', '2. Actividades registradas en la bitácora']
 
     /*************
      * Funciones
@@ -146,8 +150,8 @@ export default defineComponent({
     const btnAgregarActividad: CustomActionTable<ActividadBitacora> = {
       titulo: 'Agregar actividad',
       icono: 'bi-plus',
-      disable: () => !!bitacora.fecha_hora_fin_turno,
       accion: () => cargarVista(async () => {
+        if (!!bitacora.fecha_hora_fin_turno) return notificarAdvertencia('Ya no tiene permitido registrar actividades debido a que la bitácora ha sido finalizada.')
         reestablecerActividadBitacora()
         modales.abrirModalEntidad('ActividadBitacoraPage', { bitacora_id: bitacora.id, mixin: mixinActividadBitacora })
       })
@@ -252,7 +256,7 @@ export default defineComponent({
     const rules = {
       zona: { required },
       jornada: { required },
-      fecha_hora_inicio_turno: { required },
+      // fecha_hora_inicio_turno: { required },
       agente_turno: { required },
       protector: { required },
       conductor: { required },
@@ -266,11 +270,9 @@ export default defineComponent({
      * Hooks
      ********/
     onConsultado(() => {
-      criterioBusqueda.value = bitacora.nombres_agente_turno
-      criterioBusquedaProtector.value = bitacora.nombres_protector
-      criterioBusquedaConductor.value = bitacora.nombres_conductor
-      consultarPrendasPermitidas()
+      consultado()
       tabsPage.value = '1'
+      listarActividadBitacora({ bitacora_id: bitacora.id })
     })
 
     onReestablecer(() => {
@@ -280,6 +282,25 @@ export default defineComponent({
       criterioBusquedaConductor.value = null
       listadosAuxiliares.prendas = []
     })
+
+    onGuardado((id) => {
+      tabsPage.value = '2'
+      nextTick(async () => {
+        if (id) {
+          const response = await bitacoraController.consultar(id)
+          bitacora.hydrate(response.result)
+          accion.value = acciones.consultar
+          consultado()
+        }
+      })
+    })
+
+    const consultado = () => {
+      criterioBusqueda.value = bitacora.nombres_agente_turno
+      criterioBusquedaProtector.value = bitacora.nombres_protector
+      criterioBusquedaConductor.value = bitacora.nombres_conductor
+      consultarPrendasPermitidas()
+    }
 
     /* watch(tabsPage, () => {
       if (tabsPage.value === '2') {
@@ -327,6 +348,7 @@ export default defineComponent({
       accion,
       acciones,
       prendas,
+      tabsOptions,
       // orquestador
       refListadoSeleccionable,
       criterioBusqueda,
