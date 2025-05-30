@@ -1,87 +1,72 @@
 <template>
-  <div class="container">
-    <div class="gif">
-      <img src="https://i.postimg.cc/2yrFyxKv/giphy.gif" alt="gif_ing" />
-    </div>
-    <div class="content">
-      <h1 class="main-heading">Esta Pagina no está disponible.</h1>
-      <p>
-        ...quizás la página que estás buscando no se encuentra o nunca existió.
-      </p>
-      <p>
-        <b>!! NO ROMPAS LA PANTALLA !!</b>
-        <br>
-        Contacta a tu administrador.
-      </p>
+  <div class="page_404 fullscreen text-grey-8 text-center q-pa-md flex flex-center">
+    <div>
+      <div class="four_zero_four_bg">
+        <h2 class="text-center">404</h2>
+      </div>
 
-      <br>
-      <a href="/intranet">
-        <button>Volver a Intranet &nbsp; <i class="fa-solid fa-house"></i></button>
-      </a>
+      <div class="contant_box_404">
+        <h6 class="h6">
+          No se encuentra el recurso solicitado
+        </h6>
+        <q-btn
+          class="q-mt-xl link_404"
+          color="grey-8"
+          unelevated
+          to="/"
+          label="Ver tablero"
+          no-caps
+        />
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'PageNotFound'
+  name: "PageNotFound"
 };
 </script>
 
 <style scoped>
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap");
+/*======================
+    404 page
+=======================*/
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+.page_404 {
+  padding: 40px 0;
+  background: #fff;
+  font-family: 'Arvo', serif;
 }
 
-body {
-  font-family: "Poppins", sans-serif;
+.page_404 img {
+  width: 100%;
 }
 
-.container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  background-color: #fff;
+.four_zero_four_bg {
+  background-image: url(https://cdn.dribbble.com/users/285475/screenshots/2083086/dribbble_1.gif);
+  height: 400px;
+  background-position: center;
 }
 
-.gif {
-  display: flex;
-  justify-content: center;
+.four_zero_four_bg h1 {
+  font-size: 30vh;
 }
 
-.content {
-  text-align: center;
-  margin: 3rem 0;
+.four_zero_four_bg h3 {
+  font-size: 2em;
+  opacity: 0.4;
 }
 
-.content .main-heading {
-  font-size: 2.5rem;
-  font-weight: 700;
+.link_404 {
+  color: #fff !important;
+  padding: 10px 20px;
+  background: #39ac31;
+  margin: 20px 0;
+  display: inline-block;
 }
 
-p {
-  font-size: 1.3rem;
-  padding: 0.7rem 0;
-}
-
-button {
-  padding: 1rem;
-  border-radius: 15px;
-  outline: none;
-  border: none;
-  background: #ff6c17;
-  color: #fff;
-  font-size: 1.3rem;
-  cursor: pointer;
+.contant_box_404 {
+  margin-top: -50px;
 }
 </style>
