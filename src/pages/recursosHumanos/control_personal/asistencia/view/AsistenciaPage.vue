@@ -21,8 +21,7 @@
       :ajustarCeldas="true"
       @toggle-filtros="listarListado"
       @filtrar="aplicarFiltro"
-      paginate
-    ></essential-table-pagination>
+    />
   </q-page>
 </template>
 

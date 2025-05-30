@@ -14,7 +14,7 @@ import { Atrasos } from '../domain/Atrasos'
 import { EmpleadoController } from 'recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 import { ordenarLista } from 'shared/utils'
-import { required } from 'shared/i18n-validators'
+import { required, requiredIf } from 'shared/i18n-validators'
 import ErrorComponent from 'components/ErrorComponent.vue'
 import NoOptionComponent from 'components/NoOptionComponent.vue'
 import { acciones, maskFecha } from 'config/utils'
@@ -69,7 +69,7 @@ export default defineComponent({
 
     const reglas = {
       empleado: { required },
-      justificacion: { required }
+      justificacion: { required: requiredIf(() => atraso.justificado) }
     }
 
     const v$ = useVuelidate(reglas, atraso)
@@ -78,8 +78,8 @@ export default defineComponent({
     /**
      * HOOKS
      */
-    onModificado((id, response_data) => {
-      if(response_data.modelo.justificado) filtrarListadoAtrasos('1')
+    onModificado((_, response_data) => {
+      if (response_data.modelo.justificado) filtrarListadoAtrasos('1')
     })
 
     const tabOptions = [
@@ -119,7 +119,7 @@ export default defineComponent({
       color: 'secondary',
       accion: ({ entidad }) => {
         console.log('Aqui se mostraran las asistencias')
-        modales.abrirModalEntidad<{ marcacion_id: int }>('MarcacionPage', {
+        modales.abrirModalEntidad<{ marcacion_id: number }>('MarcacionPage', {
           marcacion_id: entidad.marcacion
         })
       }

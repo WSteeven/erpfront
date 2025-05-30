@@ -8,11 +8,18 @@
     :filtrar="filtrarListadoAtrasos"
     :permitir-editar="true"
     :accion1="btnVerMarcaciones"
+    ajustar-celdas
   >
     <template #formulario>
       <q-form @submit.prevent>
         <!--          Aqui vamos a mostrar el registro del biométrico-->
-        <div class="row border-grey rounded q-pa-sm q-mb-md" v-if="[acciones.consultar, acciones.editar].includes(accion) && atraso.marcacion != null">
+        <div
+          class="row border-grey rounded q-pa-sm q-mb-md"
+          v-if="
+            [acciones.consultar, acciones.editar].includes(accion) &&
+            atraso.marcacion != null
+          "
+        >
           <div class="col-12">
             <label class="q-mb-sm block">Registro de marcación</label>
             <marcacion-page
@@ -151,6 +158,13 @@
               v-model="atraso.justificacion"
               :disable="disabled"
             ></essential-editor>
+            <div
+              class="text-negative text-uppercase"
+              v-for="error of v$.justificacion.$errors"
+              :key="error.$uid"
+            >
+              <small>{{ error.$message }}</small>
+            </div>
           </div>
         </div>
       </q-form>

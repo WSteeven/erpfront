@@ -35,8 +35,8 @@ export default defineComponent({
     // Reglas de validación
     const reglas = {
       empleado: { required },
-      hora_ingreso: { required },
-      hora_salida: { required }
+      fecha: { required },
+      marcaciones: { required }
     }
 
     const v$ = useVuelidate(reglas, asistencia)
