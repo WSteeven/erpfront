@@ -24,6 +24,8 @@ import GestorDocumentos from 'components/documentos/view/GestorDocumentos.vue'
 import { OptionGroup } from 'components/optionGroup/domain/OptionGroup'
 import { Planes } from 'pages/ventas-claro/planes/domain/Planes'
 import { endpoints } from 'config/api'
+import { descargarPlantillaBasePorNombre } from 'shared/utils'
+import { useCargandoStore } from 'stores/cargando'
 
 export default defineComponent({
   components: {
@@ -37,6 +39,7 @@ export default defineComponent({
     /*********
      * Stores
      *********/
+    useCargandoStore().setQuasar(useQuasar())
     useNotificacionStore().setQuasar(useQuasar())
     const cargando = new StatusEssentialLoading()
     const store = useAuthenticationStore()
@@ -56,7 +59,8 @@ export default defineComponent({
       disabled,
       accion,
       listadosAuxiliares,
-      listado, tabs
+      listado,
+      tabs
     } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista, listar } =
       mixin.useComportamiento()
@@ -138,13 +142,14 @@ export default defineComponent({
         }, 1000)
       } catch (error) {
         console.error(`Error es: ${error}`)
-        notificarError(''+error)
+        notificarError('' + error)
       }
     }
 
-    async function descargarPlantillaExcel(){
-
+    async function descargarPlantillaExcel() {
+      await descargarPlantillaBasePorNombre('PLANTILLA GUIA COMERCIAL CLARO')
     }
+
     /***********************
      * Botones de tabla
      ***********************/
@@ -229,6 +234,7 @@ export default defineComponent({
       btnDesactivar,
 
       //funciones
+      descargarPlantillaExcel,
       filtrarProductos
     }
   }

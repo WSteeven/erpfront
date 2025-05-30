@@ -68,6 +68,32 @@ export function descargarArchivoUrl(url: string): void {
   link.remove()
 }
 
+/**
+ * Metodo generico para descargar una plantilla base(tabla:conf_plantillas) con solo el nombre que se desea obtener.
+ * Debe proporcionar el nombre completo, tal como está registrado en la plantilla, caso contrario le dará un error que no existe el archivo.
+ * @param {string} nombre nombre a buscar
+ */
+export async function descargarPlantillaBasePorNombre(nombre: string) {
+  const { notificarCorrecto, notificarAdvertencia, notificarError } =
+    useNotificaciones()
+  try {
+    const axios = AxiosHttpRepository.getInstance()
+    const url =
+      apiConfig.URL_BASE +
+      '/' +
+      axios.getEndpoint(endpoints.obtener_plantilla_base_por_nombre)
+    const response: AxiosResponse = await axios.post(url, { nombre })
+    console.log(response)
+    if (response.status === 200) {
+      notificarCorrecto(response.data.mensaje)
+      descargarArchivoUrl(response.data.modelo.url)
+    } else notificarAdvertencia(response.data.mensaje)
+  } catch (error) {
+    console.log(error)
+    notificarError(error.response.data.message)
+  }
+}
+
 export function agregarCerosIzquierda(
   num: string | number,
   size: number
@@ -366,8 +392,8 @@ export async function obtenerTiempoActual() {
       axios.getEndpoint(endpoints.fecha)
     )
     /* const hora: AxiosResponse = await axios.get(
-          axios.getEndpoint(endpoints.hora)
-        ) */
+                  axios.getEndpoint(endpoints.hora)
+                ) */
 
     return {
       fecha: fechaHora.data.split(' ')[0],
@@ -491,7 +517,7 @@ export async function imprimirArchivo(
       if (blob instanceof Blob && blob.type === 'application/json') {
         const text = await blob.text()
         const json = JSON.parse(text)
-        Object.values(json.errors).forEach((error:string) => {
+        Object.values(json.errors).forEach((error: string) => {
           notificarError(error)
         })
       } else {

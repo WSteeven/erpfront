@@ -13,11 +13,7 @@
         />
         <div class="row q-col-gutter-sm q-py-md">
           <!-- nombre -->
-          <div
-            :class="
-              accion == acciones.nuevo ? 'col-12 col-md-6' : 'col-12 col-md-6'
-            "
-          >
+          <div class="col-12 col-md-6">
             <label class="q-mb-sm block">Nombre</label>
             <input-component
               v-model="plantilla.nombre"
@@ -37,7 +33,6 @@
               :accion="accion"
             />
           </div>
-          <!--          <div class="col-12">{{ v$.$errors }} -{{disabled}}- {{ plantilla }}</div>-->
 
           <div class="col-12">
             <div class="row justify-end q-col-gutter-x-xs">
