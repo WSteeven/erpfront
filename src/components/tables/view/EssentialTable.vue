@@ -1806,6 +1806,11 @@
         <campo-boleano :propsTable="props" />
       </q-td>
     </template> -->
+    <template #body-cell-justificado_por_atrasado="props">
+      <q-td :props="props">
+        <campo-boleano :propsTable="props" />
+      </q-td>
+    </template>
     <template #body-cell-revisado="props">
       <q-td :props="props">
         <campo-boleano :propsTable="props" />

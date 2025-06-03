@@ -6,8 +6,11 @@ export class Atrasos extends EntidadAuditable {
   minutos_atraso: number | null // Minutos de atraso.
   tiempo_atraso: string | null // Segundos de atraso.
   segundos_atraso: number | null // Segundos de atraso.
-  justificacion: string | null // Texto de la justificación.
+  justificacion: string // Texto de la justificación.
+  jefe: number|null
   justificador: string | null
+  justificacion_atrasado: string | null
+  justificado_por_atrasado: string | null
   marcacion: string | null
   ocurrencia: string | null
   justificado: boolean
@@ -22,7 +25,10 @@ export class Atrasos extends EntidadAuditable {
     this.tiempo_atraso = null
     this.segundos_atraso = null
     this.justificacion = ''
+    this.jefe = null
     this.justificador = null
+    this.justificacion_atrasado = null
+    this.justificado_por_atrasado = null
     this.marcacion = null
     this.ocurrencia = null
     this.justificado = false

@@ -24,5 +24,17 @@ export  class NotificarAtrasoJefeInmediatoPusherEvent{
         link: e.notificacion.link
       })
     })
+
+    const notificarAEmpleadoAtrasado = pusher.subscribe(`atrasos-empleado-tracker-${this.store.user.id}`)
+    notificarAEmpleadoAtrasado.bind('atrasos-event', (e)=>{
+      notificacionStore.actualizar()
+      notificarAdvertencia('Tienes un atraso')
+
+      pushEventMesaggeServiceWorker({
+        titulo: 'Has llegado atrasado',
+        mensaje: e.notificacion.mensaje,
+        link: e.notificacion.link
+      })
+    })
   }
 }

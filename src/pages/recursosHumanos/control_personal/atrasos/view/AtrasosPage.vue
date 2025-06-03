@@ -6,7 +6,7 @@
     :tab-options="tabOptions"
     :tabDefecto="tabDefecto"
     :filtrar="filtrarListadoAtrasos"
-    :permitir-editar="true"
+    :permitir-editar="tabDefecto == '0'"
     :accion1="btnVerMarcaciones"
     ajustar-celdas
   >
@@ -22,7 +22,7 @@
         >
           <div class="col-12">
             <label class="q-mb-sm block">Registro de marcación</label>
-            <marcacion-page
+            <marcacion-page v-if="mostrarMarcacionPage"
               class="bg-desenfoque rounded shadow-0"
               :mostrar-encabezado="false"
               :datos="{ marcacion_id: atraso?.marcacion }"
@@ -31,7 +31,7 @@
         </div>
         <div class="row q-col-gutter-md">
           <!-- Empleado -->
-          <div class="col-12 col-md-6">
+          <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Empleado</label>
             <q-select
               v-model="atraso.empleado"
@@ -106,7 +106,7 @@
             <label class="q-mb-sm block">Tiempo de Atraso</label>
             <q-input
               v-model="atraso.tiempo_atraso"
-              outlined
+              outlined autogrow
               dense
               disable
               hint="Tiempo de atraso calculados"
@@ -130,17 +130,24 @@
             <label class="q-mb-sm block">¿Justificar?</label>
             <option-group-component
               v-model="atraso.justificado"
-              :disable="disabled"
+              :disable="disabled || !esJefeInmediato"
             />
           </div>
 
-          <!-- Existe UPC cercano -->
+          <!-- Revisado -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">¿Revisado?</label>
-            <option-group-component v-model="atraso.revisado" :disable="true" />
+            <option-group-component v-model="atraso.revisado" disable />
           </div>
 
-          <div class="col-6 col-md-3 col-sm-12">
+          <div
+            class="col-6 col-md-3 col-sm-12"
+            v-if="
+              esEmpleadoAtrasado ||
+              esJefeInmediato ||
+              atraso.imagen_evidencia != null
+            "
+          >
             <label for="q-mb-xl block">Imagen Evidencia</label>
             <selector-imagen
               file_extensiones=".jpg, image/*"
@@ -151,8 +158,33 @@
             ></selector-imagen>
           </div>
 
+          <!-- Justificación atrasado -->
+          <div
+            class="col-12 col-md-3"
+            v-if="atraso.justificacion_atrasado || esEmpleadoAtrasado"
+          >
+            <label class="q-mb-sm block">Justificación (E. Atrasado)</label>
+            <q-input
+              v-model="atraso.justificacion_atrasado"
+              outlined
+              dense
+              :disable="disabled || !esEmpleadoAtrasado"
+              placeholder="Opcional"
+              hint="Ingresa tu justificación del atraso"
+              :error="!!v$.justificacion_atrasado.$errors.length"
+              @blur="v$.justificacion_atrasado.$touch"
+            >
+              <template v-slot:error>
+                <error-component clave="justificacion_atrasado" :v$="v$" />
+              </template>
+            </q-input>
+          </div>
+
           <!-- Justificación -->
-          <div class="col-12">
+          <div
+            class="col-12"
+            v-if="esJefeInmediato || atraso.justificacion?.length > 1"
+          >
             <label class="q-mb-sm block">Justificación del atraso</label>
             <essential-editor
               v-model="atraso.justificacion"

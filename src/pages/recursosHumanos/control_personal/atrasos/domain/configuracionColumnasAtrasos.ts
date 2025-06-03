@@ -47,7 +47,21 @@ export const configuracionColumnasAtrasos: ColumnConfig<Atrasos>[] = [
   {
     name: 'justificacion',
     field: 'justificacion',
-    label: 'Justificación de Atraso',
+    label: 'Justificación Atraso (J.I.)',
+    align: 'left',
+    sortable: false,
+  },
+  {
+    name: 'justificacion_atrasado',
+    field: 'justificacion_atrasado',
+    label: 'Justificación de Atraso (E.A.)',
+    align: 'left',
+    sortable: false,
+  },
+  {
+    name: 'justificado_por_atrasado',
+    field: 'justificado_por_atrasado',
+    label: 'Justificado por Atrasado',
     align: 'left',
     sortable: false,
   },

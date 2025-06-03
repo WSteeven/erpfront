@@ -1,4 +1,4 @@
-import { defineComponent, ref } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
 import { configuracionColumnasAtrasos } from '../domain/configuracionColumnasAtrasos'
 import { useVuelidate } from '@vuelidate/core'
 import { apiConfig, endpoints } from 'config/api'
@@ -25,6 +25,7 @@ import ModalEntidad from 'components/modales/view/ModalEntidad.vue'
 import { ComportamientoModalesAtrasos } from 'controlPersonal/atrasos/application/ComportamientoModalesAtrasos'
 import { useNotificaciones } from 'shared/notificaciones'
 import MarcacionPage from 'controlPersonal/asistencia/view/MarcacionPage.vue'
+import { useAuthenticationStore } from 'stores/authentication'
 
 export default defineComponent({
   name: 'JustificacionPage',
@@ -49,11 +50,15 @@ export default defineComponent({
     } = mixin.useReferencias()
     const { setValidador, listar, cargarVista, obtenerListados } =
       mixin.useComportamiento()
-    const { onModificado } = mixin.useHooks()
+    const { onBeforeConsultar, onConsultado, onModificado } = mixin.useHooks()
     const tabDefecto = ref('0') // Por defecto "Justificados"
     const { notificarCorrecto } = useNotificaciones()
     const modales = new ComportamientoModalesAtrasos()
+    const store = useAuthenticationStore()
 
+    const esJefeInmediato = computed(() => store.user.id == atraso.jefe)
+    const esEmpleadoAtrasado = computed(() => store.user.id == atraso.empleado)
+  const mostrarMarcacionPage = ref(false)
     const { empleados, filtrarEmpleados } =
       useFiltrosListadosSelects(listadosAuxiliares)
     cargarVista(async () => {
@@ -69,7 +74,12 @@ export default defineComponent({
 
     const reglas = {
       empleado: { required },
-      justificacion: { required: requiredIf(() => atraso.justificado) }
+      justificacion: { required: requiredIf(() => atraso.justificado) },
+      justificacion_atrasado: {
+        required: requiredIf(
+          () => accion.value == acciones.editar && esEmpleadoAtrasado.value
+        )
+      }
     }
 
     const v$ = useVuelidate(reglas, atraso)
@@ -78,6 +88,12 @@ export default defineComponent({
     /**
      * HOOKS
      */
+    onBeforeConsultar(async () => {
+      mostrarMarcacionPage.value=false
+    })
+    onConsultado(()=>{
+      mostrarMarcacionPage.value=true
+    })
     onModificado((_, response_data) => {
       if (response_data.modelo.justificado) filtrarListadoAtrasos('1')
     })
@@ -136,9 +152,10 @@ export default defineComponent({
       tabDefecto,
       tabOptions,
       maskFecha,
-
+      esJefeInmediato,
+      esEmpleadoAtrasado,
       modales,
-
+      mostrarMarcacionPage,
       // opciones
       empleados,
       filtrarEmpleados,
