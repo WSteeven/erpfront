@@ -183,7 +183,7 @@
         <essential-table
           titulo="Productos Seleccionados"
           :configuracionColumnas="
-            configuracionColumnasProductosSeleccionadosEgreso
+            configuracionColumnasProductosSeleccionadosAccion
           "
           :datos="transaccion.listadoProductosTransaccion"
           :permitirConsultar="false"
@@ -193,11 +193,10 @@
           :permitirBuscar="false"
           :ajustarCeldas="true"
           :altoFijo="false"
-          :accion1="btnEditarCantidadPendiente"
-          :accion2="btnEditarCantidadParcial"
+          :accion1="botonEliminar"
         ></essential-table>
       </div>
     </div>
   </q-form>
 </template>
-<script src="./ModificarEgresoPage.ts" />
+<script src="./ModificarIngresoPage.ts" />

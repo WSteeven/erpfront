@@ -134,6 +134,7 @@ export const endpoints = {
   transacciones_egresos: new Endpoint('transacciones-egresos'),
   transacciones_ingresos: new Endpoint('transacciones-ingresos'),
   modificar_item_egreso: new Endpoint('modificar-item-egreso'),
+  quitar_item_ingreso: new Endpoint('quitar-item-ingreso'),
   gestionar_egresos: new Endpoint('gestionar-egresos'),
   transferencias: new Endpoint('transferencias'),
   traspasos: new Endpoint('traspasos'),

@@ -14,6 +14,9 @@ import { rolesSistema } from 'config/utils'
 import { SelectOption } from 'components/tables/domain/SelectOption'
 import { format } from '@formkit/tempo'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import {Sucursal} from 'pages/administracion/sucursales/domain/Sucursal';
+import {Ref} from 'vue';
+import {Cliente} from 'sistema/clientes/domain/Cliente';
 
 const authenticationStore = useAuthenticationStore()
 const usuario = authenticationStore.user
@@ -556,6 +559,31 @@ export function ordernarListaString(a: string, b: string) {
   return 0
 }
 
+export function ordenarSucursalesPorBodeguero(sucursales: Ref<Sucursal[]>, esBodegueroTelconet:boolean) {
+  if (esBodegueroTelconet) {
+    const sucursalesTelconet = sucursales.value.filter(
+        (v: Sucursal) => v.lugar!.indexOf('TELCONET') > -1
+    )
+    sucursales.value = sucursalesTelconet.sort(
+        (a: Sucursal, b: Sucursal) =>
+            ordernarListaString(a.lugar!, b.lugar!)
+    )
+  } else
+    sucursales.value.sort((a: Sucursal, b: Sucursal) =>
+        ordernarListaString(a.lugar!, b.lugar!)
+    )
+}
+
+export function ordenarClientesPorBodeguero(clientes: Ref<Cliente[]>, esBodegueroTelconet:boolean) {
+  if (esBodegueroTelconet)
+    clientes.value = clientes.value.filter(
+        (v: Cliente) => v.razon_social!.indexOf('TELCONET') > -1
+    )
+  else
+    clientes.value.sort((a: Cliente, b: Cliente) =>
+        ordernarListaString(a.razon_social!, b.razon_social!)
+    )
+}
 export function obtenerUbicacion(onUbicacionConcedida) {
   const onErrorDeUbicacion = err => {
     console.log('Error obteniendo ubicación: ', err)

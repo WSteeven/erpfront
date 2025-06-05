@@ -62,7 +62,7 @@ import { apiConfig, endpoints } from 'config/api'
 import {
   encontrarUltimoIdListado,
   imprimirArchivo,
-  ordenarLista, removeAccents, removeTildes
+  ordenarLista,  removeTildes
 } from 'shared/utils'
 import { useCargandoStore } from 'stores/cargando'
 import { AxiosResponse } from 'axios'
@@ -83,9 +83,13 @@ import { usePostulanteStore } from 'stores/recursosHumanos/seleccionContratacion
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { tabOptionsProveedoresInternacionales } from 'config/utils_compras_proveedores'
 import { useEmpleadoStore } from 'stores/empleado'
+import NoOptionComponent from 'components/NoOptionComponent.vue'
+import ErrorComponent from 'components/ErrorComponent.vue';
 
 export default defineComponent({
   components: {
+    ErrorComponent,
+    NoOptionComponent,
     TabLayoutFilterTabs2,
     SelectorImagen,
     ModalesEntidad,
@@ -528,23 +532,29 @@ export default defineComponent({
       },
       visible: ({ entidad }) =>
         store.can('puede.ver.btn.plan_vacaciones.empleados') &&
-        (entidad.jefe_id == store.user.id || entidad.id == store.user.id || store.esRecursosHumanos)
+        (entidad.jefe_id == store.user.id ||
+          entidad.id == store.user.id ||
+          store.esRecursosHumanos)
     }
 
     function obtenerUsername() {
-      const esEditar =accion.value == acciones.editar && empleado.generar_usuario
-      const esNuevo = accion.value == acciones.nuevo && empleado.nombres?.trim()  && empleado.apellidos?.trim()
-      if (esEditar||esNuevo) generarUsename(accion.value===acciones.editar) // Solo se sobreescribirá cuando sea editar
+      const esEditar =
+        accion.value == acciones.editar && empleado.generar_usuario
+      const esNuevo =
+        accion.value == acciones.nuevo &&
+        empleado.nombres?.trim() &&
+        empleado.apellidos?.trim()
+      if (esEditar || esNuevo) generarUsename(accion.value === acciones.editar) // Solo se sobreescribirá cuando sea editar
     }
 
-    async function generarUsename(sobreescribir=false) {
+    async function generarUsename(sobreescribir = false) {
       const axios = AxiosHttpRepository.getInstance()
       const ruta = axios.getEndpoint(endpoints.generar_username)
       const datos = {
         nombres: empleado.nombres,
         apellidos: empleado.apellidos,
         usuario: empleado.usuario,
-        sobreescribir:sobreescribir
+        sobreescribir: sobreescribir
       }
       const response: AxiosResponse = await axios.post(ruta, datos)
       const username = ref(response.data.username)
@@ -694,7 +704,7 @@ export default defineComponent({
       construccionConfiguracionColumnas,
       habilitarBotonAgregarFamiliares,
       autoidentificaciones_etnicas,
-      removeTildes,
+      removeTildes
     }
   }
 })

@@ -10,8 +10,11 @@ import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { CentroCosto } from 'pages/gestionTrabajos/centroCostos/domain/CentroCostos'
 import { SeguroVehicular } from 'pages/controlVehiculos/seguros/domain/SeguroVehicular'
 import { ref } from 'vue'
+import {useAuthenticationStore} from 'stores/authentication';
+import {Sucursal} from 'pages/administracion/sucursales/domain/Sucursal';
 
 export const useFiltrosListadosSelects = (listadosAuxiliares) => {
+  const store = useAuthenticationStore()
   /************
    * Variables
    ************/
@@ -450,7 +453,23 @@ export const useFiltrosListadosSelects = (listadosAuxiliares) => {
   function filtrarSucursales(val, update) {
     return filtrarLista(val, update, sucursales, 'lugar', listadosAuxiliares.sucursales)
   }
+  function filtrarSucursalesPorBodeguero(val, update) {
+    const sucursalesTelconet = listadosAuxiliares.sucursales.filter((v:Sucursal)=>v.cliente_id==2)//2 es el ID del Telconet
+    if(store.esBodegueroTelconet){
+      if (val === '') {
+        sucursalesTelconet.value = listadosAuxiliares.sucursales.filter((v:Sucursal)=>v.cliente_id==2)
+        update(() => sucursales.value = sucursalesTelconet)
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        sucursales.value = sucursalesTelconet.filter(
+            (v: Sucursal) => v.lugar!.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }else
+    return filtrarLista(val, update, sucursales, 'lugar', listadosAuxiliares.sucursales)
 
+  }
   function filtrarProyectos(val, update) {
     return filtrarLista(val, update, proyectos, 'codigo_proyecto', listadosAuxiliares.proyectos)
   }
@@ -578,7 +597,7 @@ export const useFiltrosListadosSelects = (listadosAuxiliares) => {
     clientes, filtrarClientes, ordenarClientes,
     empleadosOrigen, filtrarEmpleadosOrigen, ordenarEmpleadosOrigen,
     motivos, filtrarMotivos,
-    sucursales, filtrarSucursales,
+    sucursales, filtrarSucursales,filtrarSucursalesPorBodeguero,
     filtrarEstadosCiviles, estadosCiviles,
     cargos, filtrarCargos,
     roles, filtrarRoles,

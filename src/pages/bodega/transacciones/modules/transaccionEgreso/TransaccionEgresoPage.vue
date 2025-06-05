@@ -23,8 +23,8 @@
           name="bi-exclamation-triangle-fill"
           class="q-mr-sm"
           size="1em"
-        ></q-icon
-        ><b>&nbsp; Advertencia</b>
+        ></q-icon>
+        <b>&nbsp; Advertencia</b>
         <div>Esta transacción no se cargará al stock de ningún empleado</div>
       </div>
       <q-form @submit.prevent>
@@ -85,10 +85,7 @@
             </q-select>
           </div>
           <!-- Select autorizacion -->
-          <div
-            v-if="transaccion.autorizacion "
-            class="col-12 col-md-3 q-mb-md"
-          >
+          <div v-if="transaccion.autorizacion" class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Autorizacion</label>
             <q-select
               v-model="transaccion.autorizacion"
@@ -371,7 +368,9 @@
           </div>
           <!-- Es para una tarea -->
           <div
-            v-if="accion === acciones.nuevo && !transaccion.es_transferencia" class="col-12 col-md-3" >
+            v-if="accion === acciones.nuevo && !transaccion.es_transferencia"
+            class="col-12 col-md-3"
+          >
             <q-checkbox
               class="q-mt-lg q-pt-md"
               v-model="transaccion.es_tarea"
@@ -416,10 +415,10 @@
               <template v-slot:option="scope">
                 <q-item v-bind="scope.itemProps" class="q-my-sm">
                   <q-item-section>
-                    <q-item-label class="text-bold text-primary">{{
-                      scope.opt.codigo_proyecto
-                    }}</q-item-label>
-                    <q-item-label caption>{{ scope.opt.nombre }} </q-item-label>
+                    <q-item-label class="text-bold text-primary"
+                      >{{ scope.opt.codigo_proyecto }}
+                    </q-item-label>
+                    <q-item-label caption>{{ scope.opt.nombre }}</q-item-label>
                   </q-item-section>
                 </q-item>
               </template>
@@ -463,9 +462,9 @@
               <template v-slot:option="scope">
                 <q-item v-bind="scope.itemProps" class="q-my-sm">
                   <q-item-section>
-                    <q-item-label class="text-bold text-primary">{{
-                      scope.opt.nombre
-                    }}</q-item-label>
+                    <q-item-label class="text-bold text-primary"
+                      >{{ scope.opt.nombre }}
+                    </q-item-label>
                     <q-item-label caption
                       >Supervisor: {{ scope.opt.supervisor_responsable }}
                     </q-item-label>
@@ -488,10 +487,7 @@
             </q-select>
           </div>
           <!-- Tarea -->
-          <div
-            v-if="transaccion.es_tarea"
-            class="col-12 col-md-3"
-          >
+          <div v-if="transaccion.es_tarea" class="col-12 col-md-3">
             <label class="q-mb-sm block">Tarea</label>
             <q-select
               v-model="transaccion.tarea"
@@ -513,7 +509,8 @@
               :option-value="item => item.id"
               emit-value
               map-options
-              ><template v-slot:option="scope">
+            >
+              <template v-slot:option="scope">
                 <q-item v-bind="scope.itemProps">
                   <q-item-section>
                     <q-item-label>{{ scope.opt.codigo_tarea }}</q-item-label>
@@ -578,7 +575,7 @@
 
           <!-- observacion autorizacion -->
           <div
-            v-if="transaccion.observacion_aut || accion===acciones.nuevo"
+            v-if="transaccion.observacion_aut || accion === acciones.nuevo"
             class="col-12 col-md-3"
           >
             <label class="q-mb-sm block">Observacion</label>
@@ -586,13 +583,17 @@
               v-model="transaccion.observacion_aut"
               placeholder="Obligatorio"
               :disable="disabled || soloLectura"
-              outlined autogrow
+              outlined
+              autogrow
               dense
             />
           </div>
 
           <!-- Codigo permiso -->
-          <div v-if="transaccion.se_traslada_arma && existeItemArmaFuego" class="col-12 col-md-3">
+          <div
+            v-if="transaccion.se_traslada_arma && existeItemArmaFuego"
+            class="col-12 col-md-3"
+          >
             <label class="q-mb-sm block">Código permiso SINCOAR</label>
             <q-input
               type="textarea"
@@ -643,11 +644,10 @@
             v-if="existeItemArmaFuego"
             class="col-12 bg-amber-2 border-warning q-pb-sm q-my-md"
           >
-          <div class="q-mb-md">
-            <q-icon name="bi-exclamation-circle-fill" color="amber"></q-icon>
+            <div class="q-mb-md">
+              <q-icon name="bi-exclamation-circle-fill" color="amber"></q-icon>
               Tiene armas de fuego en el listado de productos seleccionados.
             </div>
-
 
             <q-checkbox
               v-model="transaccion.se_traslada_arma"
@@ -674,6 +674,7 @@
               virtual-scroll
               v-model:pagination="pagination"
               :rows-per-page-options="[0]"
+              wrap-cells
               dense
             />
           </div>
@@ -724,12 +725,11 @@
                   style="height: 20px; max-height: 40px"
                   no-caps
                   glossy
-                  >Buscar</q-btn
-                >
+                  >Buscar
+                </q-btn>
               </div>
             </div>
           </div>
-
 
           <!-- Tabla -->
           <div class="col-12">
