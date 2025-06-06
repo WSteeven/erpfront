@@ -46,6 +46,9 @@ export class Gasto extends EntidadAuditable {
   es_vehiculo_alquilado: boolean
   observacion_anulacion: string | null
 
+  se_envia_valija:boolean
+  registros_valijas:[]
+
   constructor() {
     super()
     this.id = null
@@ -93,5 +96,8 @@ export class Gasto extends EntidadAuditable {
     this.placa = null
     this.es_vehiculo_alquilado = false
     this.observacion_anulacion = null
+
+    this.se_envia_valija = false
+    this.registros_valijas = []
   }
 }

@@ -27,6 +27,7 @@ import { SubDetalleFondo } from 'pages/fondosRotativos/subDetalleFondo/domain/Su
 import { useAuthenticationStore } from 'stores/authentication'
 import {
   acciones,
+  accionesTabla,
   estadosGastos,
   maskFecha,
   rolesSistema,
@@ -37,6 +38,8 @@ import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { VehiculoController } from 'pages/controlVehiculos/vehiculos/infraestructure/VehiculoController'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import {
+  btnEliminarDefault,
+  encontrarUltimoIdListado,
   filtarJefeImediato,
   filtrarEmpleadosPorRoles,
   optionsFecha,
@@ -52,9 +55,15 @@ import NoOptionComponent from 'components/NoOptionComponent.vue'
 import ErrorComponent from 'components/ErrorComponent.vue'
 import GestorArchivos from 'components/gestorArchivos/GestorArchivos.vue'
 import { upperCase } from 'lodash'
+import { configuracionColumnasValijas } from 'pages/fondosRotativos/gasto/domain/configuracionColumnasValijas'
+import EssentialTable from 'components/tables/view/EssentialTable.vue'
+import { Valija } from 'pages/fondosRotativos/gasto/domain/Valija'
+import { DepartamentoController } from 'recursosHumanos/departamentos/infraestructure/DepartamentoController'
+import { Departamento } from 'recursosHumanos/departamentos/domain/Departamento'
 
 export default defineComponent({
   components: {
+    EssentialTable,
     GestorArchivos,
     ErrorComponent,
     NoOptionComponent,
@@ -85,7 +94,7 @@ export default defineComponent({
     /*******
      * Init
      ******/
-
+    const mostrarComponenteValija = computed(() => Number(gasto.detalle) == 10)
     const esFactura = ref(true)
     const mostrarListado = ref(true)
     const detalles = ref([])
@@ -101,14 +110,16 @@ export default defineComponent({
       vehiculos,
       filtrarVehiculos,
       nodos,
-      filtrarNodos
+      filtrarNodos,
+      departamentos,
+      filtrarDepartamentos
     } = useFiltrosListadosSelects(listadosAuxiliares)
 
     const visualizarAutorizador = computed(() => {
       return store.can('puede.ver.campo.autorizador')
       /*return usuario.roles.findIndex((rol) => rol === 'TECNICO') > -1
-                                            ? true
-                                            : false*/
+                                                              ? true
+                                                              : false*/
     })
 
     onConsultado(async () => {
@@ -233,8 +244,8 @@ export default defineComponent({
         required: requiredIf(() => esFactura.value)
       },
       /*beneficiarios: {
-                                            required: required
-                                          },*/
+                                                              required: required
+                                                            },*/
       aut_especial: { required: requiredIf(() => visualizarAutorizador.value) },
       num_comprobante: { maxLength: maxLength(17) },
       detalle: { required },
@@ -609,6 +620,23 @@ export default defineComponent({
       }
     }
 
+    const btnAgregarRegistroValija: CustomActionTable<Valija> = {
+      titulo: 'Agregar Registro',
+      icono: 'bi-arrow-bar-down',
+      color: 'positive',
+      tooltip: 'Agregar registro de valija',
+      accion: () => {
+        const fila = new Valija()
+        fila.empleado_id = store.user.id
+        fila.empleado = store.nombreUsuario
+        fila.id = gasto.registros_valijas.length
+          ? encontrarUltimoIdListado(gasto.registros_valijas) + 1
+          : 1
+        gasto.registros_valijas.push(fila)
+      },
+      visible: () => [acciones.nuevo, acciones.editar].includes(accion.value)
+    }
+
     const editarGasto: CustomActionTable = {
       titulo: ' ',
       icono: 'bi-pencil-square',
@@ -632,6 +660,45 @@ export default defineComponent({
       tabActualGasto.value = tabSeleccionado
 
       filtros.fields = { estado: tabSeleccionado }
+    }
+
+    function filtrarListadoDepartamentos(val, update) {
+      filtrarDepartamentos(val, update)
+      configuracionColumnasValijas.find(
+        item => item.field === 'departamento'
+      )!.options = departamentos.value.map((v: Departamento) => {
+        return { value: v.id, label: v.nombre }
+      })
+    }
+
+    async function consultarDepartamentos() {
+      try {
+        cargando.activar()
+        const { result } = await new DepartamentoController().listar({
+          activo: 1
+        })
+        departamentos.value = result
+      } catch (e) {
+        console.error(e)
+      } finally {
+        cargando.desactivar()
+      }
+    }
+
+    const checkSeEnviaValija = async val => {
+      if (val) {
+        // consultar los departamentos para que puedan ser seleccionados
+        await consultarDepartamentos().then(() => {
+          configuracionColumnasValijas.find(
+            item => item.field === 'departamento'
+          )!.options = departamentos.value.map((v: Departamento) => {
+            return { value: v.id, label: v.nombre }
+          })
+          configuracionColumnasValijas.find(
+            item => item.field === 'departamento'
+          )!.filtro = filtrarListadoDepartamentos
+        })
+      }
     }
 
     return {
@@ -660,6 +727,7 @@ export default defineComponent({
       tieneFacturaSubDetalle,
       //listados
       nodos,
+      accionesTabla,
       filtrarNodos,
       filtrarCantones,
       filtrarDetalles,
@@ -685,7 +753,12 @@ export default defineComponent({
       mostarPlaca,
       listadoTareas,
       estadosGastos,
-      requiere4Imagenes
+      requiere4Imagenes,
+      mostrarComponenteValija,
+      configuracionColumnasValijas,
+      btnAgregarRegistroValija,
+      btnEliminarDefault,
+      checkSeEnviaValija
     }
   }
 })

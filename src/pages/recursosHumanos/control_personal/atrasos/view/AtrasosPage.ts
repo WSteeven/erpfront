@@ -134,7 +134,7 @@ export default defineComponent({
       icono: 'bi-calendar-check',
       color: 'secondary',
       accion: ({ entidad }) => {
-        console.log('Aqui se mostraran las asistencias')
+        // console.log('Aqui se mostraran las asistencias')
         modales.abrirModalEntidad<{ marcacion_id: number }>('MarcacionPage', {
           marcacion_id: entidad.marcacion
         })

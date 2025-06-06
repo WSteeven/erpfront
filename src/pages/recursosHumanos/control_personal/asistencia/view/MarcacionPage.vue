@@ -4,14 +4,17 @@ import { AsistenciaController } from 'controlPersonal/asistencia/infraestructure
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { configuracionColumnasAsistencia } from 'controlPersonal/asistencia/domain/configuracionColumnasAsistencia'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
+import PermisoPage from './PermisoPage.vue';
+import {Asistencia} from 'controlPersonal/asistencia/domain/Asistencia';
 
 const props = defineProps({
   mostrarEncabezado: { type: Boolean, default: true },
-  datos: Object as () => UnwrapRef<{ marcacion_id: int }>
+  datos: Object as () => UnwrapRef<{ marcacion_id: number }>
 })
 const cargando = new StatusEssentialLoading()
-const marcacion = ref()
+const marcacion = ref<Asistencia>()
 const listado = ref([])
+const mostrarPermisoComponent = ref(false)
 
 async function consultarMarcacion() {
   try {
@@ -22,6 +25,7 @@ async function consultarMarcacion() {
     )
     marcacion.value = result
     listado.value.push(marcacion.value)
+    mostrarPermisoComponent.value = true
   } catch (error) {
     console.error(error)
   } finally {
@@ -47,7 +51,8 @@ consultarMarcacion()
         :configuracion-columnas="configuracionColumnasAsistencia"
       />
     </q-card-section>
-  </q-card>
+  </q-card> <hr>
+  <permiso-page v-if="mostrarPermisoComponent" :empleado_id="marcacion?.empleado_id" :fecha="marcacion?.fecha"/>
 </template>
 
 <style scoped></style>

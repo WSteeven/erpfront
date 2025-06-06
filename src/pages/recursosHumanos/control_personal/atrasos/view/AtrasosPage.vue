@@ -21,7 +21,7 @@
           "
         >
           <div class="col-12">
-            <label class="q-mb-sm block">Registro de marcación</label>
+            <label class="text-h6 q-mb-sm block">Registro de marcación</label>
             <marcacion-page v-if="mostrarMarcacionPage"
               class="bg-desenfoque rounded shadow-0"
               :mostrar-encabezado="false"
@@ -167,7 +167,7 @@
             <q-input
               v-model="atraso.justificacion_atrasado"
               outlined
-              dense
+              dense autogrow
               :disable="disabled || !esEmpleadoAtrasado"
               placeholder="Opcional"
               hint="Ingresa tu justificación del atraso"

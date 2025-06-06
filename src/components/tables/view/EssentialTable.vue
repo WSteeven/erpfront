@@ -182,8 +182,23 @@
           </template>
         </q-select>
 
+        <selector-imagen
+            v-if="props.col.type === 'imagen'"
+            file_extensiones=".jpg, image/*"
+            :imagen="props.row[props.col.name]"
+            :disable="disable"
+          :placeholder="props.col.placeholder"
+            :error="
+            !!v$[keyError]?.$each?.$response.$errors[props.rowIndex][
+              props.col.name
+            ]?.length
+          "
+            :alto="props.col.height??'200px'"
+            @update:model-value="data => (props.row[props.col.name] = data)"
+        />
+
         <!-- Aún no está completado, porque falta controlar la manera de subir el archivo -->
-        <!-- <q-file
+        <q-file
           v-if="props.col.type === 'file'"
           v-model="props.row[props.col.name]"
           outlined
@@ -198,7 +213,7 @@
           :accept="props.col.accept ?? '*'"
         >
           <template v-slot:prepend> <q-icon name="attach_file" /> </template
-        ></q-file> -->
+        ></q-file>
 
         <q-select
           v-if="props.col.type === 'select_multiple'"

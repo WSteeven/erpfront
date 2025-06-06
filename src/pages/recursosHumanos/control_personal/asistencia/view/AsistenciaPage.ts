@@ -26,7 +26,7 @@ export default defineComponent({
       new AsistenciaController()
     )
     const { entidad: asistencia, disabled, listado } = mixin.useReferencias()
-    console.log('Asistencia inicializada en useReferencias:', asistencia)
+    // console.log('Asistencia inicializada en useReferencias:', asistencia)
     const { setValidador, guardar, listar, filtrar } = mixin.useComportamiento()
     const { notificarCorrecto } = useNotificaciones()
 
@@ -60,7 +60,7 @@ export default defineComponent({
       try {
         const response: AxiosResponse = await axios.get(url)
 
-        console.log(response.data.message)
+        // console.log(response.data.message)
         if (response.status === 200) notificarCorrecto(response.data.message)
         await listarListado(false)
       } catch (error) {
