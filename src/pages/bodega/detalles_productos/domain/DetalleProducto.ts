@@ -1,3 +1,4 @@
+import { PermisoArma } from 'pages/bodega/permisosArmas/domain/PermisoArma'
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 
 export class DetalleProducto extends EntidadAuditable {
@@ -9,7 +10,9 @@ export class DetalleProducto extends EntidadAuditable {
     producto_id: number | null
     descripcion: string | null
     marca: string | null
+    nombre_marca: string | null
     modelo: string | null
+    nombre_modelo: string | null
     modelo_id: string | null
     serial: string | null
     lote: string | null
@@ -42,9 +45,11 @@ export class DetalleProducto extends EntidadAuditable {
     permiso_id: number | null
     caducidad: string | null
 
-
     tipo: string | null
     activo: boolean
+
+    es_generico: boolean
+    nombre_alternativo: string | null
 
     //variables auxiliares
     esActivo: boolean | null
@@ -54,10 +59,18 @@ export class DetalleProducto extends EntidadAuditable {
     es_fibra: boolean
     tiene_precio_compra: boolean
     tiene_adicionales: boolean
+    tiene_fecha_caducidad: boolean
+    fecha_caducidad: string | null
     calco: boolean
 
     varios_items: boolean
     seriales: any[]
+
+    unidad_medida: string | null
+    fotografia: string | null
+    fotografia_detallada: string | null
+    permiso_arma: PermisoArma
+    codigo_activo_fijo: string | null
 
     constructor() {
         super()
@@ -67,7 +80,9 @@ export class DetalleProducto extends EntidadAuditable {
         this.producto_id = null
         this.descripcion = null
         this.marca = null
+        this.nombre_marca = null
         this.modelo = null
+        this.nombre_modelo = null
         this.modelo_id = null
         this.serial = null
         this.lote = null
@@ -89,6 +104,9 @@ export class DetalleProducto extends EntidadAuditable {
         this.custodia = null
         this.puntas = null
 
+        this.es_generico = false
+        this.nombre_alternativo = null
+
         this.color = null
         this.talla = null
         this.calibre = null
@@ -108,8 +126,18 @@ export class DetalleProducto extends EntidadAuditable {
         this.tiene_lote = false
         this.tiene_precio_compra = false
         this.tiene_adicionales = false
+        this.tiene_fecha_caducidad = false
+        this.fecha_caducidad = null
         this.calco = false
         this.varios_items = false
         this.seriales = []
+
+        this.unidad_medida = null
+        this.fecha_caducidad = null
+        this.permiso_arma = new PermisoArma()
+
+        this.fotografia = null
+        this.fotografia_detallada = null
+        this.codigo_activo_fijo = null
     }
 }

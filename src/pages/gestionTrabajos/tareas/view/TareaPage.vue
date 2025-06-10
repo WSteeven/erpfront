@@ -2,26 +2,28 @@
   <tab-layout-filter-tabs2
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnasTarea"
-    :full="true"
     :permitirEditar="false"
     :permitirEliminar="false"
     :mostrarButtonSubmits="tab === 'tarea'"
     :tabOptions="tabOptionsEstadosTareas"
     :accion1="btnFinalizarTarea"
     :accion2="btnVerImagenInforme"
+    :accion3="btnActivarTareaTemporalmente"
+    :accion4="btnDesactivarTarea"
     :filtrar="filtrarTarea"
     tabDefecto="0"
-    :forzarListar="true"
-    subtitulo-pagina="Módulo de Tareas"
+    paginate
+    permitir-filtrar
   >
+    <!-- :forzarListar="true" -->
     <!-- :labelGuardar="tarea.tiene_subtareas ? 'Guardar' : 'Guardar y agendar'" -->
     <template #formulario>
       <q-tabs
         v-model="tab"
-        class="text-primary"
+        class="text-primary border-bottom"
         :class="{ 'bg-grey-1': !$q.dark.isActive }"
-        active-color="primary"
         :indicator-color="indicatorColor"
+        active-class="tab-active"
         align="justify"
         no-caps
         inline-label
@@ -71,12 +73,12 @@
                     :options="[
                       {
                         label: 'Tarea para un proyecto',
-                        value: destinosTareas.paraProyecto,
+                        value: destinosTareas.paraProyecto
                       },
                       {
                         label: 'Tarea para cliente final y mantenimiento',
-                        value: destinosTareas.paraClienteFinal,
-                      },
+                        value: destinosTareas.paraClienteFinal
+                      }
                     ]"
                   />
                 </div>
@@ -134,9 +136,9 @@
                     options-dense
                     dense
                     outlined
-                    :option-label="(item) => item.razon_social"
-                    :option-value="(item) => item.id"
-                    :option-disable="(item) => (item.id === 1 ? true : false)"
+                    :option-label="item => item.razon_social"
+                    :option-value="item => item.id"
+                    :option-disable="item => (item.id === 1 ? true : false)"
                     use-input
                     input-debounce="0"
                     emit-value
@@ -177,10 +179,8 @@
                     dense
                     clearable
                     outlined
-                    :option-label="
-                      (item) => item.nombres + ' ' + item.apellidos
-                    "
-                    :option-value="(item) => item.id"
+                    :option-label="item => item.nombres + ' ' + item.apellidos"
+                    :option-value="item => item.id"
                     use-input
                     input-debounce="0"
                     emit-value
@@ -201,7 +201,10 @@
                 <div
                   v-if="
                     (paraClienteFinal &&
-                      (esCoordinadorBackup || esJefeTecnico)) ||
+                      (esCoordinadorBackup ||
+                        esJefeTecnico ||
+                        esAdministrador ||
+                        esSupervisorTecnico)) ||
                     accion === acciones.consultar
                   "
                   class="col-12 col-md-3"
@@ -217,10 +220,8 @@
                     dense
                     clearable
                     outlined
-                    :option-label="
-                      (item) => item.nombres + ' ' + item.apellidos
-                    "
-                    :option-value="(item) => item.id"
+                    :option-label="item => item.nombres + ' ' + item.apellidos"
+                    :option-value="item => item.id"
                     use-input
                     input-debounce="0"
                     emit-value
@@ -304,8 +305,8 @@
                     options-dense
                     dense
                     outlined
-                    :option-label="(item) => item.nombre"
-                    :option-value="(item) => item.id"
+                    :option-label="item => item.nombre"
+                    :option-value="item => item.id"
                     use-input
                     input-debounce="0"
                     emit-value
@@ -362,8 +363,8 @@
                     options-dense
                     dense
                     outlined
-                    :option-label="(item) => item.nombre"
-                    :option-value="(item) => item.id"
+                    :option-label="item => item.nombre"
+                    :option-value="item => item.id"
                     use-input
                     input-debounce="0"
                     emit-value
@@ -440,8 +441,8 @@
                     dense
                     outlined
                     :disable="disabled"
-                    :option-label="(item) => item.nombre"
-                    :option-value="(item) => item.id"
+                    :option-label="item => item.nombre"
+                    :option-value="item => item.id"
                     @filter="filtrarCentrosCostos"
                     :error="!!v$.centro_costo.$errors.length"
                     emit-value
@@ -540,12 +541,12 @@
                     :options="[
                       {
                         label: 'Seleccionar cliente final',
-                        value: ubicacionesTrabajo.clienteFinal,
+                        value: ubicacionesTrabajo.clienteFinal
                       },
                       {
                         label: 'Seleccionar una ruta',
-                        value: ubicacionesTrabajo.ruta,
-                      },
+                        value: ubicacionesTrabajo.ruta
+                      }
                     ]"
                   />
                 </div>
@@ -577,9 +578,9 @@
                     dense
                     outlined
                     :option-label="
-                      (item) => item.nombres + ' ' + (item.apellidos ?? '')
+                      item => item.nombres + ' ' + (item.apellidos ?? '')
                     "
-                    :option-value="(item) => item.id"
+                    :option-value="item => item.id"
                     use-input
                     input-debounce="0"
                     emit-value
@@ -587,7 +588,7 @@
                     clearable
                     :disable="disabled"
                     @update:model-value="
-                      (v) => obtenerClienteFinal(tarea.cliente_final)
+                      v => obtenerClienteFinal(tarea.cliente_final)
                     "
                   >
                     <template v-slot:no-option>
@@ -718,8 +719,8 @@
                     options-dense
                     dense
                     outlined
-                    :option-label="(item) => item.ruta"
-                    :option-value="(item) => item.id"
+                    :option-label="item => item.ruta"
+                    :option-value="item => item.id"
                     use-input
                     input-debounce="0"
                     emit-value
@@ -773,7 +774,7 @@
             :permitirEditar="false"
             :permitirEliminar="false"
             :mostrar-botones="false"
-            :mostrarFooter="true"
+            mostrar-footer
             :permitirFiltrar="false"
             @tab-seleccionado="filtrarSubtareas"
             :tabDefecto="tabActual"
@@ -803,6 +804,8 @@
     :comportamiento="modalesSubtarea"
     :mixin-modal="mixinSubtarea"
     :persistent="false"
+    :mostrar-listado="false"
+    @guardado="guardadoModalesSubtarea"
   />
 </template>
 

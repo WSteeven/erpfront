@@ -16,6 +16,8 @@ export const configuracionColumnasTipoDiscapacidadPorcentaje: ColumnConfig<TipoD
     field: 'porcentaje',
     label: 'Porcentaje(100%)',
     align: 'left',
+    min:0,
+    max:100,
     sortable: true,
     editable: true,
     type: 'number',

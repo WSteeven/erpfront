@@ -1,14 +1,19 @@
 <template>
-  <tab-layout
+  <tab-layout-filter-tabs2
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
+    titulo-pagina="Empleados"
+    :tab-options="tabOptions"
+    :tabDefecto="tabDefecto"
+    :filtrar="filtrarListadoEmpleados"
     :accion1Header="btnImprimirEmpleados"
     :accion1="btnHabilitarEmpleado"
     :accion2="btnDesHabilitarEmpleado"
-    titulo-pagina="Empleados"
+    :accion3="btnPlanVacaciones"
     :puedeFiltrar="false"
     :puedeExportar="true"
-    :ajustarCeldas="true"
+    :forzarListar="false"
+    ajustarCeldas
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -37,9 +42,7 @@
                 dense
               >
                 <template v-slot:error>
-                  <div v-for="error of v$.usuario.$errors" :key="error.$uid">
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
+                  <error-component clave="usuario" :v$="v$" />
                 </template>
               </q-input>
             </div>
@@ -58,14 +61,12 @@
                 "
                 :error="!!v$.email.$errors.length"
                 @blur="v$.email.$touch"
-                @update:model-value="(v) => (empleado.email = v.toLowerCase())"
+                @update:model-value="v => (empleado.email = v.toLowerCase())"
                 outlined
                 dense
               >
                 <template v-slot:error>
-                  <div v-for="error of v$.email.$errors" :key="error.$uid">
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
+                  <error-component clave="email" :v$="v$" />
                 </template>
               </q-input>
             </div>
@@ -104,7 +105,10 @@
               />
             </div>
             <!-- Generar nombre de usuario -->
-            <div class="col-12 col-md-3 col-sm-3" v-if="accion === acciones.editar">
+            <div
+              class="col-12 col-md-3 col-sm-3"
+              v-if="accion === acciones.editar"
+            >
               <label class="q-mb-sm block">Generar Usuario</label>
               <q-toggle
                 :label="empleado.generar_usuario ? 'Si' : 'NO'"
@@ -141,9 +145,7 @@
                 dense
               >
                 <template v-slot:error>
-                  <div v-for="error of v$.identificacion.$errors" :key="error.$uid">
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
+                  <error-component clave="identificacion" :v$="v$" />
                 </template>
               </q-input>
             </div>
@@ -156,13 +158,12 @@
                 :disable="disabled"
                 :error="!!v$.nombres.$errors.length"
                 @blur="v$.nombres.$touch && obtenerUsername()"
+                @update:model-value="v => (empleado.nombres = removeTildes(v))"
                 outlined
                 dense
               >
                 <template v-slot:error>
-                  <div v-for="error of v$.nombres.$errors" :key="error.$uid">
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
+                  <error-component clave="nombres" :v$="v$" />
                 </template>
               </q-input>
             </div>
@@ -170,18 +171,20 @@
             <div class="col-12 col-md-3 col-sm-3">
               <label class="q-mb-sm block">Apellidos</label>
               <q-input
+                ref="refApellidos"
                 v-model="empleado.apellidos"
                 placeholder="Obligatorio"
                 :disable="disabled"
                 :error="!!v$.apellidos.$errors.length"
+                @update:model-value="
+                  v => (empleado.apellidos = removeTildes(v))
+                "
                 @blur="v$.apellidos.$touch && obtenerUsername()"
                 outlined
                 dense
               >
                 <template v-slot:error>
-                  <div v-for="error of v$.apellidos.$errors" :key="error.$uid">
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
+                  <error-component clave="apellidos" :v$="v$" />
                 </template>
               </q-input>
             </div>
@@ -199,9 +202,7 @@
                 dense
               >
                 <template v-slot:error>
-                  <div v-for="error of v$.telefono.$errors" :key="error.$uid">
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
+                  <error-component clave="telefono" :v$="v$" />
                 </template>
               </q-input>
             </div>
@@ -215,14 +216,14 @@
                 :disable="disabled"
                 :error="!!v$.correo_personal.$errors.length"
                 @blur="v$.correo_personal.$touch"
-                @update:model-value="(v) => (empleado.correo_personal = v.toLowerCase())"
+                @update:model-value="
+                  v => (empleado.correo_personal = v.toLowerCase())
+                "
                 outlined
                 dense
               >
                 <template v-slot:error>
-                  <div v-for="error of v$.correo_personal.$errors" :key="error.$uid">
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
+                  <error-component clave="correo_personal" :v$="v$" />
                 </template>
               </q-input>
             </div>
@@ -243,21 +244,17 @@
                 hint="Opcional"
                 :error="!!v$.tipo_sangre.$errors.length"
                 @blur="v$.tipo_sangre.$touch"
-                :option-value="(v) => v.nombre"
-                :option-label="(v) => v.nombre"
+                :option-value="v => v.nombre"
+                :option-label="v => v.nombre"
                 emit-value
                 map-options
               >
                 <template v-slot:error>
-                  <div v-for="error of v$.tipo_sangre.$errors" :key="error.$uid">
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
+                  <error-component clave="tipo_sangre" :v$="v$" />
                 </template>
 
                 <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey"> No hay resultados </q-item-section>
-                  </q-item>
+                  <no-option-component />
                 </template>
               </q-select>
             </div>
@@ -277,21 +274,17 @@
                 use-input
                 @blur="v$.estado_civil.$touch"
                 :error="!!v$.estado_civil.$errors.length"
-                :option-value="(v) => v.id"
-                :option-label="(v) => v.nombre"
+                :option-value="v => v.id"
+                :option-label="v => v.nombre"
                 emit-value
                 map-options
               >
                 <template v-slot:error>
-                  <div v-for="error of v$.estado_civil.$errors" :key="error.$uid">
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
+                  <error-component clave="estado_civil" :v$="v$" />
                 </template>
 
                 <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey"> No hay resultados </q-item-section>
-                  </q-item>
+                  <no-option-component />
                 </template>
               </q-select>
             </div>
@@ -311,7 +304,7 @@
               />
             </div>
             <!-- Auto Identificacion Etnico -->
-            <div class="col-12 col-md-3 col-sm-3">
+            <!-- <div class="col-12 col-md-3 col-sm-3">
               <label class="q-mb-sm block">AutoIdentificacion Etnica</label>
               <q-select
                 v-model="empleado.autoidentificacion_etnica"
@@ -332,24 +325,26 @@
                 map-options
               >
                 <template v-slot:error>
-                  <div v-for="error of v$.autoidentificacion_etnica.$errors" :key="error.$uid">
+                  <div
+                    v-for="error of v$.autoidentificacion_etnica.$errors"
+                    :key="error.$uid"
+                  >
                     <div class="error-msg">{{ error.$message }}</div>
                   </div>
                 </template>
 
                 <template v-slot:no-option>
                   <q-item>
-                    <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                    <q-item-section class="text-grey">
+                      No hay resultados
+                    </q-item-section>
                   </q-item>
                 </template>
               </q-select>
-            </div>
-
-
-
+            </div> -->
 
             <!-- Orientacion Sexual -->
-            <div class="col-12 col-md-3 col-sm-3">
+            <!-- <div class="col-12 col-md-3 col-sm-3">
               <label class="q-mb-sm block">Orientacion Sexual</label>
               <q-select
                 v-model="empleado.orientacion_sexual"
@@ -370,20 +365,26 @@
                 map-options
               >
                 <template v-slot:error>
-                  <div v-for="error of v$.orientacion_sexual.$errors" :key="error.$uid">
+                  <div
+                    v-for="error of v$.orientacion_sexual.$errors"
+                    :key="error.$uid"
+                  >
                     <div class="error-msg">{{ error.$message }}</div>
                   </div>
                 </template>
 
                 <template v-slot:no-option>
                   <q-item>
-                    <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                    <q-item-section class="text-grey">
+                      No hay resultados
+                    </q-item-section>
                   </q-item>
                 </template>
               </q-select>
-            </div>
+            </div> -->
+
             <!-- Identidad de genero -->
-            <div class="col-12 col-md-3 col-sm-3">
+            <!-- <div class="col-12 col-md-3 col-sm-3">
               <label class="q-mb-sm block">Identidad de Genero</label>
               <q-select
                 v-model="empleado.identidad_genero"
@@ -404,20 +405,26 @@
                 map-options
               >
                 <template v-slot:error>
-                  <div v-for="error of v$.identidad_genero.$errors" :key="error.$uid">
+                  <div
+                    v-for="error of v$.identidad_genero.$errors"
+                    :key="error.$uid"
+                  >
                     <div class="error-msg">{{ error.$message }}</div>
                   </div>
                 </template>
 
                 <template v-slot:no-option>
                   <q-item>
-                    <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                    <q-item-section class="text-grey">
+                      No hay resultados
+                    </q-item-section>
                   </q-item>
                 </template>
               </q-select>
-            </div>
+            </div> -->
+
             <!-- Religion -->
-            <div class="col-12 col-md-3 col-sm-3">
+            <!-- <div class="col-12 col-md-3 col-sm-3">
               <label class="q-mb-sm block">Religion</label>
               <q-select
                 v-model="empleado.religion"
@@ -445,14 +452,19 @@
 
                 <template v-slot:no-option>
                   <q-item>
-                    <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                    <q-item-section class="text-grey">
+                      No hay resultados
+                    </q-item-section>
                   </q-item>
                 </template>
               </q-select>
-            </div>
+            </div> -->
+
             <!-- Trabajador Sustituto -->
             <div class="col-12 col-md-3 col-sm-3">
-              <label class="q-mb-sm block">Trabajador Sustituto</label>
+              <label class="q-mb-sm block"
+                >El trabajador sustituye a algún pariente</label
+              >
               <q-toggle
                 :label="empleado.trabajador_sustituto ? 'SI' : 'NO'"
                 v-model="empleado.trabajador_sustituto"
@@ -494,7 +506,11 @@
               >
                 <template v-slot:append>
                   <q-icon name="event" class="cursor-pointer">
-                    <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                    <q-popup-proxy
+                      cover
+                      transition-show="scale"
+                      transition-hide="scale"
+                    >
                       <q-date
                         v-model="empleado.fecha_nacimiento"
                         :options="optionsFecha"
@@ -502,7 +518,12 @@
                         today-btn
                       >
                         <div class="row items-center justify-end">
-                          <q-btn v-close-popup label="Cerrar" color="primary" flat />
+                          <q-btn
+                            v-close-popup
+                            label="Cerrar"
+                            color="primary"
+                            flat
+                          />
                         </div>
                       </q-date>
                     </q-popup-proxy>
@@ -510,13 +531,7 @@
                 </template>
 
                 <template v-slot:error>
-                  <div
-                    style="clear: inherit"
-                    v-for="error of v$.fecha_nacimiento.$errors"
-                    :key="error.$uid"
-                  >
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
+                  <error-component clave="fecha_nacimiento" :v$="v$" />
                 </template>
               </q-input>
             </div>
@@ -526,7 +541,6 @@
               <q-input
                 v-model="empleado.num_cuenta"
                 placeholder="Obligatorio"
-                type="number"
                 :disable="disabled"
                 :error="!!v$.num_cuenta.$errors.length"
                 @blur="v$.num_cuenta.$touch"
@@ -534,9 +548,7 @@
                 dense
               >
                 <template v-slot:error>
-                  <div v-for="error of v$.num_cuenta.$errors" :key="error.$uid">
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
+                  <error-component clave="num_cuenta" :v$="v$" />
                 </template>
               </q-input>
             </div>
@@ -558,21 +570,17 @@
                 :error="!!v$.banco.$errors.length"
                 @blur="v$.banco.$touch"
                 @filter="filtrarBancos"
-                :option-value="(v) => v.id"
-                :option-label="(v) => v.nombre"
+                :option-value="v => v.id"
+                :option-label="v => v.nombre"
                 emit-value
                 map-options
               >
                 <template v-slot:error>
-                  <div v-for="error of v$.banco.$errors" :key="error.$uid">
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
+                  <error-component clave="banco" :v$="v$" />
                 </template>
 
                 <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey"> No hay resultados </q-item-section>
-                  </q-item>
+                  <no-option-component />
                 </template>
               </q-select>
             </div>
@@ -592,21 +600,17 @@
                 use-input
                 @filter="filtrarCantones"
                 @popup-show="ordenarLista(cantones, 'canton')"
-                :option-value="(v) => v.id"
-                :option-label="(v) => v.canton"
+                :option-value="v => v.id"
+                :option-label="v => v.canton"
                 emit-value
                 map-options
               >
                 <template v-slot:error>
-                  <div v-for="error of v$.canton.$errors" :key="error.$uid">
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
+                  <error-component clave="canton" :v$="v$" />
                 </template>
 
                 <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey"> No hay resultados </q-item-section>
-                  </q-item>
+                  <no-option-component />
                 </template>
               </q-select>
             </div>
@@ -626,9 +630,7 @@
                 dense
               >
                 <template v-slot:error>
-                  <div v-for="error of v$.direccion.$errors" :key="error.$uid">
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
+                  <error-component clave="direccion" :v$="v$" />
                 </template>
               </q-input>
             </div>
@@ -641,7 +643,7 @@
                 :imagen="empleado.foto_url"
                 :comprimir="true"
                 :alto="'400px'"
-                @update:model-value="(data) => (empleado.foto_url = data)"
+                @update:model-value="data => (empleado.foto_url = data)"
               ></selector-imagen>
             </div>
           </div>
@@ -711,11 +713,15 @@
                 </div>
                 <!-- Coordenadas -->
                 <div class="col-12 col-md-3 col-sm-3">
-                  <label class="q-mb-sm block">Coordenadas del lugar donde vive</label>
+                  <label class="q-mb-sm block"
+                    >Coordenadas del lugar donde vive</label
+                  >
                   <q-input
                     type="tel"
                     v-model="empleado.coordenadas"
-                    :placeholder="accion === 'EDITAR' ? 'Obligatorio' : 'Opcional'"
+                    :placeholder="
+                      accion === 'EDITAR' ? 'Obligatorio' : 'Opcional'
+                    "
                     :disable="disabled"
                     :error="!!v$.coordenadas.$errors.length"
                     @blur="v$.coordenadas.$touch"
@@ -723,9 +729,7 @@
                     dense
                   >
                     <template v-slot:error>
-                      <div v-for="error of v$.coordenadas.$errors" :key="error.$uid">
-                        <div class="error-msg">{{ error.$message }}</div>
-                      </div>
+                      <error-component clave="coordenadas" :v$="v$" />
                     </template>
                   </q-input>
                 </div>
@@ -734,7 +738,9 @@
                   <label class="q-mb-sm block">Talla de zapato</label>
                   <q-input
                     v-model="empleado.talla_zapato"
-                    :placeholder="empleado.tiene_grupo ? 'Obligatorio' : 'Opcional'"
+                    :placeholder="
+                      empleado.tiene_grupo ? 'Obligatorio' : 'Opcional'
+                    "
                     type="number"
                     :disable="disabled"
                     :error="!!v$.talla_zapato.$errors.length"
@@ -743,13 +749,7 @@
                     dense
                   >
                     <template v-slot:error>
-                      <div
-                        style="clear: inherit"
-                        v-for="error of v$.talla_zapato.$errors"
-                        :key="error.$uid"
-                      >
-                        <div class="error-msg">{{ error.$message }}</div>
-                      </div>
+                      <error-component clave="talla_zapato" :v$="v$" />
                     </template>
                   </q-input>
                 </div>
@@ -770,32 +770,31 @@
                     hint="Opcional"
                     :error="!!v$.talla_camisa.$errors.length"
                     @blur="v$.talla_camisa.$touch"
-                    :option-value="(v) => v.nombre"
-                    :option-label="(v) => v.nombre"
+                    :option-value="v => v.nombre"
+                    :option-label="v => v.nombre"
                     emit-value
                     map-options
                   >
                     <template v-slot:error>
-                      <div v-for="error of v$.talla_camisa.$errors" :key="error.$uid">
-                        <div class="error-msg">{{ error.$message }}</div>
-                      </div>
+                      <error-component clave="talla_camisa" :v$="v$" />
                     </template>
 
                     <template v-slot:no-option>
-                      <q-item>
-                        <q-item-section class="text-grey">
-                          No hay resultados
-                        </q-item-section>
-                      </q-item>
+                      <no-option-component />
                     </template>
                   </q-select>
                 </div>
                 <!-- Talla de guantes -->
-                <div class="col-12 col-md-3 col-sm-3" v-if="empleado.tiene_grupo">
+                <div
+                  class="col-12 col-md-3 col-sm-3"
+                  v-if="empleado.tiene_grupo"
+                >
                   <label class="q-mb-sm block">Talla de guantes</label>
                   <q-input
                     v-model="empleado.talla_guantes"
-                    :placeholder="empleado.tiene_grupo ? 'Obligatorio' : 'Opcional'"
+                    :placeholder="
+                      empleado.tiene_grupo ? 'Obligatorio' : 'Opcional'
+                    "
                     type="number"
                     :disable="disabled"
                     :error="!!v$.talla_guantes.$errors.length"
@@ -804,13 +803,7 @@
                     dense
                   >
                     <template v-slot:error>
-                      <div
-                        style="clear: inherit"
-                        v-for="error of v$.talla_guantes.$errors"
-                        :key="error.$uid"
-                      >
-                        <div class="error-msg">{{ error.$message }}</div>
-                      </div>
+                      <error-component clave="talla_guantes" :v$="v$" />
                     </template>
                   </q-input>
                 </div>
@@ -819,7 +812,9 @@
                   <label class="q-mb-sm block">Talla de pantalon</label>
                   <q-input
                     v-model="empleado.talla_pantalon"
-                    :placeholder="empleado.tiene_grupo ? 'Obligatorio' : 'Opcional'"
+                    :placeholder="
+                      empleado.tiene_grupo ? 'Obligatorio' : 'Opcional'
+                    "
                     type="number"
                     :error="!!v$.talla_pantalon.$errors.length"
                     @blur="v$.talla_pantalon.$touch"
@@ -828,81 +823,24 @@
                     dense
                   >
                     <template v-slot:error>
-                      <div
-                        style="clear: inherit"
-                        v-for="error of v$.talla_pantalon.$errors"
-                        :key="error.$uid"
-                      >
-                        <div class="error-msg">{{ error.$message }}</div>
-                      </div>
+                      <error-component clave="talla_pantalon" :v$="v$" />
                     </template>
                   </q-input>
                 </div>
-                <!-- Casa propia -->
-                <div class="col-12 col-md-3 col-sm-3">
-                  <label class="q-mb-sm block">La casa donde vive es</label>
-                  <q-toggle
-                    :label="empleado.casa_propia ? 'PROPIA' : 'ALQUILADA'"
-                    v-model="empleado.casa_propia"
-                    color="primary"
-                    keep-color
-                    icon="bi-check2-circle"
-                    unchecked-icon="clear"
-                    :disable="disabled"
-                  />
-                </div>
-                <!-- Vive con discapacitados -->
-                <div class="col-12 col-md-3 col-sm-3">
-                  <label class="q-mb-sm block">Convive con personas discapacitadas</label>
-                  <q-toggle
-                    :label="empleado.vive_con_discapacitados ? 'SI' : 'NO'"
-                    v-model="empleado.vive_con_discapacitados"
-                    color="primary"
-                    keep-color
-                    icon="bi-check2-circle"
-                    unchecked-icon="clear"
-                    :disable="disabled"
-                  />
-                </div>
-                <!-- Casa propia -->
-                <div class="col-12 col-md-3 col-sm-3">
-                  <label class="q-mb-sm block"
-                    >Tiene a su cargo personas discapacitadas</label
-                  >
-                  <q-toggle
-                    :label="empleado.responsable_discapacitados ? 'SI' : 'NO'"
-                    v-model="empleado.responsable_discapacitados"
-                    color="primary"
-                    keep-color
-                    icon="bi-check2-circle"
-                    unchecked-icon="clear"
-                    :disable="disabled"
-                  />
-                </div>
-                <!-- Vive con discapacitados -->
-                <div class="col-12 col-md-3 col-sm-3">
-                  <label class="q-mb-sm block">Tiene Discapacidad</label>
-                  <q-toggle
-                    :label="empleado.tiene_discapacidad ? 'SI' : 'NO'"
-                    v-model="empleado.tiene_discapacidad"
-                    color="primary"
-                    keep-color
-                    icon="bi-check2-circle"
-                    unchecked-icon="clear"
-                    :disable="disabled"
-                  />
-                </div>
-                <div class="col-12 col-md-6 col-sm-12" v-if="empleado.tiene_discapacidad">
+                <div
+                  class="col-12 col-md-6 col-sm-12"
+                  v-if="empleado.tiene_discapacidad"
+                >
                   <q-btn
                     color="primary"
                     @click="agregarDiscapacidad()"
                     class="col-12 col-md-3 full-width"
-                    >Agregar discapacidad</q-btn
-                  >
+                    >Agregar discapacidad
+                  </q-btn>
                   <essential-table
                     :configuracionColumnas="[
                       ...configuracionColumnasTipoDiscapacidadPorcentajeReactive,
-                      accionesTabla,
+                      accionesTabla
                     ]"
                     :datos="empleado.discapacidades"
                     :permitirConsultar="false"
@@ -948,21 +886,17 @@
                 input-debounce="0"
                 @filter="filtrarEmpleados"
                 @popup-show="ordenarLista(empleados, 'nombres')"
-                :option-value="(v) => v.id"
-                :option-label="(v) => v.nombres + ' ' + v.apellidos"
+                :option-value="v => v.id"
+                :option-label="v => v.nombres + ' ' + v.apellidos"
                 emit-value
                 map-options
               >
                 <template v-slot:error>
-                  <div v-for="error of v$.jefe.$errors" :key="error.$uid">
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
+                  <error-component clave="jefe" :v$="v$" />
                 </template>
 
                 <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey"> No hay resultados </q-item-section>
-                  </q-item>
+                  <no-option-component />
                 </template>
               </q-select>
             </div>
@@ -1023,23 +957,19 @@
                 use-input
                 input-debounce="0"
                 @blur="v$.area.$touch"
-                @filter="filtrarDepartamentos"
+                @filter="filtrarAreas"
                 :error="!!v$.area.$errors.length"
-                :option-value="(v) => v.id"
-                :option-label="(v) => v.nombre"
+                :option-value="v => v.id"
+                :option-label="v => v.nombre"
                 emit-value
                 map-options
               >
                 <template v-slot:error>
-                  <div v-for="error of v$.area.$errors" :key="error.$uid">
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
+                  <error-component clave="area" :v$="v$" />
                 </template>
 
                 <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey"> No hay resultados </q-item-section>
-                  </q-item>
+                  <no-option-component />
                 </template>
               </q-select>
             </div>
@@ -1062,21 +992,17 @@
                 @filter="filtrarDepartamentos"
                 @popup-show="ordenarLista(departamentos, 'nombre')"
                 :error="!!v$.departamento.$errors.length"
-                :option-value="(v) => v.id"
-                :option-label="(v) => v.nombre"
+                :option-value="v => v.id"
+                :option-label="v => v.nombre"
                 emit-value
                 map-options
               >
                 <template v-slot:error>
-                  <div v-for="error of v$.departamento.$errors" :key="error.$uid">
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
+                  <error-component clave="departamento" :v$="v$" />
                 </template>
 
                 <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey"> No hay resultados </q-item-section>
-                  </q-item>
+                  <no-option-component />
                 </template>
               </q-select>
             </div>
@@ -1100,24 +1026,21 @@
                 @popup-show="ordenarLista(cargos, 'nombre')"
                 :error="!!v$.cargo.$errors.length"
                 error-message="Debes seleccionar un cargo"
-                :option-value="(v) => v.id"
-                :option-label="(v) => v.nombre"
+                :option-value="v => v.id"
+                :option-label="v => v.nombre"
                 emit-value
                 map-options
               >
                 <template v-slot:error>
-                  <div v-for="error of v$.cargo.$errors" :key="error.$uid">
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
+                  <error-component clave="cargo" :v$="v$" />
                 </template>
 
                 <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey"> No hay resultados </q-item-section>
-                  </q-item>
+                  <no-option-component />
                 </template>
               </q-select>
             </div>
+            <!-- {{ v$.$errors }} -->
             <!-- Roles -->
             <div class="col-12 col-md-3 col-sm-3">
               <label class="q-mb-sm block">Roles</label>
@@ -1138,14 +1061,16 @@
                 @filter="filtrarRoles"
                 @popup-show="ordenarLista(roles, 'name')"
                 @update:model-value="verificarRolesSeleccionados"
-                :option-value="(v) => v.name"
-                :option-label="(v) => v.name"
+                :option-value="v => v.name"
+                :option-label="v => v.name"
                 :error="!!v$.roles.$errors.length"
                 error-message="Debes seleccionar uno o varios roles"
                 emit-value
                 map-options
               >
-                <template v-slot:option="{ itemProps, opt, selected, toggleOption }">
+                <template
+                  v-slot:option="{ itemProps, opt, selected, toggleOption }"
+                >
                   <q-item v-bind="itemProps">
                     <q-item-section>
                       {{ opt.name }}
@@ -1161,15 +1086,11 @@
                 </template>
 
                 <template v-slot:error>
-                  <div v-for="error of v$.roles.$errors" :key="error.$uid">
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
+                  <error-component clave="roles" :v$="v$" />
                 </template>
 
                 <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey"> No hay resultados </q-item-section>
-                  </q-item>
+                  <no-option-component />
                 </template>
               </q-select>
             </div>
@@ -1190,21 +1111,17 @@
                 use-input
                 @blur="v$.tipo_contrato.$touch"
                 :error="!!v$.tipo_contrato.$errors.length"
-                :option-value="(v) => v.id"
-                :option-label="(v) => v.nombre"
+                :option-value="v => v.id"
+                :option-label="v => v.nombre"
                 emit-value
                 map-options
               >
                 <template v-slot:error>
-                  <div v-for="error of v$.tipo_contrato.$errors" :key="error.$uid">
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
+                  <error-component clave="tipo_contrato" :v$="v$" />
                 </template>
 
                 <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey"> No hay resultados </q-item-section>
-                  </q-item>
+                  <no-option-component />
                 </template>
               </q-select>
             </div>
@@ -1224,21 +1141,17 @@
                 outlined
                 :input-debounce="0"
                 use-input
-                :option-value="(v) => v.nombre"
-                :option-label="(v) => v.nombre"
+                :option-value="v => v.nombre"
+                :option-label="v => v.nombre"
                 emit-value
                 map-options
               >
                 <template v-slot:error>
-                  <div v-for="error of v$.nivel_academico.$errors" :key="error.$uid">
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
+                  <error-component clave="nivel_academico" :v$="v$" />
                 </template>
 
                 <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey"> No hay resultados </q-item-section>
-                  </q-item>
+                  <no-option-component />
                 </template>
               </q-select>
             </div>
@@ -1256,9 +1169,7 @@
                 dense
               >
                 <template v-slot:error>
-                  <div v-for="error of v$.titulo.$errors" :key="error.$uid">
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
+                  <error-component clave="titulo" :v$="v$" />
                 </template>
               </q-input>
             </div>
@@ -1278,7 +1189,11 @@
               >
                 <template v-slot:append>
                   <q-icon name="event" class="cursor-pointer">
-                    <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                    <q-popup-proxy
+                      cover
+                      transition-show="scale"
+                      transition-hide="scale"
+                    >
                       <q-date
                         v-model="empleado.fecha_ingreso"
                         :options="optionsFecha"
@@ -1286,7 +1201,12 @@
                         today-btn
                       >
                         <div class="row items-center justify-end">
-                          <q-btn v-close-popup label="Cerrar" color="primary" flat />
+                          <q-btn
+                            v-close-popup
+                            label="Cerrar"
+                            color="primary"
+                            flat
+                          />
                         </div>
                       </q-date>
                     </q-popup-proxy>
@@ -1294,13 +1214,7 @@
                 </template>
 
                 <template v-slot:error>
-                  <div
-                    style="clear: inherit"
-                    v-for="error of v$.fecha_ingreso.$errors"
-                    :key="error.$uid"
-                  >
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
+                  <error-component clave="fecha_ingreso" :v$="v$" />
                 </template>
               </q-input>
             </div>
@@ -1330,7 +1244,11 @@
               >
                 <template v-slot:append>
                   <q-icon name="event" class="cursor-pointer">
-                    <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                    <q-popup-proxy
+                      cover
+                      transition-show="scale"
+                      transition-hide="scale"
+                    >
                       <q-date
                         v-model="empleado.fecha_vinculacion"
                         :options="optionsFecha"
@@ -1338,7 +1256,12 @@
                         today-btn
                       >
                         <div class="row items-center justify-end">
-                          <q-btn v-close-popup label="Cerrar" color="primary" flat />
+                          <q-btn
+                            v-close-popup
+                            label="Cerrar"
+                            color="primary"
+                            flat
+                          />
                         </div>
                       </q-date>
                     </q-popup-proxy>
@@ -1360,10 +1283,23 @@
               >
                 <template v-slot:append>
                   <q-icon name="event" class="cursor-pointer">
-                    <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                      <q-date v-model="empleado.fecha_salida" :mask="maskFecha" today-btn>
+                    <q-popup-proxy
+                      cover
+                      transition-show="scale"
+                      transition-hide="scale"
+                    >
+                      <q-date
+                        v-model="empleado.fecha_salida"
+                        :mask="maskFecha"
+                        today-btn
+                      >
                         <div class="row items-center justify-end">
-                          <q-btn v-close-popup label="Cerrar" color="primary" flat />
+                          <q-btn
+                            v-close-popup
+                            label="Cerrar"
+                            color="primary"
+                            flat
+                          />
                         </div>
                       </q-date>
                     </q-popup-proxy>
@@ -1395,7 +1331,10 @@
             </div>
 
             <!-- Grupo -->
-            <div v-if="empleado.tiene_grupo" class="col-12 col-md-3 col-sm-3 q-mb-md">
+            <div
+              v-if="empleado.tiene_grupo"
+              class="col-12 col-md-3 col-sm-3 q-mb-md"
+            >
               <label class="q-mb-sm block">Grupo</label>
               <q-select
                 v-model="empleado.grupo"
@@ -1413,27 +1352,23 @@
                 @blur="v$.grupo.$touch"
                 @filter="filtrarGrupos"
                 @popup-show="ordenarLista(grupos, 'nombre')"
-                :option-value="(v) => v.id"
-                :option-label="(v) => v.nombre"
+                :option-value="v => v.id"
+                :option-label="v => v.nombre"
                 emit-value
                 map-options
               >
                 <template v-slot:error>
-                  <div v-for="error of v$.grupo.$errors" :key="error.$uid">
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
+                  <error-component clave="grupo" :v$="v$" />
                 </template>
 
                 <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey"> No hay resultados </q-item-section>
-                  </q-item>
+                  <no-option-component />
                 </template>
               </q-select>
             </div>
 
             <!-- Salario -->
-            <div class="col-12 col-md-3 col-sm-3">
+            <div class="col-12 col-md-3 col-sm-3" v-if="esRecursosHumanos">
               <label class="q-mb-sm block">Salario</label>
               <q-input
                 v-model="empleado.salario"
@@ -1446,9 +1381,7 @@
                 dense
               >
                 <template v-slot:error>
-                  <div v-for="error of v$.salario.$errors" :key="error.$uid">
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
+                  <error-component clave="salario" :v$="v$" />
                 </template>
               </q-input>
             </div>
@@ -1474,7 +1407,7 @@
                 :imagen="empleado.firma_url"
                 :comprimir="false"
                 :alto="'80px'"
-                @update:model-value="(data) => (empleado.firma_url = data)"
+                @update:model-value="data => (empleado.firma_url = data)"
               ></selector-imagen>
             </div>
             <!-- Telefono de la empresa -->
@@ -1519,36 +1452,6 @@
                 dense
               />
             </div>
-            <div class="col-12 col-md-6 col-sm-3">
-              <!--  <label class="q-mb-sm block">Tipos de Discapacidades</label>
-              <q-select
-                v-model="idsTiposDiscapacidades"
-                :options="tiposDiscapacidades"
-                transition-show="scale"
-                transition-hide="scale"
-                hint="Opcional"
-                @filter="filtrarTipoDiscapacidad"
-                :disable="disabled"
-                options-dense
-                dense
-                outlined
-                :option-label="(i) => i.nombre"
-                use-input
-                input-debounce="0"
-                emit-value
-                map-options
-                use-chips
-                multiple
-              >
-                <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">
-                      Primero cargue registros en el formulario de Tipo de Discapacidad
-                    </q-item-section>
-                  </q-item>
-                </template>
-              </q-select>-->
-            </div>
           </div>
         </q-expansion-item>
 
@@ -1567,7 +1470,7 @@
           >
             <template #boton-subir>
               <q-btn
-                v-if="mostrarBotonSubirArchivos && accion!=acciones.nuevo"
+                v-if="mostrarBotonSubirArchivos && accion != acciones.nuevo"
                 color="positive"
                 push
                 no-caps
@@ -1575,19 +1478,19 @@
                 @click="subirArchivos()"
               >
                 <q-icon name="bi-upload" class="q-mr-sm" size="xs"></q-icon>
-                Subir archivos seleccionados</q-btn
-              >
+                Subir archivos seleccionados
+              </q-btn>
             </template>
           </gestor-archivos>
         </div>
 
-        <!-- {{v$.$errors}} -->
-        <!-- {{ conductor }} -->
-        <div class="col-12 col-md-12" v-if="mostrarComponenteInformacionLicencia">
+        <div class="col-12 col-md-12" v-if="componenteCargado">
           <informacion-licencia
+            v-if="mostrarComponenteInformacionLicencia"
             :mixin="mixin"
             :conductor="conductor"
             :identificacion="empleado.identificacion"
+            :validar="mostrarComponenteInformacionLicencia"
           />
         </div>
 
@@ -1608,12 +1511,16 @@
               no-caps
               @click="agregarFamiliares()"
             >
-              <q-icon name="bi-person-fill-add" size="xs" class="q-pr-sm"></q-icon>
+              <q-icon
+                name="bi-person-fill-add"
+                size="xs"
+                class="q-pr-sm"
+              ></q-icon>
               <span>Agregar Familiares</span>
               <q-tooltip class="bg-dark"
-                >Puede modificar o eliminar un familiar desde el panel familiares de
-                empleados</q-tooltip
-              >
+                >Puede modificar o eliminar un familiar desde el panel
+                familiares de empleados
+              </q-tooltip>
             </q-btn>
 
             <div class="col-12 col-md-12">
@@ -1623,7 +1530,7 @@
                 titulo="Familiares"
                 :configuracionColumnas="[
                   ...configuracionColumnasFamiliaresEmpleado,
-                  accionesTabla,
+                  accionesTabla
                 ]"
                 :datos="empleado.familiares"
                 :permitirConsultar="false"
@@ -1642,12 +1549,11 @@
         </q-expansion-item>
       </q-form>
     </template>
-    <modales-entidad
-      :comportamiento="modales"
-      @guardado="(data) => guardado(data)"
-      :mixin-modal="mixinFamiliares"
-    ></modales-entidad>
-  </tab-layout>
+  </tab-layout-filter-tabs2>
+  <modales-entidad
+    :comportamiento="modales"
+    :persistente="false"
+  ></modales-entidad>
 </template>
 
 <script src="./EmpleadoPage.ts" />

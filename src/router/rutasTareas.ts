@@ -112,7 +112,7 @@ const rutasTareas: RouteRecordRaw[] = [
     meta: { requiresAuth: true },
   },
   {
-    path: '/materiales-empleados',
+    path: '/productos-empleados',
     name: 'materiales_empleados',
     component: () =>
       import(
@@ -127,7 +127,7 @@ const rutasTareas: RouteRecordRaw[] = [
       import(
         'gestionTrabajos/trabajoAsignado/view/TrabajoAsignadoPage.vue'
       ),
-    meta: { requiresAuth: true },
+    meta: { requiresAuth: true, permissionRequired: false },
   },
   {
     path: '/reportes-control-materiales',
@@ -161,7 +161,7 @@ const rutasTareas: RouteRecordRaw[] = [
     name: 'mi_bodega',
     component: () =>
       import('gestionTrabajos/miBodega/view/MiBodegaPage.vue'),
-    meta: { requiresAuth: true },
+    meta: { requiresAuth: true, permissionRequired: false },
   },
   {
     path: '/transferencia-producto-empleado',
@@ -170,6 +170,25 @@ const rutasTareas: RouteRecordRaw[] = [
       import('gestionTrabajos/transferenciasProductosEmpleados/view/TransferenciaProductoEmpleadoPage.vue'),
     meta: { requiresAuth: true },
   },
+  {
+    path: '/alimentacion-grupo',
+    name: 'alimentacion_grupo',
+    component: () => import('gestionTrabajos/alimentacionGrupos/view/AlimentacionGrupoPage.vue'),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/nodos',
+    name: 'nodos',
+    component: () => import('gestionTrabajos/nodos/view/NodoPage.vue'),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/aceptar-transferencia-producto',
+    name: 'aceptar_transferencia_producto',
+    component: () => import('pages/bodega/transacciones/modules/aceptarTransferenciaProducto/view/AceptarTransferenciaProductoPage.vue'),
+    meta: { requiresAuth: true, permissionRequired: false },
+  },
+
   /*{
     path: '/reporte-trabajos-realizados',
     name: 'reporte_trabajos_realizados',

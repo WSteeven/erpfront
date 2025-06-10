@@ -9,7 +9,8 @@ export const configuracionColumnasActividadRealizadaSeguimientoTicket: ColumnCon
     align: 'center',
     type: 'text',
     sortable: true,
-    editable: false,
+    editable: true,
+    disableModal: true
   },
   {
     name: 'actividad_realizada',

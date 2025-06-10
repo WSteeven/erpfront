@@ -64,7 +64,7 @@
           <!-- Solicitante -->
           <div v-if="tanqueo.solicitante" class="col-12 col-md-3 col-sm-6">
             <label class="q-mb-sm block">Solicitante</label>
-            <q-input v-model="tanqueo.solicitante" disable outlined dense />
+            <q-input v-model="tanqueo.solicitante" disable outlined dense autogrow />
           </div>
 
           <!-- Fecha y hora -->
@@ -185,7 +185,7 @@
               </template>
             </q-select>
           </div>
-          <!-- Imagen comprobante -->
+          <!-- Imagen num_comprobante -->
           <div class="col-12 col-md-3 col-sm-6">
             <label for="q-mb-sm block">Imagen Comprobante</label>
             <selector-imagen

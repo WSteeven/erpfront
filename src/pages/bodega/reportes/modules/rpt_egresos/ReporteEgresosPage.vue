@@ -17,11 +17,52 @@
                   dense
                   outlined
                   @update:model-value="consultarListado(reporte.tipo)"
-                  :option-label="(item) => item.label"
-                  :option-value="(item) => item.value"
+                  :option-label="item => item.label"
+                  :option-value="item => item.value"
                   emit-value
                   map-options
                 >
+                </q-select>
+              </div>
+              <!-- Categorias -->
+              <div
+                class="col-12 col-md-3"
+                v-if="reporte.tipo === tiposReportesEgresos.categorias"
+              >
+                <label class="q-mb-sm block"
+                  >Seleccione una o varias categorias
+                </label>
+                <q-select
+                  v-model="reporte.categorias"
+                  :options="categorias"
+                  transition-show="scale"
+                  transition-hide="scale"
+                  options-dense
+                  dense
+                  outlined
+                  hint="Obligatorio"
+                  multiple
+                  use-chips
+                  :option-label="item => item.nombre"
+                  :option-value="item => item.id"
+                  emit-value
+                  map-options
+                  ><template
+                    v-slot:option="{ itemProps, opt, selected, toggleOption }"
+                  >
+                    <q-item v-bind="itemProps">
+                      <q-item-section>
+                        {{ opt.nombre }}
+                        <q-item-label v-bind:inner-h-t-m-l="opt.nombre" />
+                      </q-item-section>
+                      <q-item-section side>
+                        <q-toggle
+                          :model-value="selected"
+                          @update:model-value="toggleOption(opt)"
+                        />
+                      </q-item-section>
+                    </q-item>
+                  </template>
                 </q-select>
               </div>
               <!-- solicitante -->
@@ -40,9 +81,9 @@
                   outlined
                   use-input
                   input-debounce="0"
-                  @filter="filtroEmpleados"
-                  :option-label="(item) => item.nombres + ' ' + item.apellidos"
-                  :option-value="(item) => item.id"
+                  @filter="filtrarEmpleados"
+                  :option-label="item => item.nombres + ' ' + item.apellidos"
+                  :option-value="item => item.id"
                   emit-value
                   map-options
                 >
@@ -64,9 +105,9 @@
                   outlined
                   use-input
                   input-debounce="0"
-                  @filter="filtroEmpleados"
-                  :option-label="(item) => item.nombres + ' ' + item.apellidos"
-                  :option-value="(item) => item.id"
+                  @filter="filtrarEmpleados"
+                  :option-label="item => item.nombres + ' ' + item.apellidos"
+                  :option-value="item => item.id"
                   emit-value
                   map-options
                 >
@@ -88,9 +129,9 @@
                   outlined
                   use-input
                   input-debounce="0"
-                  @filter="filtroEmpleados"
-                  :option-label="(item) => item.nombres + ' ' + item.apellidos"
-                  :option-value="(item) => item.id"
+                  @filter="filtrarEmpleados"
+                  :option-label="item => item.nombres + ' ' + item.apellidos"
+                  :option-value="item => item.id"
                   emit-value
                   map-options
                 >
@@ -112,9 +153,9 @@
                   outlined
                   use-input
                   input-debounce="0"
-                  @filter="filtroEmpleados"
-                  :option-label="(item) => item.nombres + ' ' + item.apellidos"
-                  :option-value="(item) => item.id"
+                  @filter="filtrarEmpleados"
+                  :option-label="item => item.nombres + ' ' + item.apellidos"
+                  :option-value="item => item.id"
                   emit-value
                   map-options
                 >
@@ -134,8 +175,8 @@
                   options-dense
                   dense
                   outlined
-                  :option-label="(item) => item.nombres + ' ' + item.apellidos"
-                  :option-value="(item) => item.id"
+                  :option-label="item => item.nombres + ' ' + item.apellidos"
+                  :option-value="item => item.id"
                   emit-value
                   map-options
                 >
@@ -155,10 +196,8 @@
                   options-dense
                   dense
                   outlined
-                  :readonly="disabled"
-                  :disable="disabled || soloLectura"
-                  :option-value="(v) => v.id"
-                  :option-label="(v) => v.nombre"
+                  :option-value="v => v.id"
+                  :option-label="v => v.nombre"
                   emit-value
                   map-options
                 >
@@ -200,8 +239,8 @@
                   options-dense
                   dense
                   outlined
-                  :option-value="(v) => v.id"
-                  :option-label="(v) => v.razon_social"
+                  :option-value="v => v.id"
+                  :option-label="v => v.razon_social"
                   emit-value
                   map-options
                 >
@@ -228,8 +267,8 @@
                   options-dense
                   dense
                   outlined
-                  :option-value="(v) => v.id"
-                  :option-label="(v) => v.lugar"
+                  :option-value="v => v.id"
+                  :option-label="v => v.lugar"
                   emit-value
                   map-options
                 >
@@ -256,15 +295,19 @@
                   options-dense
                   dense
                   outlined
-                  :option-value="(v) => v.id"
-                  :option-label="(v) => v.codigo_tarea"
+                  :option-value="v => v.id"
+                  :option-label="v => v.codigo_tarea"
                   emit-value
                   map-options
                   ><template v-slot:option="scope">
                     <q-item v-bind="scope.itemProps">
                       <q-item-section>
-                        <q-item-label>{{ scope.opt.codigo_tarea }}</q-item-label>
-                        <q-item-label caption>{{ scope.opt.titulo }}</q-item-label>
+                        <q-item-label>{{
+                          scope.opt.codigo_tarea
+                        }}</q-item-label>
+                        <q-item-label caption>{{
+                          scope.opt.titulo
+                        }}</q-item-label>
                       </q-item-section>
                     </q-item>
                   </template>
@@ -310,11 +353,16 @@
                       >
                         <q-date
                           v-model="reporte.fecha_inicio"
-                          mask="DD-MM-YYYY"
+                          :mask="maskFecha"
                           today-btn
                         >
                           <div class="row items-center justify-end">
-                            <q-btn v-close-popup label="Cerrar" color="primary" flat />
+                            <q-btn
+                              v-close-popup
+                              label="Cerrar"
+                              color="primary"
+                              flat
+                            />
                           </div>
                         </q-date>
                       </q-popup-proxy>
@@ -338,9 +386,18 @@
                         transition-show="scale"
                         transition-hide="scale"
                       >
-                        <q-date v-model="reporte.fecha_fin" mask="DD-MM-YYYY" today-btn>
+                        <q-date
+                          v-model="reporte.fecha_fin"
+                          :mask="maskFecha"
+                          today-btn
+                        >
                           <div class="row items-center justify-end">
-                            <q-btn v-close-popup label="Cerrar" color="primary" flat />
+                            <q-btn
+                              v-close-popup
+                              label="Cerrar"
+                              color="primary"
+                              flat
+                            />
                           </div>
                         </q-date>
                       </q-popup-proxy>
@@ -372,7 +429,11 @@
                       glossy
                       @click="buscarReporte('consulta')"
                     >
-                      <q-icon name="bi-search" size="xs" class="q-pr-sm"></q-icon>
+                      <q-icon
+                        name="bi-search"
+                        size="xs"
+                        class="q-pr-sm"
+                      ></q-icon>
                       <span>Buscar</span>
                     </q-btn>
                     <!-- Boton excel -->
@@ -413,7 +474,10 @@
                 </div>
               </div>
             </div>
-            <div v-if="listado.length" class="row q-col-gutter-sm q-pa-sm q-py-md">
+            <div
+              v-if="listado.length"
+              class="row q-col-gutter-sm q-pa-sm q-py-md"
+            >
               <div class="col-12 col-md-12">
                 <essential-table
                   v-if="listado.length"
@@ -435,7 +499,11 @@
             <!-- <div v-else>&nbsp;&nbsp; No hay movimientos de esta consulta.</div> -->
           </q-card>
         </div>
-        <modal-entidad :comportamiento="modales" :persistente="false"></modal-entidad>
+        <modal-entidad
+          :comportamiento="modales"
+          :mostrarListado="false"
+          :persistente="false"
+        ></modal-entidad>
       </q-page>
     </q-page-container>
   </q-layout>

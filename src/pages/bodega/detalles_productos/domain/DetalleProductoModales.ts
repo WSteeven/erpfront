@@ -6,7 +6,7 @@ import { markRaw } from 'vue';
 import ProductoPage from 'pages/bodega/productos/view/ProductoPage.vue'
 import MarcaPage from 'pages/bodega/marcas/view/MarcaPage.vue'
 import ModeloPage from 'pages/bodega/modelos/view/ModeloPage.vue'
-import PermisoPage from 'pages/bodega/permisos/view/PermisoPage.vue';
+import PermisoPage from 'pages/bodega/permisosArmas/view/PermisoArmaPage.vue'
 
 export class DetalleProductoModales {
     ProductoPage: ComponenteModal

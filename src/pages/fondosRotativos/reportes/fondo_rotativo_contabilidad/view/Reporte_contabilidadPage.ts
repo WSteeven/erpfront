@@ -1,4 +1,4 @@
-import { defineComponent, reactive, ref, watchEffect } from 'vue'
+import { defineComponent, ref, watchEffect } from 'vue'
 
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import { useNotificacionStore } from 'stores/notificacion'
@@ -8,7 +8,6 @@ import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/applicat
 import { TipoFondoController } from 'pages/fondosRotativos/tipoFondo/infrestructure/TipoFonfoController'
 import { FondoRotativoContabilidad } from '../domain/FondoRotativoContabilidad'
 import { FondoRotativoContabilidadController } from '../infrestructure/FondoRotativoContabilidadController'
-import { UsuarioController } from 'pages/fondosRotativos/usuario/infrestructure/UsuarioController'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import { ConfiguracionColumnasContabilidad } from '../domain/ConfiguracionColumnasContabilidad'
 import ModalEntidad from 'components/modales/view/ModalEntidad.vue'
@@ -17,7 +16,6 @@ import { useFondoRotativoStore } from 'stores/fondo_rotativo'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { accionesTabla, maskFecha } from 'config/utils'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
-import { VehiculoController } from 'pages/controlVehiculos/vehiculos/infraestructure/VehiculoController'
 import { format } from '@formkit/tempo'
 
 export default defineComponent({
@@ -115,7 +113,7 @@ export default defineComponent({
     async function abrir_reporte(
       valor: FondoRotativoContabilidad
     ): Promise<void> {
-      listar({
+      await listar({
         usuario: valor.usuario,
         fecha_inicio: valor.fecha_inicio,
         fecha_fin: valor.fecha_fin,

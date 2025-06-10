@@ -43,7 +43,10 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
-
+    permitirFiltrar: {
+      type: Boolean,
+      default: false,
+    },
     permitirConsultar: {
       type: Boolean,
       default: true,
@@ -53,6 +56,10 @@ export default defineComponent({
       default: true,
     },
     permitirEliminar: {
+      type: Boolean,
+      default: true,
+    },
+    permitirCancelar: {
       type: Boolean,
       default: true,
     },
@@ -72,6 +79,10 @@ export default defineComponent({
     labelGuardar: {
       type: String,
       default: 'Guardar',
+    },
+    labelEditar: {
+      type: String,
+      default: 'Guardar cambios',
     },
     accion1: {
       type: Object as () => CustomActionTable,
@@ -141,6 +152,10 @@ export default defineComponent({
       type: Object,
       required: false,
     },
+    paginate: {
+      type: Boolean,
+      default: false,
+    },
   },
   emits: ['tab-seleccionado'],
   components: { EssentialTableTabs, ButtonSubmits },
@@ -148,11 +163,9 @@ export default defineComponent({
     /************
      * Variables
      ************/
-    const { listar, guardar, editar, eliminar, consultar, reestablecer } =
-      props.mixin.useComportamiento()
+    const { guardar, editar, eliminar, consultar, reestablecer } = props.mixin.useComportamiento()
 
-    const { entidad, listado, accion, filtros, tabs, nextPageUrl } =
-      props.mixin.useReferencias()
+    const { entidad, listado, accion, filtros, tabs } = props.mixin.useReferencias()
 
     const Router = useRouter()
 
@@ -257,6 +270,7 @@ export default defineComponent({
       accionTabla,
       seleccionado,
       columnas,
+      tituloPagina: tituloTabla[0].toUpperCase() + tituloTabla.substring(1),
       // Acciones tabla
       consultar,
       editar,

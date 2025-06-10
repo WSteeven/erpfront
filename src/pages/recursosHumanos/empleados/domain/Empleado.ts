@@ -3,6 +3,7 @@ import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 export class Empleado extends EntidadAuditable {
   identificacion: string | null
   nombres: string | null
+  nombres_apellidos: string | null
   apellidos: string | null
   telefono: string | null
   fecha_nacimiento: string | null
@@ -63,6 +64,7 @@ export class Empleado extends EntidadAuditable {
   talla_pantalon: string | null
   genero: string | null
   esta_en_rol_pago: boolean | null
+  tiene_delegado: boolean | null
   realiza_factura: boolean | null
   banco_info: string | null
   acumula_fondos_reserva: boolean | null
@@ -85,6 +87,7 @@ export class Empleado extends EntidadAuditable {
     super()
     this.identificacion = null
     this.nombres = null
+    this.nombres_apellidos = null
     this.apellidos = null
     this.telefono = null
     this.fecha_nacimiento = null
@@ -115,6 +118,7 @@ export class Empleado extends EntidadAuditable {
     this.fecha_ingreso = null
     this.antiguedad = null
     this.modificar_fecha_vinculacion = false
+    this.tiene_delegado = false
     this.fecha_vinculacion = null
     this.fecha_salida = null
     this.tipo_contrato = null
@@ -143,7 +147,7 @@ export class Empleado extends EntidadAuditable {
     this.talla_camisa = null
     this.talla_guantes = null
     this.talla_pantalon = null
-    this.genero = null
+    this.genero = 'M'
     this.banco_info = null
     this.esta_en_rol_pago = true
     this.acumula_fondos_reserva = false

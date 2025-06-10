@@ -8,7 +8,7 @@ import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue';
 import ModalEntidad from 'components/modales/view/ModalEntidad.vue';
 
 //Logica y controladores
-import { defineComponent, onBeforeUnmount, onUnmounted, reactive, ref, watchEffect } from 'vue';
+import { defineComponent, onBeforeUnmount, reactive, ref } from 'vue';
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
 import { ContactoProveedor } from '../domain/ContactoProveedor';
 import { ContactoProveedorController } from '../infraestructure/ContactoProveedorController';
@@ -45,9 +45,9 @@ export default defineComponent({
 
 
         cargarVista(async () => {
-            obtenerListados({
-                empresas: new EmpresaController(),
-                proveedores: new ProveedorController(),
+            await obtenerListados({
+              empresas: new EmpresaController(),
+              proveedores: new ProveedorController(),
             })
             proveedoresAux.value = listadosAuxiliares.proveedores
         })
@@ -110,7 +110,7 @@ export default defineComponent({
             titulo: 'Historial',
             color: 'grey',
             icono: 'bi-file-text',
-            accion: ({ entidad, posicion }) => {
+            accion: ({ entidad }) => {
                 // console.log(entidad.id)
                 contactoProveedorStore.idcontacto = entidad.id
                 modales.abrirModalEntidad('ContactoProveedorLogPage')

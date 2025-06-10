@@ -1,8 +1,8 @@
-import { AxiosResponse } from 'axios';
-import { endpoints } from 'config/api';
-import { defineStore } from 'pinia';
-import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository';
-import { ref } from 'vue';
+import { AxiosResponse } from 'axios'
+import { endpoints } from 'config/api'
+import { defineStore } from 'pinia'
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
+import { ref } from 'vue'
 
 export const useCalificacionProveedorStore = defineStore('calificacion', () => {
     //State
@@ -30,15 +30,19 @@ export const useCalificacionProveedorStore = defineStore('calificacion', () => {
      */
     async function consultarCalificacionMiDepartamento() {
         console.log('STORE: ', idProveedor.value, idDepartamento.value)
-        if (detalleDepartamentoProveedor.value.id == (null || undefined)) {
+        console.log('detalleDepartamentoProveedor: ', detalleDepartamentoProveedor.value)
+        if (detalleDepartamentoProveedor.value?.id == undefined) {
             console.log('entro en el if')
             const axios = AxiosHttpRepository.getInstance()
             const url = axios.getEndpoint(endpoints.detalles_departamentos_proveedor) + '?proveedor_id=' + idProveedor.value + '&departamento_id=' + idDepartamento.value
             const response: AxiosResponse = await axios.get(url)
+          console.log('response en if', response)
             departamentosCalificadoresProveedor.value = response.data.results
+            detalleDepartamentoProveedor.value = response.data.results[0]
         } else {
             console.log('entro en el else')
             departamentosCalificadoresProveedor.value.push(detalleDepartamentoProveedor.value)
+          console.log('response en else', response)
         }
     }
 
@@ -57,6 +61,13 @@ export const useCalificacionProveedorStore = defineStore('calificacion', () => {
         return response.data.results
     }
 
+    async function obtenerCalificacionIndividual(){
+      const axios = AxiosHttpRepository.getInstance()
+      const url= axios.getEndpoint(endpoints.mi_calificacion_proveedor,{proveedor_id: idProveedor.value, departamento_id:idDepartamento.value})
+      const response: AxiosResponse = await axios.get(url)
+      return response.data.results
+    }
+
     return {
         calificacion,
         idDepartamento,
@@ -70,5 +81,6 @@ export const useCalificacionProveedorStore = defineStore('calificacion', () => {
         consultarDepartamentosCalificanProveedor,
         consultarCalificacionesProveedorDepartamento,
         consultarCalificacionMiDepartamento,
+        obtenerCalificacionIndividual
     }
 })

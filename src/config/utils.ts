@@ -5,7 +5,9 @@ export const maskFecha = 'YYYY-MM-DD'
 export const maskFechaHora = 'YYYY-MM-DD HH:mm:ss'
 // export const maskFecha = 'DD-MM-YYYY'
 //export const maskFecha = 'YYYY/MM/DD'
+
 // Tipos
+export type Accion = 'NUEVO' | 'ELIMINAR' | 'CONSULTAR' | 'EDITAR'
 export type TipoSeleccion = 'none' | 'single' | 'multiple'
 
 export type TipoSeparador =
@@ -65,6 +67,12 @@ export const regiones = ['R1', 'R2', 'R3', 'R4', 'R5']
 
 export const atenciones = ['URBANO', 'INTERURBANO']
 
+export const tabOptionsSolicitudesViaticos: TabOption[] = [
+  { label: 'Pendientes', value: '1' }, //autorizacion PENDIENTE
+  { label: 'Completadas', value: '2' }, //autorizacion APROBADO
+  { label: 'Anuladas', value: '4' },  //estado ANULADO
+]
+
 export const tabOptionsTransaccionesIngresos: TabOption[] = [
   { label: 'Todo', value: 'TODO' },
   { label: 'Pendiente', value: 'PENDIENTE' },
@@ -81,6 +89,7 @@ export const tabOptionsTransferencias: TabOption[] = [
   { label: 'Pendientes', value: 'PENDIENTE' },
   { label: 'Tránsito', value: 'TRANSITO' },
   { label: 'Completadas', value: 'COMPLETADO' },
+  { label: 'Anuladas', value: 'ANULADO' },
 ]
 export const tabOptionsPedidos: TabOption[] = [
   { label: 'Por autorizar', value: 'PENDIENTE' },
@@ -89,29 +98,7 @@ export const tabOptionsPedidos: TabOption[] = [
   { label: 'Cancelados', value: 'CANCELADO' },
   { label: 'Completados', value: 'COMPLETA' },
 ]
-export const tabOptionsTransferenciaProductoEmpleado: TabOption[] = [
-  {
-    label: 'Pendientes',
-    value: 'PENDIENTE',
-    icono: 'bi-app-indicator',
-    color_icono: 'yellow-10',
-    bg_color: 'yellow-1',
-  },
-  {
-    label: 'Aprobados',
-    value: 'APROBADO',
-    icono: 'bi-check-circle-fill',
-    color_icono: 'positive',
-    bg_color: 'green-1',
-  },
-  {
-    label: 'Cancelados',
-    value: 'CANCELADO',
-    icono: 'bi-x-circle-fill',
-    color_icono: 'negative',
-    bg_color: 'pink-1',
-  },
-]
+
 export const tabOptionsSolicitudPedido: TabOption[] = [
   { label: 'Pendiente', value: '1' },
   { label: 'Validado', value: '4' },
@@ -125,13 +112,16 @@ export const tabOptionsLicencias: TabOption[] = [
 ]
 export const tabOptionsVacaciones: TabOption[] = [
   { label: 'Pendiente', value: '1' },
-  { label: 'Aprobados', value: '2' },
-  { label: 'Cancelados', value: '3' },
+  { label: 'Aprobadas', value: '2' },
+  { label: 'Canceladas', value: '3' },
+  { label: 'Anuladas', value: '5' },
 ]
+
 export const tabOptionsPermiso: TabOption[] = [
   { label: 'Pendiente', value: '1' },
   { label: 'Aprobados', value: '2' },
   { label: 'Cancelados', value: '3' },
+  { label: 'Recuperados', value: '4' }
 ]
 export const tabOptionsTraspasos: TabOption[] = [
   { label: 'Pendientes', value: '0' },
@@ -306,7 +296,7 @@ export const estadosTrabajos = {
   EJECUTANDO: 'EJECUTANDO',
   PAUSADO: 'PAUSADO',
   SUSPENDIDO: 'SUSPENDIDO',
-  //PENDIENTE: 'PENDIENTE',
+  PENDIENTE: 'PENDIENTE',
   CANCELADO: 'CANCELADO',
   REALIZADO: 'REALIZADO',
   FINALIZADO: 'FINALIZADO',
@@ -337,6 +327,7 @@ export const tipos_saldos = [
   { value: '4', label: 'Estado de Cuenta' },
   { value: '5', label: 'Transferencia de Saldos' },
   { value: '6', label: 'Gastos con Fotografia' },
+  { value: '7', label: 'Fotografias OYM' },
 ]
 
 export const tipos_filtros = [
@@ -350,6 +341,7 @@ export const tipos_filtros = [
   { value: '7', name: 'RUC' },
   { value: '8', name: 'SIN FACTURA' },
   { value: '9', name: 'CIUDAD' },
+  { value: '10', name: 'GRUPO' },
 ]
 export const tipo_filtro = {
   TODOS: '0',
@@ -362,6 +354,7 @@ export const tipo_filtro = {
   RUC: '7',
   SIN_FACTURA: '8',
   CIUDAD: '9',
+  GRUPO: '10',
 }
 export const tipo_saldo = {
   ACREDITACIONES: '1',
@@ -370,6 +363,7 @@ export const tipo_saldo = {
   ESTADO_CUENTA: '4',
   TRANSFERENCIA_SALDOS: '5',
   GASTOS_FOTOGRAFIA: '6',
+  FOTOGRAFIAS_OYM: '7'
 }
 export const estadosTransferencias = {
   APROBADO: 1,
@@ -418,6 +412,8 @@ export const rolesSistema = {
   supervisor_ventas: 'SUPERVISOR_VENTAS',
   vendedor: 'VENDEDOR',
   financiero: 'FINANCIERO',
+  esSupervisorTecnico: 'SUPERVISOR_TECNICO',
+  sso: 'SEGURIDAD Y SALUD OCUPACIONAL',
 }
 
 export const cargosSistema = {
@@ -486,6 +482,17 @@ export const numDiaSemana = {
   sabado: 6
 }
 
+export const optionsDias = [
+  { label: 'Lunes', value: 'lunes' },
+  { label: 'Martes', value: 'martes' },
+  { label: 'Miércoles', value: 'miercoles' },
+  { label: 'Jueves', value: 'jueves' },
+  { label: 'Viernes', value: 'viernes' },
+  { label: 'Sábado', value: 'sabado' },
+  { label: 'Domingo', value: 'domingo' }
+]
+
+
 export const opcionesReportesEgresos = [
   { value: 0, label: 'POR SOLICITANTE' },
   { value: 1, label: 'POR PERSONA QUE AUTORIZA' },
@@ -498,6 +505,7 @@ export const opcionesReportesEgresos = [
   { value: 8, label: 'POR CLIENTE' },
   { value: 9, label: 'POR TAREA' },
   { value: 10, label: 'POR TRANSFERENCIA' },
+  { value: 11, label: 'POR CATEGORIAS DE MATERIALES' },
 ]
 
 export const tiposReportesEgresos = {
@@ -512,6 +520,7 @@ export const tiposReportesEgresos = {
   cliente: 8,
   tarea: 9,
   transferencia: 10,
+  categorias: 11,
 }
 
 export const opcionesDepartamentos = {
@@ -548,12 +557,6 @@ export function convertir_fecha(fecha: Date) {
   const year = fecha.getFullYear()
   return year + '/' + month + '/' + day
 }
-export function convertir_fecha_guion(fecha) {
-  const partes = fecha.split(' ') // Dividir en fecha y hora
-  const fechaPartes = partes[0].split('-') // Dividir la fecha en día, mes y año
-  const nuevaFecha = `${fechaPartes[2]}/${fechaPartes[1]}/${fechaPartes[0]}` // Construir la nueva fecha en formato dd/mm/yyyy
-  return nuevaFecha
-}
 export function convertir_fecha_hora(fecha) {
   const dateParts = fecha.split('-') // Dividir el string en partes usando el guión como separador
   let tiempo = dateParts[2]
@@ -565,12 +568,19 @@ export function convertir_fecha_hora(fecha) {
   const fecha_convert = new Date(anio, mes, dia, tiempo[0], tiempo[1], 0)
   return fecha_convert
 }
-export const niveles_academicos = [
-  { nombre: 'ESTUDIO PRIMARIO' },
-  { nombre: 'ESTUDIO SECUNDARIO' },
-  { nombre: 'TITULO SUPERIOR' },
+export const tiposDocumentosIdentificaciones = [
+  { nombre: 'Cedula', value: 'CEDULA' },
+  { nombre: 'R.U.C.', value: 'RUC' },
+  { nombre: 'Pasaporte', value: 'PASAPORTE' },
 ]
 
+export const niveles_academicos = [
+  { nombre: 'NINGUNA' },
+  { nombre: 'BÁSICA' },
+  { nombre: 'BACHILLER' },
+  { nombre: 'TERCER NIVEL' },
+  { nombre: 'CUARTO NIVEL' },
+]
 
 export const tipos_sangre = [
   { nombre: 'A +' },
@@ -656,6 +666,18 @@ export const tabOptionsValoresAcreditar: TabOption[] = [
   { label: 'Inactivas', value: '0' },
 ]
 
+// INTRANET
+
+//Noticias
+export const tabOptionsNoticias: TabOption[] = [
+  { label: 'Noticias Registradas', value: '1' },
+]
+
+//Organigrama
+export const tabOptionsOrganigrama: TabOption[] = [
+  { label: 'Organigrama Registrado', value: '1' },
+]
+
 export const selectOptionsSiNo: SelectOption[] = [
   { label: 'Sí', value: true },
   { label: 'No', value: false },
@@ -664,4 +686,9 @@ export const selectOptionsSiNo: SelectOption[] = [
 export const opcionesGrafico = {
   grafico: 'grafico',
   listado: 'listado'
+}
+
+export const tipoAutenticacion = {
+  empleado: 'private',
+  usuario_externo: 'external'
 }

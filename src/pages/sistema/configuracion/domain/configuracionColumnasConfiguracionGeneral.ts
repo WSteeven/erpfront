@@ -51,5 +51,4 @@ export const configuracionColumnasConfiguracionGeneral: ColumnConfig<Configuraci
         sortable: true
     },
 
-
 ]

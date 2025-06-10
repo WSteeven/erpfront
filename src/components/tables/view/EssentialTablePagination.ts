@@ -2,7 +2,7 @@
 import { accionesActivos, autorizacionesTransacciones, estadosTransacciones, estadosInventarios, estadosControlStock, estadosCondicionesId, estadosCondicionesValue } from 'config/utils'
 import { estadosCalificacionProveedor } from 'config/utils_compras_proveedores'
 // import { VisibleModal } from '../application/VisibleModal'
-import { computed, defineComponent, ref, watchEffect, nextTick, Ref, watch } from 'vue'
+import { computed, defineComponent, ref, Ref, watch } from 'vue'
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import { Instanciable } from 'shared/entidad/domain/instanciable'
 import { CustomActionTable } from '../domain/CustomActionTable'
@@ -16,13 +16,16 @@ import { exportFile } from 'quasar'
 // Componentes
 import PrevisualizarTablaPdf from 'components/tables/view/PrevisualizarTablaPdf.vue'
 import TableFilters from 'components/tables/view/TableFilters.vue'
-import BotonesPaginacion from './BotonesPaginacion.vue'
+import BotonesPaginacion from './BotonesPaginacionApi.vue'
 import EditarTablaModal from './EditarTablaModal.vue'
 import EstadosSubtareas from './EstadosSubtareas.vue'
 import CustomButtons from './CustomButtonsTable.vue'
 import VisorArchivos from './VisorArchivos.vue'
 import CampoDescontable from './partials/CampoDescontable.vue'
+
+// Logica y controladores
 import { VisibleModal } from '../application/VisibleModal'
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 
 export default defineComponent({
   components: {
@@ -40,6 +43,10 @@ export default defineComponent({
     entidad: {
       type: Object as Instanciable,
       required: false,
+    },
+    mixin: {
+      type: Object as () => ContenedorSimpleMixin<EntidadAuditable>,
+      required: true,
     },
     titulo: {
       type: String,
@@ -126,6 +133,10 @@ export default defineComponent({
       required: false,
     },
     accion10: {
+      type: Object as () => CustomActionTable,
+      required: false,
+    },
+    accion11: {
       type: Object as () => CustomActionTable,
       required: false,
     },
@@ -218,16 +229,24 @@ export default defineComponent({
       default: false,
     },
   },
-  emits: ['consultar', 'editar', 'eliminar', 'accion1', 'accion2', 'accion3', 'accion4', 'accion5', 'accion6', 'accion7', 'accion8', 'accion9', 'accion10', 'selected', 'onScroll', 'filtrar', 'toggle-filtros', 'guardar-fila', 'update:selected', 'fila-modificada'],
+  emits: ['consultar', 'editar', 'eliminar', 'accion1', 'accion2', 'accion3', 'accion4', 'accion5', 'accion6', 'accion7', 'accion8', 'accion9', 'accion10', 'accion11', 'selected', 'onScroll', 'filtrar', 'toggle-filtros', 'guardar-fila', 'update:selected', 'fila-modificada'],
   setup(props, { emit }) {
+    /*********
+     * Mixin
+     *********/
+    const { listado, filtros, pagination } = props.mixin.useReferencias()
+    const { listar, filtrar } = props.mixin.useComportamiento()
+
+    /*************
+     * Variables
+     *************/
     // const grid = ref(false)
     const inFullscreen = ref(false)
     const fila = ref()
     const posicionFilaEditada = ref()
-    const listado = ref()
     const refEditarModal = ref()
 
-    watchEffect(() => listado.value = props.datos)
+    // watchEffect(() => listado.value = props.datos)
 
     // Acciones tabla
     const consultar = (data: object) => emit('consultar', data)
@@ -272,19 +291,18 @@ export default defineComponent({
     /************
      * Variables
      ************/
-    const filter = ref()
+    const filter = ref() // Para filtrar en el input search de la tabla
     const selected = ref([])
     const visibleColumns = ref(getVisibleColumns(props.configuracionColumnas))
     const refTable = ref()
     const archivos = ref([])
+    const loading = ref(false)
+    // const filtros = ref()
+    const rows: any = ref([])
 
-    // Observers
-    const seleccionar = () => {
-      emit('selected', selected.value)
-      // emit('update:selected', selected.value);
-    }
-
-    // medico pendiente xq le da problema a mile al seleccionar
+    /*************
+     * Observers
+     *************/
     if (props.emitirAlSeleccionar) {
       watch(selected, () => {
         console.log(selected.value)
@@ -301,9 +319,16 @@ export default defineComponent({
     /************
      * Funciones
      ************/
-    const verVisorArchivos = ({ posicion }) => {
+    const verVisorArchivos = ({ entidad }) => {
+      const posicion = listado.value.indexOf(entidad)
+      console.log(posicion)
       archivos.value = listado.value[posicion].archivos
       visibleModalVisorArchivos.abrir()
+    }
+
+    const seleccionar = () => {
+      emit('selected', selected.value)
+      // emit('update:selected', selected.value);
     }
 
     function previsualizarPdf() {
@@ -315,22 +340,18 @@ export default defineComponent({
     }
 
     function guardarFila(data) {
-      // console.log(data)
       const posicion = props.datos.findIndex(
         (fila: any) => fila.id === data.id
       )
-      // console.log(posicion)
 
       if (props.editarFilaLocal) listado.value[posicion] = data
       limpiarFila()
       emit('guardar-fila', data)
     }
 
-    const rows = computed(() => listado.value?.length - 1 ?? 0)
+    // const rows = computed(() => listado.value?.length - 1 ?? 0)
 
-    const loading = ref(false)
-
-    function onScroll({ to }) {
+    /* function onScroll({ to }) {
       if (!loading.value && to === rows.value) {
         loading.value = true
 
@@ -341,7 +362,7 @@ export default defineComponent({
           })
         }, 500)
       }
-    }
+    } */
 
     function extraerVisible(accion: CustomActionTable, propsTable: any): boolean {
       if (accion && accion.visible && accion.hasOwnProperty('visible')) {
@@ -371,16 +392,59 @@ export default defineComponent({
         : accion?.color
     }
 
-    const pagination = ref({
-      sortBy: 'desc',
-      descending: false,
-      page: 1,
-      rowsPerPage: props.altoFijo ? 15 : 0,
-    })
-
+    /*************
+     * Paginacion
+     *************/
     const pagesNumber = computed(() => {
       return Math.ceil(listado.value.length / pagination.value.rowsPerPage)
     })
+
+    function establecerFiltros() {
+      refTableFilters.value.filtrar()
+      // emit('filtrar', filtros.value)
+    }
+
+    /* async function aplicarFiltr(uri: string) {
+      // emit('filtrar', uri)
+      await filtrar(uri)
+    } */
+
+    /**
+     * Cuadro de texto que trae el componente q-table por defecto
+     * @param request valor a buscar
+     */
+    const toSearch = async (request) => {
+
+      if (filter.value) {
+        setTimeout(async () => {
+          await listar({
+            search: filter.value,
+            ...filtros.fields,
+            paginate: true,
+            page: 1
+          })
+        }, 1100)
+      } else {
+        onRequest(1)
+      }
+    }
+
+    async function onRequest(page) {
+      loading.value = true
+
+      await listar({
+        ...filtros.fields,
+        search: filter.value,
+        paginate: true,
+        page: page
+      })
+      loading.value = false
+    }
+
+    /* onMounted(() => {
+      // get initial data from server (1st page)
+      refTable.value.requestServerInteraction()
+    }) */
 
     function resaltar(valor: string) {
       const tiposTrabajos = ['EMERGENCIA'] //, 'ASISTENCIA NODO CLIENTE', 'ASISTENCIA NODO NEDETEL']
@@ -389,25 +453,8 @@ export default defineComponent({
 
     const mostrarFiltros = ref(false)
     const tituloBotonFiltros = computed(() =>
-      mostrarFiltros.value ? 'Ocultar filtros' : 'Mostrar filtros'
+      mostrarFiltros.value ? 'Ocultar filtros avanzados' : 'Mostrar filtros avanzados'
     )
-
-    function filtrar() {
-      console.log('consultar cien')
-      console.log(filtros.value)
-
-      refTableFilters.value.filtrar()
-
-
-
-      // emit('filtrar', filtros.value)
-    }
-
-    const filtros = ref()
-
-    function establecerFiltros(uri: string) {
-      emit('filtrar', uri)
-    }
 
     const refTableFilters = ref()
     function resetearFiltros() {
@@ -492,7 +539,6 @@ export default defineComponent({
       agregarFiltro,
       establecerFiltros,
       filtrar,
-      // grid,
       inFullscreen,
       editar,
       consultar,
@@ -515,7 +561,7 @@ export default defineComponent({
       estadosControlStock,
       //estados compras y proveedores
       estadosCalificacionProveedor,
-      onScroll,
+      rows,
       loading,
       offset,
       extraerVisible,
@@ -536,6 +582,8 @@ export default defineComponent({
       verVisorArchivos,
       archivos,
       visibleModalVisorArchivos,
+      onRequest,
+      toSearch,
     }
   },
 })

@@ -3,13 +3,12 @@ import { useAuthenticationStore } from 'stores/authentication'
 import { useNotificationRealtimeStore } from 'stores/notificationRealtime'
 
 export class SolicitudPrestamoEmpresarialPusherEvent {
-
   store = useAuthenticationStore()
   notificacionesPusherStore = useNotificationRealtimeStore()
 
   /**
    * It subscribes to a channel and listens for events.
-  */
+   */
   start() {
     const notificacionStore = this.notificacionesPusherStore
     const pusher = notificacionStore.pusher
@@ -24,10 +23,8 @@ export class SolicitudPrestamoEmpresarialPusherEvent {
       pushEventMesaggeServiceWorker({
         titulo: 'Solicitud de Prestamo Empresarial',
         mensaje: e.notificacion.mensaje,
-        link: e.notificacion.link,
+        link: e.notificacion.link
       })
     })
   }
-
 }
-

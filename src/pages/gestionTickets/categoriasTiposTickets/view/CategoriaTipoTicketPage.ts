@@ -18,10 +18,10 @@ import EssentialTable from 'components/tables/view/EssentialTable.vue'
 // Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { DepartamentoController } from 'recursosHumanos/departamentos/infraestructure/DepartamentoController'
-import { useFiltrosListadosTickets } from 'pages/gestionTickets/tickets/application/FiltrosListadosTicket'
 import { CategoriaTipoTicketController } from '../infraestructure/CategoriaTipoTicketController'
 import { Departamento } from 'pages/recursosHumanos/departamentos/domain/Departamento'
 import { CategoriaTipoTicket } from '../domain/CategoriaTipoTicket'
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 
 export default defineComponent({
   components: {
@@ -51,18 +51,8 @@ export default defineComponent({
       await obtenerListados({
         departamentos: new DepartamentoController(),
       })
-      // departamentos.value = listadosAuxiliares.departamentos
       tipoTicket.departamento = authenticationStore.user.departamento
     })
-
-    const departamentos = computed(() => listadosAuxiliares.departamentos.filter((departamento: Departamento) => {
-      if (authenticationStore.esAdministrador) {
-        return true
-      } else {
-        // return departamento.id === authenticationStore.user.departamento
-        return departamento.responsable_id === authenticationStore.user.id
-      }
-    }))
 
     const notificaciones = useNotificaciones()
     const cargando = new StatusEssentialLoading()
@@ -70,10 +60,16 @@ export default defineComponent({
     /*********
     * Filtros
     **********/
-    const {
-      filtrarDepartamentos,
-      // departamentos,
-    } = useFiltrosListadosTickets(listadosAuxiliares)
+    const { filtrarDepartamentos, departamentos } = useFiltrosListadosSelects(listadosAuxiliares)
+    const departamentosComputed = computed(() => {
+      return departamentos.value.filter((departamento: Departamento) => {
+        if (authenticationStore.esAdministrador) {
+          return true
+        } else {
+          return departamento.responsable_id === authenticationStore.user.id
+        }
+      })
+    })
 
     const rules = {
       nombre: { required },
@@ -127,6 +123,7 @@ export default defineComponent({
       configuracionColumnasCategoriaTipoTicket,
       filtrarDepartamentos,
       departamentos,
+      departamentosComputed,
       btnToggleActivar,
     }
   },

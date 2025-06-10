@@ -3,7 +3,7 @@ import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 export class Cuestionario extends EntidadAuditable {
   // pregunta: number | null
   respuesta: number | null
-  respuesta_texto: number | null
+  respuesta_texto: string | null
   id_cuestionario ?: number | null
   // finalizado: boolean
 

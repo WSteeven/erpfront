@@ -90,7 +90,6 @@
               dense
             ></q-checkbox>
           </div>
-
           <!-- Campo proforma auxiliar -->
           <div class="col-12 col-md-3" v-if="orden.copia_orden">
             <label class="q-mb-sm block">Id Orden de Compra</label>
@@ -108,7 +107,7 @@
             >
             </q-input>
           </div>
-          <!-- {{ v$.$errors }} -->
+
           <!-- Persona que autoriza -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Persona que autoriza</label>
@@ -287,8 +286,23 @@
             </q-select>
           </div>
 
+          <!-- checkbox de es_proveedor_externo -->
+          <div class="col-12 col-md-3 col-sm-3">
+              <label class="q-mb-sm block">Tipo de Proveedor</label>
+              <q-toggle
+                :label="orden.es_proveedor_internacional ?  'INTERNACIONAL':'NACIONAL'"
+                v-model="orden.es_proveedor_internacional"
+                color="primary"
+                keep-color
+                @update:model-value="checkEsProveedorInternacional"
+                icon="bi-check2-circle"
+                unchecked-icon="clear"
+                :disable="disabled"
+              />
+            </div>
+
           <!-- Proveedor -->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-3" v-if="!orden.es_proveedor_internacional">
             <label class="q-mb-sm block">Proveedor</label>
             <q-select
               v-model="orden.proveedor"
@@ -320,6 +334,42 @@
                     >
                   </q-item-section>
                 </q-item>
+              </template>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
+          <!-- Proveedor internacional -->
+          <div class="col-12 col-md-3" v-if="orden.es_proveedor_internacional">
+            <label class="q-mb-sm block">Proveedor Internacional</label>
+            <q-select
+              v-model="orden.proveedor_internacional"
+              :options="proveedores_internacionales"
+              transition-show="jump-up"
+              transition-hide="jump-up"
+              options-dense
+              dense
+              outlined
+              use-input
+              input-debounce="0"
+              @filter="filtrarProveedoresInternacionales"
+              :error="!!v$.proveedor_internacional.$errors.length"
+              error-message="Debes seleccionar al menos una opcion"
+              :disable="disabled || soloLectura"
+              :option-label="(v) => v.nombre"
+              :option-value="(v) => v.id"
+              emit-value
+              map-options
+              >
+              <template v-slot:error>
+                <div v-for="error of v$.proveedor_internacional.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
               </template>
               <template v-slot:no-option>
                 <q-item>

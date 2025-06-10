@@ -32,7 +32,7 @@ export const useFiltrosListadosTickets = (listadosAuxiliares) => {
     update(() => {
       const needle = val.toLowerCase()
       empleados.value = listadosAuxiliares.empleados.filter(
-        (v) => v.nombres.toLowerCase().indexOf(needle) > -1
+        (v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1
       )
     })
   }

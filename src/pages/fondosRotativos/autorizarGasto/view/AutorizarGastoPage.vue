@@ -9,11 +9,11 @@
       </div>
     </div>
 
-    <div :class="{ 'bg-desenfoque rounded q-pa-sm': $q.screen.xs }">
+    <div :class="{ 'bg-desenfoque rounded q-pa-sm': $q.screen.xs }" class="borde custom-shadow rounded">
       <essential-table-tabs
         :configuracionColumnas="[
           ...configuracionColumnasAutorizarGasto,
-          accionesTabla,
+          accionesTabla
         ]"
         :datos="listado"
         :accion1="botonVerModalGasto"
@@ -25,39 +25,14 @@
         :tab-options="tabAutorizarGasto"
         @tab-seleccionado="filtrarAutorizacionesGasto"
         tabDefecto="3"
+        ajustarCeldas
       ></essential-table-tabs>
     </div>
-    <modal-entidad :comportamiento="modales" @guardado="guardado">
-      <template>
-        <div
-          class="q-pa-md q-gutter-sm flex flex-center"
-          v-if="
-            usuario.id == gasto.aut_especial &&
-            gasto.estado_info == 'POR APROBAR'
-          "
-        >
-          <q-btn color="positive" @click="aprobar_gasto(gasto, 'aprobar')">
-            <q-icon name="bi-check-circle" size="xs"></q-icon>Aprobadddr</q-btn
-          >
-          <q-btn color="negative" @click="aprobar_gasto(gasto, 'rechazar')">
-            <q-icon name="bi-x-circle" size="xs"></q-icon>Rechazar</q-btn
-          >
-        </div>
-        <div
-          class="q-pa-md q-gutter-sm flex flex-center"
-          v-if="
-            (usuario.id == gasto.aut_especial ||
-              authenticationStore.esAdministrador) &&
-            gasto.estado_info == 'APROBADO' &&
-            estaSemanAC == true
-          "
-        >
-          <q-btn color="negative" @click="aprobar_gasto(gasto, 'anular')">
-            <q-icon name="bi-x-circle" size="xs"></q-icon>Anular</q-btn
-          >
-        </div>
-      </template>
-    </modal-entidad>
+    <modal-entidad
+      :comportamiento="modales"
+      @guardado="guardado"
+      :mostrarListado="false"
+    />
   </q-page>
 </template>
 

@@ -5,11 +5,13 @@ export class ApiError extends Error {
   erroresValidacion: string[]
   mensaje: string
   status?: number
+  headers?: any
 
   constructor(error: AxiosError) {
     super()
     this.mensaje = error.response?.data.mensaje
     this.erroresValidacion = this.obtenerMensajesError(error)
+    this.headers = this.obtenerHeaders(error)
     this.status = error.response?.status
   }
 
@@ -20,5 +22,15 @@ export class ApiError extends Error {
       mensajes.push(...errores.flat())
     }
     return mensajes
+  }
+  private obtenerHeaders(error: AxiosError) {
+    let headers = null
+
+    if (error.response?.data.errors) {
+      console.log('tiene errores:');
+
+      headers =  error.response.headers
+    }
+    return headers
   }
 }

@@ -11,6 +11,7 @@ import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/applicat
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
+import EssentialTablePagination from 'components/tables/view/EssentialTablePagination.vue'
 import { useCargandoStore } from 'stores/cargando'
 import { useMainLayoutStore } from 'stores/mainLayout'
 import { getCurrentInstance } from 'vue'
@@ -130,7 +131,7 @@ export default defineComponent({
     },
     full: {
       type: Boolean,
-      default: false,
+      default: true,
     },
     labelGuardar: {
       type: String,
@@ -140,9 +141,22 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    paginate: {
+      type: Boolean,
+      default: false,
+    },
+    grid: {
+      type: Boolean,
+      default: true
+    },
+    mostrarColumnasVisibles: {
+      type: Boolean,
+      default: true
+    },
   },
-  components: { EssentialTable, ButtonSubmits },
+  components: { EssentialTable, EssentialTablePagination, ButtonSubmits },
   setup(props) {
+    const refTabla = ref()
     const { listar, filtrar, guardar, editar, eliminar, consultar, reestablecer } = props.mixin.useComportamiento()
 
     const { entidad, listado, accion, filtros, tabs } = props.mixin.useReferencias()
@@ -161,8 +175,13 @@ export default defineComponent({
       }]
     }
 
+    // console.log(props.mostrarListado)
     if (props.mostrarListado) {
-      listar()
+      if (props.paginate) {
+        listar({ paginate: 1 })
+      } else {
+        listar()
+      }
     }
 
     const seleccionado = ref()
@@ -172,7 +191,7 @@ export default defineComponent({
     })
 
     const nombre = Router.currentRoute.value.name?.toString().replaceAll('_', ' ') ?? ''
-    const tituloTabla = nombre.toLowerCase().substring(0, 1).toUpperCase() + nombre.toLowerCase().substring(1, nombre.length)
+    const tituloTabla = props.tituloPagina ?? nombre.toLowerCase().substring(0, 1).toUpperCase() + nombre.toLowerCase().substring(1, nombre.length)
 
     const accionTabla = {
       consultar: ({ entidad }) => {
@@ -237,6 +256,7 @@ export default defineComponent({
     } */
 
     return {
+      refTabla,
       filtrarTodos,
       tabs,
       tituloTabla,
@@ -247,7 +267,8 @@ export default defineComponent({
       accion,
       filtros,
       accionTabla,
-      // tituloPagina: tituloTabla[0].toUpperCase() + tituloTabla.substring(1),
+      // eslint-disable-next-line vue/no-dupe-keys
+      tituloPagina: tituloTabla[0].toUpperCase() + tituloTabla.substring(1),
       seleccionado,
       columnas,
       // acciones tabla
@@ -263,8 +284,8 @@ export default defineComponent({
 
       //acciones personalizadas
       // accion1: props.accion1
-      puedeFiltrar: props.puedeFiltrar,
-      puedeExportar: props.puedeExportar
+      // puedeFiltrar: props.puedeFiltrar,
+      // puedeExportar: props.puedeExportar
     }
   },
 })

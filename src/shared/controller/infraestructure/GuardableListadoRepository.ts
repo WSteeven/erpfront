@@ -17,7 +17,7 @@ export class GuardableListadoRepository<T> {
   async guardarListado(listado: T[], params?: ParamsType): Promise<ResponseItem<T, HttpResponsePost<T>>> {
     try {
       const ruta = this.httpRepository.getEndpoint(this.endpoint, params)
-      const response: AxiosResponse = await this.httpRepository.post(ruta, listado)
+      const response: AxiosResponse = await this.httpRepository.post(ruta, { listado })
 
       return {
         response,

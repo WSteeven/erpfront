@@ -5,29 +5,51 @@
     :ajustarCeldas="true"
     :tab-options="tabOptionsOrdenesReparaciones"
     :tabDefecto="tabActual"
-    :permitirEditar="tabActual == 1"
+    :permitirEditar="visibleParaAdmin"
+    :accion1="btnValorReparacion"
     :filtrar="filtrarOrdenesReparaciones"
     titulo-pagina="Matriculas de Vehículos"
-    ><template #formulario>
+  >
+    <template #formulario>
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-py-md">
           <!-- Solicitante -->
           <div
-            class="col-12 col-md-3 q-mb-md"
+            class="col-12 col-md-4 q-mb-md"
             v-if="accion == acciones.nuevo || orden.solicitante"
           >
             <label class="q-mb-sm block">Chofer que solicita</label>
-            <q-input
+            <q-select
               v-model="orden.solicitante"
-              autogrow
-              disable
-              outlined
+              :options="empleados"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              clearable
               dense
-            ></q-input>
+              outlined
+              :disable="disabled"
+              :error="!!v$.solicitante.$errors.length"
+              use-input
+              input-debounce="0"
+              @popup-show="ordenarLista(empleados, 'apellidos')"
+              @filter="filtrarEmpleados"
+              :option-label="item => item.apellidos + ' ' + item.nombres"
+              :option-value="item => item.id"
+              emit-value
+              map-options
+            >
+              <template v-slot:error>
+                <error-component clave="solicitante" :v$="v$" />
+              </template>
+              <template v-slot:no-option>
+                <no-option-component />
+              </template>
+            </q-select>
           </div>
 
           <!-- Vehiculo -->
-          <div class="col-12 col-md-3 q-mb-md" v-if="!store.esMecanicoGeneral">
+          <!-- <div class="col-12 col-md-3 q-mb-md" v-if="!store.esMecanicoGeneral">
             <label class="q-mb-sm block">Vehículo</label>
             <q-input
               v-model="orden.vehiculo"
@@ -37,8 +59,8 @@
               outlined
               dense
             ></q-input>
-          </div>
-          <div class="col-12 col-md-3 q-mb-md" v-if="store.esMecanicoGeneral">
+          </div> -->
+          <div class="col-12 col-md-4 q-mb-md">
             <label class="q-mb-sm block">Vehículo</label>
             <q-select
               v-model="orden.vehiculo"
@@ -54,8 +76,8 @@
               use-input
               input-debounce="0"
               @filter="filtrarVehiculos"
-              :option-label="(item) => item.placa"
-              :option-value="(item) => item.id"
+              :option-label="item => item.placa"
+              :option-value="item => item.id"
               :error="!!v$.vehiculo.$errors.length"
               @blur="v$.vehiculo.$touch"
               emit-value
@@ -65,23 +87,17 @@
                 <q-item v-bind="scope.itemProps">
                   <q-item-section>
                     <q-item-label>{{ scope.opt.placa }}</q-item-label>
-                    <q-item-label caption>{{
-                      scope.opt.marca + ' ' + scope.opt.modelo
-                    }}</q-item-label>
+                    <q-item-label caption
+                      >{{ scope.opt.marca + ' ' + scope.opt.modelo }}
+                    </q-item-label>
                   </q-item-section>
                 </q-item>
               </template>
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
+                <no-option-component />
               </template>
               <template v-slot:error>
-                <div v-for="error of v$.vehiculo.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="vehiculo" :v$="v$" />
               </template>
               <template v-slot:after>
                 <q-btn color="positive" @click="recargarVehiculos">
@@ -92,25 +108,52 @@
           </div>
 
           <!-- Fecha -->
-          <div class="col-12 col-md-3 q-mb-md" v-if="orden.fecha">
+          <div class="col-12 col-md-4 q-mb-md">
             <label class="q-mb-sm block">Fecha</label>
-            <q-input v-model="orden.fecha" autogrow disable outlined dense
-              ><template v-slot:append>
+            <q-input
+              v-model="orden.fecha"
+              autogrow
+              :disable="disabled"
+              outlined
+              dense
+            >
+              <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
-                </q-icon> </template
-            ></q-input>
+                  <q-popup-proxy
+                    cover
+                    transition-show="scale"
+                    transition-hide="scale"
+                  >
+                    <q-date
+                      v-model="orden.fecha"
+                      :mask="maskFecha"
+                      today-btn
+                    >
+                      <div class="row items-center justify-end">
+                        <q-btn
+                          v-close-popup
+                          label="Cerrar"
+                          color="primary"
+                          flat
+                        />
+                      </div>
+                    </q-date>
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
+            </q-input>
           </div>
 
           <!-- Select autorizacion -->
           <div
             v-if="orden.autorizacion"
-            class="col-12 col-md-3 q-mb-md q-pt-none"
+            class="col-12 col-md-4 q-mb-md q-pt-none"
           >
             <q-chip
               color="light-green-2"
               class="text-positive text-bold q-mb-xs"
-              >Autorización</q-chip
-            >
+              >Autorización
+            </q-chip>
             <q-select
               v-model="orden.autorizacion"
               :options="autorizaciones"
@@ -120,23 +163,66 @@
               dense
               outlined
               :disable="disabled || orden.autorizador !== store.user.id"
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.nombre"
+              :option-value="v => v.id"
+              :option-label="v => v.nombre"
               emit-value
               map-options
             >
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
+                <no-option-component />
               </template>
             </q-select>
           </div>
 
+          <!-- valor_reparacion -->
+          <div class="col-12 col-md-4 q-mb-md">
+            <label class="q-mb-sm block">Valor de Reparación</label>
+            <q-input
+              type="number"
+              v-model="orden.valor_reparacion"
+              placeholder="Opcional"
+              hint="Puedes completar este valor luego de la aprobación del registro"
+              outlined
+              :disable="disabled"
+              dense
+            />
+          </div>
+
+          <!-- motivo  -->
+          <div class="col-12 col-md-4 q-mb-md">
+            <label class="q-mb-sm block">Comentario o motivo de retraso</label>
+            <q-input
+              autogrow
+              v-model="orden.motivo"
+              placeholder="Opcional"
+              hint="Llena este campo en caso de tener algun comentario"
+              outlined
+              :disable="disabled"
+              dense
+            />
+          </div>
+
+          <!-- num_factura  -->
+          <div class="col-12 col-md-4 q-mb-md">
+            <label class="q-mb-sm block">N° Factura </label>
+            <q-input
+              autogrow
+              v-model="orden.num_factura"
+              :placeholder="[acciones.nuevo, acciones.consultar].includes(accion)?'Opcional':'Obligatorio'"
+              hint="Llena este campo con el número de factura correspondiente a la reparación realizada"
+              outlined
+              :disable="disabled"
+              :error="!!v$.num_factura.$errors.length"
+              dense
+            >
+              <template v-slot:error>
+                <error-component clave="num_factura" :v$="v$" />
+              </template>
+            </q-input>
+          </div>
+
           <!-- Servicios -->
-          <div class="col-12 col-md-12 q-mb-md">
+          <div class="col-12 col-md-8 q-mb-md">
             <label class="q-mb-sm block">Servicios a realizar</label>
             <q-select
               v-model="orden.servicios"
@@ -145,6 +231,7 @@
               clearable
               dense
               :disable="disabled"
+              :error="!!v$.servicios.$errors.length"
               outlined
               use-input
               use-chips
@@ -152,8 +239,8 @@
               input-debounce="0"
               @filter="filtrarServicios"
               multiple
-              :option-label="(item) => item.nombre"
-              :option-value="(item) => item.id"
+              :option-label="item => item.nombre"
+              :option-value="item => item.id"
               emit-value
               map-options
             >
@@ -166,11 +253,10 @@
                 </q-item>
               </template>
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
+                <no-option-component />
+              </template>
+              <template v-slot:error>
+                <error-component clave="servicios" :v$="v$" />
               </template>
             </q-select>
           </div>
@@ -187,16 +273,11 @@
               outlined
               :disable="disabled"
               dense
-              ><template v-slot:error>
-                <div
-                  style="clear: inherit"
-                  v-for="error of v$.observacion.$errors"
-                  :key="error.$uid"
-                >
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template></q-input
             >
+              <template v-slot:error>
+                <error-component clave="observacion" :v$="v$" />
+              </template>
+            </q-input>
           </div>
 
           <!-- Manejo de archivos -->
@@ -222,15 +303,15 @@
                   @click="subirArchivos()"
                 >
                   <q-icon name="bi-upload" class="q-mr-sm" size="xs"></q-icon>
-                  Subir archivos seleccionados</q-btn
-                >
+                  Subir archivos seleccionados
+                </q-btn>
               </template>
             </gestor-archivos>
           </div>
         </div>
       </q-form>
-    </template></tab-layout-filter-tabs2
-  >
+    </template>
+  </tab-layout-filter-tabs2>
 </template>
 
 <script src="./OrdenReparacionPage.ts" />

@@ -33,6 +33,15 @@ export class Ticket extends EntidadAuditable {
   subtarea_id: number | null
   fotografia?: string | null
   para_sso?: boolean
+  cc: number[]
+
+  // Ticket recurrente
+  is_recurring = false
+  recurrence_active = true
+  recurrence_frequency = ''
+  recurrence_time = '08:00:00'
+  recurrence_day_of_week = ''
+  recurrence_day_of_month = ''
 
   constructor() {
     super()
@@ -67,5 +76,6 @@ export class Ticket extends EntidadAuditable {
     this.subtarea_id = null
     this.fotografia = null
     this.para_sso = false
+    this.cc = []
   }
 }

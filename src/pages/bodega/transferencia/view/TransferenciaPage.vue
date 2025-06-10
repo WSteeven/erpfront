@@ -1,14 +1,14 @@
 <template>
-  <!--   {{ puedeEditar }}
-    {{ tabSeleccionado }} -->
-  <tab-layout-filter-tabs
+  <tab-layout-filter-tabs2
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
     titulo-pagina="Transferencias - Egresos"
     :tab-options="tabOptionsTransferencias"
-    @tab-seleccionado="tabEs"
+    :tab-defecto="tabDefecto"
+    :filtrar="filtrarTransferencias"
     :permitirEditar="puedeEditar"
-    :accion2="botonImprimir"
+    :accion1="botonAnular"
+    ajustarCeldas
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -36,28 +36,19 @@
               dense
             />
           </div>
-          <!-- Requiere Fecha -->
-          <div v-if="false" class="col-12 col-md-3">
-            <q-checkbox
-              class="q-mt-lg q-pt-md"
-              v-model="requiereFecha"
-              label="¿Fecha límite?"
-              :disable="disabled || soloLectura"
-              outlined
-              dense
-            ></q-checkbox>
-          </div>
+
+
           <!-- Select autorizacion -->
           <div
             v-if="
-              transferencia.autorizacion || esVisibleAutorizacion || esActivos
+              transferencia.autorizacion ||  esActivos
             "
             class="col-12 col-md-3 q-mb-md"
           >
             <label class="q-mb-sm block">Autorizacion</label>
             <q-select
               v-model="transferencia.autorizacion"
-              :options="opciones_autorizaciones"
+              :options="autorizaciones"
               transition-show="jum-up"
               transition-hide="jump-down"
               options-dense
@@ -137,7 +128,7 @@
             <label class="q-mb-sm block">Desde</label>
             <q-select
               v-model="transferencia.sucursal_salida"
-              :options="opciones_sucursales"
+              :options="sucursales"
               transition-show="jum-up"
               transition-hide="jump-down"
               options-dense
@@ -149,8 +140,8 @@
               error-message="Debes seleccionar una sucursal"
               use-input
               input-debounce="0"
-              @filter="filtroSucursales"
-              @popup-show="ordenarSucursales"
+              @filter="filtrarSucursales"
+              @popup-show="ordenarLista(sucursales, 'lugar')"
               :option-value="(v) => v.id"
               :option-label="(v) => v.lugar"
               emit-value
@@ -183,7 +174,7 @@
             <label class="q-mb-sm block">Hasta</label>
             <q-select
               v-model="transferencia.sucursal_destino"
-              :options="opciones_sucursales"
+              :options="sucursales"
               transition-show="jum-up"
               transition-hide="jump-down"
               options-dense
@@ -195,8 +186,8 @@
               error-message="Debes seleccionar una sucursal"
               use-input
               input-debounce="0"
-              @filter="filtroSucursales"
-              @popup-show="ordenarSucursales"
+              @filter="filtrarSucursales"
+              @popup-show="ordenarLista(sucursales, 'lugar')"
               :option-value="(v) => v.id"
               :option-label="(v) => v.lugar"
               emit-value
@@ -251,7 +242,7 @@
               </q-input> -->
             <q-select
               v-model="transferencia.solicitante"
-              :options="opciones_empleados"
+              :options="empleados"
               transition-show="scale"
               transition-hide="scale"
               options-dense
@@ -358,6 +349,7 @@
               :readonly="disabled"
               :error="!!v$.observacion_est.$errors.length"
               outlined
+              autogrow
               dense
             >
               <template v-slot:error>
@@ -385,7 +377,7 @@
                     listarProductos({
                       sucursal_id: transferencia.sucursal_salida,
                       cliente_id: transferencia.cliente,
-                      zeros: true,
+                      zeros: false,
                     })
                   "
                   @blur="
@@ -402,7 +394,7 @@
                     listarProductos({
                       sucursal_id: transferencia.sucursal_salida,
                       cliente_id: transferencia.cliente,
-                      zeros: true,
+                      zeros: false,
                     })
                   "
                   icon="search"
@@ -433,7 +425,6 @@
               :accion1="botonEditarCantidad"
               :accion2="botonEliminar"
               :ajustarCeldas="true"
-              @eliminar="eliminar"
             ></essential-table>
           </div>
         </div>
@@ -449,7 +440,7 @@
       >
       </essential-selectable-table>
     </template>
-  </tab-layout-filter-tabs>
+  </tab-layout-filter-tabs2>
   <!-- Modales -->
   <!-- <modales-entidad :comportamiento="modales"></modales-entidad> -->
 </template>

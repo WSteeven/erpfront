@@ -10,7 +10,7 @@ import { useAuthenticationStore } from 'stores/authentication'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useNotificaciones } from 'shared/notificaciones'
 import { destinosTareas } from 'config/tareas.utils'
-import { imprimirArchivo, ordernarListaString } from 'shared/utils'
+import { imprimirArchivo, obtenerFechaActual, ordenarLista } from 'shared/utils'
 import { useCargandoStore } from 'stores/cargando'
 import { apiConfig, endpoints } from 'config/api'
 import { accionesTabla, maskFecha } from 'config/utils'
@@ -36,6 +36,9 @@ import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { Tarea } from 'pages/gestionTrabajos/tareas/domain/Tarea'
 import { requiredIf } from 'shared/i18n-validators'
 import useVuelidate from '@vuelidate/core'
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { ProductoEmpleado } from '../domain/ProductoEmpleado'
+import { ProductoEmpleadoController } from '../infraestructure/ProductoEmpleadoController'
 
 export default defineComponent({
   components: { EssentialTable, ModalEntidad },
@@ -48,7 +51,13 @@ export default defineComponent({
     useNotificacionStore().setQuasar(useQuasar())
     useCargandoStore().setQuasar(useQuasar())
 
-    // modales
+    /********
+     * Mixin
+     ********/
+    const mixin = new ContenedorSimpleMixin(ProductoEmpleado, new ProductoEmpleadoController())
+    const { listar } = mixin.useComportamiento()
+
+    // Modales
     const modales = new ComportamientoModalesMaterialEmpleado()
 
     /************
@@ -58,6 +67,7 @@ export default defineComponent({
     const cargando = new StatusEssentialLoading()
     const tab = ref()
     const empleadoSeleccionado = ref()
+    const mostrarInactivos = ref(false)
     const mostrarImprimirReporteMateriales = ref(false)
 
     onMounted(() => {
@@ -69,8 +79,8 @@ export default defineComponent({
     const filtroProyecto = reactive(new FiltroMiBodegaProyecto())
     const filtroEmpleado = reactive(new FiltroMiBodegaEmpleado())
     const filtroReporteMateriales = reactive({
-      fecha_inicio: null,
-      fecha_fin: null,
+      fecha_inicio: '2023-04-01',
+      fecha_fin: obtenerFechaActual(maskFecha),
     })
 
     const listadosAuxiliares = reactive({
@@ -93,7 +103,7 @@ export default defineComponent({
      * Funciones
      ************/
     const { consultarProductosTarea, consultarClientesMaterialesTarea, consultarTareasClienteFinalMantenimiento } = useMaterialesTarea(filtro, listadosAuxiliares)
-    const { consultarProductosEmpleado, consultarClientesMaterialesEmpleado } = useMaterialesEmpleado(filtroEmpleado, listadosAuxiliares)
+    const { consultarProductosEmpleado, consultarClientesMaterialesEmpleado } = useMaterialesEmpleado(filtroEmpleado, listadosAuxiliares, mostrarInactivos)
     const { consultarProyectos, consultarEtapas, consultarProductosProyecto } = useMaterialesProyecto(filtroProyecto, listadosAuxiliares)
 
     function consultarProductosStock() {
@@ -209,9 +219,9 @@ export default defineComponent({
       }
     }
 
-    function ordenarEmpleados() {
-      empleados.value.sort((a: Empleado, b: Empleado) => ordernarListaString(a.apellidos!, b.apellidos!))
-    }
+    // function ordenarEmpleados() {
+    //   empleados.value.sort((a: Empleado, b: Empleado) => ordernarListaString(a.apellidos!, b.apellidos!))
+    // }
 
     async function guardado(data) {
       console.log(data)
@@ -229,6 +239,15 @@ export default defineComponent({
           break
       }
     }
+    async function checkMostrarInactivos(val) {
+      empleadoSeleccionado.value = null
+      //aqui va a mostrar los empleados inactivos
+      const empleadosConsultados = ref()
+      if (val) empleadosConsultados.value = await cargando.cargarConsulta(async () => (await new EmpleadoController().listar({ estado: 0 })).result)
+      else empleadosConsultados.value = await cargando.cargarConsulta(async () => (await new EmpleadoController().listar({ estado: 1 })).result)
+      listadosAuxiliares.empleados = empleadosConsultados.value
+    }
+
 
     async function actualizarCantidadItem(cantidad: number, detalle: number, cliente: number, tarea_id?: number | null) {
       try {
@@ -236,8 +255,8 @@ export default defineComponent({
         const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.actualizar_cantidad_material_empleado)
         const data = tab.value == destinosTareas.paraClienteFinal ? { tarea_id, tipo: tab.value, cantidad, empleado: empleadoSeleccionado.value, detalle_producto_id: detalle, cliente_id: cliente } : { tipo: tab.value, cantidad: cantidad, empleado: empleadoSeleccionado.value, detalle_producto_id: detalle, cliente_id: cliente }
         const response: AxiosResponse = await axios.post(url, data)
-        console.log(response)
-        if (response.status = 200) {
+
+        if (response.status == 200) {
           notificarCorrecto(response.data.mensaje)
           return true
         } else notificarAdvertencia(response.data.mensaje)
@@ -246,7 +265,7 @@ export default defineComponent({
       }
     }
 
-    const descargarReporteMateriales = async () => {
+    const descargarReporteMaterialesStockUsadosTareas = async () => {
       if (await v$.value.$validate()) {
         // const fechaActual = new Date()
         const empleado: any = listadosAuxiliares.empleados.find((empleado: Empleado) => empleado.id === empleadoSeleccionado.value)
@@ -255,6 +274,23 @@ export default defineComponent({
         const endpoint = endpoints.reporte_materiales
         const urlPdf = apiConfig.URL_BASE + '/' + AxiosHttpRepository.getInstance().getEndpoint(endpoint, { empleado_id: empleadoSeleccionado.value, ...filtroReporteMateriales })
         imprimirArchivo(urlPdf, 'GET', 'blob', 'xlsx', filename)
+      }
+    }
+
+    const descargarReporteMateriales = async () => {
+      if (await v$.value.$validate()) {
+        const empleado: any = listadosAuxiliares.empleados.find((empleado: Empleado) => empleado.id === empleadoSeleccionado.value)
+        const filename = 'reporte_materiales_' + empleado?.nombres + ' ' + empleado?.apellidos + '_' + filtroReporteMateriales.fecha_inicio + '-' + filtroReporteMateriales.fecha_fin
+
+        listar({
+          export: 'xlsx',
+          titulo: filename,
+          tipo: 3,
+          fecha_inicio: filtroReporteMateriales.fecha_inicio,
+          fecha_fin: filtroReporteMateriales.fecha_fin,
+          responsable: empleadoSeleccionado.value,
+          firmada: 1
+        })
       }
     }
 
@@ -314,7 +350,7 @@ export default defineComponent({
         transferenciaProductoEmpleadoStore.filaAModificar = fila
         modales.abrirModalEntidad('CambiarClientePropietarioMaterialPage')
       },
-      visible: () => store.can('puede.modificar_stock.materiales_empleados')
+      visible: () => store.can('puede.ver.btn.modificar_stock.materiales_empleados')
     }
     const btnModificarStock: CustomActionTable = {
       titulo: 'Stock',
@@ -335,7 +371,7 @@ export default defineComponent({
         }
         prompt(data)
       },
-      visible: () => store.can('puede.modificar_stock.materiales_empleados')
+      visible: () => store.can('puede.ver.btn.modificar_stock.materiales_empleados')
     }
 
     return {
@@ -354,6 +390,7 @@ export default defineComponent({
       tareas,
       proyectos,
       etapas,
+      checkMostrarInactivos,
       filtrarTareas,
       filtrarProyectos,
       filtrarEtapas,
@@ -367,20 +404,23 @@ export default defineComponent({
       refrescarListadosTareas,
       refrescarListadosEmpleado,
       mostrarBtnTransferirStockPersonal: computed(() => tab.value === destinosTareas.paraClienteFinal),
-      ordenarEmpleados,
+      // ordenarEmpleados,
       empleados,
       filtrarEmpleados,
       empleadoSeleccionado,
       resetearFiltros,
       consultarProductosStock,
       guardado,
+      ordenarLista,
+      mostrarInactivos,
       //botones de tabla
       btnCambiarClientePropietario,
       btnModificarStock,
-      descargarReporteMateriales,
+      descargarReporteMaterialesStockUsadosTareas,
       filtroReporteMateriales,
       mostrarImprimirReporteMateriales,
       maskFecha,
+      descargarReporteMateriales,
     }
   },
 })

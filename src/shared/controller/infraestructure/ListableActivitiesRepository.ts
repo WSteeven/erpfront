@@ -2,6 +2,7 @@ import { Endpoint } from 'shared/http/domain/Endpoint';
 import { ApiError } from 'shared/error/domain/ApiError';
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository';
 import { AxiosError, AxiosResponse } from 'axios';
+import { HttpResponseGet, HttpResponseList } from 'shared/http/domain/HttpResponse'
 
 export class ListableActivityRepository<T> {
     private readonly httpRepository = AxiosHttpRepository.getInstance()
@@ -12,7 +13,7 @@ export class ListableActivityRepository<T> {
     }
 
 
-    async listarActividades(id: number, params: Record<string, any>) {
+    async listarActividades<C=T>(id: number, params: Record<string, any>) {
         let ruta
         try {
             if (params) {
@@ -20,7 +21,7 @@ export class ListableActivityRepository<T> {
             } else {
                 ruta = this.httpRepository.getEndpoint(this.endpoint) + '/actividades/' + id
             }
-            const response: AxiosResponse = await this.httpRepository.get(ruta)
+            const response: AxiosResponse = await this.httpRepository.get<HttpResponseGet<HttpResponseList<C>>>(ruta)
 
             return {
                 response,

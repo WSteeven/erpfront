@@ -4,7 +4,7 @@
     :configuracionColumnas="configuracionColumnas"
     :fila="fila"
     @limpiar="limpiarFila"
-    @guardar="guardarFila"
+    @editar="guardarFila"
     :modalMaximized="modalMaximized"
   ></EditarTablaModal>
   <div
@@ -47,7 +47,7 @@
       'my-sticky-column-table-dark': $q.dark.isActive,
       'my-sticky-column-table-light': !$q.dark.isActive,
       'rounded-header': $q.screen.xs,
-      'bg-header-table': mostrarFiltros,
+      'bg-header-table': mostrarFiltros
     }"
     virtual-scroll
     :virtual-scroll-item-size="offset"
@@ -85,7 +85,7 @@
         class="row text-primary text-subtitle2 q-mb-lg items-center justify-center block"
         :class="{
           'titulo-tabla2': !$q.screen.xs,
-          'justify-center': $q.screen.xs,
+          'justify-center': $q.screen.xs
         }"
       >
         <q-icon
@@ -609,7 +609,7 @@
                       'estado',
                       'es_responsable',
                       'tamanio_bytes',
-                      'tiene_subtareas',
+                      'tiene_subtareas'
                     ].includes(col.name)
                   "
                   >{{ col.value }}</span
@@ -626,9 +626,17 @@
      -->
 
     <!-- Celdas normales -->
-    <template v-slot:body-cell="props" v-if="permitirEditarCeldas">
+    <!-- v-if="permitirEditarCeldas" -->
+    <template v-slot:body-cell="props">
       <q-td :key="props.col.name" :props="props">
-        {{ props.row[props.col.name] }}
+        <span
+          :class="{
+            'text-white': $q.dark.isActive,
+            'text-dark': !$q.dark.isActive
+          }"
+        >
+          {{ props.row[props.col.name] }}
+        </span>
         <q-popup-edit
           v-if="props.col.editable"
           v-model="props.row[props.col.name]"
@@ -713,8 +721,8 @@
           v-if="props.col.type === 'select' && props.col.editable"
           v-model="props.row[props.col.name]"
           :options="props.col.options"
-          :options-label="(v) => v.label"
-          :options-value="(v) => v.value"
+          :options-label="v => v.label"
+          :options-value="v => v.value"
           options-dense
           outlined
           :disable="!permitirEditarCeldas"
@@ -748,8 +756,8 @@
           v-if="props.col.type === 'select' && props.col.editable"
           v-model="props.row[props.col.name]"
           :options="props.col.options"
-          :options-label="(v) => v.label"
-          :options-value="(v) => v.value"
+          :options-label="v => v.label"
+          :options-value="v => v.value"
           options-dense
           outlined
           :disable="!permitirEditarCeldas"

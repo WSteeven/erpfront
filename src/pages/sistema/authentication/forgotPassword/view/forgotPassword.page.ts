@@ -8,89 +8,106 @@ import { StatusEssentialLoading } from 'components/loading/application/StatusEss
 import { useNotificaciones } from 'shared/notificaciones'
 import { ForgotPasswordController } from '../infraestructure/forgotPassword.controller'
 import { ForgotPassword } from '../domain/ForgotPassword'
-import { isAxiosError, notificarMensajesError } from 'shared/utils'
+import { isAxiosError, notificarMensajesError, validarEmail } from 'shared/utils'
 import { useConfiguracionGeneralStore } from 'stores/configuracion_general'
+import { AxiosResponse } from 'axios'
+import { useRouter } from 'vue-router'
 
 export default defineComponent({
   name: 'ForgotPassword',
   components: {
-    LottiePlayer: Vue3Lottie,
+    LottiePlayer: Vue3Lottie
   },
   setup() {
+    const router = useRouter()
     /*********
      * Stores
      *********/
     const configuracionGeneralStore = useConfiguracionGeneralStore()
-    if (!configuracionGeneralStore.configuracion?.nombre_empresa) configuracionGeneralStore.consultarConfiguracion()
+    if (!configuracionGeneralStore.configuracion?.nombre_empresa)
+      configuracionGeneralStore.consultarConfiguracion()
 
     const forgotPassword = reactive(new ForgotPassword())
     const enviando = ref(false)
+    const mostrarTengoUnCodigo = ref(false)
 
     const forgotPasswordController = new ForgotPasswordController()
     const notificaciones = useNotificaciones()
     const cargando = new StatusEssentialLoading()
 
-    const nombreEmpresa = computed(() => configuracionGeneralStore.configuracion?.nombre_empresa)
+    const nombreEmpresa = computed(
+      () => configuracionGeneralStore.configuracion?.nombre_empresa
+    )
 
     const enviarCorreoRecuperacion = async () => {
-      enviando.value = true
       try {
-
         cargando.activar()
-        await forgotPasswordController.enviarCorreoRecuperacion(forgotPassword)
-        notificaciones.notificarAdvertencia('Porfavor revise su codigo de confirmacion en su  Correo Institucional')
-
+        const response: AxiosResponse =
+          await forgotPasswordController.enviarCorreoRecuperacion(
+            forgotPassword
+          )
+        if (response.status === 200) {
+          notificaciones.notificarCorrecto(response.data.mensaje)
+          enviando.value = true
+        } else notificaciones.notificarError(response.data.mensaje)
       } catch (error: any) {
         if (isAxiosError(error)) {
           const mensajes: string[] = error.erroresValidacion
-          notificarMensajesError(mensajes, notificaciones)
+          await notificarMensajesError(mensajes, notificaciones)
         }
+        enviando.value = false
       } finally {
         cargando.desactivar()
-        enviando.value = true
       }
     }
     const recuperacionCuenta = async () => {
       enviando.value = true
       try {
         cargando.activar()
-        await forgotPasswordController.recuperacionCuenta(forgotPassword)
-        notificaciones.notificarAdvertencia('Porfavor revise su codigo de confirmacion en su  Correo Institucional')
-
+        const response:AxiosResponse = await forgotPasswordController.recuperacionCuenta(forgotPassword)
+        if(response.status===200){
+        notificaciones.notificarCorrecto(response.data.mensaje)
+          await router.replace('/login')
+        }
       } catch (error: any) {
         if (isAxiosError(error)) {
           const mensajes: string[] = error.erroresValidacion
-          notificarMensajesError(mensajes, notificaciones)
+          await notificarMensajesError(mensajes, notificaciones)
         }
       } finally {
         cargando.desactivar()
+        mostrarTengoUnCodigo.value = true
         enviando.value = false
       }
     }
-    const enableLoginButton = computed(
-      () =>
-        forgotPassword.email !== ''
-    )
+    const enableLoginButton = computed(() => validarEmail(forgotPassword.email))
     const enableRecoveryPasswordButton = computed(
       () =>
         forgotPassword.password !== '' &&
         forgotPassword.password === forgotPassword.password_confirmation
     )
 
-    watchEffect(() => document.title = nombreEmpresa.value ?? '')
+    watchEffect(() => (document.title = nombreEmpresa.value ?? ''))
 
     return {
       forgotPassword,
       isPwd: ref(true),
       isPwdconfirm: ref(true),
+      logoClaro: computed(
+        () => configuracionGeneralStore.configuracion?.logo_claro
+      ),
+      logoOscuro: computed(
+        () => configuracionGeneralStore.configuracion?.logo_oscuro
+      ),
       enviando,
+      mostrarTengoUnCodigo,
       // computed
       enableLoginButton,
       enableRecoveryPasswordButton,
       // functions
       enviarCorreoRecuperacion,
       recuperacionCuenta,
-      nombreEmpresa,
+      nombreEmpresa
     }
-  },
+  }
 })

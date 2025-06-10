@@ -11,7 +11,7 @@ export class ServiceWorkerClass {
         this.titulo = ''
         this.mensaje = ''
         this.link = ''
-        this.icono = ''
-        this.badge = ''
+        this.icono = './src/assets/logo.png'
+        this.badge = './src/assets/logo.png'
     }
 }

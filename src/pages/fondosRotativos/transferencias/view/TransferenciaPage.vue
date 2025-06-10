@@ -7,6 +7,40 @@
     <template #formulario>
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-mb-md">
+
+          <!-- Empleado que envia -->
+          <div class="col-12 col-md-3 q-mb-md col-sm-3" v-if="store.can('puede.registrar.fondos_terceros')">
+            <label class="q-mb-sm block">Empleado Solicitante</label>
+            <q-select
+              v-model="transferencia.usuario_envia"
+              :options="empleados_delegadores"
+              transition-show="jump-up"
+              transition-hide="jump-down"
+              :disable="disabled"
+              options-dense
+              dense
+              outlined
+              :error="!!v$.usuario_envia.$errors.length"
+              @blur="v$.usuario_envia.$touch"
+              error-message="Debes seleccionar un empleado al que se carga el gasto"
+              use-input
+              input-debounce="0"
+              @popup-show="ordenarLista(empleados_delegadores, 'nombres')"
+              :option-value="v => v.id"
+              :option-label="v => v.nombres + ' ' + v.apellidos"
+              emit-value
+              map-options
+            >
+              <template v-slot:error>
+                <error-component clave="usuario_envia" :v$="v$"/>
+              </template>
+
+              <template v-slot:no-option>
+                <no-option-component/>
+              </template>
+            </q-select>
+          </div>
+
           <!-- Usuarios Reciben -->
           <div
             class="col-12 col-md-3 q-mb-md"
@@ -35,21 +69,56 @@
               map-options
             >
               <template v-slot:error>
-                <div
-                  v-for="error of v$.usuario_recibe.$errors"
-                  :key="error.$uid"
-                >
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="usuario_recibe" :v$="v$"/>
               </template>
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
+                  <no-option-component/>
               </template>
             </q-select>
+          </div>
+          <!-- Fecha  -->
+          <div class="col-12 col-md-3 col-sm-3">
+            <label class="q-mb-sm block">Fecha de Transferencia</label>
+            <q-input
+                v-model="transferencia.fecha"
+                placeholder="Obligatorio"
+                :error="!!v$.fecha.$errors.length"
+                @blur="v$.fecha.$touch"
+                :disable="disabled"
+                readonly
+                outlined
+                dense
+            >
+              <template v-slot:append>
+                <q-icon name="event" class="cursor-pointer">
+                  <q-popup-proxy
+                      cover
+                      transition-show="scale"
+                      transition-hide="scale"
+                  >
+                    <q-date
+                        v-model="transferencia.fecha"
+                        :options="optionsFecha"
+                        :mask="maskFecha"
+                        today-btn
+                    >
+                      <div class="row items-center justify-end">
+                        <q-btn
+                            v-close-popup
+                            label="Cerrar"
+                            color="primary"
+                            flat
+                        />
+                      </div>
+                    </q-date>
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
+
+              <template v-slot:error>
+                <error-component clave="fecha" :v$="v$"/>
+              </template>
+            </q-input>
           </div>
           <!-- Monto  -->
           <div class="col-12 col-md-3">
@@ -65,9 +134,7 @@
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.monto.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="monto" :v$="v$"/>
               </template>
             </q-input>
           </div>
@@ -84,9 +151,7 @@
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.cuenta.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="cuenta" :v$="v$"/>
               </template>
             </q-input>
           </div>
@@ -115,9 +180,7 @@
               map-options
             >
               <template v-slot:error>
-                <div v-for="error of v$.tarea.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="tarea" :v$="v$"/>
               </template>
               <template v-slot:option="scope">
                 <q-item v-bind="scope.itemProps" class="q-my-sm">
@@ -130,11 +193,7 @@
                 </q-item>
               </template>
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
+                <no-option-component/>
               </template>
             </q-select>
           </div>
@@ -142,6 +201,7 @@
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Comprobante </label>
             <selector-imagen
+              placeholder="Obligatorio"
               :imagen="transferencia.comprobante"
               :error="!!v$.comprobante.$errors.length"
               @update:modelValue="(data) => (transferencia.comprobante = data)"
@@ -159,7 +219,7 @@
             <q-checkbox
               class="q-mt-lg q-pt-md"
               v-model="transferencia.es_devolucion"
-              label="¿Es devolucion?"
+              label="¿Es devolucion a la cuenta de la empresa?"
               :disable="disabled"
               @update:model-value="existeDevolucion()"
               outlined
@@ -181,9 +241,7 @@
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.observacion.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="observacion" :v$="v$"/>
               </template>
             </q-input>
           </div>

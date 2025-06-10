@@ -1,8 +1,30 @@
 <template>
-  <q-page :padding="!$q.screen.xs">
-    <div class="row items-center justify-between q-px-md q-mb-sm q-py-sm">
-      {{ 'Mis tickets asignados' }}
-      <b>{{ fecha }}</b>
+  <q-page padding>
+    <div class="row q-mb-md">
+      <div
+        class="col-12 row items-center justify-between q-px-md q-mb-sm q-py-sm"
+      >
+        <span>
+          <q-icon
+            name="bi-person-check-fill"
+            color="primary"
+            class="q-mr-sm"
+          ></q-icon>
+          <!-- <span>{{ 'Bienvenido, ' + authenticationStore.nombreUsuario }}</span> -->
+          <span>{{ 'Tickets asignados para mi' }}</span>
+        </span>
+        <b>{{ fecha }}</b>
+      </div>
+
+      <div
+        v-if="tabActual === estadosTickets.FINALIZADO_SOLUCIONADO"
+        class="col-12"
+      >
+        <callout
+          tipo="info"
+          mensaje="Para <b>REANUDAR</b> un ticket <b>FINALIZADO</b> primero <b>pause</b> el ticket que se está ejecutando actualmente."
+        ></callout>
+      </div>
     </div>
 
     <q-tab-panels
@@ -10,17 +32,17 @@
       animated
       transition-prev="scale"
       transition-next="scale"
-      class="bg-desenfoque border-white rounded"
+      class="bg-body-background-gradient border-white rounded custom-shadow"
       keep-alive
     >
-      <q-tab-panel :name="opcionesFiltrado.listado">
+      <q-tab-panel :name="opcionesFiltrado.listado" class="q-pa-none">
         <essential-table-tabs
           :titulo="
             'Tienes ' + listado.length + ' ticket(s) en estado ' + tabActual
           "
           :configuracionColumnas="[
             ...configuracionColumnasTicketAsignado,
-            accionesTabla,
+            accionesTabla
           ]"
           :datos="listado"
           :accion1="botonVer"
@@ -37,6 +59,8 @@
           :permitirEliminar="false"
           :mostrar-botones="false"
           ajustar-celdas
+          paginate
+          :mixin="mixin"
           :tab-options="tabOptionsEstadosTicketsAsignados"
           @tab-seleccionado="filtrarTrabajoAsignado"
           :tab-defecto="tabActual"
@@ -48,7 +72,7 @@
           titulo="Ticket buscado"
           :configuracionColumnas="[
             ...configuracionColumnasTicketAsignado,
-            accionesTabla,
+            accionesTabla
           ]"
           :datos="listado"
           :accion1="botonVer"

@@ -30,6 +30,7 @@ import { PeriodoController } from 'pages/recursosHumanos/periodo/infraestructure
 import { PrestamoCustomController } from '../infraestructure/PrestamoCustomController'
 import { useAuthenticationStore } from 'stores/authentication'
 import { format, parse } from '@formkit/tempo'
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 
 export default defineComponent({
   components: { TabLayoutFilterTabs2, SelectorImagen, EssentialTable },
@@ -51,6 +52,7 @@ export default defineComponent({
       confirmar,
       prompt,
       notificarCorrecto,
+      notificarAdvertencia,
       notificarError,
     } = useNotificaciones()
     const key_enter = ref(0)
@@ -64,13 +66,13 @@ export default defineComponent({
     onBeforeModificar(() => (esConsultado.value = true))
     const maximoAPrestar = ref()
     const esMayorPrestamo = ref(false)
-    const empleados = ref([])
+    const { empleados, filtrarEmpleados } = useFiltrosListadosSelects(listadosAuxiliares)
     const periodos = ref()
     const recursosHumanosStore = useRecursosHumanosStore()
     const authenticationStore = useAuthenticationStore()
 
     const sueldo_basico = computed(() => {
-      recursosHumanosStore.obtener_sueldo_basico()
+      recursosHumanosStore.obtenerSueldoBasico()
       return recursosHumanosStore.sueldo_basico
     })
     const prestamoEmpresarialCustomController = new PrestamoCustomController()
@@ -119,6 +121,7 @@ export default defineComponent({
       if (valor_pago <= 200) {
         for (let index = 1; index <= prestamo.plazo; index++) {
           const plazo = {
+            id:index-1,
             num_cuota: index,
             fecha_vencimiento: calcular_fechas(index, 'meses'),
             valor_couta: (valor_cuota / plazo_prestamo).toFixed(2),
@@ -192,22 +195,7 @@ export default defineComponent({
         }
       } catch (error) { }
     })
-    function filtrarEmpleado(val, update) {
-      if (val === '') {
-        update(() => {
-          empleados.value = listadosAuxiliares.empleados
-        })
-        return
-      }
-      update(() => {
-        const needle = val.toLowerCase()
-        empleados.value = listadosAuxiliares.empleados.filter(
-          (v) =>
-            v.nombres.toLowerCase().indexOf(needle) > -1 ||
-            v.apellidos.toLowerCase().indexOf(needle) > -1
-        )
-      })
-    }
+
     function recargar_tabla() {
       const valor_utilidad =
         prestamo.valor_utilidad == null ? 0 : prestamo.valor_utilidad
@@ -236,16 +224,17 @@ export default defineComponent({
       }
     }
 
-    const botonmodificar_couta: CustomActionTable = {
+    const btnModificarCouta: CustomActionTable = {
       titulo: 'editar',
       icono: 'bi-pencil-square',
       color: 'secondary',
       accion: ({ posicion }) => {
-        modificar_couta(posicion)
+        console.log(posicion)
+        modificarCouta(posicion)
       },
       visible: () => (accion.value == 'NUEVO' ? true : false),
     }
-    const botonpagar_couta: CustomActionTable = {
+    const btnPagarCouta: CustomActionTable = {
       titulo: 'pagar',
       icono: 'bi-cash',
       color: 'primary',
@@ -254,7 +243,7 @@ export default defineComponent({
       },
       visible: () => (accion.value == 'EDITAR' ? true : false),
     }
-    const botonaplazar_couta: CustomActionTable = {
+    const btnAplazarCouta: CustomActionTable = {
       titulo: 'Aplazar',
       icono: 'bi-cash-stack',
       color: 'warning',
@@ -263,7 +252,7 @@ export default defineComponent({
       },
       visible: () => (accion.value == 'EDITAR' ? true : false),
     }
-    const botoneditar_total_couta: CustomActionTable = {
+    const btnEditarTotalCouta: CustomActionTable = {
       titulo: 'Editar Valor a Pagar',
       icono: 'bi-pencil-square',
       color: 'warning',
@@ -289,16 +278,17 @@ export default defineComponent({
         .padStart(2, '0')}`
       prestamo.plazos![indice_couta].fecha_vencimiento = nuevaFechaStr
     }
-    function modificar_couta(indice_couta) {
-      confirmar('¿Está seguro de modificar la couta?', () => {
+    function modificarCouta(indice_couta) {
+      confirmar('¿Está seguro de modificar la couta N'+(indice_couta+1)+'?', () => {
         const data: CustomActionPrompt = {
           titulo: 'Modificar couta',
           mensaje: 'Ingrese nuevo valor de la couta',
           accion: async (data) => {
             try {
-              const valor_prestamo = prestamo.monto == null ? 0 : prestamo.monto
+              const valor_prestamo = prestamo.monto ?? 0 // == null ? 0 : prestamo.monto
               if (data > valor_prestamo) {
                 esMayorPrestamo.value = true
+                notificarAdvertencia('La suma de todas las coutas no debe superar al valor del prestamo')
               }
               prestamo.plazos![indice_couta].valor_couta = data
               calcular_valores_prestamo_indice(indice_couta, valor_prestamo)
@@ -491,7 +481,7 @@ export default defineComponent({
       sueldo_basico,
       periodos,
       watchEffect,
-      filtrarEmpleado,
+      filtrarEmpleados,
       filtrarPeriodo,
       filtrarPrestamoEmpresarial,
       recargar_tabla,
@@ -503,10 +493,10 @@ export default defineComponent({
           parseInt(sueldo_basico.value) * 2 +
           ')',
       ],
-      botonmodificar_couta,
-      botonpagar_couta,
-      botoneditar_total_couta,
-      botonaplazar_couta,
+      btnModificarCouta,
+      btnPagarCouta,
+      btnEditarTotalCouta,
+      btnAplazarCouta,
       btnEliminarPrestamoEmpresarial,
       esNuevo,
       configuracionColumnasPlazoPrestamo,

@@ -37,6 +37,7 @@ export const tareas = {
   actualizar_cantidad_material_empleado: new Endpoint('actualizar-cantidad-material-empleado'),
   materiales_empleado_tarea: new Endpoint('tareas/materiales-empleado-tarea'),
   materiales_empleado: new Endpoint('tareas/materiales-empleado'),
+  productos_empleados: new Endpoint('productos-empleados'),
   materiales_empleado_consolidado: new Endpoint('tareas/materiales-empleado-consolidado'),
   registros_tendidos: new Endpoint('tareas/registros-tendidos'),
   reportes_modulo_tareas: new Endpoint('tareas/reportes'),
@@ -69,4 +70,6 @@ export const tareas = {
   transferencias_productos_empleados: new Endpoint('tareas/transferencias-productos-empleados'),
   reporte_materiales_utilizados: new Endpoint('tareas/reporte-materiales-utilizados'),
   reporte_materiales: new Endpoint('tareas/reporte-materiales'),
+  alimentacion_grupos: new Endpoint('tareas/alimentacion-grupos'),
+  nodos: new Endpoint('tareas/nodos'),
 }

@@ -15,7 +15,7 @@ import { AjusteSaldo } from '../domain/AjusteSaldo';
 import { AjusteSaldoController } from '../infraestructure/AjusteSaldoController';
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController';
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
-import { opcionesTiposMovimientos, tiposMovimientos } from 'config/utils';
+import { opcionesTiposMovimientos } from 'config/utils';
 
 
 export default defineComponent({
@@ -28,11 +28,8 @@ export default defineComponent({
         const { empleados, filtrarEmpleados } = useFiltrosListadosSelects(listadosAuxiliares)
 
         cargarVista(async () => {
-            obtenerListados({
-                empleados: {
-                    controller: new EmpleadoController(),
-                    params: { estado: 1 }
-                }
+            await obtenerListados({
+                empleados: new EmpleadoController(),
             })
             empleados.value = listadosAuxiliares.empleados
 

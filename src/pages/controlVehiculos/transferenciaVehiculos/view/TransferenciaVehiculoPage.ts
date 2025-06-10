@@ -1,7 +1,7 @@
 // Dependencias
 import { configuracionColumnasTransferenciasVehiculos } from '../domain/configuracionColumnasTransferenciasVehiculos';
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
-import { computed, defineComponent, ref } from 'vue';
+import { defineComponent, ref } from 'vue';
 import { required } from 'shared/i18n-validators';
 import useVuelidate from '@vuelidate/core';
 import { acciones, maskFecha } from 'config/utils';
@@ -158,7 +158,7 @@ export default defineComponent({
                 refArchivo.value.listarArchivosAlmacenados(transferencia.id)
             }, 1)
             LocalStorage.set('accesoriosVehiculos', JSON.stringify(transferencia.accesorios))
-            //concatenamos los valores de las 3 variables para tener uno solo 
+            //concatenamos los valores de las 3 variables para tener uno solo
             const estadosDB = [...(transferencia.estado_mecanico ? transferencia.estado_mecanico : []), ...(transferencia.estado_electrico ? transferencia.estado_electrico : []), ...(transferencia.estado_electrico ? transferencia.estado_electrico : [])]
             // console.log(transferencia, estadosDB)
             const todosNulos = estadosDB.every(function (value) { return value === null })
@@ -402,7 +402,7 @@ export default defineComponent({
             tooltip: 'Transferir el vehículo a otro chofer',
             color: 'positive',
             icono: 'bi-arrow-left-right',
-            accion: async ({ entidad, posicion }) => {
+            accion: async ({ entidad }) => {
                 // console.log('Diste clicn en transferir un vehículo', entidad)
                 accion.value = acciones.nuevo
                 // Se asignan los valores de la entidad al objeto transferencia

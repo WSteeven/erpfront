@@ -9,7 +9,7 @@ import { useNotificaciones } from 'shared/notificaciones'
 import { isAxiosError, notificarMensajesError } from 'shared/utils'
 import { useRouter } from 'vue-router';
 import { useConfiguracionGeneralStore } from 'stores/configuracion_general'
-import { useCargandoStore } from 'stores/cargando'
+/* import { useCargandoStore } from 'stores/cargando' */
 import { useQuasar } from 'quasar'
 
 
@@ -39,12 +39,12 @@ export default defineComponent({
           cargando.activar()
           await loginController.login(loginUser)
 
-          notificaciones.notificarCorrecto('Bienvenido a ' + nombreEmpresa.value)
+          notificaciones.notificarInformacion('Bienvenido a ' + nombreEmpresa.value)
 
         } catch (error: any) {
           if (isAxiosError(error)) {
             const mensajes: string[] = error.erroresValidacion
-            notificarMensajesError(mensajes, notificaciones)
+            await notificarMensajesError(mensajes, notificaciones)
           }
         } finally {
           cargando.desactivar()

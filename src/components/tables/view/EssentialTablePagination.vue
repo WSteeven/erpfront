@@ -8,25 +8,29 @@
     :modalMaximized="modalMaximized"
   ></EditarTablaModal>
 
-  <!-- :hide-header="grid" -->
   <q-table
+    flat dense
+    bordered
     ref="refTable"
-    :grid="grid && $q.screen.xs"
-    :columns="configuracionColumnas"
+    title="Treats"
     :rows="listado"
-    :filter="filter"
-    @filter="handleFilter()"
+    color="primary"
+    :columns="configuracionColumnas"
+    :grid="grid && $q.screen.xs"
     row-key="id"
+    v-model:pagination="pagination"
+    :loading="loading"
+    :filter="filter"
+    binary-state-sort
+    no-data-label="Aún no se han agregado elementos"
+    :wrap-cells="ajustarCeldas"
+    :selection="tipoSeleccion"
+    v-model:selected="selected"
     :visible-columns="visibleColumns"
     :separator="$q.screen.xs ? 'horizontal' : separador"
     :hide-bottom="!mostrarFooter"
-    flat
-    bordered
-    square
-    :selection="tipoSeleccion"
-    v-model:selected="selected"
     :style="estilos"
-    class="bg-body-table my-sticky-column-table my-sticky-header-column-table borde rounded"
+    class="bg-body-table my-sticky-column-table my-sticky-header-column-table"
     :class="{
       'alto-fijo-desktop': !inFullscreen && altoFijo && !$q.screen.xs,
       'alto-fijo-mobile': !inFullscreen && altoFijo && $q.screen.xs,
@@ -36,15 +40,13 @@
       'my-sticky-column-table-light': !$q.dark.isActive,
       'my-sticky-column-first-table': primeraColumnaFija,
       'rounded-header': $q.screen.xs,
-      'bg-header-table': mostrarFiltros,
+      'bg-header-table': mostrarFiltros
     }"
-    virtual-scroll
-    :virtual-scroll-item-size="offset"
-    :pagination="pagination"
-    no-data-label="Aún no se han agregado elementos"
-    :wrap-cells="ajustarCeldas"
+    @request="toSearch"
   >
-    <!-- wrap-cells -->
+    <!-- @update:pagination="onRequest" -->
+    <!--  virtual-scroll
+    :virtual-scroll-item-size="offset" -->
     <!--@virtual-scroll="onScroll" -->
     <template v-slot:no-data="{ message }">
       <div class="full-width row flex-center text-primary q-gutter-sm">
@@ -53,8 +55,29 @@
       </div>
     </template>
 
-    <template #pagination="scope">
-      <botones-paginacion :scope="scope"> </botones-paginacion>
+    <template #bottom>
+      <!-- <botones-paginacion :scope="scope"> </botones-paginacion> -->
+      <!-- <div
+        class="row full-width justify-center bg-desenfoque q-py-xs text-center"
+      >
+        <q-pagination
+          v-if="pagination.page"
+          v-model="pagination.page"
+          :max="pagination.last_page"
+          @update:model-value="onRequest"
+          input
+        />
+      </div> -->
+      <div class="row full-width justify-center q-py-xs text-center">
+        <q-pagination
+          v-if="pagination.page && !mostrarFiltros"
+          v-model="pagination.page"
+          :max="pagination.last_page"
+          @update:model-value="onRequest"
+          class="border-white q-pa-xs rounded bg-solid"
+          input
+        />
+      </div>
     </template>
 
     <!-- Editar celdas -->
@@ -65,7 +88,7 @@
         :props="props"
         :class="{
           'text-bold': props.col.editable,
-          'bg-body': $q.dark.isActive,
+          'bg-body': $q.dark.isActive
         }"
       >
         <!-- <q-popup-edit
@@ -97,8 +120,8 @@
           v-if="props.col.type === 'select'"
           v-model="props.row[props.col.name]"
           :options="props.col.options"
-          :options-label="(v) => v.label"
-          :options-value="(v) => v.value"
+          :options-label="v => v.label"
+          :options-value="v => v.value"
           options-dense
           outlined
           dense
@@ -111,8 +134,8 @@
           v-if="props.col.type === 'select_multiple'"
           v-model="props.row[props.col.name]"
           :options="props.col.options"
-          :options-label="(v) => v.label"
-          :options-value="(v) => v.value"
+          :options-label="v => v.label"
+          :options-value="v => v.value"
           use-chips
           multiple
           options-dense
@@ -151,49 +174,55 @@
           v-if="!['select', 'boolean'].includes(props.col.type)"
           :class="{
             'text-white': $q.dark.isActive,
-            'text-dark': !$q.dark.isActive,
+            'text-dark': !$q.dark.isActive
           }"
-          >{{ props.row[props.col.name] }}</span
-        >
+          v-html="props.row[props.col.name]"
+        ></span>
       </q-td>
     </template>
 
     <!-- Header table -->
     <template v-if="mostrarHeader" v-slot:top="props">
-      <div
-        v-if="mostrarFiltros"
-        class="text-bold text-center full-width rounded q-mb-md"
-      >
-        <q-chip class="bg-white text-positive">
-          <q-icon name="bi-funnel" class="q-mr-sm"></q-icon>
-          Modo filtro activado
-        </q-chip>
-      </div>
+      <transition name="scale" mode="out-in">
+        <div
+          v-if="mostrarFiltros"
+          class="text-bold text-center full-width rounded q-mb-md"
+        >
+          <q-chip class="bg-solid text-positive">
+            <q-icon name="bi-funnel" class="q-mr-sm"></q-icon>
+            Modo filtro activado: {{ titulo }}
+          </q-chip>
+        </div>
+      </transition>
+
+      <transition name="scale" mode="out-in">
+        <div
+          v-if="titulo && !mostrarFiltros"
+          class="row text-primary text-subtitle2 q-mb-lg items-center justify-between col-12"
+          :class="{
+            'titulo-tabla2': !$q.screen.xs,
+            'justify-center': $q.screen.xs
+          }"
+        >
+          <span>
+            <q-icon
+              v-if="!$q.screen.xs"
+              name="bi-grip-vertical"
+              color="primary"
+              class="q-mr-sm"
+            ></q-icon>
+            <span>{{ titulo }}</span>
+          </span>
+          <span>
+            <slot name="custom-header" />
+          </span>
+        </div>
+      </transition>
 
       <div
-        v-if="titulo"
-        class="row text-primary text-subtitle2 q-mb-lg items-center justify-between col-12"
-        :class="{
-          'titulo-tabla2': !$q.screen.xs,
-          'justify-center': $q.screen.xs,
-          'bg-grey-9': $q.dark.isActive,
-        }"
+        v-if="permitirBuscar && !mostrarFiltros"
+        class="row q-col-gutter-xs full-width q-mb-md"
       >
-        <span>
-          <q-icon
-            v-if="!$q.screen.xs"
-            name="bi-grip-vertical"
-            color="info"
-            class="q-mr-sm"
-          ></q-icon>
-          <span>{{ titulo }}</span>
-        </span>
-        <span>
-          <slot name="custom-header" />
-        </span>
-      </div>
-
-      <div v-if="permitirBuscar" class="row q-col-gutter-xs full-width q-mb-md">
         <div class="col-md-8 col-12">
           <q-input
             v-model="filter"
@@ -251,38 +280,57 @@
             </q-btn>
           </div>
         </div>
-        <div class="col-12 col-md-12" v-if="false">
-          <q-chip class="q-px-md" :class="{ 'bg-grey-8': $q.dark.isActive }">
-            {{ 'Total de elementos: ' }}
-            <b>{{ datos == undefined ? 0 : datos.length }}</b>
-          </q-chip>
-        </div>
       </div>
 
       <div
-        v-if="permitirFiltrar || (true && mostrarCantidadElementos)"
         class="row full-width justify-between q-col-gutter-x-sm items-center q-mb-md"
       >
-        <span class="row items-center q-px-md">
+        <!-- <span class="row items-center q-px-md">
           <q-icon
             name="bi-circle-fill"
             color="positive"
             class="q-mr-sm"
           ></q-icon>
-          {{ 'Total de elementos: ' }} <b>{{ datos.length }}</b>
+          {{ 'Total de elementos: ' }} <b>{{ pagination.total }}</b>
+        </span> -->
+        <span class="row items-center text-black q-mb-md">
+          {{ '# registros: ' }}
+          <q-icon
+            name="bi-check-circle-fill"
+            color="primary"
+            class="q-mx-sm"
+          ></q-icon>
+          <b>{{ pagination.total }}</b>
         </span>
 
         <div class="row q-gutter-xs justify-end q-mb-md">
-          <q-btn
-            v-if="mostrarFiltros"
-            color="indigo-4"
-            no-caps
-            push
-            @click="agregarFiltro()"
-          >
-            <q-icon name="bi-plus" size="xs" class="q-mr-sm"></q-icon>
-            Agregar filtro</q-btn
-          >
+          <transition name="scale" mode="out-in">
+            <q-btn-group rounded unelevated>
+              <q-btn
+                v-if="mostrarFiltros"
+                color="blue-grey-8"
+                no-caps
+                rounded
+                unelevated
+                @click="agregarFiltro()"
+              >
+                <q-icon name="bi-plus" size="xs" class="q-mr-sm"></q-icon>
+                Agregar filtro</q-btn
+              >
+
+              <q-btn
+                v-if="mostrarFiltros"
+                color="blue-grey-10"
+                no-caps
+                rounded
+                unelevated
+                @click="establecerFiltros()"
+              >
+                <q-icon name="bi-funnel" class="q-mr-sm" size="xs"></q-icon>
+                Buscar con filtros</q-btn
+              >
+            </q-btn-group>
+          </transition>
 
           <!-- <q-btn
             v-if="mostrarFiltros"
@@ -294,25 +342,14 @@
             <q-icon name="bi-eraser" class="q-mr-sm" size="xs"></q-icon>
             Resetear filtros</q-btn
           > -->
-
-          <q-btn
-            v-if="mostrarFiltros"
-            color="indigo"
-            no-caps
-            push
-            @click="filtrar()"
-          >
-            <q-icon name="bi-funnel" class="q-mr-sm" size="xs"></q-icon>
-            Aplicar filtros</q-btn
-          >
-
           <q-btn
             v-if="mostrarExportar"
             color="positive"
             icon="archive"
             label="Exportar a csv"
             no-caps
-            push
+            rounded
+            unelevated
             @click="exportTable"
           />
           <!--<q-btn-dropdown
@@ -342,11 +379,16 @@
             </q-list>
           </q-btn-dropdown> -->
 
+          <!-- :color="mostrarFiltros ? 'negative' : 'white'" -->
           <q-btn
             v-if="permitirFiltrar"
-            :color="mostrarFiltros ? 'negative' : 'primary'"
+            :class="{
+              'text-primary bg-white': !mostrarFiltros,
+              'text-negative bg-white': mostrarFiltros
+            }"
             no-caps
-            push
+            rounded
+            unelevated
             @click="toggleFiltros()"
           >
             <q-icon
@@ -356,6 +398,17 @@
             ></q-icon>
             {{ tituloBotonFiltros }}</q-btn
           >
+        </div>
+
+        <div class="row full-width justify-center q-py-xs text-center">
+          <q-pagination
+            v-if="pagination.page && !mostrarFiltros"
+            v-model="pagination.page"
+            :max="pagination.last_page"
+            @update:model-value="onRequest"
+            class="border-white q-pa-xs rounded bg-solid"
+            input
+          />
         </div>
       </div>
 
@@ -368,7 +421,7 @@
           ref="refTableFilters"
           v-if="permitirFiltrar && mostrarFiltros"
           :configuracionColumnas="configuracionColumnas"
-          @filtrar="establecerFiltros"
+          @filtrar="filtrar"
         ></table-filters>
       </div>
 
@@ -379,8 +432,8 @@
           v-if="extraerVisible(accion1Header, props)"
           :color="accion1Header?.color ?? 'primary'"
           :class="{ 'q-mb-sm': $q.screen.xs, 'full-width': $q.screen.xs }"
-          push
-          rounded
+          
+          
           no-caps
           @click="accion1Header.accion"
         >
@@ -504,7 +557,7 @@
 
     <!-- Botones de acciones Desktop -->
     <template #body-cell-acciones="props">
-      <q-td v-if="!$q.screen.xs" :props="props">
+      <q-td v-if="!$q.screen.xs || !grid" :props="props">
         <div class="row inline full-width block q-col-gutter-x-xs text-left">
           <q-btn-group
             v-if="permitirConsultar || permitirEditar || permitirEliminar"
@@ -563,6 +616,7 @@
             :accion8="accion8"
             :accion9="accion9"
             :accion10="accion10"
+            :accion11="accion11"
             :propsTable="props"
             :listado="listado"
           ></CustomButtons>
@@ -575,8 +629,9 @@
       <q-card
         v-if="$q.screen.xs"
         :class="props.selected ? 'bg-grey-2' : ''"
-        class="q-py-xs q-my-none custom-shadows full-width border-bottom no-border srodunded-card"
+        class="q-py-xs q-my-none custom-shadows full-width srodunded-card q-mb-xs"
         :style="props.selected ? 'transform: scale(0.95);' : ''"
+        style="font-size: .7rem;"
       >
         <q-card-section v-if="tipoSeleccion !== 'none'">
           <q-checkbox dense v-model="props.selected" :label="props.row.name" />
@@ -658,6 +713,7 @@
                   :accion8="accion8"
                   :accion9="accion9"
                   :accion10="accion10"
+                  :accion11="accion11"
                   :propsTable="props"
                   :listado="listado"
                 ></CustomButtons>
@@ -740,6 +796,16 @@
                     v-if="col.value"
                     name="bi-check-circle-fill"
                     color="positive"
+                    size="sm"
+                  ></q-icon>
+                </span>
+
+                <span v-if="col.name === 'se_reporto_sicosep'">
+                  <q-icon
+                    :name="
+                      col.value ? 'bi-check-circle-fill' : 'bi-x-circle-fill'
+                    "
+                    :color="col.value ? 'positive' : 'negative'"
                     size="sm"
                   ></q-icon>
                 </span>
@@ -888,6 +954,7 @@
                       'observacion',
                       'dado_alta',
                       'es_dosis_unica',
+                      'se_reporto_sicosep'
                     ].includes(col.name)
                   "
                   >{{ col.value }}</span
@@ -905,10 +972,9 @@
           dense
           no-caps
           unelevated
+          no-wrap
           class="q-px-sm text-primary border-primary"
-          @click="
-            verVisorArchivos({ entidad: props.row, posicion: props.rowIndex })
-          "
+          @click="verVisorArchivos({ entidad: props.row })"
         >
           <q-icon name="bi-archive" size="xs" class="q-mr-sm"></q-icon>
           {{ props.value.length + ' archivos' }}
@@ -922,7 +988,7 @@
         :props="props"
         :class="{
           'bg-lime-2': !$q.dark.isActive,
-          'bg-green-10': $q.dark.isActive,
+          'bg-green-10': $q.dark.isActive
         }"
       >
         <q-badge color="positive">
@@ -937,7 +1003,7 @@
         class="text-bold"
         :class="{
           'bg-grey-2': !$q.dark.isActive,
-          'bg-grey-10': $q.dark.isActive,
+          'bg-grey-10': $q.dark.isActive
         }"
       >
         <!-- <q-badge color="blue-grey-6"> -->
@@ -951,7 +1017,7 @@
         :props="props"
         :class="{
           'bg-indigo-1': !$q.dark.isActive,
-          'bg-indigo-10': $q.dark.isActive,
+          'bg-indigo-10': $q.dark.isActive
         }"
       >
         <q-badge color="indigo">
@@ -965,7 +1031,7 @@
         :props="props"
         :class="{
           'bg-lime-2': !$q.dark.isActive,
-          'bg-green-10': $q.dark.isActive,
+          'bg-green-10': $q.dark.isActive
         }"
       >
         <q-badge color="positive">
@@ -1043,6 +1109,7 @@
         ></q-icon>
       </q-td>
     </template>
+
     <template #body-cell-tiene_factura="props">
       <q-td :props="props">
         <q-chip v-if="props.value" class="bg-yellow-1">
@@ -1127,6 +1194,25 @@
             class="q-mr-xs"
           ></q-icon
           >Ocupado
+        </q-chip>
+      </q-td>
+    </template>
+
+    <template #body-cell-se_reporto_sicosep="props">
+      <q-td :props="props" class="">
+        <q-chip v-if="props.value" class="bg-green-1">
+          <q-icon
+            name="bi-check-circle-fill"
+            color="positive"
+            class="q-mr-xs"
+          ></q-icon>
+        </q-chip>
+        <q-chip v-else class="bg-pink-1">
+          <q-icon
+            name="bi-x-circle-fill"
+            color="negative"
+            class="q-mr-xs"
+          ></q-icon>
         </q-chip>
       </q-td>
     </template>
@@ -1517,6 +1603,7 @@
           ></q-icon
           >SIN STOCK
         </q-chip>
+
         <q-chip
           v-if="props.value === estadosInventarios.transito"
           class="bg-yellow-1"
@@ -1524,6 +1611,7 @@
           <q-icon name="bi-circle-fill" color="warning" class="q-mr-xs"></q-icon
           >TRANSITO
         </q-chip>
+
         <q-chip
           v-if="props.value === estadosInventarios.inventario"
           class="bg-green-1"
@@ -1535,6 +1623,7 @@
           ></q-icon
           >INVENTARIO
         </q-chip>
+
         <!-- Estados de la tabla control de stock -->
         <q-chip
           v-if="props.value === estadosControlStock.minimo"
@@ -1592,6 +1681,18 @@
           >{{ 'RUTA COMPLETADA' }}
         </q-chip>
 
+        <q-chip
+          v-if="props.value === 'RUTA COMPLETADA'"
+          class="bg-green-1 text-positive"
+        >
+          <q-icon
+            name="bi-check-circle-fill"
+            color="positive"
+            class="q-mr-xs"
+          ></q-icon
+          >{{ 'RUTA COMPLETADA' }}
+        </q-chip>
+
         <estados-subtareas :propsTable="props" />
 
         <!-- estados de la tabla prestamos temporales -->
@@ -1605,6 +1706,7 @@
         </q-chip>
       </q-td>
     </template>
+
     <template #body-cell-descontable="props">
       <q-td :props="props">
         <campo-descontable :propsTable="props" />
@@ -1685,7 +1787,7 @@
               'TICKET REASIGNADO',
               'TICKET PAUSADO',
               'TICKET EJECUTADO',
-              'TICKET FINALIZADO',
+              'TICKET FINALIZADO'
             ].includes(props.value)
           "
           >{{ props.value }}</span

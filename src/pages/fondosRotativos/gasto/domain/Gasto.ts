@@ -19,11 +19,14 @@ export class Gasto extends EntidadAuditable {
   lugar_info: string | null
   subTarea_info: string | null
   detalle: string | null
+  nodo: string | null
   detalle_info: string | null
-  sub_detalle: [] | null
+  sub_detalle: number[]
   sub_detalle_info: string | null
   comprobante1: string | null
   comprobante2: string | null
+  comprobante3: string | null
+  comprobante4: string | null
   cantidad: number | null
   valor_u: number | null
   total: number | null
@@ -43,6 +46,9 @@ export class Gasto extends EntidadAuditable {
   es_vehiculo_alquilado: boolean
   observacion_anulacion: string | null
 
+  se_envia_valija:boolean
+  registros_valijas:[]
+
   constructor() {
     super()
     this.id = null
@@ -58,6 +64,7 @@ export class Gasto extends EntidadAuditable {
     this.proyecto_info = null
     this.ruc = null
     this.factura = null
+    this.nodo = null
     this.num_comprobante = null
     this.beneficiarios = null
     this.beneficiarios_info = null
@@ -65,10 +72,12 @@ export class Gasto extends EntidadAuditable {
     this.aut_especial_user = null
     this.detalle = null
     this.detalle_info = null
-    this.sub_detalle = null
+    this.sub_detalle = []
     this.sub_detalle_info = null
     this.comprobante1 = null
     this.comprobante2 = null
+    this.comprobante3 = null
+    this.comprobante4 = null
     this.cantidad = null
     this.valor_u = null
     this.total = null
@@ -87,5 +96,8 @@ export class Gasto extends EntidadAuditable {
     this.placa = null
     this.es_vehiculo_alquilado = false
     this.observacion_anulacion = null
+
+    this.se_envia_valija = false
+    this.registros_valijas = []
   }
 }

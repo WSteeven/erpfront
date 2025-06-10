@@ -19,17 +19,19 @@ import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/applicat
 import { TransaccionIngresoController } from 'pages/bodega/transacciones/infraestructure/TransaccionIngresoController';
 import { Transaccion } from 'pages/bodega/transacciones/domain/Transaccion';
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController';
-import { accionesTabla, opcionesReportesEgresos, tiposReportesEgresos } from 'config/utils';
+import { accionesTabla, maskFecha, opcionesReportesEgresos, tiposReportesEgresos } from 'config/utils';
 import { MotivoController } from 'pages/administracion/motivos/infraestructure/MotivoController';
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable';
 import { useTransaccionEgresoStore } from 'stores/transaccionEgreso';
 import { EmpleadoRoleController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoRolesController';
 import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController';
-import { imprimirArchivo } from 'shared/utils'
+import { imprimirArchivo, obtenerFechaActual, ordenarLista } from 'shared/utils'
 import { useNotificacionStore } from 'stores/notificacion';
 import { ClienteController } from 'sistema/clientes/infraestructure/ClienteController';
 import { ComportamientoModalesTransaccionEgreso } from 'pages/bodega/transacciones/modules/transaccionEgreso/application/ComportamientoModalesGestionarEgresos';
 import { useCargandoStore } from 'stores/cargando';
+import { CategoriaController } from 'pages/bodega/categorias/infraestructure/CategoriaController';
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
 
 ChartJS.register(ArcElement, Tooltip, Legend)
 export default defineComponent({
@@ -57,6 +59,7 @@ export default defineComponent({
       tarea: null,
       transferencia: null,
       firmada: true,
+      categorias: null,
       accion: '',
     })
 
@@ -65,14 +68,18 @@ export default defineComponent({
     const listado = ref([])
     const bodegueros = ref([])
     const clientes = ref([])
-    const empleados = ref([])
+    const { empleados, filtrarEmpleados } = useFiltrosListadosSelects(listadosAuxiliares)
     const motivos = ref([])
     const tareas = ref([])
+    const { categorias } = useFiltrosListadosSelects(listadosAuxiliares)
     cargarVista(async () => {
       await obtenerListados({
         empleados: new EmpleadoController(),
         motivos: { controller: new MotivoController(), params: { tipo_transaccion_id: 2 } },
       })
+      listadosAuxiliares.categorias = []
+
+      reporte.fecha_fin = obtenerFechaActual(maskFecha)
     })
 
 
@@ -96,21 +103,18 @@ export default defineComponent({
     }
     async function buscarReporte(accion: string) {
       try {
-        cargando.activar()
         const axios = AxiosHttpRepository.getInstance()
-        let url = axios.getEndpoint(endpoints.transacciones_egresos) + '/reportes'
+        const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.transacciones_egresos) + '/reportes'
         const filename = 'reporte_egresos_bodega'
         switch (accion) {
           case 'excel':
-            url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.transacciones_egresos) + '/reportes'
             reporte.accion = 'excel'
-            imprimirArchivo(url, 'POST', 'blob', 'xlsx', filename, reporte)
+            await imprimirArchivo(url, 'POST', 'blob', 'xlsx', filename, reporte)
 
             break
           case 'pdf':
-            url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.transacciones_egresos) + '/reportes'
             reporte.accion = 'pdf'
-            imprimirArchivo(url, 'POST', 'blob', 'pdf', filename, reporte)
+            await imprimirArchivo(url, 'POST', 'blob', 'pdf', filename, reporte)
             break
           default:
             reporte.accion = ''
@@ -120,12 +124,9 @@ export default defineComponent({
               if (response.data.results.length < 1) notificarAdvertencia('No se obtuvieron resultados')
             }
         }
-        cargando.desactivar()
       } catch (e) {
         console.log(e)
         notificarError('Error al obtener reporte')
-      } finally {
-        cargando.desactivar()
       }
     }
     async function consultarListado(id: number) {
@@ -147,6 +148,12 @@ export default defineComponent({
         const { response } = await new ClienteController().listar({ estado: 1, requiere_bodega: 1 })
         cargando.desactivar()
         clientes.value = response.data.results
+      }
+      if (id == tiposReportesEgresos.categorias) {
+        cargando.activar()
+        const { response } = await new CategoriaController().listar()
+        cargando.desactivar()
+        categorias.value = response.data.results
       }
     }
     /**
@@ -181,11 +188,12 @@ export default defineComponent({
 
     return {
       configuracionColumnas,
-      reporte,
+      reporte, maskFecha,
       //listados
       sucursales, listado,
       empleados, bodegueros, motivos,
       tareas, clientes,
+      categorias,
 
       opcionesReportesEgresos,
       tiposReportesEgresos,
@@ -196,18 +204,9 @@ export default defineComponent({
       botonVerTransaccion,
       modales,
       //filtro de empleados
-      filtroEmpleados(val, update) {
-        if (val === '') {
-          update(() => {
-            empleados.value = listadosAuxiliares.empleados
-          })
-          return
-        }
-        update(() => {
-          const needle = val.toLowerCase()
-          empleados.value = listadosAuxiliares.empleados.filter((v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1)
-        })
-      },
+       filtrarEmpleados,
+
+      ordenarLista,
 
     }
   }

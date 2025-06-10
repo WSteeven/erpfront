@@ -1,7 +1,7 @@
 <template>
   <q-page padding>
     <div class="column q-mb-md q-gutter-sm items-center">
-      <b>Monitor</b>
+      <b class="text-h5 text-bold">Monitor</b>
       <small
         >Ten una visión completa de todos los trabajos y sus estados.</small
       >
@@ -11,13 +11,16 @@
         :to="{ name: 'tareas' }"
         no-caps
         dense
-        glossy
-        push
-        >Ir a Control de tareas</q-btn
-      > 
+        square
+        unelevated
+        >Ir a Control de tareas
+        <q-icon name="bi-box-arrow-in-right" class="q-ml-sm"></q-icon>
+      </q-btn>
     </div>
 
     <essential-table-tabs
+      ref="refTabla"
+      class="custom-shadow5 borde rounded"
       :titulo="
         'Existen ' +
         listado.length +
@@ -38,12 +41,13 @@
       :accion8="btnSuspender"
       :accion9="btnCancelar"
       :accion10="btnFinalizar"
+      :accion11="btnVerAlimentacion"
       separador="cell"
       :permitirConsultar="false"
       :permitirEditar="false"
       :permitirEliminar="false"
       :mostrar-botones="false"
-      :mostrarFooter="true"
+      mostrar-footer
       :permitirFiltrar="true"
       @tab-seleccionado="filtrarSubtareas"
       :tabDefecto="tabActual"
@@ -51,7 +55,9 @@
       @filtrar="aplicarFiltro"
       @limpiarListado="() => (listado = [])"
       :mostrarExportar="true"
-      :ajustar-celdas="true"
+      ajustar-celdas
+      paginate
+      :mixin="mixin"
     ></essential-table-tabs>
 
     <modales-entidad
@@ -59,6 +65,7 @@
       :mixin-modal="mixin"
       :confirmar-cerrar="false"
       :persistente="false"
+      @guardado="guardadoModalesSubtarea"
     />
   </q-page>
 </template>

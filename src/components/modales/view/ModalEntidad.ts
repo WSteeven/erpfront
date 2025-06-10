@@ -1,6 +1,5 @@
 // Dependencias
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { useNotificaciones } from 'shared/notificaciones'
 import { computed, defineComponent, ref } from 'vue'
 
 // Componentes
@@ -16,7 +15,6 @@ export default defineComponent({
     accion: {
       type: Function,
       required: false,
-      default: () => { },
     },
     confirmarCerrar: {
       type: Boolean,
@@ -30,10 +28,23 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
+    fullWidth: {
+      type: Boolean,
+      default: true,
+    },
+    fullHeight: {
+      type: Boolean,
+      default: true,
+    },
+    maximized: {
+      type: Boolean,
+      default: true,
+    },
     mostrarListado: {
       type: Boolean,
       default: true,
     }
+
   },
   // emits: ['seleccionar', 'accion1'],
   emits: ['guardado', 'modificado', 'cerrado'],
@@ -43,15 +54,19 @@ export default defineComponent({
      **********/
     const configuracionGeneralStore = useConfiguracionGeneralStore()
 
-    const { componente, titulo, abierto, datos } = props.comportamiento.useModal()
-    const { confirmar } = useNotificaciones()
-
-    function cerrarModalEntidad(confirmarCerrar = true && props.confirmarCerrar) {
-      if (confirmarCerrar) {
-        confirmar('¿Está seguro de que desea cerrar?', () => abierto.value = false)
-      } else {
-        abierto.value = false
-      }
+    const { componente, titulo, abierto, propsData } = props.comportamiento.useModal()
+    // const { confirmar } = useNotificaciones()
+    function cerrarModalEntidad() {
+    // function cerrarModalEntidad(confirmarCerrar = props.confirmarCerrar) {
+      /* if (confirmarCerrar) {
+        confirmar('¿Está seguro de que desea cerrar?', () => {
+          abierto.value = false
+          emit('cerrado')
+        })
+      } else { */
+      abierto.value = false
+      emit('cerrado')
+      // }
     }
 
     const duracion = ref(0)
@@ -60,7 +75,6 @@ export default defineComponent({
       () => setInterval(() => (duracion.value = duracion.value + 0.1), 200),
       250
     )
-    // }
 
     return {
       logoClaro: computed(() => configuracionGeneralStore.configuracion?.logo_claro),
@@ -70,7 +84,7 @@ export default defineComponent({
       cerrarModalEntidad,
       duracion,
       abierto,
-      datos,
+      propsData,
       emit,
     }
   },

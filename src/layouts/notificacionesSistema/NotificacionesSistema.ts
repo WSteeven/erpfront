@@ -10,6 +10,7 @@ import { DevolucionPusherEvent } from 'pages/bodega/devoluciones/application/Dev
 import { PermisoEmpleadoPusherEvent } from 'src/pusherEvents/recursosHumanos/nominasPermisos/PermisosEmpleadoPusherEvent'
 import { LicenciaPusherEvent } from 'src/pusherEvents/recursosHumanos/nominasPermisos/LicenciaEmpleadoPusherEvent'
 import { SolicitudPrestamoEmpresarialPusherEvent } from 'src/pusherEvents/recursosHumanos/nominasPermisos/SolicitudPrestamoEmpresarialPusherEvent'
+import { SolicitudPrestamoGerenciaPusherEvent } from 'src/pusherEvents/recursosHumanos/nominasPermisos/SolicitudPrestamoGerenciaPusherEvent'
 import { VacacionPusherEvent } from 'src/pusherEvents/recursosHumanos/nominasPermisos/VacacionPusherEvent'
 import { PreordenCompraEvent } from 'pages/comprasProveedores/preordenCompra/application/PreordenCompraEvent'
 import { OrdenCompraEvent } from 'pages/comprasProveedores/ordenCompra/application/OrdenCompraEvent'
@@ -28,6 +29,15 @@ import { BitacoraVehicularPusherEvent } from 'src/pusherEvents/vehiculos/Bitacor
 import { MantenimientoVehiculoPusherEvent } from 'src/pusherEvents/vehiculos/MantenimientVehiculoPusherEvent'
 import { SolicitudExamenPusherEvent } from 'src/pusherEvents/medico/SolicitudExamenPusherEvent'
 import { DiasDescansoPusherEvent } from 'src/pusherEvents/medico/DiasDescansoPusherEvent'
+import { SolicitudEmpleadoPusherEvent } from 'src/pusherEvents/recursosHumanos/seleccionContratacionPersonal/SolicitudEmpleadoPusherEvent'
+import { TransferenciaProductoRealizadaPusherEvent } from 'src/pusherEvents/tareas/TransferenciaProductosRealizadaPusherEvent'
+import { TransferenciaProductoSolicitadaPusherEvent } from 'src/pusherEvents/tareas/TransferenciaProductosSolicitadaPusherEvent'
+import { NotificarEntregaActivoFijoPusherEvent } from 'src/pusherEvents/activosFijos/NotificarEntregaActivoFijoPusherEvent'
+import { PostulacionPusherEvent } from 'src/pusherEvents/recursosHumanos/seleccionContratacionPersonal/PostulacionPusherEvent'
+import {
+  NotificarAtrasoJefeInmediatoPusherEvent
+} from '../../pusherEvents/ControlPersonal/NotificarAtrasoJefeInmediatoPusherEvent'
+
 
 
 export class NotificacionesSistema {
@@ -71,11 +81,22 @@ export class NotificacionesSistema {
     const solicitudFondosPusherEvent = new GastoCoordinadorPusherEvent()
     solicitudFondosPusherEvent.start()
 
+    /****************
+     * Modulo tareas
+     ****************/
     // Subtareas
     const subtareaPusherEvent = new SubtareaPusherEvent()
     subtareaPusherEvent.start()
 
-    // Tickets
+    const transferenciaProductoRealizadaPusherEvent = new TransferenciaProductoRealizadaPusherEvent()
+    transferenciaProductoRealizadaPusherEvent.start()
+
+    const transferenciaProductoSolicitadaPusherEvent = new TransferenciaProductoSolicitadaPusherEvent()
+    transferenciaProductoSolicitadaPusherEvent.start()
+
+    /**********
+     * Tickets
+     **********/
     const ticketPusherEvent = new TicketPusherEvent()
     ticketPusherEvent.start()
 
@@ -98,7 +119,12 @@ export class NotificacionesSistema {
     const solicitudPrestamoEmpresarialPusherEvent = new SolicitudPrestamoEmpresarialPusherEvent()
     solicitudPrestamoEmpresarialPusherEvent.start()
 
-    //Vacacion
+    //Solicitud prestamo empresarial para gerencia
+    const solicitudPrestamoGerenciaPusherEvent= new SolicitudPrestamoGerenciaPusherEvent()
+    solicitudPrestamoGerenciaPusherEvent.start()
+
+
+    //SolicitudVacacion
     const vacacionPusherEvent = new VacacionPusherEvent()
     vacacionPusherEvent.start()
 
@@ -134,7 +160,7 @@ export class NotificacionesSistema {
 
     const asignacionVehiculoEvent = new AsignarVehiculoPusherEvent()
     asignacionVehiculoEvent.start()
-    
+
     const transferenciaVehiculoEvent = new AsignarVehiculoPusherEvent()
     transferenciaVehiculoEvent.start()
 
@@ -154,5 +180,27 @@ export class NotificacionesSistema {
 
     const diasDescansoPusherEvent = new DiasDescansoPusherEvent()
     diasDescansoPusherEvent.start()
+
+    /*******************
+    * MODULO SELECCION Y CONTRATACION DE PERSONAL
+    ********************/
+    const solicitudEmpleadoPusherEvent = new SolicitudEmpleadoPusherEvent()
+    solicitudEmpleadoPusherEvent.start()
+
+    const postulacionPusherEvent = new PostulacionPusherEvent()
+    postulacionPusherEvent.start()
+
+
+    /**********************
+     * Modulo cctvos fijos
+     **********************/
+    const notificarEntregaActivoFijoPusherEvent = new NotificarEntregaActivoFijoPusherEvent()
+    notificarEntregaActivoFijoPusherEvent.start()
+
+    /**
+     * Modulo de Control de Personal
+     */
+    const notificarAtrasoJefeInmediatoPusherEvent = new NotificarAtrasoJefeInmediatoPusherEvent()
+    notificarAtrasoJefeInmediatoPusherEvent.start()
   }
 }

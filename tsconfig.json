@@ -6,7 +6,8 @@
     "strictFunctionTypes": false,
     "module": "esnext",
     "target": "esnext",
-    "types": ["jest"],
+    "types": ["node"],
+    "typeRoots": ["./node_modules/@types", "./src/types"],
     "paths": {
       "config/*": ["src/config/*"],
       "shared/*": ["src/shared/*"],
@@ -38,7 +39,18 @@
       "motivosPausasTickets/*": ["gestionTickets/motivosPausasTickets"],
       "motivosCanceladosTickets/*": ["gestionTickets/motivosCanceladosTickets"],
       // Modulo medico
-      "medico/*": ["src/pages/medico/*"]
+      "medico/*": ["src/pages/medico/*"],
+      "seleccionContratacion/*": [
+        "src/pages/recursosHumanos/SeleccionContratacionPersonal/*"
+      ],
+      "trabajoSocial/*": ["src/pages/recursosHumanos/TrabajoSocial/*"],
+
+      "activosFijos/*": ["src/pages/activosFijos/*"],
+      "controlActivosFijos/*": ["src/pages/activosFijos/controlActivosFijos/*"],
+      "controlPersonal/*": ["src/pages/recursosHumanos/control_personal/*"],
+      "sso/*": ["src/pages/sso/*"],
+      "comprasProveedores/*": ["src/pages/comprasProveedores/*"],
+      "seguridad/*": ["src/pages/seguridad/*"]
     }
   }
 }

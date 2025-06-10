@@ -69,6 +69,10 @@ export const tabOptionsPrefactura: TabOption[] = [
   { label: 'Creadas', value: '2' }, //estado CREADO
   { label: 'Anuladas', value: '4' }, //estado ANULADO
 ]
+export const tabOptionsProveedoresInternacionales: TabOption[] = [
+  { label: 'ACTIVOS', value: '1' },
+  { label: 'INACTIVOS', value: '0' },
+]
 export const tabOptionsOrdenCompra: TabOption[] = [
   { label: 'Pendientes', value: '1' }, //autorizacion PENDIENTE
   { label: 'Autorizadas', value: '2' }, //autorizacion APROBADO
@@ -135,6 +139,7 @@ export const opcionesEstadosPrefacturas = [
 ]
 export const opcionesEstadosOC = [
   { value: 'PENDIENTES' },
+  { value: 'AUTORIZADAS' },
   { value: 'REVISADAS' },
   { value: 'REALIZADAS', },
   { value: 'PAGADAS', },
@@ -148,3 +153,14 @@ export const estadosOrdenesCompras = {
   PAGADA: 'PAGADA',
   ANULADA: 'ANULADA'
 }
+
+export const tiposCuentasCash = [
+  { value: 'AHO', label: 'AHORROS' },
+  { value: 'CTE', label: 'CORRIENTE' },
+]
+
+export const tiposDocumentosIdentificacionesCash = [
+  { nombre: 'Cédula', value: 'C' },
+  { nombre: 'RUC.', value: 'R' },
+  { nombre: 'Pasaporte', value: 'P' },
+]

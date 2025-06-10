@@ -56,16 +56,13 @@ export const useProformaStore = defineStore('proforma', () => {
 
     async function imprimirPdf() {
         try {
-            statusLoading.activar
             const axios = AxiosHttpRepository.getInstance()
             const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.proformas) + '/imprimir/' + idProforma.value
             const filename = 'proforma_' + idProforma.value + '_' + Date.now()
-            imprimirArchivo(url, 'GET', 'blob', 'pdf', filename)
+            await imprimirArchivo(url, 'GET', 'blob', 'pdf', filename)
             console.log('Proforma impresa con éxito')
         } catch (e) {
             notificarAdvertencia('Error al imprimir la proforma. ' + e)
-        } finally {
-            statusLoading.desactivar()
         }
     }
 

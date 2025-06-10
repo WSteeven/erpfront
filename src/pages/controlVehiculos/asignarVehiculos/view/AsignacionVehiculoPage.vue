@@ -496,6 +496,7 @@
               label="Quiero compartir archivos e imagenes del vehículo"
               :mixin="mixin"
               :disable="disabled"
+              :maxTamanioBytes="52428800"
               :listarAlGuardar="false"
               :permitir-eliminar="
                 accion == acciones.nuevo || accion == acciones.editar

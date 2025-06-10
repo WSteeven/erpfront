@@ -7,7 +7,6 @@ export const configuracionColumnasCriteriosCalificaciones: ColumnConfig<Criterio
         name: 'nombre',
         field: 'nombre',
         label: 'Nombre',
-        style: 'max-width: 150px; overflow: auto;',
         align: 'left',
         sortable: true
     },
@@ -15,7 +14,6 @@ export const configuracionColumnasCriteriosCalificaciones: ColumnConfig<Criterio
         name: 'descripcion',
         field: 'descripcion',
         label: 'Descripción',
-        style: 'max-width: 300px; overflow: auto;',
         align: 'left',
         sortable: true
     },

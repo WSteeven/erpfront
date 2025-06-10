@@ -1,21 +1,21 @@
 // Dependencias
-import { requiredIf, required } from 'shared/i18n-validators'
-import { maxValue, minValue } from '@vuelidate/validators'
+import { maxValue, required, requiredIf } from 'shared/i18n-validators'
 import { useVuelidate } from '@vuelidate/core'
-import { defineComponent, ref, computed } from 'vue'
+import { computed, defineComponent, ref, watch } from 'vue'
 
 // Componentes
+import NoOptionComponent from 'components/NoOptionComponent.vue'
 import SelectorImagen from 'components/SelectorImagen.vue'
+import ErrorComponent from 'components/ErrorComponent.vue'
 
 //Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { removeAccents } from 'shared/utils'
 import {
   acciones,
-  accionesTabla,
   autorizacionesId,
+  autorizacionesTransacciones,
   maskFecha,
-  tabOptionsSolicitudPedido,
+  tabOptionsSolicitudPedido
 } from 'config/utils'
 import { useRecursosHumanosStore } from 'stores/recursosHumanos'
 import { SolicitudPrestamo } from '../domain/SolicitudPrestamo'
@@ -26,9 +26,16 @@ import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayou
 import { useAuthenticationStore } from 'stores/authentication'
 import { PeriodoController } from 'pages/recursosHumanos/periodo/infraestructure/PeriodoController'
 import { AutorizacionController } from 'pages/administracion/autorizaciones/infraestructure/AutorizacionController'
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
+import { Autorizacion } from 'pages/administracion/autorizaciones/domain/Autorizacion'
 
 export default defineComponent({
-  components: { TabLayoutFilterTabs2, SelectorImagen },
+  components: {
+    ErrorComponent,
+    NoOptionComponent,
+    TabLayoutFilterTabs2,
+    SelectorImagen
+  },
   setup() {
     const mixin = new ContenedorSimpleMixin(
       SolicitudPrestamo,
@@ -38,33 +45,27 @@ export default defineComponent({
       entidad: solicitudPrestamo,
       disabled,
       accion,
-      listadosAuxiliares,
+      listadosAuxiliares
     } = mixin.useReferencias()
     const { setValidador, cargarVista, obtenerListados, listar } =
       mixin.useComportamiento()
     const { onConsultado } = mixin.useHooks()
-    const maximoAPrestar = ref()
-    const esMayorsolicitudPrestamo = ref(false)
     const puede_editar = ref(true)
 
     // Stores
     const recursosHumanosStore = useRecursosHumanosStore()
     const store = useAuthenticationStore()
     const autorizaciones = ref()
-    const periodos = ref()
+
     const ver_boton_editar = computed(() => {
       let validar = false
-      if (esValidador.value === true) {
-        validar = tabSolicitudPrestaamo.value === '1' ? true : false
+      if (esValidador.value) {
+        validar = tabSolicitudPrestamo.value === '1'
       }
-      if (esAutorizador.value === true) {
-        validar = tabSolicitudPrestaamo.value === '4' ? true : false
+      if (esAutorizador.value) {
+        validar = tabSolicitudPrestamo.value === '4'
       }
       return validar
-    })
-    const sueldo_basico = computed(() => {
-      recursosHumanosStore.obtener_sueldo_basico()
-      return recursosHumanosStore.sueldo_basico
     })
     const restringirMotivo = computed(() => {
       if (accion.value === acciones.editar) {
@@ -77,78 +78,113 @@ export default defineComponent({
       }
     })
 
-    recursosHumanosStore.nivel_endeudamiento(
-      solicitudPrestamo.solicitante == null
-        ? store.user.id
-        : solicitudPrestamo.solicitante
-    )
+    // recursosHumanosStore.nivelEndeudamiento(solicitudPrestamo.solicitante == null? store.user.id: solicitudPrestamo.solicitante)
 
-    maximoAPrestar.value = parseInt(sueldo_basico.value) * 2
+    const dosSBU = ref(0)
+    const maximoValorsolicitudPrestamo = [
+      val =>
+        val <= parseInt(recursosHumanosStore.sueldo_basico) * 2 ||
+        'Solo se permite prestamo menor o igual a 2 SBU ($ ' +
+          parseInt(recursosHumanosStore.sueldo_basico) * 2 +
+          ')'
+    ]
+    const tabSolicitudPrestamo = ref('1')
     const esValidador = computed(() => store.can('puede.ver.campo.validado'))
     const esAutorizador = computed(() =>
       store.can('puede.autorizar.solicitud_prestamo_empresarial')
     )
+    const { periodos, filtrarPeriodos } =
+      useFiltrosListadosSelects(listadosAuxiliares)
     cargarVista(async () => {
+      await recursosHumanosStore.obtenerSueldoBasico()
+      await recursosHumanosStore.nivelEndeudamiento(
+        solicitudPrestamo.solicitante ?? store.user.id
+      )
       await obtenerListados({
         periodos: {
           controller: new PeriodoController(),
-          params: { campos: 'id,nombre', activo: 1 },
+          params: { campos: 'id,nombre', activo: 1 }
         },
         autorizaciones: {
           controller: new AutorizacionController(),
           params: {
             campos: 'id,nombre',
             es_validado: false,
-            es_modulo_rhh: true,
-          },
-        },
+            es_modulo_rhh: true
+          }
+        }
       })
       autorizaciones.value = listadosAuxiliares.autorizaciones
-    })
-    onConsultado(() => {
-      puede_editar.value = false
-      recursosHumanosStore.nivel_endeudamiento(
-        solicitudPrestamo.solicitante == null
-          ? store.user.id
-          : solicitudPrestamo.solicitante
-      )
+      periodos.value = listadosAuxiliares.periodos
+
+      dosSBU.value = parseInt(recursosHumanosStore.sueldo_basico) * 2
     })
 
-    //Reglas de validacion
+    /***************
+     * HOOKS
+     ***************/
+    onConsultado(async () => {
+      puede_editar.value = false
+      await recursosHumanosStore.nivelEndeudamiento(
+        solicitudPrestamo.solicitante ?? store.user.id
+      )
+    })
+    /************************
+     * Reglas de validacion
+     ***********************/
     const reglas = computed(() => ({
       fecha: { required },
-      monto: { required },
+      monto: {
+        required,
+        maxValue: maxValue(dosSBU)
+      },
       motivo: { required },
-      estado: requiredIf(esValidador.value),
-      observacion: { requiredValidador: requiredIf(esValidador.value) },
+      estado: { required: requiredIf(() => esValidador.value) },
+      observacion: { required: requiredIf(() => esValidador.value) },
       periodo: {
-        requiredIf: requiredIf(
-          solicitudPrestamo.cargo_utilidad != null
-            ? solicitudPrestamo.cargo_utilidad
-            : false
-        ),
+        requiredIf: requiredIf(() => solicitudPrestamo.cargo_utilidad)
       },
       valor_utilidad: {
-        requiredIf: requiredIf(
-          solicitudPrestamo.cargo_utilidad != null
-            ? solicitudPrestamo.cargo_utilidad
-            : false
-        ),
+        required: requiredIf(() => solicitudPrestamo.cargo_utilidad)
       },
       plazo: {
-        minValue: minValue(1),
+        // minValue: minValue(1),
         maxValue: maxValue(12),
-        requiredIfPlazo: requiredIf(
+        required: requiredIf(
           () =>
             esValidador.value &&
             solicitudPrestamo.estado !== autorizacionesId.CANCELADO
-        ),
-      },
+        )
+      }
     }))
-    const plazo_pago = ref({ id: 0, vencimiento: '', plazo: 0 })
     const v$ = useVuelidate(reglas, solicitudPrestamo)
-
     setValidador(v$.value)
+
+    /*********************
+     * WATCHS
+     ********************/
+    /**
+     * Con el uso de este watch se configura que al validador(RRHH) no le aparezca opción para aprobar préstamos
+     * y que al autorizador (GERENTE) no le aparezca la opción de pendiente, porque solo puede una vez que el préstamo está validado, aprobar o cancelarlo
+     */
+    watch(accion, () => {
+      autorizaciones.value = listadosAuxiliares.autorizaciones
+      if (accion.value === acciones.editar && esValidador) {
+        autorizaciones.value = listadosAuxiliares.autorizaciones.filter(
+          (v: Autorizacion) => v.nombre !== autorizacionesTransacciones.aprobado
+        )
+      }
+      if (accion.value === acciones.editar && esAutorizador.value) {
+        autorizaciones.value = listadosAuxiliares.autorizaciones.filter(
+          (v: Autorizacion) =>
+            v.nombre !== autorizacionesTransacciones.pendiente
+        )
+      }
+    })
+
+    /*********************
+     * FUNCIONES
+     ********************/
     function optionsSolicitudPrestamo(date) {
       const currentDate = new Date() // Obtener la fecha actual
       const year = currentDate.getFullYear() // Obtener el año
@@ -157,73 +193,35 @@ export default defineComponent({
       const currentDateString = `${year}/${month}/${day}` // Formatear la fecha actual
       return date >= currentDateString
     }
-    const tabSolicitudPrestaamo = ref('1')
-    function filtrarSolicitudPrestamo(tabSeleccionado: string) {
-      listar({ estado: tabSeleccionado }, false)
-      tabSolicitudPrestaamo.value = tabSeleccionado
+
+    async function filtrarSolicitudPrestamo(tabSeleccionado: string) {
+      await listar({ estado: tabSeleccionado })
+      tabSolicitudPrestamo.value = tabSeleccionado
     }
-    /**
-     * La función `filtrarPeriodo` filtra una lista de períodos en función de un valor dado y actualiza la
-     * lista filtrada.
-     * @param val - El parámetro `val` es un valor de cadena que representa el valor de entrada para
-     * filtrar los períodos. Se utiliza para buscar períodos que tienen un nombre que contiene el valor de
-     * entrada.
-     * @param update - El parámetro `update` es una función que se utiliza para actualizar el valor de
-     * `periodos`. Es una función de devolución de llamada que toma otra función como argumento. La función
-     * interna es responsable de actualizar el valor de `periodos` en función del parámetro `val` dado.
-     * @returns nada (indefinido).
-     */
-    function filtrarPeriodo(val, update) {
-      if (val === '') {
-        update(() => {
-          periodos.value = listadosAuxiliares.periodos
-        })
-        return
-      }
-      update(() => {
-        const needle = val.toLowerCase()
-        periodos.value = listadosAuxiliares.periodos.filter(
-          (v) => v.nombre.toLowerCase().indexOf(needle) > -1
-        )
-      })
-    }
-    const maximoValorsolicitudPrestamo = [
-      (val) =>
-        val <= parseInt(sueldo_basico.value) * 2 ||
-        'Solo se permite prestamo menor o igual a 2 SBU ($ ' +
-          parseInt(sueldo_basico.value) * 2 +
-          ')',
-    ]
+
     return {
-      removeAccents,
       mixin,
       solicitudPrestamo,
       periodos,
-      filtrarPeriodo,
-      sueldo_basico,
-      esMayorsolicitudPrestamo,
+      filtrarPeriodos,
       esValidador,
       esAutorizador,
       optionsSolicitudPrestamo,
       filtrarSolicitudPrestamo,
       maximoValorsolicitudPrestamo,
-      plazo_pago,
       autorizaciones,
       autorizacionesId,
       maskFecha,
       v$,
       disabled,
-      store,
       recursosHumanosStore,
       tabOptionsSolicitudPedido,
       accion,
-      puede_editar,
       configuracionColumnas: configuracionColumnasSolicitudPrestamo,
-      tabSolicitudPrestaamo,
-      accionesTabla,
+      tabSolicitudPrestamo,
       ver_boton_editar,
       acciones,
-      restringirMotivo,
+      restringirMotivo
     }
-  },
+  }
 })

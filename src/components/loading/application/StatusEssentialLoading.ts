@@ -21,6 +21,7 @@ export class StatusEssentialLoading {
       message: '<span class="text-white">La operación está en progreso.<br/><br/><small class="text-grey-8 text-bold q-py-xs q-px-sm ' + this.waitBackground + ' rounded-card">Espere por favor...</small></span>',
       html: true,
     })
+    this.store.cargando = true
   }
 
   // establecerMensaje(mensaje: string): void {
@@ -29,6 +30,7 @@ export class StatusEssentialLoading {
 
   desactivar(): void {
     this.$q.loading.hide()
+    this.store.cargando = false
   }
   async cargarConsulta(callback: () => Promise<any>): Promise<any> {
     try {

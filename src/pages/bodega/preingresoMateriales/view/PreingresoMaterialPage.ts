@@ -20,7 +20,7 @@ import VisorImagen from 'components/VisorImagen.vue'
 import GestorArchivos from 'components/gestorArchivos/GestorArchivos.vue';
 
 //Logica y controladores
-import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
 import { PreingresoMaterial } from '../domain/PreingresoMaterial'
 import { PreingresoMaterialController } from '../infraestructure/PreingresoMaterialController'
 import { useNotificaciones } from 'shared/notificaciones'
@@ -29,7 +29,7 @@ import { CustomActionTable } from 'components/tables/domain/CustomActionTable';
 import { LocalStorage, useQuasar } from 'quasar';
 import { useOrquestadorSelectorProductos } from '../application/OrquestadorSelectorProductos';
 import { ItemPreingresoMaterial } from '../domain/ItemPreingresoMaterial';
-import { encontrarUltimoIdListado, filtrarEmpleadosPorRoles, filtrarLista, ordenarLista } from 'shared/utils';
+import { encontrarUltimoIdListado, filtrarEmpleadosPorRoles, ordenarLista } from 'shared/utils';
 import { UnidadMedidaController } from 'pages/bodega/unidades_medidas/infraestructure/UnidadMedidaController';
 import { UnidadMedida } from 'pages/bodega/unidades_medidas/domain/UnidadMedida';
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
@@ -57,13 +57,13 @@ export default defineComponent({
   emits: ['actualizar', 'fila-modificada', 'cargado'],
   setup(props, { emit }) {
     const mixin = new ContenedorSimpleMixin(PreingresoMaterial, new PreingresoMaterialController(), new ArchivoController())
-    const { entidad: preingreso, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
+    const { entidad: preingreso, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista, listar } = mixin.useComportamiento()
     const { onReestablecer, onConsultado, onGuardado, onModificado, onBeforeGuardar } = mixin.useHooks()
-    const { confirmar, prompt, notificarCorrecto, notificarError } = useNotificaciones()
-    let tabSeleccionado = ref()
-    let componenteCargado = ref(false)
-    let puedeEditar = ref(false)
+    const { confirmar } = useNotificaciones()
+    const tabSeleccionado = ref()
+    const componenteCargado = ref(false)
+    const puedeEditar = ref(false)
     const refVisorImagen = ref()
     const refArchivo = ref()
     const idPreingreso = ref()
@@ -383,7 +383,7 @@ export default defineComponent({
       titulo: 'Eliminar',
       icono: 'bi-trash',
       color: 'negative',
-      accion: ({ entidad, posicion }) => {
+      accion: ({ posicion }) => {
         //: props.propsTable.rowIndex,
         eliminar({ posicion })
       },
@@ -408,7 +408,7 @@ export default defineComponent({
       titulo: 'Imprimir',
       color: 'secondary',
       icono: 'bi-printer',
-      accion: async ({ entidad, posicion }) => {
+      accion: async ({ entidad }) => {
         preingresoStore.idPreingreso = entidad.id
         await preingresoStore.imprimirPdf()
       },

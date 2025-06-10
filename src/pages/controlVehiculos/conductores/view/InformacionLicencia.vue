@@ -289,13 +289,13 @@ import { Conductor } from '../domain/Conductor'
 import { acciones, accionesTabla, maskFecha } from 'config/utils'
 import { configuracionColumnasMultasConductores } from '../domain/configuracionColumnasMultasConductores'
 import { tiposLicencias } from 'config/vehiculos.utils'
-import { maxValue, minValue, required } from 'shared/i18n-validators'
+import {maxValue,minValue,requiredIf,} from 'shared/i18n-validators'
 import useVuelidate from '@vuelidate/core'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { ComportamientoModalesConductores } from '../application/ComportamientoModalesConductores'
 import { useNotificaciones } from 'shared/notificaciones'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
-import { ref } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 import { useConductorStore } from 'stores/vehiculos/conductor'
 import { MultaConductorController } from '../modules/multas/infraestructure/MultaConductorController'
 import { FechaLicencia } from '../domain/FechaLicencia'
@@ -319,6 +319,10 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
+  validar: {
+    type: Boolean,
+    default: false,
+  },
 })
 const emit = defineEmits(['guardado'])
 
@@ -333,18 +337,42 @@ const dataMulta = {
   fecha_pago: null,
   comentario: null,
 }
+let reglas
+onMounted(() => console.log('InformacionLicencia -> Montado'))
+onUnmounted(() => {
+  console.log('InformacionLicencia -> Desmontado')
+  reglas = {
+    tipo_licencia: { required: requiredIf(false) },
+    puntos: {
+      required: requiredIf(false),
+    },
+    licencias: {
+      $each: helpers.forEach({
+        tipo_licencia: { required: requiredIf(() => false) },
+        inicio_vigencia: { required: requiredIf(() => false) },
+        fin_vigencia: { required: requiredIf(() => false) },
+      }),
+    },
+  }
+  const v$ = useVuelidate(reglas, conductor)
+  setValidador(v$.value)
+})
 
 /***********************
  * Reglas de validacion
  **********************/
-const reglas = {
-  tipo_licencia: { required },
-  puntos: { required, maximo: maxValue(30), minimo: minValue(0) },
+reglas = {
+  tipo_licencia: { required: requiredIf(() => props.validar) },
+  puntos: {
+    required: requiredIf(() => props.validar),
+    maximo: maxValue(30),
+    minimo: minValue(0),
+  },
   licencias: {
     $each: helpers.forEach({
-      tipo_licencia: { required },
-      inicio_vigencia: { required },
-      fin_vigencia: { required },
+      tipo_licencia: { required: requiredIf(() => props.validar) },
+      inicio_vigencia: { required: requiredIf(() => props.validar) },
+      fin_vigencia: { required: requiredIf(() => props.validar) },
     }),
   },
 }
@@ -396,7 +424,7 @@ async function consultarMultasConductor() {
 async function fechaIngresada(fecha?) {
   // console.log('Fecha ingresada: ', fecha)
   dataMulta.fecha_pago = fecha
-  if (await conductorStore.pagarMulta(dataMulta)) consultarMultasConductor()
+  if (await conductorStore.pagarMulta(dataMulta)) await consultarMultasConductor()
 }
 function agregarLicencia(data) {
   // Aqui se recibe clave valor data = {index:1, value:'A'}

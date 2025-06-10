@@ -44,7 +44,7 @@ export default defineComponent({
   bottom: 63px;
   right: 20px;
   padding: 10px;
-  background-color: $primary;
+  background-color: $positive;
   color: white;
   border: none;
   border-radius: 50%;

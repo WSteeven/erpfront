@@ -4,7 +4,7 @@ import { endpoints } from 'config/api';
 
 export class ExtensionConyugalController extends TransaccionSimpleController<ExtensionConyugal>{
   constructor(){
-    super(endpoints.extension_covertura_salud)
+    super(endpoints.extension_cobertura_salud)
   }
 }
 

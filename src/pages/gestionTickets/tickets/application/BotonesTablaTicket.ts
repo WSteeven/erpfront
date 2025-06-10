@@ -9,14 +9,15 @@ import { useAuthenticationStore } from 'stores/authentication'
 import { CambiarEstadoTicket } from './CambiarEstadoTicket'
 import { useNotificaciones } from 'shared/notificaciones'
 import { estadosTickets } from 'config/tickets.utils'
-import { Ticket } from '../domain/Ticket'
 import { useTicketStore } from 'stores/ticket'
+import { Ticket } from '../domain/Ticket'
 import { reactive } from 'vue'
 
 export const useBotonesTablaTicket = (mixin: ContenedorSimpleMixin<Ticket | any>, modales: ComportamientoModalesTicket | any) => {
   const { confirmar, prompt, notificarCorrecto, promptItems } = useNotificaciones()
   const notificaciones = useNotificaciones()
-  const { listado, listadosAuxiliares } = mixin.useReferencias()
+  const { entidad: ticket, listado, listadosAuxiliares } = mixin.useReferencias()
+  const { editarParcial } = mixin.useComportamiento()
 
   const cambiarEstadoTicket = new CambiarEstadoTicket()
   const ticketStore = useTicketStore()
@@ -29,7 +30,7 @@ export const useBotonesTablaTicket = (mixin: ContenedorSimpleMixin<Ticket | any>
     titulo: 'Transferir',
     icono: 'bi-arrow-right',
     color: 'secondary',
-    visible: ({ entidad }) => [estadosTickets.ASIGNADO, estadosTickets.REASIGNADO, estadosTickets.EJECUTANDO, estadosTickets.PAUSADO].includes(entidad.estado),
+    visible: ({ entidad }) => [estadosTickets.ASIGNADO, estadosTickets.REASIGNADO, estadosTickets.EJECUTANDO, estadosTickets.PAUSADO].includes(entidad.estado) && entidad.responsable_id === authenticationStore.user.id,
     accion: ({ entidad, posicion }) => {
       ticketStore.filaTicket = entidad
       ticketStore.posicionFilaTicket = posicion
@@ -53,11 +54,11 @@ export const useBotonesTablaTicket = (mixin: ContenedorSimpleMixin<Ticket | any>
     }
   }
 
-  const btnPausar: CustomActionTable = {
+  const btnPausar: CustomActionTable<Ticket> = {
     titulo: 'Pausar',
     icono: 'bi-pause-circle',
     color: 'blue-6',
-    visible: ({ entidad }) => entidad.estado === estadosTickets.EJECUTANDO,
+    visible: ({ entidad }) => entidad.estado === estadosTickets.EJECUTANDO && entidad.responsable_id === authenticationStore.user.id,
     accion: ({ entidad }) => {
 
       confirmar('¿Está seguro de pausar el ticket?', () => {
@@ -101,7 +102,7 @@ export const useBotonesTablaTicket = (mixin: ContenedorSimpleMixin<Ticket | any>
     titulo: 'Reanudar',
     icono: 'bi-play-circle',
     color: 'positive',
-    visible: ({ entidad }) => entidad.estado === estadosTickets.PAUSADO && entidad.puede_ejecutar,
+    visible: ({ entidad }) => [estadosTickets.PAUSADO, estadosTickets.FINALIZADO_SOLUCIONADO].includes(entidad.estado) && entidad.puede_ejecutar,
     accion: async ({ entidad }) => {
       confirmar('¿Está seguro de reanudar el trabajo?', async () => {
         await cambiarEstadoTicket.reanudar(entidad.id)
@@ -115,7 +116,7 @@ export const useBotonesTablaTicket = (mixin: ContenedorSimpleMixin<Ticket | any>
     titulo: 'Finalizar',
     color: 'positive',
     icono: 'bi-check',
-    visible: ({ entidad }) => entidad.estado === estadosTickets.EJECUTANDO,
+    visible: ({ entidad }) => entidad.estado === estadosTickets.EJECUTANDO && entidad.responsable_id === authenticationStore.user.id,
     accion: ({ entidad, posicion }) => confirmar('¿Está seguro de marcar como finalizado el ticket?', async () => {
       const config: CustomActionPrompt = reactive({
         mensaje: 'Seleccione una opción de finalización',
@@ -195,7 +196,7 @@ export const useBotonesTablaTicket = (mixin: ContenedorSimpleMixin<Ticket | any>
   const btnReasignar: CustomActionTable = {
     titulo: 'Cambiar responsable',
     icono: 'bi-arrow-left-right',
-    color: 'positive',
+    color: 'teal',
     visible: ({ entidad }) => entidad.estado === estadosTickets.ASIGNADO,
     accion: async ({ entidad, posicion }) => {
       ticketStore.filaTicket = entidad
@@ -275,7 +276,7 @@ export const useBotonesTablaTicket = (mixin: ContenedorSimpleMixin<Ticket | any>
   const btnCalificarSolicitante: CustomActionTable = {
     titulo: 'Calificar',
     icono: 'bi-stars',
-    color: 'positive',
+    color: 'amber-8',
     visible: ({ entidad }) => [estadosTickets.FINALIZADO_SIN_SOLUCION, estadosTickets.FINALIZADO_SOLUCIONADO].includes(entidad.estado) && (authenticationStore.user.id === entidad.solicitante_id && entidad.pendiente_calificar_solicitante),
     accion: ({ entidad, posicion }) => {
       ticketStore.posicionFilaTicket = posicion
@@ -293,6 +294,18 @@ export const useBotonesTablaTicket = (mixin: ContenedorSimpleMixin<Ticket | any>
       ticketStore.posicionFilaTicket = posicion
       ticketStore.filaTicket = entidad
       modales.abrirModalEntidad('CalificarTicketPage')
+    }
+  }
+
+  const btnPausarRecurrente: CustomActionTable<Ticket> = {
+    titulo: ({ entidad }) => (entidad.recurrence_active ? 'Pausar ' : 'Activar ') + 'recurrencia',
+    icono: ({ entidad }) => entidad.recurrence_active ? 'bi-pause-fill' : 'bi-play-fill',
+    color: ({ entidad }) => entidad.recurrence_active ? 'blue-4' : 'blue',
+    visible: ({ entidad }) => entidad.is_recurring && entidad.solicitante_id === authenticationStore.user.id,
+    accion: ({ entidad }) => {
+      confirmar(`¿Está seguro de ${entidad.recurrence_active ? 'pausar' : 'activar'} la recurrencia del ticket?`, async () => {
+        await editarParcial(entidad.id, { recurrence_active: !entidad.recurrence_active })
+      })
     }
   }
 
@@ -314,5 +327,6 @@ export const useBotonesTablaTicket = (mixin: ContenedorSimpleMixin<Ticket | any>
     btnCalificarResponsable,
     btnAsignar,
     setFiltrarTickets,
+    btnPausarRecurrente,
   }
 }

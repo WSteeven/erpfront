@@ -2,7 +2,7 @@
 import { configuracionColumnasItemsPago } from '../domain/configuracionColumnasItemsPago'
 import { configuracionColumnasPagoProveedores } from '../domain/configuracionColumnasPagoProveedores'
 import { useVuelidate } from '@vuelidate/core'
-import { computed, defineComponent, reactive, ref, watchEffect } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'

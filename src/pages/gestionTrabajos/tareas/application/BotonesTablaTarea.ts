@@ -1,4 +1,4 @@
-import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+// import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
@@ -25,11 +25,27 @@ export const useBotonesTablaTarea = (mixin: ContenedorSimpleMixin<Tarea>) => {
   const refVisorImagen = ref()
   const entidadTarea = ref()
 
-  const btnFinalizarTarea: CustomActionTable = {
+  const btnActivarTareaTemporalmente: CustomActionTable<Tarea> = {
+    titulo: 'Activar temporalmente',
+    icono: 'bi-arrow-up-circle-fill',
+    visible: ({ entidad }) => entidad.finalizado && entidad.fecha_hora_finalizacion,
+    color: 'positive',
+    accion: ({ entidad, posicion }) => confirmar('Esto no modificará la fecha de finalización original. La tarea se volverá a desactivar en el transcurso de 24 horas automáticamente.', async () => editarParcial(entidad.id, { finalizado: 0 }).then(() => eliminarElemento(posicion)))
+  }
+
+  const btnDesactivarTarea: CustomActionTable<Tarea> = {
+    titulo: 'Desactivar tarea reactivada',
+    icono: 'bi-arrow-down-circle-fill',
+    visible: ({ entidad }) => !entidad.finalizado && entidad.fecha_hora_finalizacion,
+    color: 'negative',
+    accion: ({ entidad, posicion }) => confirmar('Esto no modificará la fecha de finalización original. La tarea está programada para que se desactive en el transcurso de 24 horas automáticamente luego de activarse pero también puede hacerlo manualmente desde aqui.', async () => editarParcial(entidad.id, { finalizado: 1 }).then(() => eliminarElemento(posicion)))
+  }
+
+  const btnFinalizarTarea: CustomActionTable<Tarea> = {
     titulo: 'Finalizar tarea',
     icono: 'bi-check-circle-fill',
     color: 'positive',
-    visible: ({ entidad }) => !entidad.finalizado,
+    visible: ({ entidad }) => !entidad.finalizado && !entidad.fecha_hora_finalizacion,
     accion: async ({ entidad, posicion }) => {
       if (listado.value[posicion].cantidad_subtareas == 0) return notificarAdvertencia('La tarea debe tener al menos una subtarea para poder finalizarla.')
       const estanFinalizadas = await verificarTodasSubtareasFinalizadas(entidad.id)
@@ -42,7 +58,6 @@ export const useBotonesTablaTarea = (mixin: ContenedorSimpleMixin<Tarea>) => {
       entidadTarea.value = entidad
 
       if (!entidad.codigo_tarea_cliente) {
-        console.log('dentro del if')
         const data: CustomActionPrompt = {
           titulo: 'Finalizar tarea',
           mensaje: 'Para finalizar la tarea ingrese el código de tarea que le otorgó el cliente corporativo.',
@@ -70,8 +85,6 @@ export const useBotonesTablaTarea = (mixin: ContenedorSimpleMixin<Tarea>) => {
         prompt(data)
 
       } else {
-        console.log('dentro del else')
-
         const data: CustomActionPrompt = {
           titulo: 'Novedad',
           mensaje: 'Ingrese alguna novedad en caso de presentarse.',
@@ -116,17 +129,9 @@ export const useBotonesTablaTarea = (mixin: ContenedorSimpleMixin<Tarea>) => {
     return response.data.estan_finalizadas
   }
 
-  // async function verificarMaterialTareaDevuelto(idTarea: number, idEmpleado: number) {
-  //   const axios = AxiosHttpRepository.getInstance()
-  //   const ruta = axios.getEndpoint(endpoints.verificar_material_tarea_devuelto, { tarea_id: idTarea, empleado_id: idEmpleado })
-  //   const response: AxiosResponse = await axios.get(ruta)
-  //   return response.data.materiales_devueltos
-  // }
-
   // Funcion que finaliza la tarea ya sea directamente o luego de subir la imagen solicitada
   function imagenSubida(imagen?) {
 
-    console.log('imagen a subir')
     const mensaje = entidadTarea.value.cliente_id === clientes.NEDETEL ? 'Los materiales serán transferidos automáticamente al stock personal de cada empleado responsable. ¿Desea finalizar?' : '¿Desea finalizar?'
     confirmar(mensaje, async () => {
       const posicion = filaFinalizar.posicion
@@ -138,8 +143,8 @@ export const useBotonesTablaTarea = (mixin: ContenedorSimpleMixin<Tarea>) => {
       delete (filaFinalizar as any).id
       delete (filaFinalizar as any).posicion
 
-      if (id) await editarParcial(id, filaFinalizar)
-      eliminarElemento(posicion)
+
+      if (id) editarParcial(id, filaFinalizar).then(() => eliminarElemento(posicion))
     })
   }
 
@@ -149,5 +154,7 @@ export const useBotonesTablaTarea = (mixin: ContenedorSimpleMixin<Tarea>) => {
     mostrarSolicitarImagen,
     imagenSubida,
     btnVerImagenInforme,
+    btnActivarTareaTemporalmente,
+    btnDesactivarTarea,
   }
 }

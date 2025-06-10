@@ -29,6 +29,7 @@
           :disable="disabled"
         />
       </div>
+
       <!-- Nombre -->
       <div class="col-12 col-md-2 q-mb-md">
         <label class="q-mb-sm block">Nombre</label>
@@ -53,9 +54,18 @@
       <div v-if="!permiso.permiso_personalizado" class="col-12 col-md-5">
         <label class="block">Acciones</label>
         <div class="row q-pt-md">
-          <!-- Autorizar permiso -->
+          <!-- Ver boton -->
           <q-checkbox
             class=""
+            v-model="permiso.boton"
+            label="Boton"
+            :disable="disabled "
+            outlined
+            dense
+          ></q-checkbox>
+          <!-- Autorizar permiso -->
+          <q-checkbox
+            class="q-ml-lg"
             v-model="permiso.autorizar"
             label="Autorizar"
             :disable="disabled "
@@ -124,7 +134,7 @@
           dense
           use-chips
           outlined
-          @filter="filtrarRol"
+          @filter="filtrarRoles"
           use-input
           input-debounce="0"
           :error="!!v$.roles.$errors.length"
@@ -166,7 +176,7 @@
     <button-submits
       accion="NUEVO"
       :permitirCancelar="false"
-      @guardar="crear(entidad)"
+      @guardar="crear()"
     />
   </q-form>
 </template>

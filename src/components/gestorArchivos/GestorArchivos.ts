@@ -7,7 +7,7 @@
 // Dependencias
 import { configuracionColumnasArchivoSubtarea } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/domain/configuracionColumnasArchivoSubtarea'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { descargarArchivoUrl, formatBytes } from 'shared/utils'
+import { descargarArchivoUrl } from 'shared/utils'
 import { useNotificaciones } from 'shared/notificaciones'
 import { AxiosError, AxiosResponse } from 'axios'
 import { accionesTabla } from 'config/utils'
@@ -45,7 +45,7 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
-    quieroSubirArchivos:{
+    quieroSubirArchivos: {
       type: Boolean,
       default: false,
     },
@@ -57,19 +57,31 @@ export default defineComponent({
       type: String,
       required: false,
     },
+    formato: {
+      type: String,
+      default: '*'
+    },
+    maxFiles: {
+      type: Number,
+      default: 15 // **NOTA** :  valor temporal, actualizar a 1 cuando ya se controle el maximo de archivos en los componentes que llaman a GestorArchivos
+    },
+    maxTamanioBytes: {
+      type: Number,
+      default: 10485760 //10 MB
+    }
   },
   emits: ['inicializado'],
   setup(props, { emit }) {
     /********
      * Mixin
     *********/
-    const { listadoArchivos } = props.mixin.useReferencias()
+    const {listadoArchivos, entidad, } = props.mixin.useReferencias()
     const { eliminarArchivo, listarArchivos, guardarArchivos } = props.mixin.useComportamiento()
 
-    const { notificarError, notificarAdvertencia, confirmar } = useNotificaciones()
+    const { notificarError, notificarAdvertencia, notificarInformacion, confirmar } = useNotificaciones()
 
-    function listarArchivosAlmacenados(id: number, params: ParamsType) {
-      listarArchivos(id, params)
+    async function listarArchivosAlmacenados(id: number, params: string) {//ParamsType) {
+      await listarArchivos(id, params)
     }
 
     const cantElementos = ref(0)
@@ -86,6 +98,7 @@ export default defineComponent({
       visible: () => props.permitirEliminar,
       accion: async ({ entidad }) => {
         confirmar('Esta operación es irreversible. El archivo se eliminará de forma instantánea.', () => eliminarArchivo(entidad))
+        entidad.isComponentFilesModified=true
       }
     }
 
@@ -114,7 +127,7 @@ export default defineComponent({
       const fd = new FormData()
       fd.append('file', files[0])
 
-      for (let key in paramsForm) {
+      for (const key in paramsForm) {
         fd.append(key, paramsForm[key])
 
       }
@@ -136,18 +149,37 @@ export default defineComponent({
       }
     }
 
-    function subir(params: ParamsType) {
+    async function subir(params: ParamsType) {
+      console.log('sueiendo...')
       paramsForm = params
       if (refGestor.value) {
-        refGestor.value.upload()
-        refGestor.value.reset()
-        refGestor.value.removeUploadedFiles()
-        refGestor.value.removeQueuedFiles()
+        await refGestor.value.upload()
+        await refGestor.value.reset()
+        await refGestor.value.removeUploadedFiles()
+        await refGestor.value.removeQueuedFiles()
       }
     }
 
     function onRejected(rejectedEntries) {
-      notificarAdvertencia('El tamaño total de los archivos no deben exceder los 10mb.')
+      rejectedEntries.forEach(element => {
+        switch (element.failedPropValidation) {
+          case 'accept':
+            notificarError(`El archivo ${element.file.name}  debe ser de un formato válido.`)
+            notificarInformacion(`Formato/s aceptado/s ${props.formato}`)
+            break
+          case 'duplicate':
+            notificarError(`El archivo ${element.file.name} ya está adjuntado.`)
+            break
+          case 'max-files':
+            notificarError(`No se pudo agregar el archivo ${element.file.name} porque solo se permite un máximo de ${props.maxFiles} archivo/s.`);
+            break
+          case 'max-total-size':
+            notificarError(`El archivo ${element.file.name} excede el tamaño máximo permitido.`)
+            break
+          default:
+            notificarAdvertencia('El tamaño total de los archivos no debe exceder los 10mb.')
+        }
+      });
     }
 
 
@@ -161,15 +193,25 @@ export default defineComponent({
         cantElementos.value += 1
       }
       tamanioListado.value += obtenerSumatoriaTamanio(files)
+      // props.mixin.useReferencias().
+      entidad.isComponentFilesModified=true
     }
     function onFileRemoved(file) {
       cantElementos.value -= 1
       tamanioListado.value -= obtenerSumatoriaTamanio(file)
+      entidad.isComponentFilesModified=true
     }
     function obtenerSumatoriaTamanio(files) {
       const sumatoria = files.reduce((total, file) => total + file.size, 0)
       return sumatoria
     }
+
+    function bytesToMB(bytes) {
+      if (bytes === 0) return '0 MB';
+
+      const megabytes = bytes / (1024 * 1024);
+      return megabytes.toFixed(2) + ' MB';
+  }
 
     return {
       listadoArchivos,
@@ -189,6 +231,7 @@ export default defineComponent({
       subir,
       limpiarListado,
       listarArchivosAlmacenados,
+      bytesToMB,
     }
   }
 })

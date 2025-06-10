@@ -1,5 +1,6 @@
 <template>
   <q-file
+    v-if="mostrarCampo && !isNative"
     v-model="img"
     dense
     outlined
@@ -26,71 +27,63 @@
       >
     </template>
   </q-file>
-  <!-- datos de la imagen  -->
-  <!-- <div v-if="fileSize !== null && !isNaN(fileSize)">
-    Tamaño de la imagen: {{ (fileSize / 1024).toFixed(2) }} KB
-  </div> -->
-  <q-img
-    v-show="imagenCodificada"
-    :src="imagenCodificada"
-    width="100%"
-    :height="alto"
-    fit="contain"
-  >
-  </q-img>
 
-  <q-dialog v-model="opened" maximized>
-    <q-card class="bg-black rounded-card no-border" flat>
+  <!-- Solo móvil nativo -->
+  <q-btn
+    v-if="mostrarCampo && isNative"
+    label="Seleccionar Imagen"
+    icon="camera_alt"
+    class="q-mt-sm text-color full-width bg-solid borde"
+    unelevated
+    :disable="disable"
+    @click="abrirCamaraOGaleria"
+    no-caps
+  />
+
+  <div class="bg-desenfoque">
+    <q-img
+      v-show="imagenCodificada"
+      :src="imagenCodificada ?? ''"
+      width="100%"
+      :height="alto"
+      fit="contain"
+      class="border-white"
+    >
+    </q-img>
+
+    <small v-if="imagenCodificada" class="block text-center">
       <q-btn
-        round
-        push
-        color="negative"
-        glossy
-        icon="bi-x"
-        @click="() => (opened = false)"
-        class="closeButton"
+        @click="refVisorImagen.abrir(imagenCodificada)"
+        label="Ver en pantalla completa"
+        icon="bi-eye"
+        class="text-grey-8 full-width bg-white border-white"
+        no-caps
+        no-wrap
+        square
+        unelevated
       />
+    </small>
+  </div>
 
-      <q-card-section v-if="texto1">
-        <div class="row q-col-gutter-sm q-mb-md q-ml-md q-mr-md text-grey-4">
-          <div class="col-12 col-md-3 text-h6">{{ texto1 }}</div>
-          <div v-if="texto2" class="col-12 col-md-3 text-h6">{{ texto2 }}</div>
-          <div v-if="texto3" class="col-12 col-md-3 text-h6">{{ texto3 }}</div>
-          <div class="col-12 col-md-3 text-h6">{{ texto4 }}</div>
-        </div>
-      </q-card-section>
-
-      <q-card-section class="rounded-footer text-center q-pa-none">
-        <q-img
-          v-show="imagenCodificada"
-          :src="imagenCodificada"
-          fit="contain"
-          width="80%"
-          height="100vh"
-        >
-        </q-img>
-      </q-card-section>
-    </q-card>
-  </q-dialog>
-
-  <small v-if="imagenCodificada" class="block text-center q-py-sm">
-    <q-btn
-      outline
-      glossy
-      color="primary"
-      @click="opened = true"
-      label="Ver en pantalla completa"
-      no-caps
-    />
-  </small>
+  <visor-imagen
+    ref="refVisorImagen"
+    :texto1="texto1"
+    :texto2="texto2"
+    :texto3="texto3"
+    :texto4="texto4"
+    :texto5="texto5"
+  ></visor-imagen>
 </template>
 
 <script lang="ts" setup>
+import VisorImagen from 'components/VisorImagen.vue'
 import { computed, getCurrentInstance, onMounted, ref, watch } from 'vue'
+import { Capacitor } from '@capacitor/core'
+import { Camera, CameraResultType, CameraSource } from '@capacitor/camera'
 
 const props = defineProps({
   modelValue: String,
-  imagen: String,
+  imagen: String as () => string | null | undefined,
   disable: Boolean,
   file_extensiones: String,
   error: Boolean,
@@ -101,10 +94,15 @@ const props = defineProps({
   texto2: String,
   texto3: String,
   texto4: String,
+  texto5: String,
+  mostrarCampo: {
+    type: Boolean,
+    default: true
+  },
   comprimir: {
     type: Boolean,
-    default: true,
-  },
+    default: true
+  }
 })
 const emit = defineEmits(['update:modelValue'])
 const instance = getCurrentInstance()
@@ -114,25 +112,21 @@ onMounted(() => {
   slotUsado.value = !!slots?.error
 })
 
+const refVisorImagen = ref()
 const slotUsado = ref(false)
 const fileSize = ref()
 const img = ref()
 const imagenCodificada = computed(() => props.imagen)
 const alto = computed(() => props.alto ?? '160px')
-const opened = ref(false)
 
 const setBase64 = async (file: File) => {
   if (file !== null && file !== undefined) {
-    // console.log('Imagen sin comprimida en el archivo', file)
     fileSize.value = file.size
-    // console.log('tamaño de imagen_1', fileSize.value)
     const reader = new FileReader()
     const compressedFile = props.comprimir ? await compressImage(file) : file
 
-    // console.log('Imagen comprimida en el archivo', compressedFile)
     reader.readAsDataURL(compressedFile)
     reader.onload = () => emit('update:modelValue', reader.result)
-    // reader.onload = () => emit('update:modelValue', compressImage(file))
     fileSize.value = compressedFile.size
   } else {
     fileSize.value = null
@@ -140,11 +134,10 @@ const setBase64 = async (file: File) => {
 }
 
 async function compressImage(file) {
-  return new Promise<File>((resolve) => {
+  return new Promise<File>(resolve => {
     const reader = new FileReader()
 
-    reader.onload = (event) => {
-      // console.log(event)
+    reader.onload = event => {
       const img = new Image()
       img.src = event.target?.result?.toString() || ''
 
@@ -168,11 +161,11 @@ async function compressImage(file) {
         ctx?.drawImage(img, 0, 0, newWidth, newHeight)
 
         canvas.toBlob(
-          (blob) => {
+          blob => {
             if (blob) {
               const compressedFile: File = new File([blob], file.name, {
                 type: 'image/jpeg', // Ajusta el tipo de archivo según tus necesidades
-                lastModified: Date.now(),
+                lastModified: Date.now()
               })
               resolve(compressedFile)
             }
@@ -187,6 +180,27 @@ async function compressImage(file) {
   })
 }
 
+// Detecta si está en app móvil nativa
+const isNative = Capacitor.isNativePlatform()
+
+const abrirCamaraOGaleria = async () => {
+  try {
+    const image = await Camera.getPhoto({
+      quality: 70,
+      allowEditing: false,
+      resultType: CameraResultType.DataUrl,
+      source: CameraSource.Prompt // Prompt = galería o cámara
+    })
+
+    emit('update:modelValue', image.dataUrl)
+  } catch (err) {
+    console.warn('Usuario canceló o falló la captura de imagen', err)
+  }
+}
+
+/************
+ * Observers
+ ************/
 watch(imagenCodificada, () => {
   if (!imagenCodificada.value) img.value = null
 })

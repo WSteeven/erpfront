@@ -4,14 +4,15 @@
     :configuracionColumnas="configuracionColumnas"
     :tabOptions="tabOptionsPermiso"
     :full="true"
+    ajustarCeldas
     :accion1="editarPermiso"
     :permitirEditar="false"
     :permitirEliminar="false"
     :mostrarButtonSubmits="true"
     :filtrar="filtrarPermisoEmpleado"
     tabDefecto="1"
-    :forzarListar="true"
   >
+    <!-- :forzarListar="true" -->
     <template #formulario>
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-mb-md q-mt-md q-mx-md q-py-sm">
@@ -29,8 +30,8 @@
               outlined
               :input-debounce="0"
               use-input
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.nombre"
+              :option-value="v => v.id"
+              :option-label="v => v.nombre"
               emit-value
               map-options
             >
@@ -57,7 +58,7 @@
               :error="!!v$.fecha_hora_inicio.$errors.length"
               :disable="
                 permiso.id_jefe_inmediato !== store.user.id &&
-                (accion === 'EDITAR' || accion === 'CONSULTAR')
+                [acciones.consultar, acciones.editar].includes(accion)
               "
               @blur="v$.fecha_hora_inicio.$touch"
               readonly
@@ -74,7 +75,7 @@
                     <div class="q-gutter-md row items-start">
                       <q-date
                         v-model="permiso.fecha_hora_inicio"
-                        mask="DD-MM-YYYY HH:mm"
+                        :mask="mask"
                         :options="optionsFechaInicio"
                         today-btn
                       >
@@ -90,7 +91,7 @@
                       <q-time
                         v-model="permiso.fecha_hora_inicio"
                         :minute-options="minuteOptions"
-                        mask="DD-MM-YYYY HH:mm"
+                        :mask="mask"
                         color="primary"
                       />
                     </div>
@@ -117,7 +118,7 @@
               :error="!!v$.fecha_hora_fin.$errors.length"
               :disable="
                 permiso.id_jefe_inmediato !== store.user.id &&
-                (accion === 'EDITAR' || accion === 'CONSULTAR')
+                [acciones.consultar, acciones.editar].includes(accion)
               "
               @blur="v$.fecha_hora_fin.$touch"
               readonly
@@ -134,7 +135,7 @@
                     <div class="q-gutter-md row items-start">
                       <q-date
                         v-model="permiso.fecha_hora_fin"
-                        mask="DD-MM-YYYY HH:mm"
+                        :mask="mask"
                         :options="optionsFecha"
                         today-btn
                       >
@@ -149,7 +150,7 @@
                       </q-date>
                       <q-time
                         v-model="permiso.fecha_hora_fin"
-                        mask="DD-MM-YYYY HH:mm"
+                        :mask="mask"
                         color="primary"
                         :minute-options="minuteOptions"
                       />
@@ -181,7 +182,7 @@
               v-model="permiso.suguiere_fecha"
               label="Sugerir Fecha"
               :disable="
-                (permiso.id_jefe_inmediato == null && permiso.estado !== 1) ||
+                (permiso.id_jefe_inmediato == null && permiso.estado != 1) ||
                 disabled
               "
               outlined
@@ -211,7 +212,7 @@
               placeholder="Obligatorio"
               :disable="
                 permiso.id_jefe_inmediato !== store.user.id &&
-                (accion === 'EDITAR' || accion === 'CONSULTAR')
+                [acciones.consultar, acciones.editar].includes(accion)
               "
               readonly
               outlined
@@ -227,7 +228,7 @@
                     <div class="q-gutter-md row items-start">
                       <q-date
                         v-model="permiso.fecha_hora_reagendamiento"
-                        mask="DD-MM-YYYY HH:mm"
+                        :mask="mask"
                         :options="optionsFechaSugerida"
                         today-btn
                       >
@@ -242,7 +243,7 @@
                       </q-date>
                       <q-time
                         v-model="permiso.fecha_hora_reagendamiento"
-                        mask="DD-MM-YYYY HH:mm"
+                        :mask="mask"
                         color="primary"
                       />
                     </div>
@@ -256,9 +257,10 @@
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Justificativo</label>
             <q-input
+              autogrow
               v-model="permiso.justificacion"
               @update:model-value="
-                (v) => (permiso.justificacion = removeAccents(v))
+                v => (permiso.justificacion = removeAccents(v))
               "
               placeholder="Obligatorio"
               :disable="!esNuevo"
@@ -282,6 +284,7 @@
               v-model="permiso.empleado_info"
               :disable="!esNuevo"
               outlined
+              autogrow
               dense
             >
             </q-input>
@@ -313,6 +316,7 @@
               v-model="permiso.jefe_inmediato"
               :disable="!esNuevo"
               outlined
+              autogrow
               dense
             >
             </q-input>
@@ -337,7 +341,7 @@
           </div>
 
           <!-- Documento -->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-3 border-grey rounded-4">
             <label class="q-mb-sm block">Soporte</label>
             <gestor-documentos
               ref="refArchivoPrestamoEmpresarial"
@@ -351,7 +355,7 @@
             </gestor-documentos>
           </div>
           <!-- Recuperable -->
-          <div
+          <!-- <div
             class="col-12 col-md-3"
             v-if="
               permiso.id_jefe_inmediato != null &&
@@ -370,9 +374,29 @@
               outlined
               dense
             ></q-checkbox>
+          </div> -->
+
+          <!-- Recupero -->
+          <div
+            class="col-12 col-md-3"
+            v-if="
+              permiso.id_jefe_inmediato &&
+              permiso.estado == 2 &&
+              !permiso.cargo_vacaciones
+            "
+          >
+            <q-checkbox
+              class="q-mt-lg q-pt-md"
+              v-model="permiso.recupero"
+              label="Recupero Horas de Trabajo"
+              :disable="disabled"
+              outlined
+              dense
+            ></q-checkbox>
           </div>
+
           <!-- Fecha Recuperacion -->
-          <div class="col-12 col-md-3" v-if="permiso.recuperables">
+          <div class="col-12 col-md-3" v-if="permiso.recupero">
             <label class="q-mb-sm block">Fecha de Recuperacion</label>
             <q-input
               v-model="permiso.fecha_recuperacion"
@@ -380,7 +404,7 @@
               :error="!!v$.fecha_recuperacion.$errors.length"
               readonly
               :disable="
-                (permiso.id_jefe_inmediato == null && permiso.estado !== 1) ||
+                (permiso.id_jefe_inmediato == null && permiso.estado != 1) ||
                 disabled
               "
               @blur="v$.fecha_recuperacion.$touch"
@@ -424,14 +448,14 @@
             </q-input>
           </div>
           <!-- Hora de recuperacion -->
-          <div class="col-12 col-md-3" v-if="permiso.recuperables">
+          <div class="col-12 col-md-3" v-if="permiso.recupero">
             <label class="q-mb-sm block">Hora de Recuperacion (24 horas)</label>
             <q-input
               v-model="permiso.hora_recuperacion"
               :error="!!v$.hora_recuperacion.$errors.length"
               type="time"
               :disable="
-                (permiso.id_jefe_inmediato == null && permiso.estado !== 1) ||
+                (permiso.id_jefe_inmediato == null && permiso.estado != 1) ||
                 disabled
               "
               hint="Obligatorio"
@@ -451,22 +475,8 @@
             </q-input>
           </div>
 
-          <!-- Recuperto -->
-          <div
-            class="col-12 col-md-3"
-            v-if="permiso.id_jefe_inmediato != null && permiso.estado == 2"
-          >
-            <q-checkbox
-              class="q-mt-lg q-pt-md"
-              v-model="permiso.recupero"
-              label="Recupero Horas de Trabajo"
-              :disable="disabled"
-              outlined
-              dense
-            ></q-checkbox>
-          </div>
           <!-- Cargo a Vacaciones -->
-          <div class="col-12 col-md-3" v-if="horas_permisos >= 8">
+          <div class="col-12 col-md-3">
             <q-checkbox
               class="q-mt-lg q-pt-md"
               v-model="permiso.cargo_vacaciones"
@@ -502,7 +512,7 @@
           <!-- Autorizacion -->
           <div
             class="col-12 col-md-3"
-            v-if="accion == 'EDITAR' && esAutorizador"
+            v-if="accion == acciones.editar && esAutorizador"
           >
             <label class="q-mb-sm block">Autorizacion</label>
             <q-select
@@ -517,8 +527,8 @@
               :readonly="disabled"
               use-input
               input-debounce="0"
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.nombre"
+              :option-value="v => v.id"
+              :option-label="v => v.nombre"
               emit-value
               map-options
             >
