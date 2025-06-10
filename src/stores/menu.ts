@@ -7,8 +7,8 @@ import trabajoSocial from 'stores/menus/rrhh/trabajoSocial'
 import controlPersonal from 'stores/menus/rrhh/controlPersonal'
 import vehiculos from './menus/vehiculos/vehiculos'
 import menuSeguridad from './menus/seguridad/menuSeguridad'
-import comprasProveedores from 'stores/menus/comprasProveedores/comprasProveedores';
-import telconet from 'stores/menus/appenate/telconet';
+import comprasProveedores from 'stores/menus/comprasProveedores/comprasProveedores'
+import telconet from 'stores/menus/appenate/telconet'
 
 export const useMenuStore = defineStore('menu', () => {
   const store = useAuthenticationStore()
@@ -87,7 +87,7 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-people',
           can: store.can('puede.acceder.clientes_finales')
         },
-          ...telconet.value,
+        ...telconet.value,
         {
           title: 'Centro de Costos',
           icon: 'bi-wallet2',
@@ -117,7 +117,7 @@ export const useMenuStore = defineStore('menu', () => {
               link: 'nodos',
               icon: 'bi-plus-circle',
               can: store.can('puede.acceder.nodos')
-            },
+            }
           ]
         },
         {
@@ -244,10 +244,10 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.acceder.cies')
         },
         /* {
-          title: 'Firmar fichas médicas',
-          link: 'firmar-fichas-medicas',
-          icon: 'bi-app',
-        }, */
+                  title: 'Firmar fichas médicas',
+                  link: 'firmar-fichas-medicas',
+                  icon: 'bi-app',
+                }, */
         {
           title: 'Configuracion Cuestionario Empleado',
           link: 'configuraciones-cuestionarios-empleados',
@@ -260,7 +260,7 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Laboratorios clínicos',
           link: 'laboratorios-clinicos',
           icon: 'bi-app',
-          can: store.can('puede.acceder.laboratorios_clinicos')
+            can: store.can('puede.acceder.laboratorios_clinicos')
         }
       ]
     },
@@ -312,15 +312,15 @@ export const useMenuStore = defineStore('menu', () => {
           link: 'certificaciones-empleados',
           icon: 'bi-patch-check',
           can: store.can('puede.acceder.certificaciones_empleados')
-        },
+        }
       ]
     },
     /**
-     * Modulo de bodega.
-     /*****************************************************************************
-     * MÓDULO DE BODEGA.
-     * Toda la estructura de pedidos, devoluciones y despachos de materiales
-     *****************************************************************************/
+         * Modulo de bodega.
+         /*****************************************************************************
+         * MÓDULO DE BODEGA.
+         * Toda la estructura de pedidos, devoluciones y despachos de materiales
+         *****************************************************************************/
     {
       title: 'Bodega',
       icon: 'bi-box-seam',
@@ -482,8 +482,8 @@ export const useMenuStore = defineStore('menu', () => {
               title: 'Aceptar transferencia de productos',
               link: '/aceptar-transferencia-producto',
               icon: 'bi-arrow-left-right',
-              can: true, // store.can('puede.acceder.aceptar_transferencia_producto')
-            },
+              can: true // store.can('puede.acceder.aceptar_transferencia_producto')
+            }
           ]
         },
         {
@@ -734,6 +734,12 @@ export const useMenuStore = defineStore('menu', () => {
               can: store.can('puede.acceder.reporte_solicitud_fondo')
             },
             {
+              title: 'Reporte Valijas',
+              link: 'reporte-valijas',
+              icon: 'bi-suitcase-lg', // Cambiado de 'bi-calendar-check' a Font Awesome
+              can: store.can('puede.acceder.reporte_valijas')
+            },
+            {
               title: 'Contabilidad',
               link: 'reporte-contabilidad',
               icon: 'fa-solid fa-file-invoice', // Cambiado de 'bi-receipt-cutoff' a Font Awesome
@@ -833,7 +839,8 @@ export const useMenuStore = defineStore('menu', () => {
               link: 'solicitudes-vacaciones',
               icon: 'bi-umbrella',
               can: store.can('puede.acceder.solicitudes_vacaciones')
-            }, {
+            },
+            {
               title: 'Registro de Vacaciones',
               link: 'vacaciones',
               icon: 'bi-umbrella',
@@ -954,7 +961,7 @@ export const useMenuStore = defineStore('menu', () => {
               link: 'reporte-vacaciones',
               icon: 'bi-sunglasses',
               can: store.can('puede.acceder.reportes_rrhh') || true
-            },
+            }
           ]
         }
       ]
@@ -998,13 +1005,13 @@ export const useMenuStore = defineStore('menu', () => {
           link: 'tipos-eventos',
           icon: 'bi-calendar2-event',
           can: store.can('puede.acceder.intra_tipos_eventos')
-        },
+        }
         /*         {
-                  title: 'Organigrama',
-                  icon: 'bi-diagram-3',
-                  link: 'organigrama',
-                  can: store.can('puede.acceder.intra_organigrama')
-                }, */
+                          title: 'Organigrama',
+                          icon: 'bi-diagram-3',
+                          link: 'organigrama',
+                          can: store.can('puede.acceder.intra_organigrama')
+                        }, */
       ]
     },
 
@@ -1439,29 +1446,29 @@ export const useMenuStore = defineStore('menu', () => {
     }
 
     /* {
-      header: 'Sistema',
-    },
-    {
-      title: 'Perfil',
-      icon: 'bi-person',
-      link: 'perfil',
-    },
-    {
-      title: 'Configuración',
-      icon: 'bi-gear',
-      children: [
-        {
-          title: 'Imprimir / Exportar',
-          link: 'tareas',
-          icon: 'bi-app',
+          header: 'Sistema',
         },
         {
-          title: 'Empresa',
-          link: 'control-progresivas',
-          icon: 'bi-app',
+          title: 'Perfil',
+          icon: 'bi-person',
+          link: 'perfil',
         },
-      ],
-    }, */
+        {
+          title: 'Configuración',
+          icon: 'bi-gear',
+          children: [
+            {
+              title: 'Imprimir / Exportar',
+              link: 'tareas',
+              icon: 'bi-app',
+            },
+            {
+              title: 'Empresa',
+              link: 'control-progresivas',
+              icon: 'bi-app',
+            },
+          ],
+        }, */
   ])
 
   return {

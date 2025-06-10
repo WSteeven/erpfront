@@ -10,6 +10,8 @@ export const fondosRotativos = {
   tipo_fondo: new Endpoint('fondos-rotativos/tipo-fondo'),
   ajustes_saldos: new Endpoint('fondos-rotativos/ajustes-saldos'),
   gastos: new Endpoint('fondos-rotativos/gastos'),
+  valijas: new Endpoint('fondos-rotativos/valijas'),
+  reporte_valijas: new Endpoint('fondos-rotativos/reporte-valijas/'),
   motivo_gasto: new Endpoint('fondos-rotativos/motivo-gasto'),
   gasto_coordinador: new Endpoint('fondos-rotativos/gasto-coordinador'),
   aprobar_gasto: new Endpoint('fondos-rotativos/aprobar-gasto'),

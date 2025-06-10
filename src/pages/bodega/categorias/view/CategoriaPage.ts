@@ -6,6 +6,7 @@ import { defineComponent } from 'vue'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
+import ErrorComponent from 'components/ErrorComponent.vue';
 
 //Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
@@ -13,9 +14,12 @@ import { CategoriaController } from '../infraestructure/CategoriaController'
 import { Categoria } from '../domain/Categoria'
 
 export default defineComponent({
-  components: { TabLayout },
+  components: { ErrorComponent, TabLayout },
   setup() {
-    const mixin = new ContenedorSimpleMixin(Categoria, new CategoriaController())
+    const mixin = new ContenedorSimpleMixin(
+      Categoria,
+      new CategoriaController()
+    )
     const { entidad: categoria, disabled } = mixin.useReferencias()
     const { setValidador } = mixin.useComportamiento()
 
@@ -32,7 +36,7 @@ export default defineComponent({
       categoria,
       v$,
       disabled,
-      configuracionColumnas: configuracionColumnasCategorias,
+      configuracionColumnas: configuracionColumnasCategorias
     }
   }
 })

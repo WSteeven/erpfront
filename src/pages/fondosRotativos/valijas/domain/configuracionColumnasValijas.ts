@@ -1,12 +1,14 @@
 import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
-import { Valija } from 'pages/fondosRotativos/gasto/domain/Valija'
+import { Valija } from 'pages/fondosRotativos/valijas/domain/Valija'
+import { ref } from 'vue'
 
-export const configuracionColumnasValijas: ColumnConfig<Valija>[] = [
+export const configuracionColumnasValijas = ref<ColumnConfig<Valija>[]>([
   {
     name: 'empleado',
     field: 'empleado',
     label: 'Empleado Envía',
     align: 'left',
+    visibleModal: false,
     sortable: true
   },
   {
@@ -15,7 +17,7 @@ export const configuracionColumnasValijas: ColumnConfig<Valija>[] = [
     label: 'Descripción',
     align: 'left',
     editable: true,
-    type:'textarea',
+    type: 'textarea'
   },
   {
     name: 'departamento',
@@ -24,6 +26,7 @@ export const configuracionColumnasValijas: ColumnConfig<Valija>[] = [
     align: 'left',
     editable: true,
     type: 'select',
+    requerido: true,
   },
   {
     name: 'imagen_evidencia',
@@ -32,8 +35,9 @@ export const configuracionColumnasValijas: ColumnConfig<Valija>[] = [
     align: 'left',
     requerido: true,
     editable: true,
-    type:'imagen',
-    accept:'.png, .jpg, .jpeg',
-
+    type: 'imagen',
+    placeholder:'Obligatorio',
+    accept: '.png, .jpg, .jpeg',
+    height: '100px'
   }
-]
+])

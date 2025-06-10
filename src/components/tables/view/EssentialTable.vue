@@ -63,7 +63,7 @@
     </template>
 
     <template #pagination="scope">
-      <botones-paginacion :scope="scope"> </botones-paginacion>
+      <botones-paginacion :scope="scope"></botones-paginacion>
     </template>
 
     <!-- Editar celdas -->
@@ -183,18 +183,18 @@
         </q-select>
 
         <selector-imagen
-            v-if="props.col.type === 'imagen'"
-            file_extensiones=".jpg, image/*"
-            :imagen="props.row[props.col.name]"
-            :disable="disable"
+          v-if="props.col.type === 'imagen'"
+          file_extensiones=".jpg, image/*"
+          :imagen="props.row[props.col.name]"
+          :disable="disable"
           :placeholder="props.col.placeholder"
-            :error="
+          :error="
             !!v$[keyError]?.$each?.$response.$errors[props.rowIndex][
               props.col.name
             ]?.length
           "
-            :alto="props.col.height??'200px'"
-            @update:model-value="data => (props.row[props.col.name] = data)"
+          :alto="props.col.height ?? '200px'"
+          @update:model-value="data => (props.row[props.col.name] = data)"
         />
 
         <!-- Aún no está completado, porque falta controlar la manera de subir el archivo -->
@@ -212,8 +212,10 @@
           :bg-color="$q.dark.isActive ? 'grey-10' : 'grey-3'"
           :accept="props.col.accept ?? '*'"
         >
-          <template v-slot:prepend> <q-icon name="attach_file" /> </template
-        ></q-file>
+          <template v-slot:prepend>
+            <q-icon name="attach_file" />
+          </template>
+        </q-file>
 
         <q-select
           v-if="props.col.type === 'select_multiple'"
@@ -1071,8 +1073,25 @@
                     ].includes(col.name)
                   "
                   class="ellipsis-3-lines"
-                  >{{ col.value }}</span
+                  :class="{
+                      'text-negative text-bold':!!v$[keyError]?.$each?.$response.$errors[props.rowIndex][col.name]?.length
+                  }"
                 >
+<!--                  Se modifica para que en la tabla vista movil se muestren los campos requeridos que tienen errores -->
+                  <error-component
+                    v-if="
+                      !!v$[keyError]?.$each?.$response.$errors[props.rowIndex][
+                        col.name
+                      ]?.length
+                    "
+                    :v$="v$"
+                    is-collection
+                    :key-error="keyError"
+                    :index-error="props.rowIndex"
+                    :clave="col.name"
+                  />
+                  {{ col.value }}
+                </span>
               </q-item-label>
             </q-item-section>
           </q-item>
@@ -1930,8 +1949,8 @@
             name="bi-check-circle-fill"
             color="positive"
             class="q-mr-xs"
-          ></q-icon
-          >{{ 'TICKET FINALIZADO' }}
+          ></q-icon>
+          {{ 'TICKET FINALIZADO' }}
         </q-chip>
 
         <span

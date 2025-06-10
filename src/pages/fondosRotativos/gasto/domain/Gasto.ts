@@ -1,4 +1,6 @@
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
+import {Ref} from 'vue';
+import {Valija} from 'pages/fondosRotativos/valijas/domain/Valija';
 export class Gasto extends EntidadAuditable {
   id: number | null;
   fecha_viat: Date | null
@@ -47,7 +49,7 @@ export class Gasto extends EntidadAuditable {
   observacion_anulacion: string | null
 
   se_envia_valija:boolean
-  registros_valijas:[]
+  registros_valijas:Valija[]
 
   constructor() {
     super()
