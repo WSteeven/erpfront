@@ -8,7 +8,10 @@
       >
         <div class="imagen d-flex align-items-center justify-content-center">
           <q-avatar square size="400px">
-            <img src="~assets/logo.png" />
+            <img
+                :src="!$q.dark.isActive ? logoClaro : logoOscuro"
+                alt="logo"
+            />
           </q-avatar>
         </div>
       </div>
@@ -23,7 +26,7 @@
           size="120px"
           class="q-mx-auto block q-mb-md"
         >
-          <img src="~assets/logo.png" />
+          <img :src="!$q.dark.isActive ? logoClaro : logoOscuro" alt="logo" />
         </q-avatar>
 
         <form @submit.prevent="resetearPassword" class="full-width q-px-lg">
@@ -61,7 +64,6 @@
               dense
               :type="isPwd ? 'password' : 'text'"
               hint="Requisitos: Mínimo 8 caracteres, 1 número, 1 letra, Caracter especiales ( @.-/* ), contraseña diferente a la anterior."
-              
             >
               <template v-slot:append>
                 <q-icon
@@ -90,6 +92,40 @@
                 />
               </template>
             </q-input>
+          </div>
+
+          <div class="q-mt-sm q-mb-sm">
+            <div class="text-subtitle2 q-mb-xs">
+              Requisitos de la contraseña:
+            </div>
+            <div
+              v-for="(cumple, regla) in reglasContrasena"
+              :key="regla"
+              class="row items-center q-gutter-xs q-mb-xs"
+            >
+              <q-icon
+                :name="cumple ? 'check_circle' : 'cancel'"
+                :color="cumple ? 'green' : 'red'"
+                size="16px"
+              />
+              <span
+                :class="cumple ? 'text-green-7' : 'text-red-7'"
+                class="text-caption"
+              >
+                <template v-if="regla === 'longitud'"
+                  >Mínimo 8 caracteres</template
+                >
+                <template v-else-if="regla === 'contieneNumero'"
+                  >Al menos un número</template
+                >
+                <template v-else-if="regla === 'contieneLetra'"
+                  >Al menos una letra</template
+                >
+                <template v-else-if="regla === 'contieneEspecial'"
+                  >Caracter especial (@ . - / *)</template
+                >
+              </span>
+            </div>
           </div>
 
           <div class="col-12">
@@ -128,18 +164,4 @@ h2 {
   font-size: 1.714rem;
 }
 
-.empresa {
-  position: fixed;
-  top: 16px;
-  left: 16px;
-}
-
-.fondo {
-  background: rgb(94, 88, 252);
-  background: linear-gradient(
-    90deg,
-    rgba(94, 88, 252, 1) 0%,
-    rgba(110, 143, 255, 1) 100%
-  );
-}
 </style>

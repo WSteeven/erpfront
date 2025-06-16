@@ -132,6 +132,7 @@ export const endpoints = {
   tipos_transacciones: new Endpoint('tipos-transacciones'),
   transacciones: new Endpoint('transacciones'),
   transacciones_egresos: new Endpoint('transacciones-egresos'),
+  reporte_vida_util_epps: new Endpoint('transacciones/reporte-vida-util-epps'),
   transacciones_ingresos: new Endpoint('transacciones-ingresos'),
   modificar_item_egreso: new Endpoint('modificar-item-egreso'),
   quitar_item_ingreso: new Endpoint('quitar-item-ingreso'),

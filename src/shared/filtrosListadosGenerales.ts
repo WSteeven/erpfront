@@ -397,6 +397,7 @@ export const useFiltrosListadosSelects = (listadosAuxiliares) => {
       bancos.value = listadosAuxiliares.bancos.filter((v: Banco) => v.nombre!.toLowerCase().indexOf(needle) > -1)
     })
   }
+  const filtrarCategorias = (val:string, update: ()=>void)=> filtrarLista(val, update, categorias,'nombre', listadosAuxiliares.categorias)
 
   function filtrarCategoriasProveedor(val, update) {
     if (val === '') {
@@ -600,7 +601,7 @@ export const useFiltrosListadosSelects = (listadosAuxiliares) => {
     proveedores, filtrarProveedores,
     empleados, filtrarEmpleados, ordenarEmpleados,
     bancos, filtrarBancos,
-    categorias, filtrarCategoriasProveedor, ordenarCategorias,
+    categorias, filtrarCategorias,filtrarCategoriasProveedor, ordenarCategorias,
     productos, filtrarProductos,
     vehiculos, filtrarVehiculos,
     servicios, filtrarServicios,
