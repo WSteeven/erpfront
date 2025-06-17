@@ -8,6 +8,7 @@
     tabDefecto="1"
     :filtrar="filtrarEmpleados"
     :full="true"
+    ajustar-celdas
   >
     <template #formulario>
       <!-- <div :class="{ 'q-fmb-md bg-white': empleado.id }"> -->

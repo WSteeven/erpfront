@@ -3,7 +3,7 @@ import { configuracionColumnasDetallesProductos } from '../../domain/configuraci
 import { configuracionColumnasSerialesDetalles } from '../../domain/configuracionColumnasSerialesDetalles'
 import { numeric, required, requiredIf } from 'shared/i18n-validators'
 import { useVuelidate } from '@vuelidate/core'
-import { defineComponent, ref, watch } from 'vue'
+import {computed, defineComponent, ref, watch} from 'vue'
 
 //Componentes
 import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
@@ -33,9 +33,16 @@ import { encontrarUltimoIdListado } from 'shared/utils'
 import { useDetalleStore } from 'stores/detalle'
 import { useAuthenticationStore } from 'stores/authentication'
 import { tabOptionsProveedoresInternacionales } from 'config/utils_compras_proveedores'
+import ErrorComponent from 'components/ErrorComponent.vue';
+import NoOptionComponent from 'components/NoOptionComponent.vue';
 
 export default defineComponent({
-  components: { TabLayoutFilterTabs2, EssentialTable },
+  components: {
+    NoOptionComponent,
+    ErrorComponent,
+    TabLayoutFilterTabs2,
+    EssentialTable
+  },
   setup() {
     const mixin = new ContenedorSimpleMixin(
       DetalleProducto,
@@ -232,7 +239,7 @@ export default defineComponent({
       // rowsNumber: xx if getting data from a server
     })
     const opciones_tipos = ['HOMBRE', 'MUJER']
-
+    const esEPP = computed(()=>detalle.categoria ==='EPP')
     const categoria_var = ref('')
 
     async function filtrarDetalles(tab: string) {
@@ -383,6 +390,7 @@ export default defineComponent({
       descripcion,
       //pagination
       pagination,
+      esEPP,
 
       //filtros
       filtrarDetalles,

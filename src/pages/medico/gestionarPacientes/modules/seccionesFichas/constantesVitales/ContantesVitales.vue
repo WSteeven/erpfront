@@ -5,7 +5,6 @@
       <q-input
         v-model="entidad.presion_arterial"
         placeholder="Opcional"
-        type="number"
         :disable="disable"
         outlined
         dense
