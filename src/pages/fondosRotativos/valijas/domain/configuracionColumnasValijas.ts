@@ -22,7 +22,7 @@ export const configuracionColumnasValijas = ref<ColumnConfig<Valija>[]>([
   {
     name: 'departamento',
     field: 'departamento',
-    label: 'Departamento',
+    label: 'Departamento Destino',
     align: 'left',
     editable: true,
     type: 'select',
