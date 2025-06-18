@@ -62,9 +62,9 @@ import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpReposi
 import { iconos } from 'config/iconos'
 import NoOptionComponent from 'components/NoOptionComponent.vue'
 import ErrorComponent from 'components/ErrorComponent.vue'
-import {Proveedor} from 'sistema/proveedores/domain/Proveedor';
-import {Motivo} from 'pages/administracion/motivos/domain/Motivo';
-import {Tarea} from 'tareas/domain/Tarea';
+import { Proveedor } from 'sistema/proveedores/domain/Proveedor'
+import { Motivo } from 'pages/administracion/motivos/domain/Motivo'
+import { Tarea } from 'tareas/domain/Tarea'
 
 export default defineComponent({
   name: 'transacciones_ingresos',
@@ -118,7 +118,7 @@ export default defineComponent({
     const transferenciaStore = useTransferenciaStore()
     const cargando = new StatusEssentialLoading()
 
-    const rolSeleccionado = store.esCoordinador||store.esBodeguero
+    const rolSeleccionado = store.esCoordinador || store.esBodeguero
 
     /*****************************************************************************************
      * Hooks
@@ -143,7 +143,7 @@ export default defineComponent({
     onBeforeGuardar(() => {
       transaccion.proveedor = transaccion.proveedor_id
         ? listadosAuxiliares.proveedores.find(
-            (p:Proveedor) => p.id === transaccion.proveedor_id
+            (p: Proveedor) => p.id === transaccion.proveedor_id
           ).razon_social
         : transaccion.proveedor
     })
@@ -151,7 +151,7 @@ export default defineComponent({
     onBeforeModificar(() => {
       transaccion.proveedor = transaccion.proveedor_id
         ? listadosAuxiliares.proveedores.find(
-            (p:Proveedor) => p.id === transaccion.proveedor_id
+            (p: Proveedor) => p.id === transaccion.proveedor_id
           ).razon_social
         : transaccion.proveedor
     })
@@ -184,7 +184,8 @@ export default defineComponent({
       filtrarEmpleados,
       sucursales,
       filtrarSucursalesPorBodeguero,
-      motivos,filtrarMotivos,
+      motivos,
+      filtrarMotivos,
       tareas,
       proveedores,
       filtrarProveedores
@@ -308,9 +309,10 @@ export default defineComponent({
         : devolucionStore.devolucion.cliente_id
       transaccion.es_para_stock = devolucionStore.devolucion.es_para_stock
       //primero copiamos los valores de id en detalle_id
-      devolucionStore.devolucion.listadoProductos.forEach(
-        item => (item.detalle_id = item.id)
-      )
+      devolucionStore.devolucion.listadoProductos.forEach(item => {
+        item.detalle_id = item.id
+        item.pendiente = item.cantidad - item.devuelto
+      })
       listadoDevolucion.value = [
         ...devolucionStore.devolucion.listadoProductos.filter(
           detalle => detalle.cantidad !== detalle.devuelto
@@ -318,7 +320,12 @@ export default defineComponent({
       ]
       listadoDevolucion.value.sort((v, w) => v.id - w.id) //ordena el listado de devolucion
       //copiar el listado de devolución al listado de la tabla
-      transaccion.listadoProductosTransaccion = [...listadoDevolucion.value]
+      transaccion.listadoProductosTransaccion = listadoDevolucion.value.map(item=>({
+        ...item,
+        cantidad :item.pendiente
+      }))
+      // aqui depuramos las cantidades que se va a devolver para que se reste devuelto a cantidad y no de problemas en una devolucion parcial
+      //ej: se tiene en cantidad=3 y en devuelto=2, la nueva cantidad debe ser 1
       if (devolucionStore.devolucion.tarea) {
         transaccion.es_tarea = true
         transaccion.tarea = Number.isInteger(devolucionStore.devolucion.tarea)
@@ -351,7 +358,7 @@ export default defineComponent({
       listadoDevolucion.value = []
     }
 
-    function seleccionarClientePropietario(val:number) {
+    function seleccionarClientePropietario(val: number) {
       const sucursalSeleccionada = sucursales.value.filter(
         (v: Sucursal) => v.id === val
       )
@@ -518,9 +525,9 @@ export default defineComponent({
       }
     ])
 
-    function tareaSeleccionada(val:number) {
+    function tareaSeleccionada(val: number) {
       const opcion_encontrada = listadosAuxiliares.tareas.filter(
-        (v:Tarea) => v.id === val
+        (v: Tarea) => v.id === val
       )
       transaccion.cliente = opcion_encontrada[0]['cliente_id']
     }
@@ -541,7 +548,7 @@ export default defineComponent({
       tarea_id: number | null = null
     ) {
       cargando.activar()
-      let response:any
+      let response: any
       if (limpiarTarea) transaccion.tarea = null
       if (tarea_id) {
         response = await new TareaController().listar({ id: tarea_id })
@@ -569,7 +576,8 @@ export default defineComponent({
       configuracionColumnas: configuracionColumnasTransaccionIngreso,
 
       //listados
-      motivos,filtrarMotivos,
+      motivos,
+      filtrarMotivos,
       estados,
       tareas,
       clientes,
@@ -583,11 +591,11 @@ export default defineComponent({
 
       acciones,
       tareaSeleccionada,
-      motivoSeleccionado(val:number) {
+      motivoSeleccionado(val: number) {
         esVisibleTarea.value = false
 
         const opcionSeleccionada = listadosAuxiliares.motivos.filter(
-          (v:Motivo) => v.id === val
+          (v: Motivo) => v.id === val
         )
         esVisibleComprobante.value =
           opcionSeleccionada[0]['nombre'] ===
@@ -603,13 +611,13 @@ export default defineComponent({
         if (esVisibleTarea.value) obtenerTareas(false, transaccion.tarea)
       },
 
-      checkMasivo(val:any) {
+      checkMasivo(val: any) {
         //checkbox de ingreso masivo
         if (!val) {
           transaccion.condicion = null
         }
       },
-      checkDevolucion(val:any) {
+      checkDevolucion(val: any) {
         if (!val) {
           limpiarTransaccion()
         }

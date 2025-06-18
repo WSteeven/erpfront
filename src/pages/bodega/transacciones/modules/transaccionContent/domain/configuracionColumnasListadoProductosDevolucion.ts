@@ -58,5 +58,12 @@ export const configuracionColumnasListadoProductosDevolucion: ColumnConfig<any>[
         align: 'left',
         sortable: false,
     },
+    {
+        name: 'pendiente',
+        field: 'pendiente',
+        label: 'Pendiente',
+        align: 'left',
+        sortable: false,
+    },
 ]
 
