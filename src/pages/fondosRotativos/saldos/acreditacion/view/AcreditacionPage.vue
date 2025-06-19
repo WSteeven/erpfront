@@ -8,16 +8,67 @@
     :filtrar="filtrarAcreditacion"
     tabDefecto="1"
     :forzarListar="true"
+    paginate
+    ajustarCeldas
   >
     <template #formulario>
       <q-form @submit.prevent>
-        <div class="row q-col-gutter-sm q-mb-md">
-          <!-- Usuarios -->
-          <div class="col-12 col-md-4 q-mb-md">
+        <div class="row q-col-gutter-sm q-mb-md" >
+          <div class="col-12 col-md-4">
+            <label class="q-mb-sm block">Modo de carga</label>
+            <option-group-component
+              v-model="modoIndividual"
+              :disable="disabled"
+              :options="options"
+            />
+          </div>
+          </div>
+        <div class="row q-col-gutter-sm q-mb-md" v-if="modoIndividual">
+          <!-- fecha de acreditacion -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Fecha</label>
+            <q-input
+              v-model="acreditacion.fecha"
+              placeholder="Opcional"
+              :disable="disabled"
+              outlined
+              dense
+            >
+              <template v-slot:append>
+                <q-icon name="event" class="cursor-pointer">
+                  <q-popup-proxy
+                    cover
+                    transition-show="scale"
+                    transition-hide="scale"
+                  >
+                    <q-date
+                      v-model="acreditacion.fecha"
+                      :mask="maskFecha"
+                      :options="optionsFecha"
+                      today-btn
+                    >
+                      <div class="row items-center justify-end">
+                        <q-btn
+                          v-close-popup
+                          label="Cerrar"
+                          color="primary"
+                          flat
+                        />
+                      </div>
+                    </q-date>
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
+            </q-input>
+          </div>
+
+          <!-- Empleado -->
+          <div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Empleado</label>
             <q-select
+              autogrow
               v-model="acreditacion.usuario"
-              :options="usuarios"
+              :options="empleados"
               transition-show="jump-up"
               transition-hide="jump-down"
               options-dense
@@ -30,10 +81,11 @@
               error-message="Debes seleccionar un empleado"
               use-input
               input-debounce="0"
-              @filter="filtrarUsuarios"
+              @popup-show="ordenarLista(empleados, 'apellidos')"
+              @filter="filtrarEmpleados"
               @update:model-value="saldo_anterior()"
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.nombres + ' ' + v.apellidos"
+              :option-value="v => v.id"
+              :option-label="v => v.apellidos + ' ' + v.nombres"
               emit-value
               map-options
             >
@@ -44,13 +96,15 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
                 </q-item>
               </template>
             </q-select>
           </div>
           <!-- Tipo Fondo -->
-          <div class="col-12 col-md-4 q-mb-md">
+          <div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Tipo Fondo</label>
             <q-select
               v-model="acreditacion.tipo_fondo"
@@ -67,9 +121,9 @@
               use-input
               input-debounce="0"
               @filter="filtrarTiposFondos"
-              :option-value="(v) => v.id"
+              :option-value="v => v.id"
               @blur="v$.tipo_fondo.$touch"
-              :option-label="(v) => v.descripcion"
+              :option-label="v => v.descripcion"
               emit-value
               map-options
             >
@@ -80,13 +134,15 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
                 </q-item>
               </template>
             </q-select>
           </div>
           <!-- Tipo Saldo -->
-          <div class="col-12 col-md-4 q-mb-md">
+          <div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Tipo Saldo</label>
             <q-select
               v-model="acreditacion.tipo_saldo"
@@ -104,8 +160,8 @@
               @blur="v$.tipo_saldo.$touch"
               input-debounce="0"
               @filter="filtrarTiposSaldos"
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.descripcion"
+              :option-value="v => v.id"
+              :option-label="v => v.descripcion"
               emit-value
               map-options
             >
@@ -116,7 +172,9 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -125,6 +183,7 @@
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Referencia:</label>
             <q-input
+            autogrow
               v-model="acreditacion.id_saldo"
               placeholder="Obligatorio"
               :disable="disabled"
@@ -208,13 +267,50 @@
             </q-chip>
           </div>
         </div>
+        <div class="row q-col-gutter-sm q-mb-md" v-else>
+          <!-- Documento -->
+          <div class="col-12 col-md-12" v-if="accion == acciones.nuevo">
+            <label class="q-mb-sm block"
+            >Reporte de Produbanco <i class="bi bi-info-circle"></i>
+              <q-tooltip class="bg-light-blue-7">Suba el reporte emitido por PRODUBANCO</q-tooltip></label
+            >
+            <gestor-documentos
+              ref="refArchivo"
+              :mixin="mixin2"
+              :endpoint="endpoint"
+              :disable="disabled"
+              :permitir-eliminar="false"
+              :mostrar-listado="false"
+              :listar-al-guardar="false"
+              :esMultiple="false"
+            >
+              <template #boton-subir>
+                <q-btn
+                  v-if="refArchivo?.quiero_subir_archivos"
+                  color="positive"
+                  push
+                  no-caps
+                  class="full-width q-mb-lg"
+                  @click="subirArchivos()"
+                >
+                  <q-icon name="bi-upload" class="q-mr-sm" size="xs"></q-icon>
+                  Subir archivos seleccionados</q-btn
+                >
+              </template>
+            </gestor-documentos>
+          </div>
+
+        </div>
       </q-form>
       <div
         class="q-pa-md q-gutter-sm flex flex-center"
-        v-if="accion === acciones.consultar && acreditacion.estado == 'REALIZADO'"
+        v-if="
+          accion === acciones.consultar && acreditacion.estado == 'REALIZADO'
+        "
       >
         <q-btn color="negative" @click="anularAcreditacion(acreditacion)">
-          <q-icon class="q-pr-sm" name="bi-x-circle" size="xs"></q-icon>Anular</q-btn
+          <q-icon class="q-pr-sm" name="bi-x-circle" size="xs"></q-icon
+          >Anular</q-btn
         >
       </div>
     </template>

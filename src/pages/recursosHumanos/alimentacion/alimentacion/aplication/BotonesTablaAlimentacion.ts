@@ -4,7 +4,6 @@ import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpReposi
 import { endpoints } from 'config/api'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { Alimentacion } from '../domain/Alimentacion'
-import { AxiosResponse } from 'axios'
 import { useAuthenticationStore } from 'stores/authentication'
 
 export const useBotonesTablaAlimentacion = (  mixin: ContenedorSimpleMixin<Alimentacion>
@@ -21,7 +20,7 @@ export const useBotonesTablaAlimentacion = (  mixin: ContenedorSimpleMixin<Alime
     icono: 'bi-check-circle-fill',
     color: 'warning',
     visible: ({ entidad }) => !entidad.finalizado &&  authenticationStore.can('puede.ver.bnt.finalizar_alimentaciones'),
-    accion: async ({ entidad, posicion }) => {
+    accion: async ({ entidad }) => {
       await FinalizarAlimentacion(
         entidad.id
       )
@@ -35,7 +34,7 @@ export const useBotonesTablaAlimentacion = (  mixin: ContenedorSimpleMixin<Alime
       endpoints.finalizar_asignacion_alimentacion,
       { id }
     )
-    const response: AxiosResponse = await axios.get(ruta)
+     await axios.get(ruta)
     return notificarCorrecto(
       'Se a Finalizado la asignacion de Alimentacion.'
     )

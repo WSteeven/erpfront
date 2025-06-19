@@ -1,9 +1,8 @@
-import { CategoriaTipoTicket } from "pages/gestionTickets/categoriasTiposTickets/domain/CategoriaTipoTicket"
-import { Ticket } from "../domain/Ticket"
-import { DestinatarioTicket } from "../domain/DestinatarioTicket"
-import { TipoTicket } from "pages/gestionTickets/tiposTickets/domain/TipoTicket"
-import { Departamento } from "pages/recursosHumanos/departamentos/domain/Departamento"
-import { Ref, UnwrapRef, ref } from "vue"
+import { CategoriaTipoTicket } from 'pages/gestionTickets/categoriasTiposTickets/domain/CategoriaTipoTicket'
+import { DestinatarioTicket } from '../domain/DestinatarioTicket'
+import { TipoTicket } from 'pages/gestionTickets/tiposTickets/domain/TipoTicket'
+import { Departamento } from 'pages/recursosHumanos/departamentos/domain/Departamento'
+import { reactive, Ref, ref } from 'vue'
 
 export function useDestinatariosTickets(listadosAuxiliares: any) {
   const destinatarios: Ref<DestinatarioTicket[]> = ref([])
@@ -24,10 +23,11 @@ export function useDestinatariosTickets(listadosAuxiliares: any) {
   }
 
   function agregarDestinatario(idDepartamento: number) {
-    const destinario = new DestinatarioTicket()
+    const destinario = reactive(new DestinatarioTicket())
     destinario.departamento_id = idDepartamento
     destinario.departamento = listadosAuxiliares.departamentos.filter((departamento: Departamento) => departamento.id === idDepartamento)[0].nombre
     destinario.categorias = obtenerCategorias(idDepartamento)
+    destinario.categorias_filter = obtenerCategorias(idDepartamento)
     destinatarios.value.push(destinario)
   }
 
@@ -41,6 +41,7 @@ export function useDestinatariosTickets(listadosAuxiliares: any) {
       destinarioIds.departamento_id = destinatario.departamento_id
       destinarioIds.categoria_id = destinatario.categoria_id
       destinarioIds.tipo_ticket_id = destinatario.tipo_ticket_id
+      destinarioIds.destinatario_automatico = destinatario.destinatario_automatico
 
       delete destinarioIds.categorias
       delete destinarioIds.tipos_tickets

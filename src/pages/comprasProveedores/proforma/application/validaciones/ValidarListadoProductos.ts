@@ -1,6 +1,6 @@
-import { Validador } from "shared/validadores/domain/Validador";
-import { Proforma } from "../../domain/Proforma";
-import { ItemProforma } from "../../domain/ItemProforma";
+import { Validador } from 'shared/validadores/domain/Validador';
+import { Proforma } from '../../domain/Proforma';
+import { ItemProforma } from '../../domain/ItemProforma';
 
 export class ValidarListadoProductos implements Validador {
   private proforma: Proforma

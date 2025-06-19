@@ -27,11 +27,23 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
+    forzarGuardar: {
+      type: Boolean,
+      default: false,
+    },
     permitirEditar: {
       type: Boolean,
       default: true,
     },
+    forzarEditar: {
+      type: Boolean,
+      default: false,
+    },
     permitirEliminar: {
+      type: Boolean,
+      default: true,
+    },
+    permitirCancelar: {
       type: Boolean,
       default: true,
     },
@@ -42,6 +54,10 @@ export default defineComponent({
     labelGuardar: {
       type: String,
       default: 'Guardar',
+    },
+    labelEditar: {
+      type: String,
+      default: 'Guardar cambios',
     },
   },
   components: { ButtonSubmits },
@@ -60,6 +76,7 @@ export default defineComponent({
 
     const currentInstance = getCurrentInstance()
     const componentName = currentInstance?.parent?.type.name
+    console.log(currentInstance)
 
     const puedeVer = computed(() =>
       store.can(`puede.ver.${router.name?.toString()}`) && props.permitirConsultar
@@ -68,13 +85,13 @@ export default defineComponent({
       store.can(`puede.crear.${componentName ?? router.name?.toString()}`) && props.permitirGuardar
     )
     const puedeEditar = computed(() =>
-      store.can(`puede.editar.${componentName ?? router.name?.toString()}`) && props.permitirEditar
+      store.can(`puede.editar.${componentName ?? router.name?.toString()}`) && props.permitirEditar || props.forzarEditar
     )
     const puedeEliminar = computed(() =>
       store.can(`puede.eliminar.${componentName ?? router.name?.toString()}`) && props.permitirEliminar
     )
 
-    return {
+    return {componentName,
       guardar,
       reestablecer,
       entidad,

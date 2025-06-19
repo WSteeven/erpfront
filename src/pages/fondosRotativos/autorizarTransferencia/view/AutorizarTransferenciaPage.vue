@@ -28,6 +28,7 @@
     <modal-entidad
       :comportamiento="modales"
       :persistente="false"
+      :mostrarListado="false"
       @guardado="guardado"
     >
     </modal-entidad>

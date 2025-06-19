@@ -9,7 +9,7 @@
       <q-toolbar class="bg-body rounded-header">
         <q-avatar square>
           <!-- <img src="~assets/logo.png" /> -->
-          <img :src="!$q.dark.isActive ? logoClaro! : logoOscuro!" />
+          <img :src="!$q.dark.isActive ? logoClaro! : logoOscuro!" alt="logo"/>
         </q-avatar>
 
         <q-toolbar-title>Seleccionar fecha</q-toolbar-title>
@@ -90,7 +90,7 @@
   </q-dialog>
 </template>
 
-<script lang="ts">
+<script lang='ts'>
 import { ref, defineComponent, computed } from 'vue'
 import { useNotificaciones } from 'shared/notificaciones'
 import { useConfiguracionGeneralStore } from 'stores/configuracion_general'
@@ -110,6 +110,10 @@ export default defineComponent({
     mask: {
       type: String,
       default: maskFecha,
+    },
+    reason:{
+      type: String,
+      default: 'month'
     },
   },
   emits: ['cerrar'],
@@ -131,8 +135,10 @@ export default defineComponent({
       props.confirmar(fecha.value)
       cerrarModalEntidad()
     }
-    function checkFecha(val, reason, details) {
-      isMonth.value = reason === 'month' ? false : true
+    function checkFecha(val, reason) { // comenta esta linea y descomenta las dos de abajo para utilizar `details`
+    // function checkFecha(val, reason, details) {
+    //   console.log(details)
+      isMonth.value = reason !== props.reason
     }
 
     return {

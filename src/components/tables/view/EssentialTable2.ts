@@ -1,7 +1,7 @@
 // Dependencias
 import { accionesActivos, autorizacionesTransacciones, estadosTransacciones, estadosInventarios, estadosControlStock, estadosCondicionesId, estadosCondicionesValue } from 'config/utils'
 import { estadosCalificacionProveedor } from 'config/utils_compras_proveedores'
-import { EstadoPrevisualizarTablaPDF } from '../application/EstadoPrevisualizarTablaPDF'
+import { VisibleModal } from '../application/VisibleModal'
 import { computed, defineComponent, ref, watchEffect, nextTick, Ref } from 'vue'
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import { Instanciable } from 'shared/entidad/domain/instanciable'
@@ -211,7 +211,7 @@ export default defineComponent({
       }
     }
     const eliminar = (data: object) => {
-    //  console.log('evento de eliminar: ', data)
+      //  console.log('evento de eliminar: ', data)
       emit('eliminar', data)
     }
 
@@ -243,10 +243,10 @@ export default defineComponent({
       emit('selected', selected.value)
     }
 
-    const printTable = new EstadoPrevisualizarTablaPDF()
+    const printTable = new VisibleModal()
 
     function previsualizarPdf() {
-      printTable.abrirVistaPrevia()
+      printTable.abrir()
     }
 
     function limpiarFila() {

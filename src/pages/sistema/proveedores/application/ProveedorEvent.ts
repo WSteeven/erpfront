@@ -1,7 +1,7 @@
-import { useNotificaciones } from "shared/notificaciones";
-import { pushEventMesaggeServiceWorker } from "shared/utils";
-import { useAuthenticationStore } from "stores/authentication";
-import { useNotificationRealtimeStore } from "stores/notificationRealtime";
+import { useNotificaciones } from 'shared/notificaciones';
+import { pushEventMesaggeServiceWorker } from 'shared/utils';
+import { useAuthenticationStore } from 'stores/authentication';
+import { useNotificationRealtimeStore } from 'stores/notificationRealtime';
 
 export class ProveedorEvent {
     store = useAuthenticationStore()
@@ -31,6 +31,10 @@ export class ProveedorEvent {
         proveedorCalificado.bind('proveedor-calificado-event', (e) => {
             notificacionStore.agregar(e.notificacion)
             notificarCorrecto('Un proveedor ha sido calificado, por favor revisa la notificación');
+        })
+        proveedorCalificado.bind('proveedor-recalificado-event', (e)=>{
+            notificacionStore.agregar(e.notificacion)
+            notificarCorrecto('Un proveedor necesita ser recalificado, por favor realiza la gestión.');
         })
     }
 }

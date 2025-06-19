@@ -1,9 +1,10 @@
-import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable';
 
 export class OrdenCompra extends EntidadAuditable {
   codigo: number | null
   solicitante: number | null
   proveedor: number | null
+  proveedor_internacional: number | null
   autorizador: number | null
   autorizacion: number | null
   observacion_aut: number | null
@@ -18,15 +19,15 @@ export class OrdenCompra extends EntidadAuditable {
   causa_anulacion: string | null
   fecha: string | null
   created_at: string | null
-  iva: number
+  iva: number | null
   categorias: [] //| null
   listadoProductos: any[]
   realizada: boolean
   observacion_realizada: string | null
   completada: boolean
   pagada: boolean
-  novedades:number|null
-  sum_total:number|null
+  novedades: number | null
+  sum_total: number | null
 
   //variables auxiliares
   copia_orden: boolean
@@ -34,12 +35,14 @@ export class OrdenCompra extends EntidadAuditable {
   tiene_pedido: boolean
   modificar_iva: boolean
   id_aux: number | null
+  es_proveedor_internacional:boolean
 
   constructor() {
     super()
     this.codigo = null
     this.solicitante = null
     this.proveedor = null
+    this.proveedor_internacional = null
     this.autorizador = null
     this.autorizacion = null
     this.observacion_aut = null
@@ -56,7 +59,7 @@ export class OrdenCompra extends EntidadAuditable {
     this.causa_anulacion = null
     this.fecha = null
     this.id_aux = null
-    this.iva = 15
+    this.iva = null
     this.categorias = []
     this.listadoProductos = []
     this.tiene_preorden = false
@@ -66,7 +69,8 @@ export class OrdenCompra extends EntidadAuditable {
     this.observacion_realizada = null
     this.pagada = false
     this.completada = false
-    this.novedades =null
-    this.sum_total =null
+    this.novedades = null
+    this.sum_total = null
+    this.es_proveedor_internacional =false
   }
 }

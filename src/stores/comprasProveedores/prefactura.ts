@@ -1,13 +1,13 @@
-import { AxiosResponse } from "axios"
-import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading"
-import { apiConfig, endpoints } from "config/api"
-import { acciones } from "config/utils"
-import { Prefactura } from "pages/comprasProveedores/prefactura/domain/Prefactura"
-import { defineStore } from "pinia"
-import { AxiosHttpRepository } from "shared/http/infraestructure/AxiosHttpRepository"
-import { useNotificaciones } from "shared/notificaciones"
-import { imprimirArchivo } from "shared/utils"
-import { reactive, ref } from "vue"
+import { AxiosResponse } from 'axios'
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { apiConfig, endpoints } from 'config/api'
+import { acciones } from 'config/utils'
+import { Prefactura } from 'pages/comprasProveedores/prefactura/domain/Prefactura'
+import { defineStore } from 'pinia'
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
+import { useNotificaciones } from 'shared/notificaciones'
+import { imprimirArchivo } from 'shared/utils'
+import { reactive, ref } from 'vue'
 
 export const usePrefacturaStore = defineStore('prefactura', () => {
     //State
@@ -24,16 +24,13 @@ export const usePrefacturaStore = defineStore('prefactura', () => {
      ******************************************************************************************/
     async function imprimirPdf() {
         try {
-            statusLoading.activar
             const axios = AxiosHttpRepository.getInstance()
             const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.prefacturas) + '/imprimir/' + idPrefactura.value
             const filename = 'prefactura_' + idPrefactura.value + '_' + Date.now()
-            imprimirArchivo(url, 'GET', 'blob', 'pdf', filename)
+            await imprimirArchivo(url, 'GET', 'blob', 'pdf', filename)
             console.log('Prefactura impresa con éxito')
         } catch (e) {
             notificarAdvertencia('Error al imprimir la prefactura. ' + e)
-        } finally {
-            statusLoading.desactivar()
         }
     }
     async function consultar() {
@@ -85,22 +82,20 @@ export const usePrefacturaStore = defineStore('prefactura', () => {
     }
     async function buscarReporte(accion: string, data, listado) {
         try {
-            statusLoading.activar()
             const axios = AxiosHttpRepository.getInstance()
             const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.prefacturas) + '/reportes'
             const filename = 'reporte_prefacturas'
             switch (accion) {
                 case 'excel':
                     data.accion = 'excel'
-                    imprimirArchivo(url, 'POST', 'blob', 'xlsx', filename, data)
+await                    imprimirArchivo(url, 'POST', 'blob', 'xlsx', filename, data)
                     return listado
-                    break
                 case 'pdf':
                     data.accion = 'pdf'
-                    imprimirArchivo(url, 'POST', 'blob', 'pdf', filename, data)
+                    await imprimirArchivo(url, 'POST', 'blob', 'pdf', filename, data)
                     return listado
-                    break
                 default:
+                    statusLoading.activar()
                     data.accion = ''
                     const response: AxiosResponse = await axios.post(url, data)
                     // console.log(response)

@@ -3,7 +3,7 @@
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
     titulo-pagina="Transacciones - Egresos"
-    :mostrarListado="false"
+    :mostrar-listado="false"
     :mostrarButtonSubmits="false"
   >
     <template #formulario>
@@ -382,6 +382,7 @@
           v-if="transaccion.modificar_recepcion"
           color="positive"
           @click="aprobarEgresoParcial()"
+          :disable="cargando.estaCargando"
           no-caps
           glossy
           push

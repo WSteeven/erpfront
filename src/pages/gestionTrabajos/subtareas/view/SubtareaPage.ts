@@ -144,7 +144,7 @@ export default defineComponent({
     const movilizacionController = new MovilizacionSubtareaController()
 
     async function obtenerMovilizaciones() {
-      const { result } = await movilizacionController.listar({ subtarea_id: subtarea.id })
+      const { result } = await movilizacionController.listar({ subtarea_id: subtareaStore.idSubtareaSeleccionada })
       movilizacionesSubtarea.value = result
     }
 
@@ -238,7 +238,7 @@ export default defineComponent({
 
     async function guardarDatos(subtarea: Subtarea) {
       try {
-        const entidad: Subtarea = await guardar(subtarea, false)
+        const entidad: Subtarea = await guardar(subtarea)
         const cambiarEstadoTrabajo = new CambiarEstadoSubtarea()
 
         const subtareaAux = new Subtarea()
@@ -247,12 +247,12 @@ export default defineComponent({
         if (subtareaAux.id) {
           // Por el momento se asigna automaticamente pero a futuro quienes lo harán serán los trabajadores de la torre de control
           // hacia los coordinadores
-          await cambiarEstadoTrabajo.asignar(subtareaAux.id)
+          // await cambiarEstadoTrabajo.asignar(subtareaAux.id)
 
-          const { result: resultAgendado } = await cambiarEstadoTrabajo.agendar(subtareaAux.id)
+          /* const { result: resultAgendado } = await cambiarEstadoTrabajo.agendar(subtareaAux.id)
           subtareaAux.hydrate(resultAgendado)
 
-          listado.value = [subtareaAux, ...listado.value]
+          listado.value = [subtareaAux, ...listado.value] */
 
           // Subir archivos
           idSubtarea = subtareaAux.id
@@ -303,11 +303,12 @@ export default defineComponent({
     /************
     * Funciones
     *************/
-    async function obtenerTecnicosGrupo(grupo_id: number) {
+    /* async function obtenerTecnicosGrupo(grupo_id: number) {
+      console.log('dentro de subtarea jejeje xD')
       const empleadoController = new EmpleadoController()
       const { result } = await empleadoController.listar({ grupo_id: grupo_id })
       empleadosSeleccionados.value = result
-    }
+    } */
 
     function verificarEsVentana() {
       if (!subtarea.es_ventana) subtarea.hora_fin_trabajo = null
@@ -373,9 +374,10 @@ export default defineComponent({
     /************
     * Observers
     ************/
-    watchEffect(() => {
+    /* watchEffect(() => {
       if (subtarea.grupo) obtenerTecnicosGrupo(subtarea.grupo)
-    })
+    }) */
+    // if (subtarea.grupo) obtenerTecnicosGrupo(subtarea.grupo)
 
     return {
       convertirNumeroPositivo,

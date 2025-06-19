@@ -62,7 +62,6 @@ export const configuracionColumnasInventarios: ColumnConfig<Inventario>[] = [
         label: 'Condicion',
         align: 'center',
         type:'select',
-        options: JSON.parse(LocalStorage.getItem('condiciones')!.toString()).map((v:Condicion)=>{return {label:v.nombre}}),
         sortable: true
     },
     /* {

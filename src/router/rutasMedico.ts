@@ -41,7 +41,7 @@ const rutasMedico: RouteRecordRaw[] = [
     path: '/diagnostico-receta',
     name: 'diagnosticos_recetas',
     component: () => import('medico/diagnosticoReceta/view/DiagnosticoRecetaPage.vue'),
-    meta: { requiresAuth: true },
+    meta: { requiresAuth: false },
   },
   {
     path: '/cie',
@@ -50,9 +50,9 @@ const rutasMedico: RouteRecordRaw[] = [
     meta: { requiresAuth: true },
   },
   {
-    path: '/reporte-cuestionarios-pisicosocial',
-    name: 'reporte_cuestionarios_psicosocial',
-    component: () => import('medico/cuestionarioPsicosocial/view/ReporteCuestionarioPisicosocial.vue'),
+    path: '/reportes-cuestionarios',
+    name: 'reportes_cuestionarios',
+    component: () => import('medico/reportesCuestionarios/view/ReporteCuestionarioPage.vue'),
     meta: { requiresAuth: true },
   },
   {
@@ -65,6 +65,12 @@ const rutasMedico: RouteRecordRaw[] = [
     path: '/firmar-fichas-medicas',
     name: 'firmar_fichas_medicas',
     component: () => import('medico/firmarFichasMedicas/view/FirmarFichaMedicaPage.vue'),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/laboratorios-clinicos',
+    name: 'laboratorios_clinicos',
+    component: () => import('medico/laboratoriosMedicos/view/LaboratorioClinicoPage.vue'),
     meta: { requiresAuth: true },
   },
 ]

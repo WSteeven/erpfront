@@ -1,5 +1,5 @@
 <template>
-  <q-page :padding="!$q.screen.xs">
+  <q-page padding>
     <div class="text-center q-my-md">
       <div class="q-mb-mdd">
         Bienvenido, <strong>{{ authenticationStore.nombreUsuario }}</strong>
@@ -51,6 +51,7 @@
       @tab-seleccionado="filtrarTrabajoAsignado"
       :tab-defecto="tabActual"
       :permitir-buscar="true"
+      class="borde rounded custom-shadow"
     ></essential-table-tabs>
 
     <modales-entidad

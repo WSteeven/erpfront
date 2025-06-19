@@ -19,7 +19,7 @@
                   outlined
                   use-input
                   input-debounce="0"
-                  @filter="filtroEmpleado"
+                  @filter="filtrarEmpleados"
                   :option-label="(v) => v.nombres + ' ' + v.apellidos"
                   :option-value="(v) => v.id"
                   emit-value
@@ -72,7 +72,7 @@
                       >
                         <q-date
                           v-model="reporte.fecha_inicio"
-                          mask="DD-MM-YYYY"
+                          :mask="maskFecha"
                           today-btn
                         >
                           <div class="row items-center justify-end">
@@ -118,7 +118,7 @@
                       >
                         <q-date
                           v-model="reporte.fecha_fin"
-                          mask="DD-MM-YYYY"
+                          :mask="maskFecha"
                           today-btn
                         >
                           <div class="row items-center justify-end">

@@ -75,3 +75,20 @@ export const optionsLine = {
     }
   },
 }
+
+export const optionsBarHorizontal = {
+  responsive: true,
+  indexAxis: 'y',
+  scales: {
+    x: {
+      beginAtZero: true
+    },
+    y: {
+      beginAtZero: true
+    }
+  }
+}
+
+export const optionsBarVertical = {
+  responsive: true,
+}

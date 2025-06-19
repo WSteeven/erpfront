@@ -43,6 +43,7 @@ export const configuracionColumnasCampos: ColumnConfig<ConfiguracionExamenCampo>
     field: 'observaciones',
     label: 'Observaciones',
     align: 'left',
+    placeholder: 'SIN ALTERACIONES',
     sortable: true,
     editable: true,
   },

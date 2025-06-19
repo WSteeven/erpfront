@@ -1,5 +1,5 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { GastoCoordinadores } from "./GastoCoordinadores";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
+import { GastoCoordinadores } from './GastoCoordinadores';
 
 export const configuracionColumnasGasto: ColumnConfig<GastoCoordinadores>[] = [
   {
@@ -42,6 +42,20 @@ export const configuracionColumnasGasto: ColumnConfig<GastoCoordinadores>[] = [
     name: 'observacion',
     field: 'observacion',
     label: 'Observacion',
+    align: 'left',
+    sortable: true
+  },
+  {
+    name: 'revisado',
+    field: 'revisado',
+    label: 'Revisado',
+    align: 'left',
+    sortable: true
+  },
+  {
+    name: 'estado',
+    field: 'estado',
+    label: 'Estado',
     align: 'left',
     sortable: true
   },

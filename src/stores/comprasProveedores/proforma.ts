@@ -1,13 +1,13 @@
-import { AxiosResponse } from "axios"
-import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading"
-import { apiConfig, endpoints } from "config/api"
-import { acciones, autorizacionesTransacciones, estadosTransacciones } from "config/utils"
-import { Proforma } from "pages/comprasProveedores/proforma/domain/Proforma"
-import { defineStore } from "pinia"
-import { AxiosHttpRepository } from "shared/http/infraestructure/AxiosHttpRepository"
-import { useNotificaciones } from "shared/notificaciones"
-import { imprimirArchivo } from "shared/utils"
-import { reactive, ref } from "vue"
+import { AxiosResponse } from 'axios'
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { apiConfig, endpoints } from 'config/api'
+import { acciones, autorizacionesTransacciones, estadosTransacciones } from 'config/utils'
+import { Proforma } from 'pages/comprasProveedores/proforma/domain/Proforma'
+import { defineStore } from 'pinia'
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
+import { useNotificaciones } from 'shared/notificaciones'
+import { imprimirArchivo } from 'shared/utils'
+import { reactive, ref } from 'vue'
 
 export const useProformaStore = defineStore('proforma', () => {
     //State
@@ -37,7 +37,7 @@ export const useProformaStore = defineStore('proforma', () => {
         try {
             statusLoading.activar()
             const modelo = await consultar(id)
-            if (modelo.autorizacion === autorizacionesTransacciones.aprobado && modelo.estado!==estadosTransacciones.completa) {
+            if (modelo.autorizacion === autorizacionesTransacciones.aprobado && modelo.estado !== estadosTransacciones.completa) {
                 proforma.hydrate(modelo)
             } else if (modelo.estado === estadosTransacciones.completa) {
                 notificarAdvertencia('La proforma ya está completada')
@@ -56,16 +56,13 @@ export const useProformaStore = defineStore('proforma', () => {
 
     async function imprimirPdf() {
         try {
-            statusLoading.activar
             const axios = AxiosHttpRepository.getInstance()
             const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.proformas) + '/imprimir/' + idProforma.value
             const filename = 'proforma_' + idProforma.value + '_' + Date.now()
-            imprimirArchivo(url, 'GET', 'blob', 'pdf', filename)
+            await imprimirArchivo(url, 'GET', 'blob', 'pdf', filename)
             console.log('Proforma impresa con éxito')
         } catch (e) {
             notificarAdvertencia('Error al imprimir la proforma. ' + e)
-        } finally {
-            statusLoading.desactivar()
         }
     }
 

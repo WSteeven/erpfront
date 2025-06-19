@@ -1,5 +1,5 @@
 //Dependencias
-import { configuracionColumnasAjustesSaldos } from "../domain/configuracionColumnasAjustesSaldos";
+import { configuracionColumnasAjustesSaldos } from '../domain/configuracionColumnasAjustesSaldos';
 import { required } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 import { defineComponent } from 'vue'
@@ -11,11 +11,11 @@ import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 
 //Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { AjusteSaldo } from "../domain/AjusteSaldo";
-import { AjusteSaldoController } from "../infraestructure/AjusteSaldoController";
-import { EmpleadoController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoController";
-import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
-import { opcionesTiposMovimientos, tiposMovimientos } from "config/utils";
+import { AjusteSaldo } from '../domain/AjusteSaldo';
+import { AjusteSaldoController } from '../infraestructure/AjusteSaldoController';
+import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController';
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
+import { opcionesTiposMovimientos } from 'config/utils';
 
 
 export default defineComponent({
@@ -28,11 +28,8 @@ export default defineComponent({
         const { empleados, filtrarEmpleados } = useFiltrosListadosSelects(listadosAuxiliares)
 
         cargarVista(async () => {
-            obtenerListados({
-                empleados: {
-                    controller: new EmpleadoController(),
-                    params: { estado: 1 }
-                }
+            await obtenerListados({
+                empleados: new EmpleadoController(),
             })
             empleados.value = listadosAuxiliares.empleados
 

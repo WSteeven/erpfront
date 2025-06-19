@@ -1,0 +1,131 @@
+// Dependencias
+import { defineComponent, ref, computed } from 'vue'
+import { useVuelidate } from '@vuelidate/core'
+import { required } from '@vuelidate/validators'
+import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
+
+// Mixin
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+
+// Configuración de las columnas
+import { configuracionColumnasNoticias } from '../domain/configuracionColumnasNoticias'
+
+// Controladores
+import { NoticiaController } from '../infraestructure/NoticiaController'
+import { Noticia } from '../domain/Noticia'
+
+// Opciones de la pestaña
+import { tabOptionsNoticias } from 'config/utils'
+
+import { useAuthenticationStore } from 'stores/authentication'
+import { maskFecha } from 'src/config/utils'
+import { DepartamentoController } from 'pages/recursosHumanos/departamentos/infraestructure/DepartamentoController'
+import { CategoriaController } from 'pages/intranet/categorias/infraestructure/CategoriaController'
+import { EtiquetaController } from 'pages/intranet/etiquetas/infraestructure/EtiquetaController'
+import SelectorImagen from 'components/SelectorImagen.vue'
+import EssentialEditor from 'components/editores/EssentialEditor.vue'
+import { Etiqueta } from 'pages/intranet/etiquetas/domain/Etiqueta'
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
+
+export default defineComponent({
+  components: { TabLayoutFilterTabs2, EssentialEditor, SelectorImagen },
+  setup() {
+    const mixin = new ContenedorSimpleMixin(Noticia, new NoticiaController())
+    const { entidad: noticia, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
+    const { setValidador, cargarVista, obtenerListados, listar } = mixin.useComportamiento()
+    const { onReestablecer, onConsultado } = mixin.useHooks()
+    const store = useAuthenticationStore()
+
+
+    const {departamentos, filtrarDepartamentos } = useFiltrosListadosSelects(listadosAuxiliares)
+
+    const categorias = ref([])
+    const etiquetas = ref([])
+
+    cargarVista(async () => {
+      await obtenerListados({
+        categorias:{controller: new CategoriaController(), params:{activo:1}},
+        etiquetas: new EtiquetaController(),
+        departamentos: {
+          controller: new DepartamentoController(),
+          params: {
+            campos: 'id,nombre',
+            activo: 1
+          },
+        },
+      })
+
+      categorias.value = listadosAuxiliares.categorias
+      departamentos.value = listadosAuxiliares.departamentos
+      // etiquetas.value = listadosAuxiliares.etiquetas
+      noticia.autor = store.user.nombres + ' ' + store.user.apellidos
+    })
+
+    /*****************************************************************************************
+     * Hooks
+     ****************************************************************************************/
+    onReestablecer(() => {
+      noticia.autor = store.user.nombres + ' ' + store.user.apellidos
+    })
+    onConsultado(()=>{
+      etiquetas.value = listadosAuxiliares.etiquetas
+    })
+
+
+    const maxWords = (val: string) => {
+      if (!val) return true
+      const wordCount = val.trim().split(/\s+/).length
+      return wordCount <= 150 || `La descripción no puede tener más de 150 palabras. Actualmente tiene ${wordCount} palabras.`
+    }
+
+    /*****************************************************************************************
+     * Validaciones
+     ****************************************************************************************/
+    const reglas = computed(() => ({
+      titulo: { required },
+      autor: { required },
+      categoria: { required },
+      fecha_vencimiento: { required },
+      // imagen_noticia: { required },
+      descripcion: { required, maxWords },
+
+    }))
+
+    const v$ = useVuelidate(reglas, noticia)
+    setValidador(v$.value)
+
+    /*****************************************************************************************
+     * Funciones
+     ****************************************************************************************/
+    function filtrarNoticias(tabSeleccionado: string) {
+      listar({ estado: tabSeleccionado }, false)
+    }
+
+    function categoriaSeleccionada(val) {
+      noticia.etiquetas = []
+      etiquetas.value = listadosAuxiliares.etiquetas.filter((etiqueta:Etiqueta) => etiqueta.categoria_id === val)
+    }
+
+    return {
+      mixin, disabled,
+      noticia,
+      configuracionColumnas: configuracionColumnasNoticias,
+      tabOptionsNoticias,
+      v$,
+      maskFecha,
+      accion,
+
+
+
+      // funciones
+      filtrarNoticias,
+      categoriaSeleccionada,
+      filtrarDepartamentos,
+
+      // listados,
+      categorias,
+      etiquetas,
+      departamentos,
+    }
+  },
+})

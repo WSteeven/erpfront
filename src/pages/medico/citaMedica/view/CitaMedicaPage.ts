@@ -1,32 +1,32 @@
 // Dependencias
+import { estadosCitaMedica, tabOptionsEstadosCitaMedica, selectAgendarCitaMedicaMedico, selectAgendarCitaMedicaPaciente, opcionesDestinoCitaMedica, selectTipoCitaMedica, selectTipoCambioCargo, tiposCitaMedica } from 'config/utils/medico'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { configuracionColumnasCitaMedica } from '../domain/configuracionColumnasCitaMedica'
-import { estadosCitaMedica, tabOptionsEstadosCitaMedica, selectAgendarCitaMedicaMedico, selectAgendarCitaMedicaPaciente, opcionesDestinoCitaMedica, selectTipoCitaMedica, selectTipoCambioCargo, tiposCitaMedica } from 'config/utils/medico'
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
+import { useBotonesCitaMedica } from '../application/UseBotonesCitaMedica'
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
 import { Ref, computed, defineComponent, reactive, ref } from 'vue'
-import { useAuthenticationStore } from 'stores/authentication'
-import { CitaMedica } from '../domain/CitaMedica'
-import { required } from 'shared/i18n-validators'
-import useVuelidate from '@vuelidate/core'
 import { acciones, accionesTabla, maskFecha } from 'config/utils'
+import { useAuthenticationStore } from 'stores/authentication'
+import { required, requiredIf } from 'shared/i18n-validators'
+import { CitaMedica } from '../domain/CitaMedica'
+import useVuelidate from '@vuelidate/core'
 
 // Componentes
 import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
 import DetallePaciente from 'medico/gestionarPacientes/view/DetallePaciente.vue'
-import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 import EssentialTableTabs from 'components/tables/view/EssentialTableTabs.vue'
-// import EstadosSubtareas from 'components/tables/view/EstadosSubtareas.vue'
+import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 
 // Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { ComportamientoModalesCitaMedica } from '../domain/ComportamientoModalesCitaMedica'
+import { ConsultaMedica } from 'pages/medico/diagnosticoReceta/domain/ConsultaMedica'
 import { CitaMedicaController } from '../infraestructure/CitaMedicaController'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
-import { useBotonesCitaMedica } from '../application/UseBotonesCitaMedica'
-import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 import { CitaMedicaModales } from '../domain/CitaMedicaModales'
-import { ConsultaMedica } from 'pages/medico/diagnosticoReceta/domain/ConsultaMedica'
-import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
+import { useRoute } from 'vue-router'
 
 export default defineComponent({
   components: {
@@ -35,7 +35,8 @@ export default defineComponent({
     DetallePaciente,
     ModalesEntidad,
   },
-  setup() {
+  emits: ['guardado'],
+  setup(props, { emit }) {
     /*********
      * Stores
      *********/
@@ -47,7 +48,7 @@ export default defineComponent({
      *********/
     const mixin = new ContenedorSimpleMixin(CitaMedica, citaMedicaController)
     const { entidad: citaMedica, accion, disabled, listadosAuxiliares } = mixin.useReferencias()
-    const { setValidador, listar, cargarVista, obtenerListados, consultar } = mixin.useComportamiento()
+    const { setValidador, listar, cargarVista, obtenerListados, consultar, reestablecer } = mixin.useComportamiento()
     const { onConsultado, onBeforeModificar, onGuardado, onReestablecer, onModificado, onBeforeGuardar } = mixin.useHooks()
 
     cargarVista(async () => {
@@ -67,9 +68,6 @@ export default defineComponent({
      ****************/
     const empleadoController = new EmpleadoController()
 
-    // stock a proyecto 27
-    // notificaciones
-
     /***********
      * Variable
      ***********/
@@ -78,13 +76,14 @@ export default defineComponent({
     const tabLayout = ref()
     const empleado = reactive(new Empleado())
     const cargando = new StatusEssentialLoading()
-    const fecha_cita_medica = ref()
-    const hora_cita_medica = ref()
-    const fechaAccidente = ref()
-    const horaAccidente = ref()
+    // const fecha_cita_medica = ref()
+    // const hora_cita_medica = ref()
+    // const fechaAccidente = ref()
+    // const horaAccidente = ref()
     const destinoCitaMedica = ref(opcionesDestinoCitaMedica.PARA_MI)
     const enfermedadesComunes: Ref<CitaMedica[]> = ref([])
     const accidentesTrabajo: Ref<CitaMedica[]> = ref([])
+    const enRutaAccidentes = computed(() => useRoute().name === 'accidentes')
 
     const modales = new ComportamientoModalesCitaMedica()
 
@@ -136,11 +135,10 @@ export default defineComponent({
     }
 
     const consultarCitasMedicasEnfermedadComun = async (tabSeleccionado?: string) => {
-      console.log('consudbfsydjdsbdsdhbj')
       try {
         cargando.activar()
         const params = { estado_cita_medica: tabSeleccionado ?? estadosCitaMedica.PENDIENTE, paciente_id: authenticationStore.user.id, tipo_cita_medica: tiposCitaMedica.ENFERMEDAD_COMUN.value }
-        if (authenticationStore.esMedico) delete params.paciente_id
+        if (authenticationStore.esMedico || authenticationStore.esAdministrador) delete params.paciente_id
 
         const { result } = await citaMedicaController.listar(params)
         enfermedadesComunes.value = result
@@ -156,7 +154,7 @@ export default defineComponent({
       try {
         cargando.activar()
         const params = { estado_cita_medica: tabSeleccionado ?? estadosCitaMedica.PENDIENTE, paciente_id: authenticationStore.user.id, tipo_cita_medica: tiposCitaMedica.ACCIDENTE_DE_TRABAJO.value }
-        if (authenticationStore.esMedico) delete params.paciente_id
+        if (authenticationStore.esMedico || authenticationStore.esAdministrador) delete params.paciente_id
 
         const { result } = await citaMedicaController.listar(params)
         accidentesTrabajo.value = result
@@ -174,13 +172,13 @@ export default defineComponent({
     }
 
     const guardadoCitaMedica = (params: { page: keyof CitaMedicaModales, entidad: ConsultaMedica, hook }) => {
-      // const consultaMedica: ConsultaMedica = params.entidad
-      const citaMedica = new CitaMedica()
-      citaMedica.hydrate(params.entidad)
-      citaMedica.id = params.entidad.cita_medica
+      const consultaMedica: ConsultaMedica = params.entidad
+      // const citaMedica = new CitaMedica()
+      // citaMedica.hydrate(params.entidad)
+      // citaMedica.id = params.entidad.cita_medica_id
 
-      const indexEC = enfermedadesComunes.value.findIndex((cita: CitaMedica) => cita.id === citaMedica.id)
-      const indexAT = accidentesTrabajo.value.findIndex((cita: CitaMedica) => cita.id === citaMedica.id)
+      const indexEC = enfermedadesComunes.value.findIndex((cita: CitaMedica) => cita.id === params.entidad.cita_medica_id)
+      const indexAT = accidentesTrabajo.value.findIndex((cita: CitaMedica) => cita.id === params.entidad.cita_medica_id)
 
       switch (params.page) {
         case 'DiagnosticoRecetaPage':
@@ -190,12 +188,15 @@ export default defineComponent({
           }
 
           if (params.hook === 'onModificado') {
-            console.log('modificado')
-            console.log(params.entidad)
             if (indexEC) enfermedadesComunes.value.splice(indexEC, 1, citaMedica)
-            if (indexAT) accidentesTrabajo.value.splice(indexAT, 1, citaMedica)
+            if (indexAT) {
+              const citaMedica = accidentesTrabajo.value[indexAT]
+              citaMedica.dado_alta = consultaMedica.dado_alta
+              accidentesTrabajo.value.splice(indexAT, 1, citaMedica)
+            }
           }
 
+          modales.cerrarModalEntidad()
           break
       }
     }
@@ -207,6 +208,10 @@ export default defineComponent({
       sintomas: { required },
       paciente: { required },
       tipo_cita_medica: { required },
+      fecha_accidente: { requiredIf: requiredIf(() => citaMedica.tipo_cita_medica == tiposCitaMedica.ACCIDENTE_DE_TRABAJO.value) },
+      hora_accidente: { requiredIf: requiredIf(() => citaMedica.tipo_cita_medica == tiposCitaMedica.ACCIDENTE_DE_TRABAJO.value) },
+      fecha_cita_medica: { requiredIf: requiredIf(() => citaMedica.estado_cita_medica == estadosCitaMedica.AGENDADO) },
+      hora_cita_medica: { requiredIf: requiredIf(() => citaMedica.estado_cita_medica == estadosCitaMedica.AGENDADO) },
     }
 
     const v$ = useVuelidate(reglas, citaMedica)
@@ -219,28 +224,27 @@ export default defineComponent({
       const fecha_hora = citaMedica.fecha_hora_cita?.split(' ') ?? []
       const fechaHoraAccidente = citaMedica.fecha_hora_accidente?.split(' ') ?? []
 
-      fecha_cita_medica.value = fecha_hora[0]
-      hora_cita_medica.value = fecha_hora[1]
+      citaMedica.fecha_cita_medica = fecha_hora[0]
+      citaMedica.hora_cita_medica = fecha_hora[1]
 
-      fechaAccidente.value = fechaHoraAccidente[0]
-      horaAccidente.value = fechaHoraAccidente[1]
+      citaMedica.fecha_accidente = fechaHoraAccidente[0]
+      citaMedica.hora_accidente = fechaHoraAccidente[1]
 
       if (citaMedica.paciente_id) await consultarEmpleado(citaMedica.paciente_id)
     })
 
     onBeforeGuardar(() => {
-      citaMedica.fecha_hora_accidente = fechaAccidente.value + ' ' + horaAccidente.value
+      citaMedica.fecha_hora_accidente = citaMedica.fecha_accidente + ' ' + citaMedica.hora_accidente
     })
 
     onBeforeModificar(() => {
-      citaMedica.fecha_hora_cita = fecha_cita_medica.value + ' ' + hora_cita_medica.value
+      citaMedica.fecha_hora_cita = citaMedica.fecha_cita_medica + ' ' + citaMedica.hora_cita_medica
       citaMedica.paciente = citaMedica.paciente_id
     })
 
     onGuardado((id, responseData) => {
       const modelo = responseData.modelo as CitaMedica
-      // console.log(modelo)
-      // console.log(tabCita.value)
+
       if (tabCita.value === estadosCitaMedica.PENDIENTE) {
         if (modelo.tipo_cita_medica === tiposCitaMedica.ENFERMEDAD_COMUN.value) {
           enfermedadesComunes.value.push(modelo)
@@ -252,6 +256,8 @@ export default defineComponent({
           accidentesTrabajo.value.push(modelo)
         }
       }
+
+      emit('guardado', modelo)
     })
 
     onModificado((id, responseData) => {
@@ -273,10 +279,10 @@ export default defineComponent({
     })
 
     onReestablecer(() => {
-      hora_cita_medica.value = null
+      /* hora_cita_medica.value = null
       fecha_cita_medica.value = null
-      horaAccidente.value = null
-      fechaAccidente.value = null
+      citaMedica.hora_accidente = null
+      citaMedica.fecha_accidente = null */
       citaMedica.estado_cita_medica = estadosCitaMedica.PENDIENTE
       empleados.value = listadosAuxiliares.empleados
       citaMedica.paciente = authenticationStore.user.id
@@ -288,12 +294,11 @@ export default defineComponent({
      * Init
      *******/
     citaMedica.estado_cita_medica = estadosCitaMedica.PENDIENTE
-    citaMedica.paciente = authenticationStore.user.id
-    empleado.hydrate(authenticationStore.user)
 
-
-    // consultarCitasMedicasEnfermedadComun()
-    // consultarCitasMedicasAccidenteTrabajo()
+    if (!enRutaAccidentes.value) {
+      citaMedica.paciente = authenticationStore.user.id
+      empleado.hydrate(authenticationStore.user)
+    }
 
     const enfermedadComunTabPanel = {
       label: tiposCitaMedica.ENFERMEDAD_COMUN.label,
@@ -305,7 +310,7 @@ export default defineComponent({
       accion: consultarCitasMedicasAccidenteTrabajo,
     }
 
-    const esPaciente = computed(() => citaMedica.paciente_id === authenticationStore.user.id)
+    const esPaciente = computed(() => citaMedica.paciente_id === authenticationStore.user?.id)
 
     return {
       v$,
@@ -324,18 +329,17 @@ export default defineComponent({
       estadosCitaMedica,
       mostrarAgendado: computed(() => citaMedica.estado_cita_medica === estadosCitaMedica.AGENDADO),
       esMedico: computed(() => authenticationStore.esMedico), // && citaMedica.estado_cita_medica !== estadosCitaMedica.PENDIENTE),
+      esAdministrador: computed(() => authenticationStore.esAdministrador), // && citaMedica.estado_cita_medica !== estadosCitaMedica.PENDIENTE),
       esPaciente,
       estaPendiente: computed(() => citaMedica.estado_cita_medica === estadosCitaMedica.PENDIENTE),
       estaCancelado: computed(() => citaMedica.estado_cita_medica === estadosCitaMedica.CANCELADO),
       estaRechazado: computed(() => citaMedica.estado_cita_medica === estadosCitaMedica.RECHAZADO),
       esAccidenteTrabajo: computed(() => citaMedica.tipo_cita_medica === tiposCitaMedica.ACCIDENTE_DE_TRABAJO.value),
       maskFecha,
-      fecha_cita_medica,
-      hora_cita_medica,
-      fechaAccidente,
-      horaAccidente,
+      /* fecha_cita_medica,
+      hora_cita_medica, */
       selectEstadoCita: computed(() => {
-        if (authenticationStore.esMedico) {
+        if (authenticationStore.esMedico || authenticationStore.esAdministrador) {
           /* if (!esPaciente.value) {
             const index = selectAgendarCitaMedicaMedico.findIndex((estado) => estado.value === estadosCitaMedica.CANCELADO)
             selectAgendarCitaMedicaMedico.splice(index, 1)
@@ -373,6 +377,10 @@ export default defineComponent({
       btnRechazarAccidenteTrabajo,
       btnDiagnosticoRecetaAccidenteTrabajo,
       btnAgendarCitaAccidenteTrabajo,
+      consultarEmpleado,
+      enRutaAccidentes,
+      consultar,
+      reestablecer,
     }
   }
 })

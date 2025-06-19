@@ -25,7 +25,7 @@ export const useNotificationRealtimeStore = defineStore('notificaciones', () => 
   const idNotificacion = ref()
   const listadoNotificaciones: Ref<Notificacion[]> = ref([])
 
-  const { notificarAdvertencia } = useNotificaciones()
+  const { notificarAdvertencia, notificarCorrecto } = useNotificaciones()
   const accionNotificacion = acciones.nuevo
   const statusLoading = new StatusEssentialLoading()
 
@@ -44,7 +44,7 @@ export const useNotificationRealtimeStore = defineStore('notificaciones', () => 
   async function listar() {
     try {
       statusLoading.activar()
-      all()
+      await all()
     } catch (e) {
       notificarAdvertencia('Ocurrió un error al listar todas las notificaciones')
     } finally {
@@ -59,10 +59,9 @@ export const useNotificationRealtimeStore = defineStore('notificaciones', () => 
   function agregar(notificacion: Notificacion) {
     listadoNotificaciones.value.unshift(notificacion)
   }
-  
+
   /**
    * Actualiza las notificaciones obtenidas desde la base de datos.
-   * @param {Notificacion} notificacion
    */
   async function actualizar() {
     await listar()
@@ -80,6 +79,17 @@ export const useNotificationRealtimeStore = defineStore('notificaciones', () => 
     return response.data.modelo
   }
 
+  async function marcarLeidasTodas(empleado_id:number) {
+    const axios = AxiosHttpRepository.getInstance()
+    const ruta = axios.getEndpoint(endpoints.notificaciones) + '/marcar-leidas-todas/' + empleado_id
+    const response: AxiosResponse = await axios.post(ruta)
+    if (response.status==200) {
+      listadoNotificaciones.value = []
+      notificarCorrecto('Todas las notificaciones se han actualizado correctamente')
+    }
+    return response.data.modelo
+  }
+
   return {
     pusher,
     notificacion,
@@ -91,5 +101,6 @@ export const useNotificationRealtimeStore = defineStore('notificaciones', () => 
     agregar,
     actualizar,
     marcarLeida,
+    marcarLeidasTodas,
   }
 })

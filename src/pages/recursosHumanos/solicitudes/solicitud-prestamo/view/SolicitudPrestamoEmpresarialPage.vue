@@ -2,19 +2,26 @@
   <tab-layout-filter-tabs2
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
-    :mostrarListado="mostrarListado"
     :tabOptions="tabOptionsSolicitudPedido"
-    :full="true"
-    :permitirEditar="(esValidador || esAutorizador)& ver_boton_editar"
+    :permitirEditar="(esValidador || esAutorizador)&& ver_boton_editar"
     :permitirEliminar="false"
-    :mostrarButtonSubmits="true"
     :filtrar="filtrarSolicitudPrestamo"
-    :tabDefecto="tabSolicitudPrestaamo"
-    :forzarListar="true"
+    :tabDefecto="tabSolicitudPrestamo"
   >
     <template #formulario>
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-mb-md q-mt-md q-mx-md q-py-sm">
+          <!-- Solicitante-->
+          <div class="col-12 col-md-3" v-if="[acciones.consultar, acciones.editar].includes(accion)">
+            <label class="q-mb-sm block">Solicitante</label>
+            <q-input
+              v-model="solicitudPrestamo.solicitante_info"
+              placeholder="Obligatorio"
+              disable
+              outlined
+              dense
+            />
+          </div>
           <!-- Fecha -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Fecha</label>
@@ -22,7 +29,7 @@
               v-model="solicitudPrestamo.fecha"
               placeholder="Obligatorio"
               :error="!!v$.fecha.$errors.length"
-              :disable="accion.value != 'NUEVO' ? false : true"
+              :disable="(!(accion.value !== acciones.nuevo && solicitudPrestamo.estado !== autorizacionesId.CANCELADO)) || disabled"
               @blur="v$.fecha.$touch"
               outlined
               dense
@@ -45,9 +52,7 @@
               </template>
 
               <template v-slot:error>
-                <div v-for="error of v$.fecha.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="fecha" :v$="v$"/>
               </template>
             </q-input>
           </div>
@@ -58,7 +63,7 @@
               v-model="solicitudPrestamo.monto"
               placeholder="Obligatorio"
               type="number"
-              :disable="accion.value != 'NUEVO' ? false : true"
+              :disable="(!(accion.value !== acciones.nuevo && solicitudPrestamo.estado !== autorizacionesId.CANCELADO)) || disabled"
               :error="!!v$.monto.$errors.length"
               lazy-rules
               :rules="maximoValorsolicitudPrestamo"
@@ -67,19 +72,17 @@
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.monto.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="monto" :v$="v$"/>
               </template>
             </q-input>
           </div>
           <!-- Plazo -->
           <div class="col-12 col-md-3" v-if="esValidador || esAutorizador">
-            <label class="q-mb-sm block">Plazo </label>
+            <label class="q-mb-sm block">Plazo (Meses) </label>
             <q-input
               v-model="solicitudPrestamo.plazo"
               type="number"
-              :disable="accion.value != 'NUEVO' ? false : true || disabled"
+              :disable="(!(accion.value !== acciones.nuevo && solicitudPrestamo.estado !== autorizacionesId.CANCELADO)) || disabled"
               :error="!!v$.plazo.$errors.length"
               placeholder="Obligatorio"
               @blur="v$.plazo.$touch"
@@ -87,9 +90,7 @@
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.plazo.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="plazo" :v$="v$"/>
               </template>
             </q-input>
           </div>
@@ -99,7 +100,7 @@
             <q-input
               v-model="solicitudPrestamo.motivo"
               placeholder="Obligatorio"
-              :disable="!puede_editar"
+              :disable="restringirMotivo"
               type="textarea"
               :error="!!v$.motivo.$errors.length"
               @blur="v$.motivo.$touch"
@@ -108,9 +109,7 @@
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.motivo.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="motivo" :v$="v$"/>
               </template>
             </q-input>
           </div>
@@ -120,7 +119,7 @@
             <q-input
               v-model="solicitudPrestamo.observacion"
               placeholder="Obligatorio"
-              :disable="disabled"
+              :disable="!esValidador || disabled"
               type="textarea"
               :error="!!v$.observacion.$errors.length"
               @blur="v$.observacion.$touch"
@@ -129,9 +128,7 @@
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.observacion.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="observacion" :v$="v$"/>
               </template>
             </q-input>
           </div>
@@ -140,7 +137,7 @@
               class="q-mt-lg q-pt-md"
               v-model="solicitudPrestamo.cargo_utilidad"
               label="Cargo a Utilidades"
-              :disable="disabled"
+              :disable="(!(accion.value !== acciones.nuevo && solicitudPrestamo.estado !== autorizacionesId.CANCELADO)) || disabled"
               outlined
               dense
             ></q-checkbox>
@@ -156,11 +153,11 @@
               options-dense
               dense
               outlined
-              :disable="disabled"
+              :disable="(!(accion.value !== acciones.nuevo && solicitudPrestamo.estado !== autorizacionesId.CANCELADO)) || disabled"
               :readonly="disabled"
               use-input
               input-debounce="0"
-              @filter="filtrarPeriodo"
+              @filter="filtrarPeriodos"
               :error="!!v$.periodo.$errors.length"
               @blur="v$.periodo.$touch"
               :option-value="(v) => v.id"
@@ -169,14 +166,10 @@
               map-options
             >
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
-                </q-item>
+                <no-option-component/>
               </template>
               <template v-slot:error>
-                <div v-for="error of v$.periodo.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="periodo" :v$="v$"/>
               </template>
             </q-select>
           </div>
@@ -187,23 +180,21 @@
               v-model="solicitudPrestamo.valor_utilidad"
               placeholder="Obligatorio"
               type="number"
-              :disable="disabled"
+              :disable="(!(accion.value !== acciones.nuevo && solicitudPrestamo.estado !== autorizacionesId.CANCELADO)) || disabled"
               :error="!!v$.valor_utilidad.$errors.length"
               @blur="v$.valor_utilidad.$touch"
               outlined
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.valor_utilidad.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="valor_utilidad" :v$="v$"/>
               </template>
             </q-input>
           </div>
           <!-- Autorizacion -->
           <div
             class="col-12 col-md-3"
-            v-if="accion == 'EDITAR' && (esValidador || esAutorizador)"
+            v-if="accion == acciones.editar && (esValidador || esAutorizador)"
           >
             <label class="q-mb-sm block">Autorizacion</label>
             <q-select
@@ -224,30 +215,9 @@
               map-options
             >
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
-                </q-item>
+                <no-option-component/>
               </template>
             </q-select>
-          </div>
-          <!-- Foto -->
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Foto</label>
-            <selector-imagen
-              :imagen="solicitudPrestamo.foto"
-              file_extensiones=".jpg, image/*"
-              :error="!!v$.foto.$errors.length"
-              :disable="!puede_editar"
-              error-message="Debes de cargar imagen de comprobante"
-              @blur="v$.foto.$touch"
-              @update:modelValue="(data) => (solicitudPrestamo.foto = data)"
-            >
-              <template v-slot:error>
-                <div v-for="error of v$.foto.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
-            </selector-imagen>
           </div>
           <!--nivel endeudamiento-->
           <!--Total descuentos-->

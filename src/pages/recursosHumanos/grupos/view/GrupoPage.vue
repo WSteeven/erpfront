@@ -20,10 +20,8 @@
               :error="!!v$.nombre.$errors.length"
             >
               <template v-slot:error>
-                <div v-for="error of v$.nombre.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
+                <error-component clave="nombre" :v$="v$"/>
+                </template>
             </q-input>
           </div>
 
@@ -67,17 +65,11 @@
               map-options
             >
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
+                <no-option-component/>
               </template>
 
               <template v-slot:error>
-                <div v-for="error of v$.coordinador.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="coordinador" :v$="v$"/>
               </template>
             </q-select>
           </div>
@@ -91,6 +83,22 @@
               label="Activo"
               color="positive"
             />
+          </div>
+
+          <!-- Listado de productos -->
+          <div
+            v-if="grupo.empleados?.length > 0"
+            class="col-12 col-md-12 q-mt-xl"
+          >
+            <essential-table
+              titulo="Empleados del grupo"
+              :datos="grupo.empleados"
+              :configuracionColumnas="configuracionColumnasEmpleadosLite"
+              ajustarCeldas
+              :altoFijo="false"
+              :mostrarBotones="false"
+            >
+            </essential-table>
           </div>
         </div>
       </q-form>

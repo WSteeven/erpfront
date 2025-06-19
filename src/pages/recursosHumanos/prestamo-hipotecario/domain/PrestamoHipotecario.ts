@@ -1,9 +1,9 @@
-import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable';
 
 export class PrestamoHipotecario extends EntidadAuditable {
   id: number | null
-  empleado:number | null
-  empleado_info: string |null
+  empleado: number | null
+  empleado_info: string | null
   mes: string | null
   nut: string | null
   valor: string | null

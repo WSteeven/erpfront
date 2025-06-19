@@ -1,18 +1,18 @@
 //Dependencias
-import { configuracionColumnasCategoriasOfertasProveedores } from "../domain/configuracionColumnasCategoriasOfertasProveedores";
-import { required } from "shared/i18n-validators";
-import useVuelidate from "@vuelidate/core";
-import { computed, defineComponent } from "vue";
+import { configuracionColumnasCategoriasOfertasProveedores } from '../domain/configuracionColumnasCategoriasOfertasProveedores';
+import { required } from 'shared/i18n-validators';
+import useVuelidate from '@vuelidate/core';
+import { computed, defineComponent } from 'vue';
 
 //Componentes
-import TabLayout from "shared/contenedor/modules/simple/view/TabLayout.vue"
-import EssentialTable from "components/tables/view/EssentialTable.vue"
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
-import { CategoriaOferta } from "../domain/CategoriaOferta";
-import { CategoriaOfertaController } from "../infraestructure/CategoriaOfertaController";
-import { OfertaProveedorController } from "sistema/proveedores/modules/ofertas_proveedores/infraestructure/OfertaProveedorController";
-import { DepartamentoController } from "sistema/proveedores/modules/departamentos/infraestructure/DepartamentoController";
-import { Departamento } from "sistema/proveedores/modules/departamentos/domain/Departamento";
+import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
+import EssentialTable from 'components/tables/view/EssentialTable.vue'
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
+import { CategoriaOferta } from '../domain/CategoriaOferta';
+import { CategoriaOfertaController } from '../infraestructure/CategoriaOfertaController';
+import { OfertaProveedorController } from 'sistema/proveedores/modules/ofertas_proveedores/infraestructure/OfertaProveedorController';
+import { DepartamentoController } from 'sistema/proveedores/modules/departamentos/infraestructure/DepartamentoController';
+import { Departamento } from 'sistema/proveedores/modules/departamentos/domain/Departamento';
 
 //Logica y controladores
 

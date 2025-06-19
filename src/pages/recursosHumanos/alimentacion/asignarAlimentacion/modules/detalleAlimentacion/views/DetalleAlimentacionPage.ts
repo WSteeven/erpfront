@@ -4,7 +4,7 @@ import { computed, defineComponent, ref } from 'vue'
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
-import { required, requiredIf } from 'shared/i18n-validators'
+import { required } from 'shared/i18n-validators'
 import { acciones, accionesTabla, maskFecha } from 'config/utils'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
@@ -16,6 +16,7 @@ import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useAuthenticationStore } from 'stores/authentication'
 import { DetalleAlimentacion } from '../domain/DetalleAlimentacion'
 import { useAsignacionAlimentacionStore } from 'stores/recursosHumanos/asignacionAlimentacion'
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 
 export default defineComponent({
   components: { EssentialSelectableTable, EssentialTable, ButtonSubmits },
@@ -36,16 +37,16 @@ export default defineComponent({
       reestablecer,
       cargarVista,
       obtenerListados,
-      listar,
+      listar
     } = mixin.useComportamiento()
     const {
       entidad: alimentacion,
-      disabled,
       accion,
       listado,
-      listadosAuxiliares,
+      listadosAuxiliares
     } = mixin.useReferencias()
-    const empleados = ref([])
+    const { empleados, filtrarEmpleados } =
+      useFiltrosListadosSelects(listadosAuxiliares)
     const asignacionAlimentacionStore = useAsignacionAlimentacionStore()
     const authenticationStore = useAuthenticationStore()
 
@@ -53,12 +54,12 @@ export default defineComponent({
       await obtenerListados({
         empleados: {
           controller: new EmpleadoController(),
-          params: { campos: 'id,nombres,apellidos', estado: 1 },
-        },
+          params: { campos: 'id,nombres,apellidos', estado: 1 }
+        }
       })
       empleados.value = listadosAuxiliares.empleados
       await listar({
-        alimentacion_id: asignacionAlimentacionStore.alimentacion.id,
+        alimentacion_id: asignacionAlimentacionStore.alimentacion.id
       })
     })
 
@@ -67,11 +68,11 @@ export default defineComponent({
      **************/
     const reglas = {
       valor_asignado: {
-        required,
+        required
       },
       fecha_corte: {
-        required,
-      },
+        required
+      }
     }
     const deshabilitar_empleado = ref(true)
     const mostrar_formulario = ref(false)
@@ -80,23 +81,6 @@ export default defineComponent({
     setValidador(v$.value)
 
     const refListado = ref()
-
-    function filtrarEmpleados(val, update) {
-      if (val === '') {
-        update(() => {
-          empleados.value = listadosAuxiliares.empleados
-        })
-        return
-      }
-      update(() => {
-        const needle = val.toLowerCase()
-        empleados.value = listadosAuxiliares.empleados.filter(
-          (v) =>
-            v.nombres.toLowerCase().indexOf(needle) > -1 ||
-            v.apellidos.toLowerCase().indexOf(needle) > -1
-        )
-      })
-    }
 
     function cerrarModal(confirmar = true) {
       emit('cerrar-modal', confirmar)
@@ -117,7 +101,7 @@ export default defineComponent({
         alimentacion.valor_asignado = entidad.valor_asignado
         alimentacion.fecha_corte = entidad.fecha_corte
         mostrar_formulario.value = true
-      },
+      }
     }
     const btnVerDetalleAlimentacion: CustomActionTable = {
       titulo: 'Consultar',
@@ -133,7 +117,7 @@ export default defineComponent({
         alimentacion.valor_asignado = entidad.valor_asignado
         alimentacion.fecha_corte = entidad.fecha_corte
         mostrar_formulario.value = true
-      },
+      }
     }
     const btnNuevoDetalleAlimentacion: CustomActionTable = {
       titulo: 'Agregar',
@@ -149,7 +133,7 @@ export default defineComponent({
           asignacionAlimentacionStore.alimentacion.id
         mostrar_formulario.value = true
         deshabilitar_empleado.value = false
-      },
+      }
     }
 
     async function guardarDatos(valoracreditar: DetalleAlimentacion) {
@@ -159,7 +143,7 @@ export default defineComponent({
           entidad = await guardar(valoracreditar)
           alimentacion.hydrate(entidad)
           await listar({
-            alimentacion_id: asignacionAlimentacionStore.alimentacion.id,
+            alimentacion_id: asignacionAlimentacionStore.alimentacion.id
           })
         } else {
           await editar(valoracreditar, true)
@@ -174,12 +158,16 @@ export default defineComponent({
       mostrar_formulario.value = false
     }
     const totalDetalleAlimentacion = computed(() => {
-      const suma = listado.value.reduce(
+      return listado.value.reduce(
         (acumulador, elemento) =>
-          acumulador + parseFloat(elemento.valor_asignado?elemento.valor_asignado.replace(/,/g, ''):0),
+          acumulador +
+          parseFloat(
+            elemento.valor_asignado
+              ? elemento.valor_asignado.replace(/,/g, '')
+              : 0
+          ),
         0
       )
-      return suma
     })
     const btnEliminarDetalleAlimentacion: CustomActionTable = {
       titulo: 'Eliminar',
@@ -192,19 +180,22 @@ export default defineComponent({
         accion.value = 'ELIMINAR'
         eliminar(entidad)
         listado.value.splice(posicion, 1)
-      },
+      }
     }
     const btnAsignarMasivo: CustomActionTable = {
       titulo: 'Asignacion Masiva',
       icono: 'bi-arrow-clockwise',
       color: 'warning',
       visible: () => {
-        return authenticationStore.can('puede.ver.btn.asignar_masivo_alimentaciones')
-      },      accion: () => {
+        return authenticationStore.can(
+          'puede.ver.btn.asignar_masivo_alimentaciones'
+        )
+      },
+      accion: () => {
         alimentacion.alimentacion_id =
           asignacionAlimentacionStore.alimentacion.id
         alimentacion.masivo = true
-      },
+      }
     }
 
     return {
@@ -228,7 +219,7 @@ export default defineComponent({
       btnEditarDetalleAlimentacion,
       btnEliminarDetalleAlimentacion,
       btnAsignarMasivo,
-      configuracionColumnasDetalleAlimentacion,
+      configuracionColumnasDetalleAlimentacion
     }
-  },
+  }
 })

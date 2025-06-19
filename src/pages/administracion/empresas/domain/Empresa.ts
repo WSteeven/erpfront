@@ -1,4 +1,4 @@
-import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable';
 
 export class Empresa extends EntidadAuditable {
     identificacion: string | null
@@ -11,7 +11,7 @@ export class Empresa extends EntidadAuditable {
     pais: number | null
     provincia: number | null
     nombre_provincia: number | null
-    canton: string | number| null
+    canton: string | number | null
     ciudad: string | null
     sucursal: string | null
     direccion: string | null
@@ -61,9 +61,9 @@ export class Empresa extends EntidadAuditable {
         this.representante_legal = null
         this.identificacion_representante = null
         this.antiguedad_proveedor = null
-        this.es_cliente= false
-        this.es_proveedor= true
-    
+        this.es_cliente = false
+        this.es_proveedor = true
+
     }
 
 

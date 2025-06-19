@@ -2,20 +2,20 @@ import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
 import { DetalleProducto } from 'pages/bodega/detalles_productos/domain/DetalleProducto'
 
 export const configuracionColumnasDetallesProductos: ColumnConfig<DetalleProducto>[] = [
-//   {
-//     name: 'id',
-//     field: 'id',
-//     label: 'N°',
-//     align: 'left',
-//     sortable: true,
-//   },
-//   {
-//     name: 'categoria',
-//     field: 'categoria',
-//     label: 'Categoria',
-//     align: 'left',
-//     sortable: true
-//   },
+  //   {
+  //     name: 'id',
+  //     field: 'id',
+  //     label: 'N°',
+  //     align: 'left',
+  //     sortable: true,
+  //   },
+  //   {
+  //     name: 'categoria',
+  //     field: 'categoria',
+  //     label: 'Categoria',
+  //     align: 'left',
+  //     sortable: true
+  //   },
   {
     name: 'producto',
     field: 'producto',
@@ -30,13 +30,13 @@ export const configuracionColumnasDetallesProductos: ColumnConfig<DetalleProduct
     align: 'left',
     sortable: true
   },
-//   {
-//     name: 'modelo',
-//     field: 'modelo',
-//     label: 'Modelo',
-//     align: 'left',
-//     sortable: true
-//   },
+  {
+    name: 'es_generico',
+    field: 'es_generico',
+    label: '¿Genérico?',
+    align: 'left',
+    sortable: true
+  },
   {
     name: 'computadora',
     field: 'computadora',
@@ -58,5 +58,5 @@ export const configuracionColumnasDetallesProductos: ColumnConfig<DetalleProduct
     align: 'left',
     sortable: true
   },
-  
+
 ]

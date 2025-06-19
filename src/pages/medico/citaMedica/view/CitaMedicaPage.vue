@@ -4,54 +4,53 @@
     :configuracionColumnas="configuracionColumnasCitaMedica"
     :full="true"
     :mostrarListado="false"
-    :customPanel1="enfermedadComunTabPanel"
-    :customPanel2="accidenteTrabajoTabPanel"
-    @tab-seleccionado="(tab) => (tabLayout = tab)"
+    :customPanel1="!enRutaAccidentes ? enfermedadComunTabPanel : null"
+    :customPanel2="!enRutaAccidentes ? accidenteTrabajoTabPanel : null"
+    @tab-seleccionado="tab => (tabLayout = tab)"
+    :permitir-cancelar="!enRutaAccidentes"
   >
     <template #formulario>
-      <div
-        class="row q-col-gutter-sm q-ma-md q-pa-sm bg-desenfoque rounded q-mb-md"
-      >
-        <div v-if="esMedico" class="col-12 q-pa-md">
+      <div class="row q-col-gutter-x-sm q-ma-md q-mb-md">
+        <div v-if="esMedico" class="col-12 text-center q-mb-md">
           <label class="text-center block q-mb-sm"
             >Seleccione un destino para cita médica</label
           >
           <q-btn-toggle
             v-model="destinoCitaMedica"
-            class="toggle-button-primary"
-            spread
+            class="toggle-button-positive"
             no-caps
-            rounded
-            toggle-color="primary"
+            toggle-color="positive"
             unelevated
             :options="[
               {
                 label: opcionesDestinoCitaMedica.PARA_MI,
-                value: opcionesDestinoCitaMedica.PARA_MI,
+                value: opcionesDestinoCitaMedica.PARA_MI
               },
               {
                 label: opcionesDestinoCitaMedica.PARA_OTRO_EMPLEADO,
-                value: opcionesDestinoCitaMedica.PARA_OTRO_EMPLEADO,
-              },
+                value: opcionesDestinoCitaMedica.PARA_OTRO_EMPLEADO
+              }
             ]"
           />
         </div>
 
-        <div
-          v-if="destinoCitaMedica === opcionesDestinoCitaMedica.PARA_MI"
-          class="col-12"
-        >
-          <detalle-paciente
-            v-if="empleado.id"
-            :empleado="empleado"
-          ></detalle-paciente>
-        </div>
+        <transition name="scale" mode="out-in">
+          <div
+            v-if="destinoCitaMedica === opcionesDestinoCitaMedica.PARA_MI"
+            class="col-12"
+          >
+            <detalle-paciente
+              v-if="empleado.id"
+              :empleado="empleado"
+            ></detalle-paciente>
+          </div>
+        </transition>
 
         <div
           v-if="
             destinoCitaMedica === opcionesDestinoCitaMedica.PARA_OTRO_EMPLEADO
           "
-          class="col-12"
+          class="col-12 q-pt-md"
         >
           <label class="q-mb-sm block">Seleccione un empleado</label>
           <q-select
@@ -69,8 +68,8 @@
             @blur="v$.paciente.$touch"
             @filter="filtrarEmpleados"
             @popup-show="ordenarEmpleados(empleados)"
-            :option-label="(v) => v.apellidos + ' ' + v.nombres"
-            :option-value="(v) => v.id"
+            :option-label="v => v.apellidos + ' ' + v.nombres"
+            :option-value="v => v.id"
             emit-value
             map-options
           >
@@ -91,9 +90,9 @@
         </div>
       </div>
 
-      <div
-        class="row bg-desenfoque q-mx-md rounded-card q-col-gutter-sm q-pa-md q-mb-md"
-      >
+      <q-separator class="bg-border q-mb-lg"></q-separator>
+
+      <div class="row q-mx-md rounded-card q-col-gutter-sm q-mb-md">
         <!-- Fecha y hora de solicitud -->
         <div v-if="mostrarAgendado" class="col-12 col-md-6 col-mb-md">
           <label class="q-mb-sm block">Fecha y hora de solicitud</label>
@@ -117,8 +116,8 @@
             dense
             outlined
             color="positive"
-            :option-label="(item) => item.label"
-            :option-value="(item) => item.value"
+            :option-label="item => item.label"
+            :option-value="item => item.value"
             use-input
             input-debounce="0"
             emit-value
@@ -138,8 +137,8 @@
             options-dense
             dense
             outlined
-            :option-label="(item) => item.label"
-            :option-value="(item) => item.value"
+            :option-label="item => item.label"
+            :option-value="item => item.value"
             use-input
             input-debounce="0"
             emit-value
@@ -158,7 +157,13 @@
           </q-select>
         </div>
 
-        <div v-if="citaMedica.tipo_cita_medica === tiposCitaMedica.ACCIDENTE_DE_TRABAJO.value" class="col-12 col-md-6 col-mb-md">
+        <div
+          v-if="
+            citaMedica.tipo_cita_medica ===
+            tiposCitaMedica.ACCIDENTE_DE_TRABAJO.value
+          "
+          class="col-12 col-md-6 col-mb-md"
+        >
           <label class="q-mb-sm block">Cambio de cargo</label>
           <q-select
             v-model="citaMedica.tipo_cambio_cargo"
@@ -166,11 +171,12 @@
             transition-show="scale"
             transition-hide="scale"
             :disable="disabled"
+            hint="Opcional"
             options-dense
             dense
             outlined
-            :option-label="(item) => item.label"
-            :option-value="(item) => item.value"
+            :option-label="item => item.label"
+            :option-value="item => item.value"
             use-input
             input-debounce="0"
             emit-value
@@ -180,14 +186,17 @@
         </div>
 
         <!-- Fecha y hora accidente trabajo -->
-        <div v-if="esMedico && esAccidenteTrabajo" class="col-12 col-md-3">
+        <!-- <div v-if="esMedico && esAccidenteTrabajo" class="col-12 col-md-3"> -->
+        <div v-if="esAccidenteTrabajo" class="col-12 col-md-3">
           <label class="q-mb-sm block">Fecha del accidente</label>
           <q-input
-            v-model="fechaAccidente"
+            v-model="citaMedica.fecha_accidente"
             :disable="disabled"
             outlined
             type="datetime"
             dense
+            :error="!!v$.fecha_accidente.$errors.length"
+            @blur="v$.fecha_accidente.$touch"
           >
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
@@ -196,7 +205,11 @@
                   transition-show="scale"
                   transition-hide="scale"
                 >
-                  <q-date v-model="fechaAccidente" :mask="maskFecha" today-btn>
+                  <q-date
+                    v-model="citaMedica.fecha_accidente"
+                    :mask="maskFecha"
+                    today-btn
+                  >
                     <div class="row items-center justify-end">
                       <q-btn
                         v-close-popup
@@ -209,20 +222,36 @@
                 </q-popup-proxy>
               </q-icon>
             </template>
+
+            <template v-slot:error>
+              <div
+                v-for="error of v$.fecha_accidente.$errors"
+                :key="error.$uid"
+              >
+                <div class="error-msg">{{ error.$message }}</div>
+              </div>
+            </template>
           </q-input>
         </div>
 
-        <div v-if="esMedico && esAccidenteTrabajo" class="col-12 col-md-3">
+        <div v-if="esAccidenteTrabajo" class="col-12 col-md-3">
           <label class="q-mb-sm block">Hora del accidente</label>
           <q-input
-            v-model="horaAccidente"
+            v-model="citaMedica.hora_accidente"
             type="time"
             :disable="disabled"
             step="1"
             stack-label
             outlined
             dense
+            :error="!!v$.hora_accidente.$errors.length"
+            @blur="v$.hora_accidente.$touch"
           >
+            <template v-slot:error>
+              <div v-for="error of v$.hora_accidente.$errors" :key="error.$uid">
+                <div class="error-msg">{{ error.$message }}</div>
+              </div>
+            </template>
           </q-input>
         </div>
 
@@ -249,16 +278,22 @@
 
         <!-- Fecha y hora limite -->
         <div
-          v-if="esMedico && !(estaCancelado || estaRechazado || estaPendiente)"
+          v-if="
+            esMedico ||
+            (esAdministrador &&
+              !(estaCancelado || estaRechazado || estaPendiente))
+          "
           class="col-12 col-md-3"
         >
           <label class="q-mb-sm block">Fecha de la cita</label>
           <q-input
-            v-model="fecha_cita_medica"
+            v-model="citaMedica.fecha_cita_medica"
             :disable="disabled"
             outlined
             type="datetime"
             dense
+            :error="!!v$.fecha_cita_medica.$errors.length"
+            @blur="v$.fecha_cita_medica.$touch"
           >
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
@@ -268,7 +303,7 @@
                   transition-hide="scale"
                 >
                   <q-date
-                    v-model="fecha_cita_medica"
+                    v-model="citaMedica.fecha_cita_medica"
                     :mask="maskFecha"
                     today-btn
                   >
@@ -284,34 +319,57 @@
                 </q-popup-proxy>
               </q-icon>
             </template>
+
+            <template v-slot:error>
+              <div
+                v-for="error of v$.fecha_cita_medica.$errors"
+                :key="error.$uid"
+              >
+                <div>{{ error.$message }}</div>
+              </div>
+            </template>
           </q-input>
         </div>
 
         <div
-          v-if="esMedico && !(estaCancelado || estaRechazado || estaPendiente)"
+          v-if="
+            esMedico ||
+            (esAdministrador &&
+              !(estaCancelado || estaRechazado || estaPendiente))
+          "
           class="col-12 col-md-3"
         >
           <label class="q-mb-sm block">Hora de la cita</label>
           <q-input
-            v-model="hora_cita_medica"
+            v-model="citaMedica.hora_cita_medica"
             type="time"
             :disable="disabled"
             step="1"
             stack-label
             outlined
             dense
+            :error="!!v$.hora_cita_medica.$errors.length"
+            @blur="v$.hora_cita_medica.$touch"
           >
+            <template v-slot:error>
+              <div
+                v-for="error of v$.hora_cita_medica.$errors"
+                :key="error.$uid"
+              >
+                <div>{{ error.$message }}</div>
+              </div>
+            </template>
           </q-input>
         </div>
 
         <div
           v-if="
             citaMedica.estado_cita_medica !== estadosCitaMedica.PENDIENTE &&
-            esMedico &&
-            !(estaCancelado || estaRechazado)
+            (esMedico || esAdministrador)
           "
           class="col-12 col-md-6 col-mb-md"
         >
+          <!-- !(estaCancelado || estaRechazado) -->
           <label class="q-mb-sm block">Observación</label>
           <q-input
             v-model="citaMedica.observacion"
@@ -326,7 +384,9 @@
         </div>
 
         <div
-          v-if="citaMedica.fecha_hora_cancelado && esMedico"
+          v-if="
+            citaMedica.fecha_hora_cancelado && (esMedico || esAdministrador)
+          "
           class="text-negative col-12 col-md-6 col-mb-md"
         >
           <label class="q-mb-sm block">Fecha y hora cancelado</label>
@@ -425,7 +485,7 @@
         titulo="Enfermedades comúnes"
         :configuracionColumnas="[
           ...configuracionColumnasCitaMedica,
-          accionesTabla,
+          accionesTabla
         ]"
         :datos="enfermedadesComunes"
         :ajustarCeldas="true"
@@ -463,7 +523,7 @@
         titulo="Accidentes de trabajo"
         :configuracionColumnas="[
           ...configuracionColumnasCitaMedicaAccidenteTransito,
-          accionesTabla,
+          accionesTabla
         ]"
         :datos="accidentesTrabajo"
         :ajustarCeldas="true"

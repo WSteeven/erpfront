@@ -1,5 +1,5 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import NovedadOrdenCompra from "./SeguimientoOrdenCompra";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
+import NovedadOrdenCompra from './SeguimientoOrdenCompra';
 
 export const configuracionColumnasSeguimientoOrdenCompra: ColumnConfig<NovedadOrdenCompra>[] = [
     {
@@ -9,7 +9,8 @@ export const configuracionColumnasSeguimientoOrdenCompra: ColumnConfig<NovedadOr
         align: 'left',
         type: 'text',
         sortable: true,
-        editable: false,
+        editable: true,
+        disableModal: true,
     },
     {
         name: 'actividad',

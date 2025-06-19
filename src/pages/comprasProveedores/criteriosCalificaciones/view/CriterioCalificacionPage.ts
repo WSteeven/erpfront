@@ -1,17 +1,17 @@
 //Dependencias
-import { configuracionColumnasCriteriosCalificaciones } from "../domain/configuracionColumnasCriteriosCalificaciones";
-import { required } from "shared/i18n-validators";
+import { configuracionColumnasCriteriosCalificaciones } from '../domain/configuracionColumnasCriteriosCalificaciones';
+import { required } from 'shared/i18n-validators';
 
 //Componentes
-import TabLayout from "shared/contenedor/modules/simple/view/TabLayout.vue";
-import { defineComponent, ref } from "vue";
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
-import { CriterioCalificacion } from "../domain/CriterioCalificacion";
-import { CriterioCalificacionController } from "../infraestructure/CriterioCalificacionController";
-import { useAuthenticationStore } from "stores/authentication";
-import { OfertaProveedorController } from "sistema/proveedores/modules/ofertas_proveedores/infraestructure/OfertaProveedorController";
-import { DepartamentoController } from "pages/recursosHumanos/departamentos/infraestructure/DepartamentoController";
-import useVuelidate from "@vuelidate/core";
+import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue';
+import { defineComponent, ref } from 'vue';
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
+import { CriterioCalificacion } from '../domain/CriterioCalificacion';
+import { CriterioCalificacionController } from '../infraestructure/CriterioCalificacionController';
+import { useAuthenticationStore } from 'stores/authentication';
+import { OfertaProveedorController } from 'sistema/proveedores/modules/ofertas_proveedores/infraestructure/OfertaProveedorController';
+import { DepartamentoController } from 'pages/recursosHumanos/departamentos/infraestructure/DepartamentoController';
+import useVuelidate from '@vuelidate/core';
 
 //Logica y Controladores
 

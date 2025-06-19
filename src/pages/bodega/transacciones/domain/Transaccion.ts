@@ -5,7 +5,7 @@ export class Transaccion extends EntidadAuditable {
   autorizacion: number | null
   observacion_aut: string | null
   justificacion: string | null
-  comprobante: string | null
+  num_comprobante: string | null
   proveedor: string | null
   fecha_limite: string | null
   estado: number | null
@@ -54,11 +54,20 @@ export class Transaccion extends EntidadAuditable {
   modificar_recepcion: boolean
   es_para_stock: boolean //true si es para el stock del tecnico
 
+  se_traslada_arma: boolean
+  codigo_permiso_traslado: string | null
+
+  modo_seleccion = true
+  proveedor_id: number | null = null
+  fecha_compra: string | null = null
+
+  nombre_motivo: string | null = null
+
   constructor() {
     super()
     this.id = null
     this.justificacion = null
-    this.comprobante = null
+    this.num_comprobante = null
     this.proveedor = null
     this.fecha_limite = null
     this.solicitante_id = null
@@ -108,5 +117,8 @@ export class Transaccion extends EntidadAuditable {
     this.es_para_stock = false
 
     this.modificar_recepcion = false
+
+    this.se_traslada_arma = false
+    this.codigo_permiso_traslado = null
   }
 }

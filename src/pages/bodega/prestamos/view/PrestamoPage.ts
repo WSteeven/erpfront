@@ -9,17 +9,14 @@ import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
 
-
 //Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { PrestamoController } from '../infraestructure/PrestamoController'
 import { Prestamo } from '../domain/Prestamo'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
-import { InventarioController } from 'pages/bodega/inventario/infraestructure/InventarioController'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useQuasar } from 'quasar'
 import { useNotificaciones } from 'shared/notificaciones'
-import { useAuthenticationStore } from 'stores/authentication'
 import { configuracionColumnasProductos } from 'pages/bodega/productos/domain/configuracionColumnasProductos'
 import { useOrquestadorSelectorItemsInventario } from '../application/OrquestadorSelectorItemsInventario'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
@@ -34,7 +31,7 @@ export default defineComponent({
         const { setValidador, cargarVista, obtenerListados } = mixin.useComportamiento()
         const { confirmar, prompt } = useNotificaciones()
 
-        let sucursal = ref()
+        const sucursal = ref()
         const {
             refListadoSeleccionable: refListadoSeleccionableProductos,
             criterioBusqueda: criterioBusquedaProducto,
@@ -45,8 +42,8 @@ export default defineComponent({
         } = useOrquestadorSelectorItemsInventario(prestamo, 'inventarios')
 
 
-        const opciones_empleados = ref([])
-        const opciones_sucursales = ref([])
+        const empleados = ref([])
+        const sucursales = ref([])
         //Obtener los listados
         cargarVista(async () => {
             await obtenerListados({
@@ -68,7 +65,7 @@ export default defineComponent({
                 required,
             },
             fecha_devolucion: {
-                requiredIfDevuelto: requiredIf(function () { return prestamo.estado === 'DEVUELTO' ? true : false }),
+                requiredIfDevuelto: requiredIf(function () { return prestamo.estado === 'DEVUELTO' }),
             },
 
 
@@ -109,8 +106,8 @@ export default defineComponent({
         }]
 
         //Configurar los listados
-        opciones_empleados.value = listadosAuxiliares.empleados
-        opciones_sucursales.value = listadosAuxiliares.sucursales
+        empleados.value = listadosAuxiliares.empleados
+        sucursales.value = listadosAuxiliares.sucursales
         const estados = ['PENDIENTE', 'DEVUELTO']
 
 
@@ -123,26 +120,15 @@ export default defineComponent({
             configuracionColumnas: configuracionColumnasPrestamos,
 
             //listados
-            opciones_empleados,
-            opciones_sucursales,
+            empleados,
+            sucursales,
             estados,
 
 
             //filtros
-            filtroEmpleados(val, update) {
-                if (val === '') {
-                    update(() => {
-                        opciones_empleados.value = listadosAuxiliares.empleados
-                    })
-                    return
-                }
-                update(() => {
-                    const needle = val.toLowerCase()
-                    opciones_empleados.value = listadosAuxiliares.empleados.filter((v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1)
-                })
-            },
+          filtrarEmpleados,
             empleadoSeleccionado(val) {
-                sucursal.value = opciones_empleados.value[0]['sucursal']
+                sucursal.value = empleados.value[0]['sucursal']
                 // console.log(sucursal.value)
                 const sucursalEncontrada = listadosAuxiliares.sucursales.filter((v) => v.lugar === sucursal.value)
                 sucursal.value = sucursalEncontrada[0]['id']
@@ -170,10 +156,6 @@ export default defineComponent({
             //variable para el filtrado
             sucursal,
 
-            seleccionarPrueba(data) {
-                console.log('Aqui se recibe la fila seleccionada')
-                console.log(data)
-            }
 
         }
     }

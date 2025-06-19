@@ -8,16 +8,18 @@
       <slot name="formulario" />
     </div>
 
-    <div class="row justify-end q-col-gutter-x-xs q-pt-md">
+    <div class="row justify-end q-col-gutter-x-xs q-pt-md q-mt-xl">
       <span>
         <slot name="custom-buttons"></slot>
       </span>
       <button-submits
         v-if="mostrarButtonSubmits"
         :accion="accion"
-        :permitirGuardar="puedeCrear"
+        :permitirGuardar="puedeCrear || forzarGuardar"
         :permitirModificar="puedeEditar"
+        :permitirCancelar="permitirCancelar"
         :disabled="storeCargando.cargando"
+        :labelEditar="labelEditar"
         :labelGuardar="labelGuardar"
         @cancelar="reestablecer()"
         @editar="editar(entidad, resetFormularioOnUpdate)"

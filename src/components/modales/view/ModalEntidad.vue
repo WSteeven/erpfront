@@ -2,16 +2,18 @@
   <!-- :maximized="$q.screen.xs" -->
   <q-dialog
     v-model="abierto"
-    :full-width="true"
-    :full-height="true"
+    :full-width="fullWidth"
+    :full-height="fullHeight"
     :persistent="persistente"
-    maximized
+    :maximized="maximized"
+    class="bg-desenfoque"
+    @hide="emit('cerrado')"
   >
     <q-card class="bg-transparent no-border" flat>
       <!-- <q-linear-progress :value="1" color="grey-4" /> -->
       <q-toolbar class="bg-body border-bottoffm superior-fixed" rounded>
         <q-avatar square>
-          <img src="~assets/logo.png" />
+          <img :src="!$q.dark.isActive ? logoClaro : logoOscuro" />
         </q-avatar>
 
         <q-toolbar-title class="text-primary text-subtitle1"
@@ -19,17 +21,17 @@
         >
 
         <div class="row q-gutter-x-sm">
-          <q-btn round dense unelevated color="light-green" size="sm">
+          <!-- <q-btn round dense unelevated color="light-green" size="sm">
             <q-icon name="bi-arrows-angle-expand" size="14px"></q-icon>
             <q-tooltip class="bg-dark">Maximizar</q-tooltip>
-          </q-btn>
+          </q-btn> -->
 
           <q-btn
             round
             dense
-            unelevated
-            color="red"
-            size="sm"
+            push
+            color="negative"
+            size="md"
             @click="cerrarModalEntidad()"
           >
             <q-icon name="bi-x-lg" size="14px"></q-icon>
@@ -45,12 +47,11 @@
           :is="componente"
           :mixin-modal="mixinModal"
           :accion="accion"
-          :datos="datos"
-          @cerrar-modal="
-            (confirmarCerrar) => cerrarModalEntidad(confirmarCerrar)
-          "
-          @guardado="(data) => emit('guardado', data)"
-          @modificado="(data) => emit('modificado', data)"
+          :mostrarListado="mostrarListado"
+          :datos="propsData"
+          @cerrar-modal="confirmarCerrar => cerrarModalEntidad(confirmarCerrar)"
+          @guardado="data => emit('guardado', data)"
+          @modificado="data => emit('modificado', data)"
         ></component>
         <!--  @seleccionar="emit('seleccionar')" -->
 
@@ -58,12 +59,11 @@
           v-else
           :is="componente"
           :accion="accion"
-          :datos="datos"
-          @cerrar-modal="
-            (confirmarCerrar) => cerrarModalEntidad(confirmarCerrar)
-          "
-          @guardado="(data) => emit('guardado', data)"
-          @modificado="(data) => emit('modificado', data)"
+          :mostrarListado="mostrarListado"
+          :datos="propsData"
+          @cerrar-modal="confirmarCerrar => cerrarModalEntidad(confirmarCerrar)"
+          @guardado="data => emit('guardado', data)"
+          @modificado="data => emit('modificado', data)"
         ></component>
         <!--  @seleccionar="emit('seleccionar')" -->
         <!-- :mostrar-listado="false"></component> -->

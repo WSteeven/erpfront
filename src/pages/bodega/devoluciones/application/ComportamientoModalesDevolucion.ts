@@ -1,7 +1,7 @@
-import { ComportamientoModales } from "components/modales/application/ComportamientoModales";
-import { DevolucionModales } from "../domain/DevolucionModales";
+import { ComportamientoModales } from 'components/modales/application/ComportamientoModales';
+import { DevolucionModales } from '../domain/DevolucionModales';
 
-export class ComportamientoModalesDevolucion extends ComportamientoModales<DevolucionModales>{
+export class ComportamientoModalesDevolucion extends ComportamientoModales<DevolucionModales> {
     constructor() {
         super(new DevolucionModales())
     }

@@ -1,5 +1,5 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { DatoBancario } from "./DatoBancario";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
+import { DatoBancario } from './DatoBancario';
 
 export const configuracionColumnasDatosBancariosProveedor: ColumnConfig<DatoBancario>[] = [
     {

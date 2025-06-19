@@ -1,6 +1,6 @@
 <template>
   <q-page padding>
-    <q-card class="q-mb-md rounded no-border custom-shadow">
+    <q-card class="q-mb-md rounded no-border custom-shaddow bg-body">
       <q-card-section>
         <div class="border-1 text-primary text-bold q-mb-lg">
           <q-icon name="bi-graph-up-arrow" class="q-mr-sm"></q-icon>
@@ -25,9 +25,10 @@
                     transition-show="scale"
                     transition-hide="scale"
                   >
+                    <!-- mask="DD-MM-YYYY" -->
                     <q-date
                       v-model="filtro.fecha_inicio"
-                      mask="DD-MM-YYYY"
+                      :mask="maskFecha"
                       @update:model-value="consultarDesdeFechas()"
                       today-btn
                     >
@@ -45,9 +46,7 @@
               </template>
 
               <template v-slot:error>
-                <div v-for="error of v$.fecha_inicio.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="fecha_inicio" :v$="v$"/>
               </template>
             </q-input>
           </div>
@@ -70,7 +69,7 @@
                   >
                     <q-date
                       v-model="filtro.fecha_fin"
-                      mask="DD-MM-YYYY"
+                      :mask="maskFecha"
                       today-btn
                       @update:model-value="consultarDesdeFechas()"
                     >
@@ -88,9 +87,7 @@
               </template>
 
               <template v-slot:error>
-                <div v-for="error of v$.fecha_fin.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="fecha_fin" :v$="v$"/>
               </template>
             </q-input>
           </div>
@@ -99,66 +96,26 @@
             <label class="block q-mb-sm">Filtrar por</label>
             <q-btn-toggle
               v-model="filtro.departamento_empleado"
-              class="toggle-button-grey"
+              class="toggle-button-primary"
               spread
               no-caps
               rounded
-              toggle-color="grey-9"
+              toggle-color="primary"
               unelevated
               :options="[
                 {
                   label: 'Por empleado',
-                  value: opcionesFiltroDepartamentoEmpleado.porEmpleado,
+                  value: opcionesFiltroDepartamentoEmpleado.porEmpleado
                 },
                 {
                   label: 'Por departamento',
-                  value: opcionesFiltroDepartamentoEmpleado.porDepartamento,
-                },
+                  value: opcionesFiltroDepartamentoEmpleado.porDepartamento
+                }
               ]"
             />
           </div>
 
-          <!-- Departamento -->
-          <div v-show="mostrarSeccionDepartamento" class="col-12">
-            <label class="q-mb-sm block"
-              >Seleccione un departamento para consultar</label
-            >
-            <q-select
-              v-model="filtro.departamento"
-              :options="departamentos"
-              @filter="filtrarDepartamentos"
-              transition-show="scale"
-              transition-hide="scale"
-              options-dense
-              dense
-              outlined
-              :option-label="(item) => item.nombre"
-              :option-value="(item) => item.id"
-              use-input
-              input-debounce="0"
-              emit-value
-              map-options
-              @update:model-value="consultarDepartamento()"
-              :error="!!v$.departamento.$errors.length"
-              @blur="v$.departamento.$touch"
-            >
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
-              </template>
-
-              <template v-slot:error>
-                <div v-for="error of v$.departamento.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
-            </q-select>
-          </div>
-
-          <div v-if="mostrarSeccionEmpleado" class="col-12">
+          <div v-if="mostrarSeccionEmpleado" class="col-12 col-md-10">
             <label class="q-mb-sm block"
               >Seleccione un empleado para consultar</label
             >
@@ -177,25 +134,67 @@
               @update:model-value="consultar()"
               @filter="filtrarEmpleados"
               @popup-show="ordenarEmpleados(empleados)"
-              :option-label="(v) => v.apellidos + ' ' + v.nombres"
-              :option-value="(v) => v.id"
+              :option-label="v => v.apellidos + ' ' + v.nombres"
+              :option-value="v => v.id"
               emit-value
               map-options
             >
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
+                <no-option-component/>
               </template>
 
               <template v-slot:error>
-                <div v-for="error of v$.empleado.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="empleado" :v$="v$"/>
               </template>
             </q-select>
+          </div>
+
+          <!-- Departamento -->
+          <div v-show="mostrarSeccionDepartamento" class="col-12 col-md-10">
+            <label class="q-mb-sm block"
+              >Seleccione un departamento para consultar</label
+            >
+            <q-select
+              v-model="filtro.departamento"
+              :options="departamentos"
+              @filter="filtrarDepartamentos"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              dense
+              outlined
+              :option-label="item => item.nombre"
+              :option-value="item => item.id"
+              use-input
+              input-debounce="0"
+              emit-value
+              map-options
+              @update:model-value="consultarDepartamento()"
+              :error="!!v$.departamento.$errors.length"
+              @blur="v$.departamento.$touch"
+            >
+              <template v-slot:no-option>
+                <no-option-component/>
+              </template>
+
+              <template v-slot:error>
+                <error-component clave="departamento" :v$="v$"/>
+              </template>
+            </q-select>
+          </div>
+
+          <div class="col-12 col-md-2">
+            <label class="block q-mb-sm">&nbsp;</label>
+            <q-btn
+              icon="bi-table"
+              label="Reporte Excel"
+              color="positive"
+              class="full-width"
+              no-caps
+              unelevated
+              no-wrap
+              @click="reporteExcel()"
+            ></q-btn>
           </div>
         </div>
       </q-card-section>
@@ -217,6 +216,9 @@
         <div class="row q-col-gutter-sm q-mb-lg">
           <div class="col-12 col-md-6 q-mb-lg">
             <div class="row q-col-gutter-xs">
+              <div class="col-12 text-bold">
+                Tickets creados por el empleado
+              </div>
               <div v-if="cantTicketsCreados >= 0" class="col-12">
                 <q-card
                   class="rounded-card text-primary q-pa-md text-center bg-grey-2"
@@ -294,6 +296,7 @@
           <!-- Segunda columna -->
           <div v-if="cantTicketsRecibidos >= 0" class="col-12 col-md-6 column">
             <div class="row q-col-gutter-xs">
+              <div class="col-12 text-bold">Tickets asignados al empleado</div>
               <div class="col-12">
                 <q-card
                   class="rounded-card text-white no-border q-pa-md text-center full-height bg-secondary"
@@ -322,6 +325,17 @@
                     {{ cantTicketsCancelados }}
                   </div>
                   <div>Cantidad de tickets que le cancelaron</div>
+                </q-card>
+              </div>
+
+              <div v-if="cantTicketsRechazados >= 0" class="col-6 col-md-3">
+                <q-card
+                  class="rounded-card text-white q-pa-md text-center full-height bg-pink-8"
+                >
+                  <div class="text-h3 q-mb-md">
+                    {{ cantTicketsRechazados }}
+                  </div>
+                  <div>Cantidad de tickets que rechazó</div>
                 </q-card>
               </div>
 
@@ -378,7 +392,7 @@
 
               <div
                 v-if="cantTicketsCalificadosResponsable >= 0"
-                class="col-6 col-md-3"
+                class="col-6 col-md-6"
               >
                 <q-card class="rounded-card q-pa-md text-center full-height">
                   <div class="text-h3 text-positive q-mb-md">
@@ -395,7 +409,7 @@
                   cantTicketsFinalizadosSolucionados >= 0 ||
                   cantTicketsFinalizadosSinSolucion >= 0
                 "
-                class="col-12"
+                class="col-12 col-md-6"
               >
                 <q-card
                   class="rounded-card text-white q-pa-md text-center bg-positive full-height"
@@ -446,7 +460,7 @@
                   :data="ticketsPorEstadoBar"
                   :options="optionsPie"
                   @click="
-                    (data) =>
+                    data =>
                       clickGraficoTicketsEmpleado(
                         data,
                         categoriaGraficosEmpleado.ESTADO_ACTUAL
@@ -474,7 +488,7 @@
                   :data="cantidadesTicketsSolicitadosPorDepartamentoBar"
                   :options="optionsPie"
                   @click="
-                    (data) =>
+                    data =>
                       clickGraficoTicketsEmpleado(
                         data,
                         categoriaGraficosEmpleado.CREADOS_A_DEPARTAMENTOS
@@ -494,7 +508,7 @@
                   :data="cantidadesTicketsRecibidosPorDepartamentoBar"
                   :options="optionsPie"
                   @click="
-                    (data) =>
+                    data =>
                       clickGraficoTicketsEmpleado(
                         data,
                         categoriaGraficosEmpleado.ASIGNADOS_POR_DEPARTAMENTOS
@@ -524,7 +538,7 @@
                 titulo="Tickets del empleado"
                 :configuracionColumnas="[
                   ...configuracionColumnasTicket,
-                  accionesTabla,
+                  accionesTabla
                 ]"
                 :datos="ticketsPorEstadoListado"
                 :permitirConsultar="false"
@@ -600,7 +614,7 @@
               :data="promedioTiemposLine"
               :options="optionsLine"
               tipo="line"
-              @click="(data) => clickGraficoLineaTiempo(data)"
+              @click="data => clickGraficoLineaTiempo(data)"
             />
           </div>
         </div>
@@ -666,10 +680,32 @@
                   :options="optionsPie"
                   v-if="ticketsPorDepartamentoEstadoAsignado.length"
                   @click="
-                    (data) =>
+                    data =>
                       clickGraficoTicketsDepartamento(
                         data,
                         estadosTickets.ASIGNADO
+                      )
+                  "
+                />
+              </div>
+            </div>
+
+            <!-- Rechazados -->
+            <div
+              v-if="ticketsPorDepartamentoEstadoRechazado.length"
+              class="col-12 col-md-6 text-center"
+            >
+              <div class="text-subtitle2 q-mb-lg">Rechazados</div>
+              <div>
+                <grafico-generico
+                  :data="ticketsPorDepartamentoEstadoRechazadoBar"
+                  :options="optionsPie"
+                  v-if="ticketsPorDepartamentoEstadoRechazado.length"
+                  @click="
+                    data =>
+                      clickGraficoTicketsDepartamento(
+                        data,
+                        estadosTickets.RECHAZADO
                       )
                   "
                 />
@@ -687,7 +723,7 @@
                   :options="optionsPie"
                   v-if="ticketsPorDepartamentoEstadoReasignado.length"
                   @click="
-                    (data) =>
+                    data =>
                       clickGraficoTicketsDepartamento(
                         data,
                         estadosTickets.REASIGNADO
@@ -708,7 +744,7 @@
                   :options="optionsPie"
                   v-if="ticketsPorDepartamentoEstadoEjecutando.length"
                   @click="
-                    (data) =>
+                    data =>
                       clickGraficoTicketsDepartamento(
                         data,
                         estadosTickets.EJECUTANDO
@@ -729,7 +765,7 @@
                   :options="optionsPie"
                   v-if="ticketsPorDepartamentoEstadoPausado.length"
                   @click="
-                    (data) =>
+                    data =>
                       clickGraficoTicketsDepartamento(
                         data,
                         estadosTickets.PAUSADO
@@ -752,7 +788,7 @@
                     ticketsPorDepartamentoEstadoFinalizadoSolucionado.length
                   "
                   @click="
-                    (data) =>
+                    data =>
                       clickGraficoTicketsDepartamento(
                         data,
                         estadosTickets.FINALIZADO_SOLUCIONADO
@@ -775,7 +811,7 @@
                     ticketsPorDepartamentoEstadoFinalizadoSinSolucion.length
                   "
                   @click="
-                    (data) =>
+                    data =>
                       clickGraficoTicketsDepartamento(
                         data,
                         estadosTickets.FINALIZADO_SIN_SOLUCION
@@ -819,7 +855,7 @@
                 titulo="Tickets"
                 :configuracionColumnas="[
                   ...configuracionColumnasTicket,
-                  accionesTabla,
+                  accionesTabla
                 ]"
                 :datos="ticketsEmpleadoResponsable"
                 :permitirConsultar="false"

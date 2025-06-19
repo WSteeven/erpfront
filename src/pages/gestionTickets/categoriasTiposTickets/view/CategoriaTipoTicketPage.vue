@@ -16,15 +16,16 @@
             <label class="q-mb-sm block">Departamento</label>
             <q-select
               v-model="tipoTicket.departamento"
-              :options="departamentos"
+              :options="departamentosComputed"
+              @filter="filtrarDepartamentos"
               transition-show="scale"
               transition-hide="scale"
               options-dense
               dense
               outlined
               :disable="disabled"
-              :option-label="(item) => item.nombre"
-              :option-value="(item) => item.id"
+              :option-label="item => item.nombre"
+              :option-value="item => item.id"
               use-input
               input-debounce="0"
               emit-value
@@ -54,7 +55,7 @@
             <q-input
               v-model="tipoTicket.nombre"
               placeholder="Obligatorio"
-              @update:model-value="(v) => (tipoTicket.nombre = v.toUpperCase())"
+              @update:model-value="v => (tipoTicket.nombre = v.toUpperCase())"
               :disable="disabled"
               autofocus
               outlined

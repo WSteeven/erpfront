@@ -1,5 +1,5 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { Transaccion } from "pages/bodega/transacciones/domain/Transaccion";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
+import { Transaccion } from 'pages/bodega/transacciones/domain/Transaccion';
 
 export const configuracionColumnasTransacciones: ColumnConfig<Transaccion>[] = [
     {
@@ -34,7 +34,7 @@ export const configuracionColumnasTransacciones: ColumnConfig<Transaccion>[] = [
     },
     {
         name: 'comprobante',
-        field: 'comprobante',
+        field: 'num_comprobante',
         label: 'Factura',
         align: 'left',
         sortable: true,

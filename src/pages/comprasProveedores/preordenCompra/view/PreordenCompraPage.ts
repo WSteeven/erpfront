@@ -1,42 +1,42 @@
 // Dependencias
-import { configuracionColumnasPreordenesCompras } from "../domain/configuracionColumnasPreordenCompra";
-import { configuracionColumnasDetallesProductos } from "../domain/configuracionColumnasDetallesProductos";
-import { configuracionColumnasItemOrdenCompra } from "pages/comprasProveedores/itemsOrdenCompra/domain/configuracionColumnasItemOrdenCompra";
+import { configuracionColumnasPreordenesCompras } from '../domain/configuracionColumnasPreordenCompra';
+import { configuracionColumnasDetallesProductos } from '../domain/configuracionColumnasDetallesProductos';
+import { configuracionColumnasItemOrdenCompra } from 'pages/comprasProveedores/itemsOrdenCompra/domain/configuracionColumnasItemOrdenCompra';
 import { required, } from 'shared/i18n-validators'
 import { useVuelidate } from '@vuelidate/core'
 import { defineComponent, ref, watch, } from 'vue'
 
 
 // Componentes
-import TabLayoutFilterTabs2 from "shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue";
-import EssentialTable from "components/tables/view/EssentialTable.vue";
-import EssentialSelectableTable from "components/tables/view/EssentialSelectableTable.vue"
-import ModalesEntidad from "components/modales/view/ModalEntidad.vue";
-import EssentialPopupEditableTable from "components/tables/view/EssentialPopupEditableTable.vue"
+import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue';
+import EssentialTable from 'components/tables/view/EssentialTable.vue';
+import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
+import ModalesEntidad from 'components/modales/view/ModalEntidad.vue';
+import EssentialPopupEditableTable from 'components/tables/view/EssentialPopupEditableTable.vue'
 
 // Logica y controladores
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
-import { useNotificaciones } from "shared/notificaciones";
-import { useNotificacionStore } from "stores/notificacion";
-import { LocalStorage, useQuasar } from "quasar";
-import { useCargandoStore } from "stores/cargando";
-import { EmpleadoController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoController";
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
+import { useNotificaciones } from 'shared/notificaciones';
+import { useNotificacionStore } from 'stores/notificacion';
+import { LocalStorage, useQuasar } from 'quasar';
+import { useCargandoStore } from 'stores/cargando';
+import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController';
 
-import { acciones, accionesTabla, estadosTransacciones } from "config/utils";
-import { opcionesForma, opcionesTiempo, tabOptionsPreordenCompra } from "config/utils_compras_proveedores";
-import { useAuthenticationStore } from "stores/authentication";
-import { CustomActionTable } from "components/tables/domain/CustomActionTable";
-import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
-import { PreordenCompra } from "../domain/PreordenCompra";
-import { PreordenCompraController } from "../infraestructure/PreordenCompraController";
-import { PedidoController } from "pages/bodega/pedidos/infraestructura/PedidoController";
-import { usePreordenStore } from "stores/comprasProveedores/preorden";
-import { useRouter } from "vue-router";
-import { CustomActionPrompt } from "components/tables/domain/CustomActionPrompt";
-import { ordenarLista } from "shared/utils";
-import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
-import { ComportamientoModalesPreordenes } from "../application/ComportamientoModalesPreordenes";
-import { EmpleadoRoleController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoRolesController";
+import { acciones, accionesTabla, estadosTransacciones } from 'config/utils';
+import { opcionesForma, opcionesTiempo, tabOptionsPreordenCompra } from 'config/utils_compras_proveedores';
+import { useAuthenticationStore } from 'stores/authentication';
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable';
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
+import { PreordenCompra } from '../domain/PreordenCompra';
+import { PreordenCompraController } from '../infraestructure/PreordenCompraController';
+import { PedidoController } from 'pages/bodega/pedidos/infraestructura/PedidoController';
+import { usePreordenStore } from 'stores/comprasProveedores/preorden';
+import { useRouter } from 'vue-router';
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt';
+import { ordenarLista } from 'shared/utils';
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
+import { ComportamientoModalesPreordenes } from '../application/ComportamientoModalesPreordenes';
+import { EmpleadoRoleController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoRolesController';
 
 
 export default defineComponent({
@@ -86,11 +86,11 @@ export default defineComponent({
             estado: 1,
           }
         },
-          autorizadores: {
-            controller: new EmpleadoRoleController(),
-            params: {
-                roles: ['AUTORIZADOR'],
-            }
+        autorizadores: {
+          controller: new EmpleadoRoleController(),
+          params: {
+            roles: ['AUTORIZADOR'],
+          }
         },
         pedidos: {
           controller: new PedidoController(),

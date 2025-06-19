@@ -1,14 +1,18 @@
 <template>
   <q-page padding>
-    <slot name="modales" />
     <!-- Tabs -->
+    <!-- switch-indicator -->
+    <div v-if="tituloPagina" class="text-h5 text-bold q-mb-md">
+      {{ tituloPagina }}
+    </div>
+
     <q-tabs
       v-model="tabs"
       align="left"
-      switch-indicator
       active-class="tab-active"
-      indicator-color="transparent"
+      indicator-color="primary"
       dense
+      class="border-bottom"
     >
       <q-tab
         v-if="mostrarFormulario"
@@ -49,14 +53,15 @@
       animated
       transition-prev="scale"
       transition-next="scale"
-      :class="{ 'bg-desenfoque rounded-tabpanel': !$q.screen.xs }"
+      class="borde rounded custom-shadow5 q-mt-lg"
       keep-alive
     >
+      <!-- :class="{ 'bg-desenfoque border-white rounded-tabpanel': !$q.screen.xs }" -->
       <!-- Formulario -->
-      <q-tab-panel name="formulario" :class="{ 'q-pa-none': full }">
+      <q-tab-panel name="formulario">
         <slot name="formulario" />
-        <div :class="{ 'q-pa-md': full }">
-          <div class="row justify-end">
+        <div>
+          <div class="row justify-end q-col-gutter-x-xs q-mt-xl">
             <q-btn
               v-if="accionButtonSubmit && accionButtonSubmit.visible()"
               :color="accionButtonSubmit.color"
@@ -73,12 +78,16 @@
               <span>{{ accionButtonSubmit.titulo }}</span>
             </q-btn>
 
+            <slot name="custom-buttons"></slot>
+
             <button-submits
               v-if="mostrarButtonSubmits"
               :accion="accion"
               :permitirGuardar="puedeCrear"
+              :permitirCancelar="permitirCancelar"
               :disabled="storeCargando.cargando"
               :labelGuardar="labelGuardar"
+              :labelEditar="labelEditar"
               @cancelar="reestablecer()"
               @editar="editar(entidad, resetFormularioOnUpdate)"
               @eliminar="eliminar(entidad, cbEliminar)"
@@ -89,7 +98,7 @@
       </q-tab-panel>
 
       <!-- Listado -->
-      <q-tab-panel name="listado">
+      <q-tab-panel name="listado" class="q-pa-none">
         <essential-table-tabs
           :titulo="tituloTabla"
           :configuracionColumnas="columnas"
@@ -116,6 +125,9 @@
           @tab-seleccionado="aplicarFiltro"
           :tab-defecto="tabDefecto"
           :ajustarCeldas="ajustarCeldas"
+          :mixin="mixin"
+          :paginate="paginate"
+          :permitirFiltrar="permitirFiltrar"
         ></essential-table-tabs>
         <!-- :tab-defecto="tabDefecto" -->
       </q-tab-panel>
@@ -128,6 +140,12 @@
         <slot :name="customPanel2?.label" />
       </q-tab-panel>
     </q-tab-panels>
+
+    <div v-show="tabs == 'formulario'">
+      <slot name="formulario-2" />
+    </div>
+
+    <slot name="modales" />
   </q-page>
 </template>
 

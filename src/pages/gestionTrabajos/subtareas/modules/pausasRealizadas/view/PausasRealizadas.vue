@@ -17,14 +17,13 @@ import { configuracionColumnasPausas } from '../domain/configuracionColumnasPaus
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { endpoints } from 'config/api'
 import { AxiosResponse } from 'axios'
-import { ref, computed, watchEffect } from 'vue'
+import { ref,  watchEffect } from 'vue'
 
 // Componentes
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
 // Logica y controladores
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
-import { useSubtareaStore } from 'stores/subtarea'
 
 const props = defineProps({
   idSubtarea: Number,
@@ -36,23 +35,22 @@ defineEmits(['cerrar-modal', 'seleccionar', 'guardado'])
 /*********
  * Stores
  *********/
-const subtareaStore = useSubtareaStore()
 
 /************
  * Variables
  ************/
-const tareaTieneSubtareas = subtareaStore.tareaTieneSubtareas
-const codigoTareaSeleccionada = subtareaStore.codigoTareaSeleccionada
-const codigoSubtareaSeleccionada = subtareaStore.codigoSubtareaSeleccionada
+// const tareaTieneSubtareas = subtareaStore.tareaTieneSubtareas
+// const codigoTareaSeleccionada = subtareaStore.codigoTareaSeleccionada
+// const codigoSubtareaSeleccionada = subtareaStore.codigoSubtareaSeleccionada
 const listado = ref([])
 
-const labelCodigo = computed(
-  () => 'Código de ' + (!tareaTieneSubtareas ? 'tarea: ' : 'subtarea: ')
-)
+// const labelCodigo = computed(
+//   () => 'Código de ' + (!tareaTieneSubtareas ? 'tarea: ' : 'subtarea: ')
+// )
 
-const codigo = computed(() =>
-  !tareaTieneSubtareas ? codigoTareaSeleccionada : codigoSubtareaSeleccionada
-)
+// const codigo = computed(() =>
+//   !tareaTieneSubtareas ? codigoTareaSeleccionada : codigoSubtareaSeleccionada
+// )
 
 /*************
  * Funciones

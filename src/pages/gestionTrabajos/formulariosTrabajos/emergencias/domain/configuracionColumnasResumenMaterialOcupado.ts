@@ -1,0 +1,55 @@
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
+import { MaterialOcupadoFormulario } from 'gestionTrabajos/formulariosTrabajos/emergencias/domain/MaterialOcupadoFormulario'
+
+export const configuracionColumnasResumenMaterialOcupado: ColumnConfig<MaterialOcupadoFormulario>[] = [
+  {
+    name: 'detalle_producto',
+    field: 'detalle_producto',
+    label: 'Producto',
+    align: 'left',
+    sortable: true,
+    type: 'text'
+  },
+  {
+    name: 'serial',
+    field: 'serial',
+    label: 'Serial',
+    align: 'left',
+  },
+  {
+    name: 'medida',
+    field: 'medida',
+    label: 'Medida',
+    align: 'left',
+  },
+  {
+    name: 'cliente',
+    field: 'cliente',
+    label: 'Cliente',
+    align: 'left',
+  },
+  {
+    name: 'despachado',
+    field: 'despachado',
+    label: 'Despachado',
+    align: 'left',
+  },
+  {
+    name: 'total_cantidad_utilizada',
+    field: 'total_cantidad_utilizada',
+    label: 'Total cantidad utilizada',
+    align: 'left',
+  },
+  {
+    name: 'stock_actual',
+    field: 'stock_actual',
+    label: 'Stock actual',
+    align: 'left',
+  },
+  {
+    name: 'devuelto',
+    field: 'devuelto',
+    label: 'Devuelto',
+    align: 'left',
+  },
+]

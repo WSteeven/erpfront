@@ -2,12 +2,12 @@
 import { configuracionColumnasItemsPago } from '../domain/configuracionColumnasItemsPago'
 import { configuracionColumnasPagoProveedores } from '../domain/configuracionColumnasPagoProveedores'
 import { useVuelidate } from '@vuelidate/core'
-import { computed, defineComponent, reactive, ref, watchEffect } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import GestorDocumentos from 'components/documentos/view/GestorDocumentos.vue'
-import EssentialPopupEditableTable from "components/tables/view/EssentialPopupEditableTable.vue"
+import EssentialPopupEditableTable from 'components/tables/view/EssentialPopupEditableTable.vue'
 
 //Logica y controladores
 import { PagoProveedor } from '../domain/PagoProveedor'

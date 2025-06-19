@@ -1,6 +1,6 @@
 //Dependencias
-import { computed, defineComponent, reactive, ref } from "vue";
-import useVuelidate from "@vuelidate/core";
+import { computed, defineComponent, reactive, ref } from 'vue';
+import useVuelidate from '@vuelidate/core';
 import { required } from 'shared/i18n-validators'
 
 // Componentes
@@ -11,16 +11,16 @@ import GraficoGenerico from 'components/chartJS/GraficoGenerico.vue'
 import TableView from 'components/tables/view/TableView.vue'
 import SelectorImagen from 'components/SelectorImagen.vue'
 import { Bar, Pie } from 'vue-chartjs'
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
-import { Prefactura } from "pages/comprasProveedores/prefactura/domain/Prefactura";
-import { PrefacturaController } from "pages/comprasProveedores/prefactura/infraestructure/PrefacturaController";
-import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
-import { ClientesPrefacturasController } from "../infraestructure/ClientesPrefacturasController";
-import { usePrefacturaStore } from "stores/comprasProveedores/prefactura";
-import { obtenerFechaActual } from "shared/utils";
-import { accionesTabla, maskFecha } from "config/utils";
-import { optionsPie } from "config/graficoGenerico";
-import { configuracionColumnasPrefactura } from "pages/comprasProveedores/prefactura/domain/configuracionColumnasPrefactura";
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
+import { Prefactura } from 'pages/comprasProveedores/prefactura/domain/Prefactura';
+import { PrefacturaController } from 'pages/comprasProveedores/prefactura/infraestructure/PrefacturaController';
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
+import { ClientesPrefacturasController } from '../infraestructure/ClientesPrefacturasController';
+import { usePrefacturaStore } from 'stores/comprasProveedores/prefactura';
+import { obtenerFechaActual } from 'shared/utils';
+import { accionesTabla, maskFecha } from 'config/utils';
+import { optionsPie } from 'config/graficoGenerico';
+import { configuracionColumnasPrefactura } from 'pages/comprasProveedores/prefactura/domain/configuracionColumnasPrefactura';
 
 //Logica y controladores
 
@@ -31,7 +31,7 @@ export default defineComponent({
         const mixin = new ContenedorSimpleMixin(Prefactura, new PrefacturaController())
         const { listadosAuxiliares } = mixin.useReferencias()
         const { cargarVista, obtenerListados } = mixin.useComportamiento()
-        
+
         /***********
          * Stores
          ***********/
@@ -40,7 +40,7 @@ export default defineComponent({
         /***********
          * Variables
          ***********/
-        // const CREADAS = 'CREADAS'
+        const PROVEEDOR = 'PROVEEDOR'
         // const ANULADAS = 'ANULADAS'
         const cantPrefacturasCreadas = ref()
         const cantPrefacturasAnuladas = ref()
@@ -117,7 +117,7 @@ export default defineComponent({
             optionsPie,
             modoUnaColumna,
             tabs, opcionesGrafico, mostrarTitulosSeccion,
-
+            PROVEEDOR,
             //listados
             clientes, filtrarClientes,
 

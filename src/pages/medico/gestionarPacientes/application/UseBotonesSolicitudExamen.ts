@@ -12,8 +12,6 @@ import { ExamenSolicitado } from 'pages/medico/solicitudesExamenes/domain/Examen
 import { SolicitudExamen } from 'pages/medico/solicitudesExamenes/domain/SolicitudExamen'
 import { Examen } from 'pages/medico/examenes/domain/Examen'
 import { DetalleExamen } from '../domain/DetalleExamen'
-import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 
 export function useBotonesSolicitudExamen(tabEstadoExamen: Ref, modales?: ComportamientoModalesGestionPaciente) {
   /*********

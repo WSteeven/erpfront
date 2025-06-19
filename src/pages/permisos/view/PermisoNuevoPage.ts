@@ -12,6 +12,7 @@ import { endpoints } from 'config/api'
 import { Permiso } from '../domain/Permiso'
 import { PermisosController } from '../infrestructure/PermisosController'
 import { RolController } from 'pages/administracion/roles/infraestructure/RolController'
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 
 
 export default defineComponent({
@@ -27,8 +28,12 @@ export default defineComponent({
      * Mixin
      ************/
     const mixin = new ContenedorSimpleMixin(Permiso,new PermisosController())
-    const { entidad: permiso, disabled, listadosAuxiliares } = mixin.useReferencias()
-    const { setValidador, cargarVista, obtenerListados } = mixin.useComportamiento()
+    const {
+      entidad: permiso,
+      disabled,
+      listadosAuxiliares
+    } = mixin.useReferencias()
+    const { cargarVista, obtenerListados } = mixin.useComportamiento()
 
     const {notificarError} = useNotificaciones()
     /*************
@@ -39,8 +44,8 @@ export default defineComponent({
       roles: { required }
     }
     const v$ = useVuelidate(reglas, permiso)
-    
-    const roles = ref([])
+
+    const {roles, filtrarRoles} = useFiltrosListadosSelects(listadosAuxiliares)
     //Obtener el listado de las cantones
     cargarVista(async () => {
       await obtenerListados({
@@ -49,8 +54,7 @@ export default defineComponent({
           params: { campos: 'id,name' },
         },
       })
-      roles.value =
-        listadosAuxiliares.roles
+      roles.value = listadosAuxiliares.roles
     })
     const onSubmit = () => {
       //mixin.onSubmit()
@@ -81,21 +85,21 @@ export default defineComponent({
       permiso,
       disabled,
       v$,
-      roles,
+      roles, filtrarRoles,
       listadosAuxiliares,
       crear,
-      filtrarRol(val, update) {
-        if (val === '') {
-          update(() => {
-            roles.value = listadosAuxiliares.roles
-          })
-          return
-        }
-        update(() => {
-          const needle = val.toLowerCase()
-          roles.value = listadosAuxiliares.roles.filter((v) => v.nombre.toLowerCase().indexOf(needle) > -1)
-        })
-      },
+      // filtrarRol(val, update) {
+      //   if (val === '') {
+      //     update(() => {
+      //       roles.value = listadosAuxiliares.roles
+      //     })
+      //     return
+      //   }
+      //   update(() => {
+      //     const needle = val.toLowerCase()
+      //     roles.value = listadosAuxiliares.roles.filter((v) => v.nombre.toLowerCase().indexOf(needle) > -1)
+      //   })
+      // },
     }
   },
 })

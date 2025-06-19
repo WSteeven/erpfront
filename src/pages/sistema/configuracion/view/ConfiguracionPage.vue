@@ -7,7 +7,7 @@
       <small class="text-grey-9 text-bold">{{ 'SISTEMA' }}</small>
     </div>
 
-    <q-card class="rounded custom-shadow no-border">
+    <q-card class="rounded custom-shadow bg-desenfoque no-border">
       <div class="row text-bold text-primary q-pa-md items-center">
         <q-icon name="bi-house-gear-fill" class="q-mr-sm"></q-icon>
         Configuración general
@@ -267,6 +267,18 @@
               <label class="q-mb-sm block">Moneda</label>
               <q-input
                 v-model="configuracion.moneda"
+                autogrow
+                placeholder="Obligatorio"
+                outlined
+                dense
+              >
+              </q-input>
+            </div>
+            <!-- IVA -->
+            <div class="col-12 col-md-4">
+              <label class="q-mb-sm block">IVA % (Impuesto al valor agregado del Pais de Operaciones)</label>
+              <q-input
+                v-model="configuracion.iva"
                 autogrow
                 placeholder="Obligatorio"
                 outlined

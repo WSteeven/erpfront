@@ -9,7 +9,8 @@ export const configuracionColumnasTrabajoRealizado: ColumnConfig<ActividadRealiz
     align: 'center',
     type: 'text',
     sortable: true,
-    editable: false,
+    editable: true,
+    disableModal: true,
   },
   {
     name: 'trabajo_realizado',

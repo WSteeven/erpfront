@@ -3,6 +3,7 @@ import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 export class Empleado extends EntidadAuditable {
   identificacion: string | null
   nombres: string | null
+  nombres_apellidos: string | null
   apellidos: string | null
   telefono: string | null
   fecha_nacimiento: string | null
@@ -10,6 +11,7 @@ export class Empleado extends EntidadAuditable {
   direccion: string | null
   estado_civil: string | null
   jefe: string | null
+  jefe_inmediato: string | null
   email: string | null
   correo_personal: string | null
   password: string | null
@@ -62,18 +64,30 @@ export class Empleado extends EntidadAuditable {
   talla_pantalon: string | null
   genero: string | null
   esta_en_rol_pago: boolean | null
+  tiene_delegado: boolean | null
   realiza_factura: boolean | null
   banco_info: string | null
   acumula_fondos_reserva: boolean | null
   familiares: any[] | null
   discapacidades: any[] | null
   generar_usuario: boolean
+  conductor: any
+
   edad: number | null
+  autoidentificacion_etnica: string | null
+  trabajador_sustituto: boolean | null
+  orientacion_sexual: number | null
+  identidad_genero: number | null
+  religion: number | null
+
+  //propiedad para almacenar la cantidad de archivos
+  archivos: string | number | null
 
   constructor() {
     super()
     this.identificacion = null
     this.nombres = null
+    this.nombres_apellidos = null
     this.apellidos = null
     this.telefono = null
     this.fecha_nacimiento = null
@@ -81,6 +95,7 @@ export class Empleado extends EntidadAuditable {
     this.direccion = null
     this.estado_civil = null
     this.jefe = null
+    this.jefe_inmediato = null
     this.email = null
     this.correo_personal = null
     this.password = null
@@ -103,6 +118,7 @@ export class Empleado extends EntidadAuditable {
     this.fecha_ingreso = null
     this.antiguedad = null
     this.modificar_fecha_vinculacion = false
+    this.tiene_delegado = false
     this.fecha_vinculacion = null
     this.fecha_salida = null
     this.tipo_contrato = null
@@ -137,8 +153,17 @@ export class Empleado extends EntidadAuditable {
     this.acumula_fondos_reserva = false
     this.realiza_factura = false
     this.familiares = []
+    this.generar_usuario = false
+    this.conductor = []
     this.discapacidades = []
     this.generar_usuario = false
     this.edad = null
+    this.autoidentificacion_etnica = null
+    this.trabajador_sustituto = false
+    this.orientacion_sexual = null
+    this.identidad_genero = null
+    this.religion = null
+
+    this.archivos = null
   }
 }

@@ -1,21 +1,27 @@
 <template>
   <q-layout view="lHh lpR fFf">
     <q-page-container>
-      <essential-loading></essential-loading>
       <router-view />
     </q-page-container>
   </q-layout>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
-import EssentialLoading from 'components/loading/view/EssentialLoading.vue'
+import {  defineComponent } from 'vue'
+import { useConfiguracionGeneralStore } from 'stores/configuracion_general'
 
 export default defineComponent({
   name: 'MainLayout',
-  components: { EssentialLoading },
   setup() {
-    //
-  },
+    const configuracionGeneralStore = useConfiguracionGeneralStore()
+    // Establecer favicon
+    configuracionGeneralStore
+      .consultarConfiguracion()
+      .then(() => configuracionGeneralStore.cambiarFavicon())
+
+    // Titulo pagina
+    document.title = configuracionGeneralStore.configuracion?.nombre_empresa
+
+  }
 })
 </script>

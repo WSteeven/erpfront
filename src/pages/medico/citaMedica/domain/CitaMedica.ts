@@ -17,6 +17,14 @@ export class CitaMedica extends EntidadAuditable {
   fecha_hora_solicitud: string | null
   fecha_hora_accidente: string | null
   tipo_cambio_cargo: string | null
+  fecha_accidente: string | null
+  hora_accidente: string | null
+  fecha_cita_medica: string | null
+  hora_cita_medica: string | null
+  certificado_alta: string | null
+  observaciones_alta: string | null
+  restricciones_alta: string | null
+  accidente: number | null
 
   constructor() {
     super()
@@ -36,5 +44,14 @@ export class CitaMedica extends EntidadAuditable {
     this.fecha_hora_solicitud = null
     this.fecha_hora_accidente = null
     this.tipo_cambio_cargo = null
+    this.fecha_accidente = null
+    this.hora_accidente = null
+    this.fecha_cita_medica = null
+    this.hora_cita_medica = null
+    this.certificado_alta = null
+    this.observaciones_alta = null
+    this.restricciones_alta = null
+    this.accidente = null
   }
 }
+

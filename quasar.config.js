@@ -19,7 +19,7 @@ module.exports = configure(function (/* ctx */) {
       // exclude = [],
       // rawOptions = {},
       warnings: true,
-      errors: true,
+      errors: true
     },
 
     // https://v2.quasar.dev/quasar-cli-vite/prefetch-feature
@@ -28,7 +28,7 @@ module.exports = configure(function (/* ctx */) {
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     // https://v2.quasar.dev/quasar-cli-vite/boot-files
-    boot: ['axios'],
+    boot: ['axios', 'global-variables', 'push'],
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#css
     css: ['app.scss'],
@@ -40,12 +40,12 @@ module.exports = configure(function (/* ctx */) {
       'fontawesome-v6',
       // 'eva-icons',
       // 'themify',
-      // 'line-awesome',
+      'line-awesome',
       // 'roboto-font-latin-ext', // this or either 'roboto-font', NEVER both!
 
       'roboto-font', // optional, you are not bound to it
       'material-icons', // optional, you are not bound to it
-      'bootstrap-icons',
+      'bootstrap-icons'
     ],
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#build
@@ -58,9 +58,9 @@ module.exports = configure(function (/* ctx */) {
           'edge88',
           'firefox78',
           'chrome87',
-          'safari13.1',
+          'safari13.1'
         ],
-        node: 'node16',
+        node: 'node16'
       },
 
       /* extendViteConf(viteConf, { isServer, isClient }) {
@@ -152,15 +152,37 @@ module.exports = configure(function (/* ctx */) {
           __dirname,
           './src/pages/gestionTickets/motivosCanceladosTickets'
         ),
+        vehiculos: path.join(__dirname, './src/pages/controlVehiculos'),
         // Modulo medico
         medico: path.join(__dirname, './src/pages/medico'),
-      },
+        seleccionContratacion: path.join(
+          __dirname,
+          './src/pages/recursosHumanos/SeleccionContratacionPersonal'
+        ),
+        trabajoSocial: path.join(
+          __dirname,
+          './src/pages/recursosHumanos/TrabajoSocial'
+        ),
+        activosFijos: path.join(__dirname, './src/pages/activosFijos'),
+        controlActivosFijos: path.join(
+          __dirname,
+          './src/pages/activosFijos/controlActivosFijos'
+        ),
+        sso: path.join(__dirname, './src/pages/sso'),
+        seguridad: path.join(__dirname, './src/pages/seguridad'),
+        comprasProveedores: path.join(
+          __dirname,
+          './src/pages/comprasProveedores'
+        ),
+        controlPersonal: path.join(__dirname, './src/pages/recursosHumanos/control_personal')
+      }
     },
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#devServer
     devServer: {
       https: false,
-      open: true, // opens browser window automatically
+      port: 8080,
+      open: true // opens browser window automatically
     },
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#framework
@@ -179,7 +201,7 @@ module.exports = configure(function (/* ctx */) {
       // directives: [],
 
       // Quasar plugins
-      plugins: ['Notify', 'Dialog', 'Loading'],
+      plugins: ['Notify', 'Dialog', 'Loading']
     },
 
     // animations: 'all', // --- includes all animations
@@ -192,7 +214,7 @@ module.exports = configure(function (/* ctx */) {
       //   router: 'src/router/index',
       //   store: 'src/store/index',
       registerServiceWorker: 'src/register-service-worker',
-      serviceWorker: 'src/service-worker',
+      serviceWorker: 'public/service-worker'
       //   pwaManifestFile: 'src-pwa/manifest.json',
       //   electronMain: 'src-electron/electron-main',
       //   electronPreload: 'src-electron/electron-preload'
@@ -215,8 +237,8 @@ module.exports = configure(function (/* ctx */) {
       // (gets superseded if process.env.PORT is specified at runtime)
 
       middlewares: [
-        'render', // keep this as last one
-      ],
+        'render' // keep this as last one
+      ]
     },
 
     // https://v2.quasar.dev/quasar-cli-vite/developing-pwa/configuring-pwa
@@ -225,7 +247,7 @@ module.exports = configure(function (/* ctx */) {
       injectPwaMetaTags: true,
       swFilename: 'sw.js',
       manifestFilename: 'manifest.json',
-      useCredentialsForManifestTag: false,
+      useCredentialsForManifestTag: false
       // extendGenerateSWOptions (cfg) {}
       // extendInjectManifestOptions (cfg) {},
       // extendManifestJson (json) {}
@@ -239,7 +261,7 @@ module.exports = configure(function (/* ctx */) {
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/developing-capacitor-apps/configuring-capacitor
     capacitor: {
-      hideSplashscreen: true,
+      hideSplashscreen: true
     },
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/developing-electron-apps/configuring-electron
@@ -265,16 +287,16 @@ module.exports = configure(function (/* ctx */) {
       builder: {
         // https://www.electron.build/configuration/configuration
 
-        appId: 'jpconstrucred',
-      },
+        appId: 'jpconstrucred'
+      }
     },
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/developing-browser-extensions/configuring-bex
     bex: {
-      contentScripts: ['my-content-script'],
+      contentScripts: ['my-content-script']
 
       // extendBexScriptsConf (esbuildConf) {}
       // extendBexManifestJson (json) {}
-    },
+    }
   }
 })

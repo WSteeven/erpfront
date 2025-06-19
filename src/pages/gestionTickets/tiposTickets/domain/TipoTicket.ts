@@ -7,6 +7,9 @@ export class TipoTicket extends EntidadAuditable {
   categoria_tipo_ticket_id: number | null
   departamento: number | null
 
+  destinatario: number | string | null = null
+  destinatario_id: number | null = null
+  
   constructor() {
     super()
     this.nombre = null

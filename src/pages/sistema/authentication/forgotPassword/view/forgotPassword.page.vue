@@ -1,14 +1,15 @@
 <template>
-  <q-page class="">
+  <q-page>
     <div class="row items-center">
       <!-- Left side -->
       <div
         v-if="!$q.screen.xs && !$q.screen.sm"
-        class="col-12 col-md-8 text-center q-pa-lg"
+        class="col-12 col-md-8 justify-center q-pa-lg items-center row window-height"
+        :class="{ 'bg-grey-2': !$q.dark.isActive }"
       >
         <div class="imagen d-flex align-items-center justify-content-center">
           <q-avatar square size="400px">
-            <img src="~assets/logo.png" />
+            <img :src="!$q.dark.isActive ? logoClaro : logoOscuro" alt="logo" />
           </q-avatar>
         </div>
       </div>
@@ -23,7 +24,7 @@
           size="120px"
           class="q-mx-auto block q-mb-md"
         >
-          <img src="~assets/logo.png" />
+          <img :src="!$q.dark.isActive ? logoClaro : logoOscuro" alt="logo" />
         </q-avatar>
 
         <form
@@ -95,6 +96,22 @@
               </template>
             </q-input>
           </div>
+          <!-- seccion de tengo un codigo-->
+          <div
+            class="col-12 flex justify-end q-mb-sm"
+            v-if="mostrarTengoUnCodigo"
+          >
+            <a
+              class="text-blue cursor-pointer"
+              @click="
+                () => {
+                  enviando = true
+                  mostrarTengoUnCodigo = false
+                }
+              "
+              >¿Tengo un código?</a
+            >
+          </div>
 
           <div class="col-12" v-if="!enviando">
             <!-- Botones -->
@@ -139,24 +156,9 @@
 </template>
 
 <script lang="ts" src="./forgotPassword.page.ts"></script>
-<style>
+<style scoped>
 h2 {
   line-height: 1.2;
   font-size: 1.714rem;
-}
-
-.empresa {
-  position: fixed;
-  top: 16px;
-  left: 16px;
-}
-
-.fondo {
-  background: rgb(94, 88, 252);
-  background: linear-gradient(
-    90deg,
-    rgba(94, 88, 252, 1) 0%,
-    rgba(110, 143, 255, 1) 100%
-  );
 }
 </style>

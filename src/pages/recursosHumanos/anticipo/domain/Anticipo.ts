@@ -1,8 +1,8 @@
-import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable';
 
 export class Anticipo extends EntidadAuditable {
   id: number | null
-  empleado: number| null
+  empleado: number | null
   fecha: string | null
   valor: number | null
   forma_pago: string | null

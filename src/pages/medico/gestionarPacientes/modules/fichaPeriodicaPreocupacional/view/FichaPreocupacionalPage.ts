@@ -128,7 +128,7 @@ export default defineComponent({
 
       listadosAuxiliares.examenes_realizados = listadosAuxiliares.tiposAntecedentes.map((tipo: TipoAntecedente) => {
         const res = new ResultadoExamenPreocupacional()
-        res.examen = tipo.examen
+        res.examen = tipo.nombre
         res.examen_id = tipo.id
         return res
       })
@@ -267,6 +267,7 @@ export default defineComponent({
       fichaPreocupacional.motivo_consulta = response.data.modelo.motivo_consulta
       fichaPreocupacional.recomendaciones_tratamiento = response.data.modelo.recomendaciones_tratamiento
       fichaPreocupacional.enfermedad_actual = response.data.modelo.enfermedad_actual
+      fichaPreocupacional.cargo = response.data.modelo.cargo
     }
 
     const descargarPdf = async () => {
@@ -386,9 +387,9 @@ export default defineComponent({
         const newItem: AntecedenteTrabajoAnterior = new AntecedenteTrabajoAnterior()
 
         for (const key in antecedente) {
-          if (antecedente.hasOwnProperty(key) && !["id", "created_at", "updated_at"].includes(key)) {
+          if (antecedente.hasOwnProperty(key) && !['id', 'created_at', 'updated_at'].includes(key)) {
             const value = antecedente[key]
-            if (typeof value === "boolean" && value === true) {
+            if (typeof value === 'boolean' && value === true) {
               riesgos.push(parseInt(key))
             } else {
               newItem[key] = value

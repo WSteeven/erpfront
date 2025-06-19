@@ -27,7 +27,6 @@
             <q-icon v-else name="bi-check-circle" class="q-mr-sm" color="positive"></q-icon>
               {{ tipo.titulo }}
             </q-btn>
-            <!-- {{ tiposCuestionarios }} -->
           </div>
         </q-card-section>
       </q-card>
@@ -36,6 +35,7 @@
     <transition name="scale" mode="out-in">
       <div v-if="listadosAuxiliares.preguntas.length">
         <q-card flat class="q-mb-sm bg-desenfoque border-white">
+          <slot name="persona"></slot>
           <q-card-section>
             <q-btn
               color="primary"
@@ -80,11 +80,11 @@
               ></q-rating>
             </div>
 
-            <div class="row">
+            <div class="row q-col-gutter-x-sm">
               <div
                 v-for="item in listadosAuxiliares.preguntas"
                 :key="item.id"
-                class="col-12 text-bold text-justify q-mb-md"
+                class="col-12 col-md-6 text-bold text-justify q-mb-md"
               >
                 <label class="q-mb-sm block">{{
                   item.codigo + '.- ' + item.pregunta

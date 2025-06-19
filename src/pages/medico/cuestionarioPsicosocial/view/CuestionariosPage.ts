@@ -1,65 +1,71 @@
+// Dependencias
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { ValidarCuestionarioLleno } from '../application/ValidarCuestionarioLleno'
 import { SelectOption } from 'components/tables/domain/SelectOption'
-import { Cuestionario } from '../domain/Cuestionario'
-import { TipoCuestionario } from '../domain/TipoCuestionario'
-import { TipoCuestionarioController } from '../infrestructure/TipoCuestionarioController'
+import { opcionesTiposCuestionarios } from 'config/utils/medico'
+import { useNotificacionStore } from 'stores/notificacion'
+import { useNotificaciones } from 'shared/notificaciones'
+import { required } from 'shared/i18n-validators'
 import { Ref, defineComponent, ref } from 'vue'
-import { RespuestaCuestionarioEmpleadoController } from '../infrestructure/RespuestaCuestionarioEmpleadoController'
-import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { RespuestaCuestionarioEmpleado } from '../domain/RespuestaCuestionarioEmpleado'
-import { PreguntaController } from 'pages/medico/pregunta/infrestructure/RespuestaCuestionarioEmpleadoController'
 import { isAxiosError } from 'shared/utils'
 import useVuelidate from '@vuelidate/core'
-import { ValidarCuestionarioLleno } from '../application/ValidarCuestionarioLleno'
-import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { useQuasar } from 'quasar'
-import { useNotificacionStore } from 'stores/notificacion'
-import { required } from 'shared/i18n-validators'
-
 
 // Componentes
+import CuestionarioDiagnosticoConsumoDrogasHeader from 'medico/cuestionarioPsicosocial/view/CuestionarioDiagnosticoConsumoDrogasPage.vue'
+import CuestionarioPsicosocialHeader from 'medico/cuestionarioPsicosocial/view/CuestionarioPsicosocialPage.vue'
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
-import CuestionarioPsicosocialHeader from 'medico/cuestionarioPsicosocial/view/CuestionarioPsicosocialPage.vue'
-import CuestionarioDiagnosticoConsumoDrogasHeader from 'medico/cuestionarioPsicosocial/view/CuestionarioDiagnosticoConsumoDrogasPage.vue'
-import { opcionesTiposCuestionarios } from 'config/utils/medico'
-import { useNotificaciones } from 'shared/notificaciones'
 
+// Logica y controladores
+import { RespuestaCuestionarioEmpleadoController } from '../infrestructure/RespuestaCuestionarioEmpleadoController'
+import { PreguntaController } from 'pages/medico/pregunta/infrestructure/RespuestaCuestionarioEmpleadoController'
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { TipoCuestionarioController } from '../infrestructure/TipoCuestionarioController'
+import { RespuestaCuestionarioEmpleado } from '../domain/RespuestaCuestionarioEmpleado'
+import { TipoCuestionario } from '../domain/TipoCuestionario'
+import { Cuestionario } from '../domain/Cuestionario'
 
 export default defineComponent({
   components: { TabLayout, ButtonSubmits, CuestionarioPsicosocialHeader, CuestionarioDiagnosticoConsumoDrogasHeader },
+  props: {
+    mixin: { // Para cuestionarios publicos
+      type: Object as () => ContenedorSimpleMixin<RespuestaCuestionarioEmpleado>,
+      required: false,
+    },
+  },
   setup(props) {
-
     /*********
      * Stores
      *********/
     useNotificacionStore().setQuasar(useQuasar())
 
-    // Variables
+    /************
+     * Variables
+     ************/
     const tiposCuestionarios: Ref<TipoCuestionario[]> = ref([])
     const cargando = new StatusEssentialLoading()
     const tipoCuestionarioSeleccionado = ref()
     const { confirmar } = useNotificaciones()
-    /* const objetivo =
-      'El objetivo de este cuestionario es conocer algunos aspectos sobre las condiciones psicosociales en tu trabajo. El cuestionario es anónimo y se garantiza la confidencialidad de las respuestas. Con el fin de que la información que se obtenga sea útil es necesario que contestes sinceramente a todas las preguntas. Si hay alguna pregunta sin contestar el cuestionario no será válido. Tras leer atentamente cada pregunta así como sus opciones de respuesta, marca en cada caso la respuesta que consideres más adecuada, señalando una sola respuesta por cada pregunta.' */
 
-    // Controladores
+    /****************
+     * Controladores
+     ****************/
     const tipoCuestionarioController = new TipoCuestionarioController()
 
     /***********
      * Mixin
-     ************/
-    const mixin = new ContenedorSimpleMixin(
+     ***********/
+    const mixin = props.mixin ?? new ContenedorSimpleMixin(
       RespuestaCuestionarioEmpleado,
       new RespuestaCuestionarioEmpleadoController()
     )
-    const { obtenerListados, cargarVista, setValidador, guardar, reestablecer } =
-      mixin.useComportamiento()
+    const { obtenerListados, cargarVista, setValidador, guardar } = mixin.useComportamiento()
     const {
       entidad: respuestaCuestionarioEmpleado,
       accion,
       listadosAuxiliares,
     } = mixin.useReferencias()
-    const { onBeforeGuardar } = mixin.useHooks()
 
     cargarVista(async () => {
       await obtenerListados({
@@ -75,10 +81,8 @@ export default defineComponent({
     /*********
      * Reglas
      *********/
-    const reglas = {
-      cuestionario: {
-        required,
-      },
+    let reglas = {
+      cuestionario: { required },
     }
 
     const v$ = useVuelidate(reglas, respuestaCuestionarioEmpleado)
@@ -101,26 +105,8 @@ export default defineComponent({
       })
     }
 
-    const guardarCuestionario = async () => {
-      confirmar(
-        'Las respuestas serán enviadas y no podrán ser modificadas. ¿Desea continuar?',
-        async () => {
-          try {
-            await guardar(respuestaCuestionarioEmpleado)
-            listadosAuxiliares.preguntas = []
-            mensaje.value = 'Gracias por completar el cuestionario.'
-          } catch (e) {
-            console.log(e)
-          }
-        }
-      )
-    }
-
-    /********
-     * Hooks
-     ********/
-    onBeforeGuardar(() => {
-      respuestaCuestionarioEmpleado.cuestionario = listadosAuxiliares.preguntas.map(
+    const mapearRespuestas = () => {
+      return respuestaCuestionarioEmpleado.cuestionario = listadosAuxiliares.preguntas.map(
         (item: any) => {
           return {
             // respuesta: typeof item.respuesta === 'string' ? item.respuesta : null,
@@ -132,13 +118,23 @@ export default defineComponent({
           }
         }
       )
-    })
+    }
 
-    /*******
-     * Init
-     *******/
-    const preguntaController = new PreguntaController()
-    const mensaje = ref()
+    const guardarCuestionario = async () => {
+      confirmar(
+        'Las respuestas serán enviadas y no podrán ser modificadas. ¿Desea continuar?',
+        async () => {
+          try {
+            mapearRespuestas()
+            await guardar(respuestaCuestionarioEmpleado)
+            listadosAuxiliares.preguntas = []
+            mensaje.value = 'Gracias por completar el cuestionario.'
+          } catch (e) {
+            console.log(e)
+          }
+        }
+      )
+    }
 
     async function consultarPreguntas(tipoCuestionario: number) {
       tipoCuestionarioSeleccionado.value = tipoCuestionario
@@ -157,14 +153,18 @@ export default defineComponent({
         cargando.desactivar()
       }
     }
-    // consultarPreguntas()
+
+    /*******
+     * Init
+     *******/
+    const preguntaController = new PreguntaController()
+    const mensaje = ref()
 
     return {
       consultarPreguntas,
       mapearCuestionario,
       listadosAuxiliares,
       tiposCuestionarios,
-      // objetivo,
       mensaje,
       accion,
       guardarCuestionario,
