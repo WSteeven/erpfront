@@ -37,7 +37,7 @@ export const useListadosSistemaStore = defineStore('listadosSistema', () => {
     const sub_detalles = (await new SubDetalleFondoController().listar({ campos: 'id,descripcion' })).result
     LocalStorage.set('sub_detalles', JSON.stringify(sub_detalles))
 
-    const tareas = (await new TareaController().listar({ campos: 'id,titulo' })).result
+    const tareas = (await new TareaController().listar({ campos: 'id,titulo',activas_empleado:1 })).result
     LocalStorage.set('tareas', JSON.stringify(tareas))
 
     const usuariosInactivos = (await new EmpleadoController().listar({ campos: 'id,nombres,apellidos', estado: 0 })).result

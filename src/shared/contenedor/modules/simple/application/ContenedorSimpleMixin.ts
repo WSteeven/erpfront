@@ -164,11 +164,12 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
       this.refs.pagination.value.page = meta?.current_page
       this.refs.pagination.value.total = meta?.total
     } catch (error) {
+      console.error(error)
       if (isAxiosError(error)) {
         const mensajes: string[] = error.erroresValidacion
         await notificarMensajesError(mensajes, this.notificaciones)
-      }
-      this.notificaciones.notificarError(error + '')
+      }else
+        this.notificaciones.notificarError(error + '')
     } finally {
       this.statusEssentialLoading.desactivar()
     }

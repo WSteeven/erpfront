@@ -197,7 +197,7 @@ export function sleep(ms: number): Promise<void> {
 }
 
 export function isAxiosError(candidate: any): candidate is ApiError {
-  return candidate instanceof ApiError === true
+  return candidate instanceof ApiError
 }
 
 export async function notificarMensajesError(

@@ -179,9 +179,12 @@
                 val => val > 0 || 'Ingresa un numero de comprobante válido'
               ]"
               :lazy-rules="true"
+              :error="!!v$.num_comprobante.$errors.length"
               outlined
               dense
             >
+              <template v-slot:error><error-component clave="num_comprobante" :v$="v$"/>
+              </template>
             </q-input>
           </div>
 
@@ -219,6 +222,7 @@
               :disable="disabled || soloLectura"
               :option-label="v => v.razon_social + ' - ' + v.sucursal"
               :option-value="v => v.id"
+              :error="!!v$.proveedor_id.$errors.length"
               emit-value
               map-options
               ><template v-slot:option="scope">
@@ -233,6 +237,8 @@
                     >
                   </q-item-section>
                 </q-item>
+              </template>
+              <template><error-component clave="proveedor_id" :v$="v$"/>
               </template>
               <template v-slot:no-option>
                 <no-option-component/>
@@ -250,9 +256,12 @@
               v-model="transaccion.proveedor"
               placeholder="Obligatorio"
               :disable="disabled || soloLectura"
+              :error="!!v$.proveedor.$errors.length"
               outlined
               dense
             >
+              <template><error-component clave="proveedor" :v$="v$"/>
+              </template>
             </q-input>
           </div>
 
@@ -263,6 +272,8 @@
               placeholder="YYYY-MM-DD"
               hint="Opcional"
               :disable="disabled"
+              :error="!!v$.fecha_compra.$errors.length"
+              error-message="Debes ingresar la fecha de compra"
               clearable
               outlined
               dense
@@ -290,6 +301,9 @@
                     </q-date>
                   </q-popup-proxy>
                 </q-icon>
+              </template>
+              <template v-slot:error>
+                <error-component clave="fecha_compra" :v$="v$"/>
               </template>
             </q-input>
           </div>
