@@ -350,7 +350,7 @@ export default defineComponent({
       await refArchivo.value.subir()
     }
 
-    function eliminar({ posicion }) {
+    function eliminar(posicion:number) {
       confirmar('¿Está seguro de continuar?', () =>
         devolucion.listadoProductos.splice(posicion, 1)
       )
@@ -456,8 +456,8 @@ export default defineComponent({
       titulo: 'Quitar',
       color: 'negative',
       icono: 'bi-x',
-      accion: ({ entidad, posicion }) => {
-        eliminar({ entidad, posicion })
+      accion: ({ posicion }) => {
+        eliminar( posicion)
       },
       visible: () => {
         return accion.value != acciones.consultar

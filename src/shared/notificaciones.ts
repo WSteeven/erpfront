@@ -13,7 +13,7 @@ export function useNotificaciones() {
 
   const base = {
     html: true,
-    textColor: $q.dark.isActive ? 'white' : 'black',
+    textColor: $q?.dark.isActive ? 'white' : 'black',
     position: 'bottom',
     // multiLine: true,
     // progress: true,
