@@ -12,10 +12,10 @@
   >
     <template #formulario>
       <!-- <div :class="{ 'q-fmb-md bg-white': empleado.id }"> -->
-        <detalle-paciente
-          v-if="empleado.id"
-          :empleado="empleado"
-        ></detalle-paciente>
+      <detalle-paciente
+        v-if="empleado.id"
+        :empleado="empleado"
+      ></detalle-paciente>
       <!-- </div> -->
 
       <q-separator class="q-my-md" color=""></q-separator>
@@ -40,14 +40,18 @@
           <q-tab
             :name="tiposProcesosExamenes.PERIODICO"
             :label="tiposProcesosExamenes.PERIODICO"
-            :class="{ 'tab-inactive': tabs !== tiposProcesosExamenes.PERIODICO }"
+            :class="{
+              'tab-inactive': tabs !== tiposProcesosExamenes.PERIODICO
+            }"
             @click="seleccionarTabTipoProcesoOcupacional()"
             no-caps
           />
           <q-tab
             :name="tiposProcesosExamenes.REINTEGRO"
             :label="tiposProcesosExamenes.REINTEGRO"
-            :class="{ 'tab-inactive': tabs !== tiposProcesosExamenes.REINTEGRO }"
+            :class="{
+              'tab-inactive': tabs !== tiposProcesosExamenes.REINTEGRO
+            }"
             @click="seleccionarTabTipoProcesoReingreso()"
             no-caps
           />
@@ -121,6 +125,28 @@
       </div>
 
       <q-separator class="q-my-md" color="white"></q-separator>
+      <div v-if="empleado.id" class="q-mb-md">
+        <gestor-archivos
+          ref="refGestorFichaMedica"
+          label="Ficha médica firmada"
+          :mixin="mixin"
+          :listarAlGuardar="false"
+          :idModelo="empleado.id"
+        >
+          <template #boton-subir>
+            <q-btn
+              color="primary"
+              push
+              no-caps
+              class="full-width q-mb-lg"
+              @click="subirFichaMedicaFirmada"
+            >
+              <q-icon name="bi-upload" class="q-mr-sm" size="xs" />
+              Subir ficha médica firmada
+            </q-btn>
+          </template>
+        </gestor-archivos>
+      </div>
 
       <essential-table
         v-if="empleado.id"

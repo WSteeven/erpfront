@@ -15,6 +15,7 @@ import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 import SelectorImagen from 'components/SelectorImagen.vue'
 import DetallePaciente from './DetallePaciente.vue'
 import PanelTipoProceso from './PanelTipoProceso.vue'
+import GestorArchivos from 'components/gestorArchivos/GestorArchivos.vue'
 
 // Logica y controladores
 import { EsquemaVacunaController } from '../modules/esquemaVacunacion/infraestructure/EsquemaVacunaController'
@@ -34,6 +35,12 @@ import { EsquemaVacuna } from '../modules/esquemaVacunacion/domain/EsquemaVacuna
 export default defineComponent({
   components: { TabLayoutFilterTabs2, SelectorImagen, ModalesEntidad, EssentialTable, DetallePaciente, PanelTipoProceso },
   setup() {
+
+    /***
+     * Variables
+     */
+    const refGestorFichaMedica = ref()
+
     /*********
      * Stores
      *********/
