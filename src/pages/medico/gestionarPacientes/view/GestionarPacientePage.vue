@@ -125,28 +125,6 @@
       </div>
 
       <q-separator class="q-my-md" color="white"></q-separator>
-      <div v-if="empleado.id" class="q-mb-md">
-        <gestor-archivos
-          ref="refGestorFichaMedica"
-          label="Ficha médica firmada"
-          :mixin="mixin"
-          :listarAlGuardar="false"
-          :idModelo="empleado.id"
-        >
-          <template #boton-subir>
-            <q-btn
-              color="primary"
-              push
-              no-caps
-              class="full-width q-mb-lg"
-              @click="subirFichaMedicaFirmada"
-            >
-              <q-icon name="bi-upload" class="q-mr-sm" size="xs" />
-              Subir ficha médica firmada
-            </q-btn>
-          </template>
-        </gestor-archivos>
-      </div>
 
       <essential-table
         v-if="empleado.id"

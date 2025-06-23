@@ -1057,6 +1057,29 @@
           </div>
         </div>
       </q-expansion-item>
+      <div v-if="[acciones.consultar, acciones.editar].includes(accion)" class="q-mb-md q-pa-sm border-grey-6 rounded-field ">
+        <gestor-archivos
+            ref="refArchivo"
+            label="Ficha preocupacional firmada"
+            :mixin="mixin"
+            :listarAlGuardar="true"
+            :idModelo="fichaPreocupacional.id"
+        >
+          <template #boton-subir>
+            <q-btn
+                v-if="quieroSubirArchivos"
+                color="primary"
+                push
+                no-caps
+                class="full-width q-mb-lg"
+                @click="subirFichaMedicaFirmada"
+            >
+              <q-icon name="bi-upload" class="q-mr-sm" size="xs" />
+              Subir ficha médica firmada
+            </q-btn>
+          </template>
+        </gestor-archivos>
+      </div>
     </template>
 
     <template #custom-buttons>
