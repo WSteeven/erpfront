@@ -25,6 +25,9 @@
 
         <form @submit.prevent="login" class="full-width q-px-lg">
           <div class="q-mb-sm">
+            <div class="text-h5 text-center text-weight-light elegant-blue-hard-gradient-text">
+              FIRSTRED
+            </div>
             <h2>Bienvenidos a {{ nombreEmpresa }}</h2>
             <span>COMPROMETIDOS A BRINDAR UN SERVICIO DE EXCELENCIA!</span>
           </div>

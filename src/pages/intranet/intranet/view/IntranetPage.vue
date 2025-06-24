@@ -362,18 +362,18 @@
                 </div>
               </div>
 
-              <q-card class="q-pa-md q-my-md  bg-grey-2" flat bordered>
+              <q-card class="q-pa-md q-my-md bg-grey-2" flat bordered>
                 <div class="row items-center q-col-gutter-lg justify-center">
                   <!-- Botón Android -->
                   <div class="column items-center">
                     <q-btn
-                        color="green"
-                        icon="android"
-                        label="Android"
-                        href="https://sistema.jpconstrucred.com/firstred-jpconstrucred-app.apk"
-                        target="_blank"
-                        unelevated
-                        rounded
+                      color="green"
+                      icon="android"
+                      label="Android"
+                      :href="`${url_sistema}/firstred-app.apk`"
+                      target="_blank"
+                      unelevated
+                      rounded
                     />
                   </div>
 
@@ -381,19 +381,18 @@
                   <div class="column items-center">
                     <small class="text-grey-7">Próximamente...</small>
                     <q-btn
-                        color="white"
-                        text-color="black"
-                        icon="apple"
-                        label="iOS"
-                        target="_blank"
-                        unelevated
-                        @click="notificarProximamente"
-                        rounded
+                      color="white"
+                      text-color="black"
+                      icon="apple"
+                      label="iOS"
+                      target="_blank"
+                      unelevated
+                      @click="notificarProximamente"
+                      rounded
                     />
                   </div>
                 </div>
               </q-card>
-
             </div>
           </q-card>
         </div>
