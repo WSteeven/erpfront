@@ -24,6 +24,13 @@ export const configuracionColumnasActivosFijos: ColumnConfig<ActivoFijo>[] = [
         sortable: true,
     },
     {
+        name: 'codigo_producto',
+        field: 'codigo_producto',
+        label: 'Código Producto',
+        align: 'left',
+        sortable: true,
+    },
+    {
         name: 'descripcion',
         field: 'descripcion',
         label: 'Activo fijo',

@@ -17,7 +17,7 @@ export class EgresoPusherEvent {
             // console.log('egreso-event')
             notificacionStore.agregar(e.notificacion)
             notificacionStore.actualizar()
-            notificarCorrecto('Te despacharon material de bodega')
+            notificarCorrecto('Te despacharon algo de bodega')
             
             //lanzamos la notificación push en el navegador del destinatario
             pushEventMesaggeServiceWorker({

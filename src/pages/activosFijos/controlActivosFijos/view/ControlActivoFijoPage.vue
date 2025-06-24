@@ -7,6 +7,7 @@
     :accion1="btnEditarCodigoPersonalizado"
     :accion2="btnEditarCodigoSistemaAnterior"
     :accion3="btnDescargarEtiqueta"
+    ajustar-celdas
   >
     <template #header-tabla-listado>
       <q-select
@@ -49,12 +50,15 @@
             mensaje="Vaya a la pestaña <b>Listado</b> y <b>seleccione un activo fijo</b> para observar
           más detalles."
           ></callout>
+          <div class="row q-col-gutter-sm q-py-md">
+            <q-btn>Crear un activo</q-btn>
+          </div>
         </div>
         <div v-if="activo.codigo" class="row q-col-gutter-sm q-py-md">
           <div class="col-12 text-bold q-mb-sm">Información general</div>
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Código</label>
-            <q-input v-model="activo.codigo" disable outlined dense> </q-input>
+            <q-input v-model="activo.codigo" disable outlined dense></q-input>
           </div>
 
           <div class="col-12 col-md-3">
@@ -266,6 +270,7 @@
               :ajustarCeldas="true"
               :accion1="btnSubirActaEntregaRecepcion"
               :accion2="btnSubirJustificativoUso"
+              :accion3="btnDescargarEtiquetaPersonalizada"
             ></essential-table>
           </q-tab-panel>
 
