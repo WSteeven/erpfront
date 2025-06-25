@@ -119,11 +119,13 @@
           </q-carousel>
 
           <q-card v-else class="q-pa-md no-border rounded shadow-chip">
-            <img
-              src="../../../../assets/latam2.gif"
-              alt="Sin noticias"
-              style="width: 100%; border-radius: 15px"
-            />
+            <div class="full-width">
+              <img
+                src="../../../../assets/latam2.gif"
+                alt="Sin noticias"
+                style="width: 100%; height: auto; border-radius: 15px"
+              />
+            </div>
           </q-card>
         </div>
 
