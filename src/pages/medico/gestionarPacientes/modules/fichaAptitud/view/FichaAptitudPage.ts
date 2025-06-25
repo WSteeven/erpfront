@@ -11,7 +11,6 @@ import { useQuasar } from 'quasar'
 import SimpleLayout from 'src/shared/contenedor/modules/simple/view/SimpleLayout.vue'
 
 // Logica y controladores
-
 import { TipoEvaluacionMedicaRetiroController } from '../infraestructure/TipoEvaluacionMedicaRetiroController'
 import { OpcionRespuestaTipoEvaluacionMedicaRetiro } from '../domain/OpcionRespuestaTipoEvaluacionMedicaRetiro'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
@@ -21,9 +20,14 @@ import { TipoEvaluacionMedicaRetiro } from '../domain/TipoEvaluacionMedicaRetiro
 import { FichaAptitud } from '../domain/FichaAptitud'
 import { acciones } from 'config/utils'
 
+import GestorArchivos from 'components/gestorArchivos/GestorArchivos.vue'
+
+import { ArchivoController } from 'subtareas/modules/gestorArchivosTrabajos/infraestructure/ArchivoController'
+
 export default defineComponent({
   name: 'fichas_aptitudes',
   components: {
+    GestorArchivos,
     SimpleLayout
   },
   emits: ['cerrar-modal'],
@@ -39,27 +43,20 @@ export default defineComponent({
      * Variables
      ************/
     const refArchivo = ref()
-
-
     const respuestasTiposEvaluacionesMedicasRetiros = [
       ['SI', 'NO'],
       ['PRESUNTIVA', 'DEFINITIVA', 'NO APLICA'],
       ['SI', 'NO', 'NO APLICA']
     ]
-
-
-    /**************
-     * Controladores
-     **************/
-
-
+    const tiposEvaluacionesMedicasRetiros = ref()
 
     /********
      * Mixin
      *********/
     const mixin = new ContenedorSimpleMixin(
       FichaAptitud,
-      new FichaAptitudController()
+      new FichaAptitudController(),
+      new ArchivoController()
     )
     const {
       entidad: fichaAptitud,
@@ -72,7 +69,8 @@ export default defineComponent({
       cargarVista,
       obtenerListados,
       consultar,
-      editarParcial
+      editarParcial,
+      listar
     } = mixin.useComportamiento()
     const { onBeforeGuardar, onReestablecer, onConsultado, onGuardado } =
       mixin.useHooks()
@@ -152,21 +150,39 @@ export default defineComponent({
 
     onReestablecer(() => emit('cerrar-modal'))
 
-    onConsultado(() => (accion.value = acciones.consultar))
+    onConsultado((entidad) => {accion.value = acciones.consultar
+        setTimeout(async () => {
+        await refArchivo.value.listarArchivosAlmacenados(entidad.id)
+      }, 1)}
+    );
 
     /*******
      * Init
      *******/
+
+
+
     fichaAptitud.registro_empleado_examen =
       medicoStore.idRegistroEmpleadoExamen ?? null
     fichaAptitud.profesional_salud = authenticationStore.user.id
     if (medicoStore.idFichaAptitud)
       consultar({ id: medicoStore.idFichaAptitud })
 
+    const subirFichaMedicaFirmada = async () => {
+      await refArchivo.value.subir()
+    }
+    const quieroSubirArchivos = computed(
+      () => refArchivo.value?.quiero_subir_archivos
+    )
+
     return {
       mixin,
       listadosAuxiliares,
+      accion,
+      acciones,
       refArchivo,
+      subirFichaMedicaFirmada,
+      quieroSubirArchivos,
       fichaAptitud,
       tiposEvaluacionesMedicasRetiros,
       descargarPdf,

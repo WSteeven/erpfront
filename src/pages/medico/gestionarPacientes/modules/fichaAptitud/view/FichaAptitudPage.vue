@@ -103,7 +103,7 @@
             "
             class="q-mr-sm"
           ></q-icon
-          >Firmado por el profesional médico..
+          >Firmado por el profesional médico
         </div>
         <!-- <div class="row items-center">
           <q-icon
@@ -115,36 +115,34 @@
         </div> -->
       </div>
 
-      <!--Boton de subir ficha de aptitud-->
-
-      <div
-        v-if="[acciones.consultar, acciones.editar].includes(accion)"
-        class="q-mb-md q-pa-sm border-grey-6 rounded-field"
+    <div
+      v-if="[acciones.consultar, acciones.editar].includes(accion)"
+      class="q-mb-md q-pa-sm border-grey-6 rounded-field"
+    >
+      <gestor-archivos
+        ref="refArchivo"
+        label="Ficha aptitud firmada"
+        :mixin="mixin"
+        :listarAlGuardar="true"
+        :idModelo="fichaAptitud.id"
       >
-        <gestor-archivos
-          ref="refArchivo"
-          label="Ficha de Aptitud firmada"
-          :mixin="mixin"
-          :listarAlGuardar="true"
-          :idModelo="fichaAptitud.id"
-        >
-          <template #boton-subir>
-            <q-btn
-              v-if="quieroSubirArchivos"
-              color="primary"
-              push
-              no-caps
-              class="full-width q-mb-lg"
-              @click="subirFichaMedicaFirmada"
-            >
-              <q-icon name="bi-upload" class="q-mr-sm" size="xs" />
-              Subir ficha médica firmada
-            </q-btn>
-          </template>
-        </gestor-archivos>
-      </div>
-      
+        <template #boton-subir>
+          <q-btn
+            v-if="quieroSubirArchivos"
+            color="primary"
+            push
+            no-caps
+            class="full-width q-mb-lg"
+            @click="subirFichaMedicaFirmada"
+          >
+            <q-icon name="bi-upload" class="q-mr-sm" size="xs" />
+            Subir ficha médica de Aptitud firmada
+          </q-btn>
+        </template>
+      </gestor-archivos>
+    </div>
     </template>
+
 
     <template #custom-buttons>
       <div class="row q-gutter-x-xs">

@@ -1057,6 +1057,7 @@
           </div>
         </div>
       </q-expansion-item>
+      
       <div v-if="[acciones.consultar, acciones.editar].includes(accion)" class="q-mb-md q-pa-sm border-grey-6 rounded-field ">
         <gestor-archivos
             ref="refArchivo"
