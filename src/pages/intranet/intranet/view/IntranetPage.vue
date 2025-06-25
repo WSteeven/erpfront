@@ -40,7 +40,7 @@
     <div class="row q-col-gutter-sm q-mx-md q-mb-md">
       <!-- SECCION DERECHA -->
       <div class="col-12">
-        <div class="q-py-md text-h5 text-bold">Últimas noticias</div>
+        <!-- <div class="q-py-md text-h5 text-bold">Últimas noticias</div> -->
       </div>
       <div class="col-12 col-md-9">
         <!-- Noticias -->
@@ -119,21 +119,11 @@
           </q-carousel>
 
           <q-card v-else class="q-pa-md no-border rounded shadow-chip">
-            <q-card-section class="text-center">
-              <q-img
-                src="https://cdn.domestika.org/c_fill,dpr_auto,f_auto,q_auto,w_820/v1561146967/content-items/003/072/424/Untitled-2-original.gif?1561146967"
-                class="no-news-gif"
-                style="border-radius: 15px"
-                contain
-              />
-              <div class="text-h5 q-mt-md">¡Bienvenid@ a la Intranet!</div>
-              <div class="text-subtitle1 q-mt-sm">
-                No hay noticias disponibles en este momento.
-              </div>
-              <div class="text-body2 q-mt-xs">
-                Por favor, vuelve a revisar más tarde.
-              </div>
-            </q-card-section>
+            <img
+              src="../../../../assets/latam2.gif"
+              alt="Sin noticias"
+              style="width: 100%; border-radius: 15px"
+            />
           </q-card>
         </div>
 
