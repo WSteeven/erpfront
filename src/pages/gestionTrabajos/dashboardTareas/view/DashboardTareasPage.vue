@@ -228,7 +228,7 @@
         <q-card-section v-if="tipoDashboard===APPENATE">
             <div class="border-1 text-primary text-bold q-mb-lg">
                 <q-icon name="bi-graph-up-arrow" class="q-mr-sm"></q-icon>
-                Análisis de datos: Módulo de tareas del APPENATE
+                Análisis de datos: Módulo de tareas 
             </div>
             <!-- Tiempos -->
             <div class="row q-col-gutter-sm">

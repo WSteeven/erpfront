@@ -62,7 +62,8 @@ import { apiConfig, endpoints } from 'config/api'
 import {
   encontrarUltimoIdListado,
   imprimirArchivo,
-  ordenarLista,  removeTildes
+  ordenarLista,
+  removeTildes
 } from 'shared/utils'
 import { useCargandoStore } from 'stores/cargando'
 import { AxiosResponse } from 'axios'
@@ -84,7 +85,7 @@ import { StatusEssentialLoading } from 'components/loading/application/StatusEss
 import { tabOptionsProveedoresInternacionales } from 'config/utils_compras_proveedores'
 import { useEmpleadoStore } from 'stores/empleado'
 import NoOptionComponent from 'components/NoOptionComponent.vue'
-import ErrorComponent from 'components/ErrorComponent.vue';
+import ErrorComponent from 'components/ErrorComponent.vue'
 
 export default defineComponent({
   components: {
@@ -233,7 +234,9 @@ export default defineComponent({
       })
     }).then(() => {
       listadosAuxiliares.cantones = JSON.parse(
-        LocalStorage.getItem('cantones')!.toString()
+        LocalStorage.getItem('cantones')
+          ? LocalStorage.getItem('cantones')!.toString()
+          : '[]'
       )
       areas.value = listadosAuxiliares.areas
       bancos.value = listadosAuxiliares.bancos

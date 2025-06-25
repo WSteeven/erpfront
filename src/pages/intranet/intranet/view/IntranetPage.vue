@@ -40,7 +40,7 @@
     <div class="row q-col-gutter-sm q-mx-md q-mb-md">
       <!-- SECCION DERECHA -->
       <div class="col-12">
-        <div class="q-py-md text-h5 text-bold">Últimas noticias</div>
+        <!-- <div class="q-py-md text-h5 text-bold">Últimas noticias</div> -->
       </div>
       <div class="col-12 col-md-9">
         <!-- Noticias -->
@@ -119,21 +119,13 @@
           </q-carousel>
 
           <q-card v-else class="q-pa-md no-border rounded shadow-chip">
-            <q-card-section class="text-center">
-              <q-img
-                src="https://cdn.domestika.org/c_fill,dpr_auto,f_auto,q_auto,w_820/v1561146967/content-items/003/072/424/Untitled-2-original.gif?1561146967"
-                class="no-news-gif"
-                style="border-radius: 15px"
-                contain
+            <div class="full-width">
+              <img
+                src="../../../../assets/latam2.gif"
+                alt="Sin noticias"
+                style="width: 100%; height: auto; border-radius: 15px"
               />
-              <div class="text-h5 q-mt-md">¡Bienvenid@ a la Intranet!</div>
-              <div class="text-subtitle1 q-mt-sm">
-                No hay noticias disponibles en este momento.
-              </div>
-              <div class="text-body2 q-mt-xs">
-                Por favor, vuelve a revisar más tarde.
-              </div>
-            </q-card-section>
+            </div>
           </q-card>
         </div>
 
@@ -362,18 +354,18 @@
                 </div>
               </div>
 
-              <q-card class="q-pa-md q-my-md  bg-grey-2" flat bordered>
+              <q-card class="q-pa-md q-my-md bg-grey-2" flat bordered>
                 <div class="row items-center q-col-gutter-lg justify-center">
                   <!-- Botón Android -->
                   <div class="column items-center">
                     <q-btn
-                        color="green"
-                        icon="android"
-                        label="Android"
-                        href="https://sistema.jpconstrucred.com/firstred-jpconstrucred-app.apk"
-                        target="_blank"
-                        unelevated
-                        rounded
+                      color="green"
+                      icon="android"
+                      label="Android"
+                      :href="`${url_sistema}/firstred-app.apk`"
+                      target="_blank"
+                      unelevated
+                      rounded
                     />
                   </div>
 
@@ -381,19 +373,18 @@
                   <div class="column items-center">
                     <small class="text-grey-7">Próximamente...</small>
                     <q-btn
-                        color="white"
-                        text-color="black"
-                        icon="apple"
-                        label="iOS"
-                        target="_blank"
-                        unelevated
-                        @click="notificarProximamente"
-                        rounded
+                      color="white"
+                      text-color="black"
+                      icon="apple"
+                      label="iOS"
+                      target="_blank"
+                      unelevated
+                      @click="notificarProximamente"
+                      rounded
                     />
                   </div>
                 </div>
               </q-card>
-
             </div>
           </q-card>
         </div>

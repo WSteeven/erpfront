@@ -32,6 +32,8 @@ import { useConsultarOpcionesActivosFijos } from '../application/ConsultarOpcion
 import { ActivoFijoController } from '../infraestructure/ActivoFijoController'
 import { Transaccion } from 'pages/bodega/transacciones/domain/Transaccion'
 import { ActivoFijo } from '../domain/ActivoFijo'
+import {imprimirArchivo} from 'shared/utils';
+import {useCargandoStore} from 'stores/cargando';
 
 declare global {
   interface Window {
@@ -58,6 +60,7 @@ export default defineComponent({
      * Stores
      *********/
     useNotificacionStore().setQuasar(useQuasar())
+    useCargandoStore().setQuasar(useQuasar())
 
     /********
      * Mixin
@@ -99,11 +102,11 @@ export default defineComponent({
     const { entregas, listarEntregas, asignacionesProductos, listarStockResponsablesAF, seguimientosConsumosActivosFijos, listarSeguimientoConsumoActivosFijos, mixinSeguimientosConsumosActivosFijos } = useConsultarOpcionesActivosFijos()
 
     // Método para generar la etiqueta
-    const generateLabel = async (idActivoFijo: number): Promise<void> => {
+    const generateLabel = async (idActivoFijo: number, custom=false, data?:any): Promise<void> => {
       try {
         const axios = AxiosHttpRepository.getInstance()
-        const ruta = axios.getEndpoint(endpoints.activos_fijos) + '-imprimir-etiqueta/' + idActivoFijo
-        const response: any = await axios.get(ruta)
+        const ruta = custom? axios.getEndpoint(endpoints.imprimir_etiqueta_personalizada): axios.getEndpoint(endpoints.activos_fijos) + '-imprimir-etiqueta/' + idActivoFijo
+        const response: any = custom ? await axios.post(ruta,data ) : await  axios.get(ruta)
         await printLabel(response.data)
       } catch (error) {
         // console.error('Error al generar la etiqueta:', error)
@@ -218,7 +221,16 @@ export default defineComponent({
       icono: iconos.imprimir,
       color: 'blue-grey-8',
       accion: async ({ entidad }) => {
-        generateLabel(entidad.id)
+        await generateLabel(entidad.id)
+      }
+    }
+
+    const btnDescargarEtiquetaPersonalizada: CustomActionTable =  {
+      titulo: 'Imprimir etiqueta',
+      icono: iconos.imprimir,
+      color: 'blue-grey-8',
+      accion: async ({ entidad }) => {
+        await generateLabel(entidad.id, true, {...entidad, ...filtros})
       }
     }
 
@@ -267,6 +279,7 @@ export default defineComponent({
       btnSubirJustificativoUso,
       btnDescargarReporte,
       btnDescargarEtiqueta,
+      btnDescargarEtiquetaPersonalizada,
       // consultarStockResponsables,
       asignacionesProductos,
       listarStockResponsablesAF,

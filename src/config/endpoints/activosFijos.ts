@@ -4,6 +4,7 @@ export const activosFijos = {
   entregas_activos_fijos: new Endpoint('activos-fijos/entregas'),
   ingresos_activos_fijos: new Endpoint('activos-fijos/ingresos'),
   activos_fijos: new Endpoint('activos-fijos/activos-fijos'),
+  imprimir_etiqueta_personalizada: new Endpoint('activos-fijos/activos-fijos-imprimir-etiqueta-personalizada'),
   stock_responsables_activos_fijos: new Endpoint('activos-fijos/stock-responsables-activos-fijos'),
   seguimiento_consumo_activos_fijos: new Endpoint('activos-fijos/seguimiento-consumo-activos-fijos'),
   activos_fijos_asignados: new Endpoint('activos-fijos/activos-fijos-asignados'),

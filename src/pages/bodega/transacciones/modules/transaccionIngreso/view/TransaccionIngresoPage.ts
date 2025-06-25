@@ -236,6 +236,10 @@ export default defineComponent({
     const reglas = {
       justificacion: { required },
       sucursal: { required },
+      num_comprobante: { required: requiredIf(()=>esVisibleComprobante.value) },
+      fecha_compra: { required: requiredIf(()=>esVisibleComprobante.value) },
+      proveedor_id: { required: requiredIf(()=>esVisibleComprobante.value && transaccion.modo_seleccion ) },
+      proveedor: { required: requiredIf(()=>esVisibleComprobante.value && !transaccion.modo_seleccion ) },
       motivo: { requiredIfRol: requiredIf(store.esBodeguero) },
       estado: { requiredIfRol: requiredIf(accion.value === acciones.editar) },
       observacion_est: {

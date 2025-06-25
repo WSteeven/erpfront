@@ -11,28 +11,29 @@ import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { MarcaController } from '../infraestructure/MarcaController'
 import { Marca } from '../domain/Marca'
+import ErrorComponent from 'components/ErrorComponent.vue';
 
 export default defineComponent({
-    components: { TabLayout },
-    setup() {
-        const mixin = new ContenedorSimpleMixin(Marca, new MarcaController())
-        const { entidad: marca, disabled } = mixin.useReferencias()
-        const { setValidador } = mixin.useComportamiento()
+  components: { ErrorComponent, TabLayout },
+  setup() {
+    const mixin = new ContenedorSimpleMixin(Marca, new MarcaController())
+    const { entidad: marca, disabled } = mixin.useReferencias()
+    const { setValidador } = mixin.useComportamiento()
 
-        //Reglas de validacion
-        const reglas = {
-            nombre: { required }
-        }
-
-        const v$ = useVuelidate(reglas, marca)
-        setValidador(v$.value)
-
-        return {
-            mixin,
-            marca,
-            v$,
-            disabled,
-            configuracionColumnas: configuracionColumnasMarcas,
-        }
+    //Reglas de validacion
+    const reglas = {
+      nombre: { required }
     }
+
+    const v$ = useVuelidate(reglas, marca)
+    setValidador(v$.value)
+
+    return {
+      mixin,
+      marca,
+      v$,
+      disabled,
+      configuracionColumnas: configuracionColumnasMarcas
+    }
+  }
 })

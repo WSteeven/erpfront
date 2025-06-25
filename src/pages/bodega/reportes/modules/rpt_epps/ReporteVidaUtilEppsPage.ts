@@ -6,7 +6,6 @@ import { useCargandoStore } from 'stores/cargando'
 import { defineComponent, reactive } from 'vue'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
-import { maskFecha } from 'config/utils'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { apiConfig, endpoints } from 'config/api'
 import { imprimirArchivo } from 'shared/utils'
@@ -28,8 +27,6 @@ export default defineComponent({
 
     const reporte = reactive({
       tipo: '',
-      fecha_inicio: '',
-      fecha_fin: '',
       accion: ''
     })
 
@@ -40,7 +37,10 @@ export default defineComponent({
           apiConfig.URL_BASE +
           '/' +
           axios.getEndpoint(endpoints.reporte_vida_util_epps)
-        const filename = 'reporte_vida_util_epps'
+        const filename =
+          reporte.tipo === 'INVENTARIO'
+            ? 'reporte_vida_util_inventario'
+            : 'reporte_vida_util_asignados'
         switch (accion) {
           case 'excel':
             reporte.accion = 'excel'
@@ -72,7 +72,6 @@ export default defineComponent({
     return {
       mixin,
       reporte,
-      maskFecha,
       buscarReporte,
       tiposReportes: [
         { value: 'INVENTARIO', label: 'Vida útil de EPPs en Inventario' },

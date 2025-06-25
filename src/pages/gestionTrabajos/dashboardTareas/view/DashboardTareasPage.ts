@@ -96,7 +96,7 @@ export default defineComponent({
       })
     })
       const SISTEMA = 'SISTEMA'
-      const APPENATE = 'APPENATE'
+      const APPENATE = 'ESTADISTICAS'
 
     const tiposDashboard: OptionGroup[] = [
       { label: SISTEMA, value: SISTEMA },
