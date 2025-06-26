@@ -14,9 +14,14 @@ import { rolesSistema } from 'config/utils'
 import { SelectOption } from 'components/tables/domain/SelectOption'
 import { format } from '@formkit/tempo'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import {Sucursal} from 'pages/administracion/sucursales/domain/Sucursal';
-import {Ref} from 'vue';
-import {Cliente} from 'sistema/clientes/domain/Cliente';
+import { Sucursal } from 'pages/administracion/sucursales/domain/Sucursal'
+import { Ref } from 'vue'
+import { Cliente } from 'sistema/clientes/domain/Cliente'
+import { Capacitor } from '@capacitor/core'
+import { Directory, Filesystem } from '@capacitor/filesystem'
+import {Toast} from '@capacitor/toast'
+
+declare let cordova: any  // Asegúrate de que esto esté arriba si usas cordova plugins
 
 const authenticationStore = useAuthenticationStore()
 const usuario = authenticationStore.user
@@ -432,6 +437,19 @@ export function pushEventMesaggeServiceWorker(data: ServiceWorkerClass) {
   }
 }
 
+function blobToBase64(blob: Blob): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onloadend = () => {
+      const base64data = reader.result?.toString().split(',')[1]
+      if (base64data) resolve(base64data)
+      else reject('No se pudo convertir a base64')
+    }
+    reader.onerror = reject
+    reader.readAsDataURL(blob)
+  })
+}
+
 /**
  * Metodo generico para descargar archivos desde una API
  * @param ruta URL desde donde se descargará el archivo
@@ -444,64 +462,107 @@ export function pushEventMesaggeServiceWorker(data: ServiceWorkerClass) {
  * @returns mensaje que indica que no se puede imprimir el archivo
  */
 export async function imprimirArchivo(
-  ruta: string,
-  metodo: Method,
-  responseType: ResponseType,
-  formato: string,
-  titulo: string,
-  data?: any
+    ruta: string,
+    metodo: Method,
+    responseType: ResponseType,
+    formato: string,
+    titulo: string,
+    data?: any
 ) {
   const statusLoading = new StatusEssentialLoading()
   const { notificarError } = useNotificaciones()
-  statusLoading.activar()
   const axiosHttpRepository = AxiosHttpRepository.getInstance()
-  axios({
-    url: ruta,
-    method: metodo,
-    data: data,
-    responseType: responseType,
-    headers: {
-      Authorization: axiosHttpRepository.getOptions().headers.Authorization
+
+  statusLoading.activar()
+
+  try {
+    const response = await axios({
+      url: ruta,
+      method: metodo,
+      data: data,
+      responseType: responseType,
+      headers: {
+        Authorization: axiosHttpRepository.getOptions().headers.Authorization
+      }
+    })
+
+    if (
+        response.status !== 200 ||
+        response.data.size < 100 ||
+        response.data.type === 'application/json'
+    ) {
+      throw 'No se obtuvieron resultados para generar el reporte'
     }
-  })
-    .then(response => {
-      if (response.status === 200) {
-        if (
-          response.data.size < 100 ||
-          response.data.type == 'application/json'
-        )
-          throw 'No se obtuvieron resultados para generar el reporte'
-        else {
-          const fileURL = URL.createObjectURL(
-            new Blob([response.data], { type: `appication/${formato}` })
-          )
-          const link = document.createElement('a')
-          link.href = fileURL
-          link.target = '_blank'
-          link.setAttribute('download', `${titulo}.${formato}`)
-          document.body.appendChild(link)
-          link.click()
-          link.remove()
-        }
-        // } else if (response.status === 500) {
-        //   console.log(response)
-      } else {
-        notificarError('Se produjo un error inesperado')
+
+    const fileName = `${titulo}.${formato}`
+    const blob = new Blob([response.data], {type: `application/${formato}`})
+
+    if (!Capacitor.isNativePlatform()) {
+      // ✅ Web (Navegador)
+      const fileURL = URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = fileURL
+      link.target = '_blank'
+      link.setAttribute('download', fileName)
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+    } else {
+      // ✅ App móvil (Android/iOS)
+      const base64 = await blobToBase64(blob)
+
+      await Filesystem.writeFile({
+        path: fileName,
+        data: base64,
+        directory: Directory.Documents
+      })
+
+      console.log(`✅ Archivo ${fileName} guardado correctamente en el dispositivo.`)
+
+      //Notificacion tipo Toast
+      await Toast.show({
+        text:`✅ Archivo ${fileName} descargado con éxito.`,
+        duration :'short'
+      })
+
+      // Intentar abrir automáticamente
+      const { uri } =await Filesystem.getUri({
+        path: fileName,
+        directory: Directory.Documents
+      })
+
+      const mimeMap: Record<string, string> = {
+        pdf: 'application/pdf',
+        xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        csv: 'text/csv',
+        docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
       }
-    })
-    .catch(async error => {
-      const blob = error.response?.data
-      if (blob instanceof Blob && blob.type === 'application/json') {
-        const text = await blob.text()
-        const json = JSON.parse(text)
-        Object.values(json.errors).forEach((error:string) => {
-          notificarError(error)
-        })
-      } else {
-        notificarError(error)
-      }
-    })
-    .finally(() => statusLoading.desactivar())
+
+      const mimeType = mimeMap[formato] || `application/${formato}`
+
+      cordova.plugins.fileOpener2.open(
+          uri,
+          mimeType,
+          {
+            error: (e: any) => console.error('❌ No se pudo abrir el archivo', e),
+            success: () => console.log('✅ Archivo abierto')
+          }
+      )
+    }
+  } catch (error: any) {
+    const blob = error?.response?.data
+    if (blob instanceof Blob && blob.type === 'application/json') {
+      const text = await blob.text()
+      const json = JSON.parse(text)
+      Object.values(json.errors).forEach((errorMsg: string) => {
+        notificarError(errorMsg)
+      })
+    } else {
+      notificarError(error?.message || 'Error inesperado')
+    }
+  } finally {
+    statusLoading.desactivar()
+  }
 }
 
 export async function downloadFile(data, titulo, formato) {
