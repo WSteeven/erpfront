@@ -12,10 +12,10 @@
   >
     <template #formulario>
       <!-- <div :class="{ 'q-fmb-md bg-white': empleado.id }"> -->
-        <detalle-paciente
-          v-if="empleado.id"
-          :empleado="empleado"
-        ></detalle-paciente>
+      <detalle-paciente
+        v-if="empleado.id"
+        :empleado="empleado"
+      ></detalle-paciente>
       <!-- </div> -->
 
       <q-separator class="q-my-md" color=""></q-separator>
@@ -40,14 +40,18 @@
           <q-tab
             :name="tiposProcesosExamenes.PERIODICO"
             :label="tiposProcesosExamenes.PERIODICO"
-            :class="{ 'tab-inactive': tabs !== tiposProcesosExamenes.PERIODICO }"
+            :class="{
+              'tab-inactive': tabs !== tiposProcesosExamenes.PERIODICO
+            }"
             @click="seleccionarTabTipoProcesoOcupacional()"
             no-caps
           />
           <q-tab
             :name="tiposProcesosExamenes.REINTEGRO"
             :label="tiposProcesosExamenes.REINTEGRO"
-            :class="{ 'tab-inactive': tabs !== tiposProcesosExamenes.REINTEGRO }"
+            :class="{
+              'tab-inactive': tabs !== tiposProcesosExamenes.REINTEGRO
+            }"
             @click="seleccionarTabTipoProcesoReingreso()"
             no-caps
           />
