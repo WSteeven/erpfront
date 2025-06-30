@@ -1,12 +1,15 @@
 // Dependencias
-import { estadosSolicitudesExamenes, tabOptionsEstadosExamenes, tiposProcesosExamenes } from 'config/utils/medico'
+import {
+  estadosSolicitudesExamenes,
+  tabOptionsEstadosExamenes,
+  tiposProcesosExamenes
+} from 'config/utils/medico'
 import { configuracionColumnasEsquemaVacunacion } from '../domain/configuracionColumnasEsquemaVacunacion'
 import { SolicitudExamenPusherEvent } from 'src/pusherEvents/medico/SolicitudExamenPusherEvent'
 import { configuracionColumnasEmpleados } from '../domain/configuracionColumnasEmpleados'
-import { tabOptionsEstadosEmpleados } from 'config/utils'
-import { Ref, computed, defineComponent, ref } from 'vue'
+import { accionesTabla, tabOptionsEstadosEmpleados } from 'config/utils'
+import { computed, defineComponent, ref } from 'vue'
 import { useMedicoStore } from 'stores/medico'
-import { accionesTabla } from 'config/utils'
 
 // Componentes
 import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
@@ -22,7 +25,6 @@ import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/applicat
 import { ComportamientoModalesGestionPaciente } from '../application/ComportamientoModalesGestionPaciente'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { useBotonesSolicitudExamen } from '../application/UseBotonesSolicitudExamen'
-import { useTiposProcesosExamenes } from '../application/UseTiposProcesosExamenes'
 import { useBotonesEsquemaVacuna } from '../application/UseBotonesEsquemaVacuna'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { Empleado } from 'recursosHumanos/empleados/domain/Empleado'
@@ -30,10 +32,24 @@ import { Examen } from 'pages/medico/examenes/domain/Examen'
 import { useNotificaciones } from 'shared/notificaciones'
 import { useExamenes } from '../application/UseExamenes'
 import { EsquemaVacuna } from '../modules/esquemaVacunacion/domain/EsquemaVacuna'
+import GestorArchivos from 'components/gestorArchivos/GestorArchivos.vue';
 
 export default defineComponent({
-  components: { TabLayoutFilterTabs2, SelectorImagen, ModalesEntidad, EssentialTable, DetallePaciente, PanelTipoProceso },
+  components: {
+    GestorArchivos,
+    TabLayoutFilterTabs2,
+    SelectorImagen,
+    ModalesEntidad,
+    EssentialTable,
+    DetallePaciente,
+    PanelTipoProceso
+  },
   setup() {
+    /***
+     * Variables
+     */
+    const refGestorFichaMedica = ref()
+
     /*********
      * Stores
      *********/
@@ -48,12 +64,14 @@ export default defineComponent({
     const { listar, cargarVista, obtenerListados } = mixin.useComportamiento()
     const notificaciones = useNotificaciones()
 
-    cargarVista(async () => obtenerListados({
-      esquemasVacunas: [], /*{
+    cargarVista(async () =>
+      obtenerListados({
+        esquemasVacunas: [] /*{
         controller: new EsquemaVacunaController(),
         params: { paciente_id: medicoStore.empleado?.id },
       }, */
-    }))
+      })
+    )
 
     /************
      * Variables
@@ -62,7 +80,9 @@ export default defineComponent({
     const listadoExamenes = ref([])
 
     const tabs = ref(tiposProcesosExamenes.INGRESO)
-    const tabEstadoExamen = ref(estadosSolicitudesExamenes.PENDIENTE_SOLICITAR.value)
+    const tabEstadoExamen = ref(
+      estadosSolicitudesExamenes.PENDIENTE_SOLICITAR.value
+    )
     const tabsRegistro = ref()
     const refPanelTipoProcesoIngreso = ref()
     const refPanelTipoProcesoOcupacional = ref()
@@ -75,13 +95,14 @@ export default defineComponent({
     /*************
      * Funciones
      *************/
-    const { btnAgregarVacunaAplicada, btnEditarVacunaAplicada } = useBotonesEsquemaVacuna(modales, listadosAuxiliares)
+    const { btnAgregarVacunaAplicada, btnEditarVacunaAplicada } =
+      useBotonesEsquemaVacuna(modales, listadosAuxiliares)
 
     const {
       examenes,
       solicitudesExamenes,
       registros,
-      consultarSolicitudesExamenes,
+      consultarSolicitudesExamenes
     } = useExamenes()
 
     const {
@@ -99,7 +120,7 @@ export default defineComponent({
       btnConsultarEstadoSolicitudExamen,
       btnCitaMedica,
       // Other functions
-      seleccionarExamen,
+      seleccionarExamen
     } = useBotonesSolicitudExamen(tabEstadoExamen, modales)
 
     /* const {
@@ -122,35 +143,48 @@ export default defineComponent({
       listar({ estado: tab })
     }
 
-    const seleccionarTabTipoProcesoIngreso = () => refPanelTipoProcesoIngreso.value.seleccionarTabTipoProceso()
-    const seleccionarTabTipoProcesoOcupacional = () => refPanelTipoProcesoOcupacional.value.seleccionarTabTipoProceso()
-    const seleccionarTabTipoProcesoReingreso = () => refPanelTipoProcesoReingreso.value.seleccionarTabTipoProceso()
-    const seleccionarTabTipoProcesoSalida = () => refPanelTipoProcesoSalida.value.seleccionarTabTipoProceso()
+    const seleccionarTabTipoProcesoIngreso = () =>
+      refPanelTipoProcesoIngreso.value.seleccionarTabTipoProceso()
+    const seleccionarTabTipoProcesoOcupacional = () =>
+      refPanelTipoProcesoOcupacional.value.seleccionarTabTipoProceso()
+    const seleccionarTabTipoProcesoReingreso = () =>
+      refPanelTipoProcesoReingreso.value.seleccionarTabTipoProceso()
+    const seleccionarTabTipoProcesoSalida = () =>
+      refPanelTipoProcesoSalida.value.seleccionarTabTipoProceso()
 
     const insertarListados = ({ esquemaVacuna, page }) => {
       console.log('indertar...')
       // listadosAuxiliares.esquemasVacunas.unshift(esquemaVacuna)
-      const index = listadosAuxiliares.esquemasVacunas.findIndex((esquema: EsquemaVacuna) => esquema.tipo_vacuna_id === esquemaVacuna.tipo_vacuna_id)
-      if (index >= 0) listadosAuxiliares.esquemasVacunas.splice(index, 1, esquemaVacuna)
+      const index = listadosAuxiliares.esquemasVacunas.findIndex(
+        (esquema: EsquemaVacuna) =>
+          esquema.tipo_vacuna_id === esquemaVacuna.tipo_vacuna_id
+      )
+      if (index >= 0)
+        listadosAuxiliares.esquemasVacunas.splice(index, 1, esquemaVacuna)
       else listadosAuxiliares.esquemasVacunas.push(esquemaVacuna)
     }
 
     const actualizarListados = ({ esquemaVacuna, page }) => {
       console.log('modificado actualizar....')
-      const index = listadosAuxiliares.esquemasVacunas.findIndex((esquema: EsquemaVacuna) => esquema.id === esquemaVacuna.id)
+      const index = listadosAuxiliares.esquemasVacunas.findIndex(
+        (esquema: EsquemaVacuna) => esquema.id === esquemaVacuna.id
+      )
       console.log(index)
       listadosAuxiliares.esquemasVacunas.splice(index, 1, esquemaVacuna)
     }
 
     const obtenerEsquemaVacunaPaciente = async (idEmpleado: number) => {
-      const { result } = await esquemaVacunaController.listar({ paciente_id: idEmpleado, agrupar: true })
+      const { result } = await esquemaVacunaController.listar({
+        paciente_id: idEmpleado,
+        agrupar: true
+      })
       listadosAuxiliares.esquemasVacunas = result
     }
 
     /*********
      * Hooks
      *********/
-    onConsultado(async (entidad) => {
+    onConsultado(async entidad => {
       medicoStore.empleado = empleado
       console.log(empleado)
       await obtenerEsquemaVacunaPaciente(entidad.id)
@@ -178,7 +212,10 @@ export default defineComponent({
       tabsRegistro,
       tabEstadoExamen,
       configuracionColumnas: configuracionColumnasEmpleados,
-      columnasEsquemaVacunacion: [...configuracionColumnasEsquemaVacunacion, accionesTabla],
+      columnasEsquemaVacunacion: [
+        ...configuracionColumnasEsquemaVacunacion,
+        accionesTabla
+      ],
       tabOptionsEstadosExamenes,
       listadoExamenes,
       // filtrarEstadoExamen,
@@ -188,7 +225,13 @@ export default defineComponent({
       registros,
       solicitudesExamenes,
       tiposProcesosExamenes,
-      tipoSeleccion: computed(() => seleccionVariosExamen.value && tabEstadoExamen.value === estadosSolicitudesExamenes.PENDIENTE_SOLICITAR.value ? 'multiple' : 'none'),
+      tipoSeleccion: computed(() =>
+        seleccionVariosExamen.value &&
+        tabEstadoExamen.value ===
+          estadosSolicitudesExamenes.PENDIENTE_SOLICITAR.value
+          ? 'multiple'
+          : 'none'
+      ),
       tabOptionsEstadosEmpleados,
       filtrarEmpleados,
       listadosAuxiliares,
@@ -224,6 +267,7 @@ export default defineComponent({
       // Other functions
       seleccionarExamen,
       btnEsquemaVacunacion,
+      refGestorFichaMedica,
     }
-  },
+  }
 })
