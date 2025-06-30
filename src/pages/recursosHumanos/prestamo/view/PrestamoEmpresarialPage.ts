@@ -12,6 +12,8 @@ import { defineComponent, ref, computed, watchEffect } from 'vue'
 // Componentes
 import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
 import SelectorImagen from 'components/SelectorImagen.vue'
+import ErrorComponent from 'components/ErrorComponent.vue';
+import NoOptionComponent from 'components/NoOptionComponent.vue';
 
 //Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
@@ -33,7 +35,13 @@ import { format, parse } from '@formkit/tempo'
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 
 export default defineComponent({
-  components: { TabLayoutFilterTabs2, SelectorImagen, EssentialTable },
+  components: {
+    NoOptionComponent,
+    ErrorComponent,
+    TabLayoutFilterTabs2,
+    SelectorImagen,
+    EssentialTable
+  },
   setup() {
     const mixin = new ContenedorSimpleMixin(Prestamo, new PrestamoController())
     const {
@@ -45,28 +53,28 @@ export default defineComponent({
     } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista, listar } =
       mixin.useComportamiento()
-    const { onBeforeModificar } =
-      mixin.useHooks()
+    const { onBeforeModificar } = mixin.useHooks()
 
     const {
       confirmar,
       prompt,
       notificarCorrecto,
       notificarAdvertencia,
-      notificarError,
+      notificarError
     } = useNotificaciones()
     const key_enter = ref(0)
     const motivos = ref([])
 
     const tipos = ref([
       { id: 1, nombre: 'Prestamo Descuento' },
-      { id: 2, nombre: 'Anticipo' },
+      { id: 2, nombre: 'Anticipo' }
     ])
     const esConsultado = ref(false)
     onBeforeModificar(() => (esConsultado.value = true))
     const maximoAPrestar = ref()
     const esMayorPrestamo = ref(false)
-    const { empleados, filtrarEmpleados } = useFiltrosListadosSelects(listadosAuxiliares)
+    const { empleados, filtrarEmpleados } =
+      useFiltrosListadosSelects(listadosAuxiliares)
     const periodos = ref()
     const recursosHumanosStore = useRecursosHumanosStore()
     const authenticationStore = useAuthenticationStore()
@@ -85,12 +93,12 @@ export default defineComponent({
         motivos: new MotivoPermisoEmpleadoController(),
         empleados: {
           controller: new EmpleadoController(),
-          params: { campos: 'id,nombres,apellidos', estado: 1 },
+          params: { campos: 'id,nombres,apellidos', estado: 1 }
         },
         periodos: {
           controller: new PeriodoController(),
-          params: { campos: 'id,nombre', activo: 1 },
-        },
+          params: { campos: 'id,nombre', activo: 1 }
+        }
       })
       empleados.value = listadosAuxiliares.empleados
       periodos.value = listadosAuxiliares.periodos
@@ -106,7 +114,7 @@ export default defineComponent({
       monto: { required },
       valor_utilidad: { requiredIf: requiredIf(prestamo.periodo != null) },
       plazo: { required, minValue: minValue(1), maxValue: maxValue(12) },
-      plazos: { required },
+      plazos: { required }
     }))
     prestamo.plazos = []
     const plazo_pago = ref({ id: 0, vencimiento: '', plazo: 0 })
@@ -121,11 +129,11 @@ export default defineComponent({
       if (valor_pago <= 200) {
         for (let index = 1; index <= prestamo.plazo; index++) {
           const plazo = {
-            id:index-1,
+            id: index - 1,
             num_cuota: index,
             fecha_vencimiento: calcular_fechas(index, 'meses'),
             valor_couta: (valor_cuota / plazo_prestamo).toFixed(2),
-            pago_couta: false,
+            pago_couta: false
           }
           prestamo.plazos!.push(plazo)
         }
@@ -136,7 +144,10 @@ export default defineComponent({
       const week = 7 * day
       const month = 4 * week
       const year = 12 * month
-      const fechaPrestamo = parse(prestamo.fecha !== null ? prestamo.fecha : new Date().toString(), 'YYYY-MM-DD')
+      const fechaPrestamo = parse(
+        prestamo.fecha !== null ? prestamo.fecha : new Date().toString(),
+        'YYYY-MM-DD'
+      )
       switch (plazo) {
         case 'dias':
           fechaPrestamo.setDate(fechaPrestamo.getDate() + cuota)
@@ -193,7 +204,7 @@ export default defineComponent({
               ? prestamo.plazos[prestamo.plazo - 1].fecha_vencimiento
               : null
         }
-      } catch (error) { }
+      } catch (error) {}
     })
 
     function recargar_tabla() {
@@ -203,16 +214,19 @@ export default defineComponent({
 
       if (valor_utilidad > 0) {
         const indice_couta = prestamo.plazos!.findIndex(
-          (couta) => couta.num_cuota === prestamo.plazo + 1
+          couta => couta.num_cuota === prestamo.plazo + 1
         )
         if (indice_couta == -1) {
-          const periodo_seleccionado = periodos.value.find((periodo) => periodo.id === prestamo.periodo);
+          const periodo_seleccionado = periodos.value.find(
+            periodo => periodo.id === prestamo.periodo
+          )
 
           const nuevaCuota = {
             num_cuota: prestamo.plazos!.length + 1,
-            fecha_vencimiento: periodo_seleccionado.nombre.split('-')[0] + '-04-15',
+            fecha_vencimiento:
+              periodo_seleccionado.nombre.split('-')[0] + '-04-15',
             valor_couta: prestamo.valor_utilidad,
-            pago_couta: false,
+            pago_couta: false
           }
           prestamo.plazos!.push(nuevaCuota)
         } else {
@@ -232,7 +246,7 @@ export default defineComponent({
         console.log(posicion)
         modificarCouta(posicion)
       },
-      visible: () => (accion.value == 'NUEVO' ? true : false),
+      visible: () => (accion.value == 'NUEVO' ? true : false)
     }
     const btnPagarCouta: CustomActionTable = {
       titulo: 'pagar',
@@ -241,7 +255,7 @@ export default defineComponent({
       accion: ({ posicion }) => {
         pagar(posicion)
       },
-      visible: () => (accion.value == 'EDITAR' ? true : false),
+      visible: () => (accion.value == 'EDITAR' ? true : false)
     }
     const btnAplazarCouta: CustomActionTable = {
       titulo: 'Aplazar',
@@ -250,7 +264,7 @@ export default defineComponent({
       accion: ({ posicion }) => {
         aplazar(posicion)
       },
-      visible: () => (accion.value == 'EDITAR' ? true : false),
+      visible: () => (accion.value == 'EDITAR' ? true : false)
     }
     const btnEditarTotalCouta: CustomActionTable = {
       titulo: 'Editar Valor a Pagar',
@@ -259,7 +273,7 @@ export default defineComponent({
       accion: ({ posicion }) => {
         modificar_total_couta(posicion)
       },
-      visible: () => (accion.value == 'EDITAR' ? true : false),
+      visible: () => (accion.value == 'EDITAR' ? true : false)
     }
     function aplazar(indice_couta) {
       const fechaActual = prestamo.plazos![prestamo.plazo - 1].fecha_vencimiento
@@ -273,52 +287,57 @@ export default defineComponent({
       const nuevoMes = fechaObj.getMonth() + 1 // Sumamos 1 ya que los meses van de 0 a 11
       const nuevoAnio = fechaObj.getFullYear()
       // Formatear la nueva fecha a dd-mm-yyyy
-      const nuevaFechaStr = `${nuevoAnio}-${nuevoMes.toString().padStart(2, '0')}-${nuevaFecha
+      const nuevaFechaStr = `${nuevoAnio}-${nuevoMes
         .toString()
-        .padStart(2, '0')}`
+        .padStart(2, '0')}-${nuevaFecha.toString().padStart(2, '0')}`
       prestamo.plazos![indice_couta].fecha_vencimiento = nuevaFechaStr
     }
     function modificarCouta(indice_couta) {
-      confirmar('¿Está seguro de modificar la couta N'+(indice_couta+1)+'?', () => {
-        const data: CustomActionPrompt = {
-          titulo: 'Modificar couta',
-          mensaje: 'Ingrese nuevo valor de la couta',
-          accion: async (data) => {
-            try {
-              const valor_prestamo = prestamo.monto ?? 0 // == null ? 0 : prestamo.monto
-              if (data > valor_prestamo) {
-                esMayorPrestamo.value = true
-                notificarAdvertencia('La suma de todas las coutas no debe superar al valor del prestamo')
+      confirmar(
+        '¿Está seguro de modificar la couta N' + (indice_couta + 1) + '?',
+        () => {
+          const data: CustomActionPrompt = {
+            titulo: 'Modificar couta',
+            mensaje: 'Ingrese nuevo valor de la couta',
+            accion: async data => {
+              try {
+                const valor_prestamo = prestamo.monto ?? 0 // == null ? 0 : prestamo.monto
+                if (data > valor_prestamo) {
+                  esMayorPrestamo.value = true
+                  notificarAdvertencia(
+                    'La suma de todas las coutas no debe superar al valor del prestamo'
+                  )
+                }
+                prestamo.plazos![indice_couta].valor_couta = data
+                calcular_valores_prestamo_indice(indice_couta, valor_prestamo)
+              } catch (e: any) {
+                notificarError('No se pudo modificar, debes ingresar monto')
               }
-              prestamo.plazos![indice_couta].valor_couta = data
-              calcular_valores_prestamo_indice(indice_couta, valor_prestamo)
-            } catch (e: any) {
-              notificarError('No se pudo modificar, debes ingresar monto')
             }
-          },
+          }
+          prompt(data)
         }
-        prompt(data)
-      })
+      )
     }
     function modificar_total_couta(indice_couta) {
       confirmar('¿Está seguro de modificar la couta?', () => {
         const data: CustomActionPrompt = {
           titulo: 'Modificar couta',
           mensaje: 'Ingrese nuevo valor total de la couta',
-          accion: async (data) => {
+          accion: async data => {
             try {
               prestamo.plazos![indice_couta].valor_a_pagar = data
             } catch (e: any) {
               notificarError('No se pudo modificar, debes ingresar monto')
             }
-          },
+          }
         }
         prompt(data)
       })
     }
     function calcular_valores_prestamo_indice(indiceExcluido, valor_prestamo) {
       const numero_couta = prestamo.plazos![indiceExcluido].num_cuota
-      prestamo.plazos!.map((cuotaAnterior) => {
+      prestamo.plazos!.map(cuotaAnterior => {
         if (cuotaAnterior.num_cuota !== numero_couta) {
           cuotaAnterior.valor_couta = (
             (parseFloat(valor_prestamo.toString()) -
@@ -346,7 +365,7 @@ export default defineComponent({
           // Manejar el caso cuando valor_utilidad es cero
           porcentaje_resta = 0 // Asignar un valor predeterminado o manejarlo de otra forma apropiada
         }
-        prestamo.plazos!.slice(0, -1).map((cuotaAnterior) => {
+        prestamo.plazos!.slice(0, -1).map(cuotaAnterior => {
           cuotaAnterior.valor_couta = (
             valorAnterior -
             valorAnterior * porcentaje_resta
@@ -360,14 +379,14 @@ export default defineComponent({
         const data: CustomActionPrompt = {
           titulo: 'Pagar couta',
           mensaje: 'Ingrese valor de la couta a pagar',
-          accion: async (data) => {
+          accion: async data => {
             try {
               if (
                 data > parseFloat(prestamo.plazos![indice_couta].valor_couta)
               ) {
                 notificarError(
                   'No se pudo pagar, debes ingresar monto menor o igual a ' +
-                  prestamo.plazos![indice_couta].valor_couta
+                    prestamo.plazos![indice_couta].valor_couta
                 )
                 return
               }
@@ -391,13 +410,13 @@ export default defineComponent({
             } catch (e: any) {
               notificarError('No se pudo pagar, a ocurido un error: ' + e)
             }
-          },
+          }
         }
         prompt(data)
       })
     }
     function actualizar_fecha_plazos(indice_couta) {
-      prestamo.plazos!.slice(indice_couta).forEach((element) => {
+      prestamo.plazos!.slice(indice_couta).forEach(element => {
         const fecha = new Date(element.fecha_vencimiento)
         fecha.setMonth(fecha.getMonth() - 1)
         element.fecha_vencimiento = fecha.toISOString().slice(0, 10)
@@ -424,7 +443,7 @@ export default defineComponent({
       update(() => {
         const needle = val.toLowerCase()
         periodos.value = listadosAuxiliares.periodos.filter(
-          (v) => v.nombre.toLowerCase().indexOf(needle) > -1
+          v => v.nombre.toLowerCase().indexOf(needle) > -1
         )
       })
     }
@@ -433,27 +452,28 @@ export default defineComponent({
       icono: 'bi-trash',
       color: 'negative',
       visible: () =>
-        authenticationStore.can('puede.eliminar.prestamo_empresarial') && tabActualPrestamoEmpresarial == 'ACTIVO',
+        authenticationStore.can('puede.eliminar.prestamo_empresarial') &&
+        tabActualPrestamoEmpresarial == 'ACTIVO',
       accion: ({ entidad, posicion }) => {
         accion.value = 'ELIMINAR'
         eliminar_prestamoempresarial({ entidad, posicion })
-
-      },
+      }
     }
     async function eliminar_prestamoempresarial({ entidad, posicion }) {
       try {
-
         const data: CustomActionPrompt = {
           titulo: 'Eliminar PrestamoEmpresarial',
           mensaje: 'Ingrese motivo de eliminacion',
-          accion: async (data) => {
+          accion: async data => {
             entidad.estado = false
             entidad.motivo = data
             entidad.descripcion_prestamoempresarial = data
-            await prestamoEmpresarialCustomController.anularPrestamoEmpresarial(entidad)
+            await prestamoEmpresarialCustomController.anularPrestamoEmpresarial(
+              entidad
+            )
             notificarCorrecto('Se ha eliminado PrestamoEmpresarial')
-            listado.value.splice(posicion, 1);
-          },
+            listado.value.splice(posicion, 1)
+          }
         }
         prompt(data)
       } catch (e: any) {
@@ -469,10 +489,6 @@ export default defineComponent({
       tabActualPrestamoEmpresarial = tabSeleccionado
     }
 
-
-
-
-
     return {
       removeAccents,
       mixin,
@@ -487,11 +503,11 @@ export default defineComponent({
       recargar_tabla,
       esMayorPrestamo,
       maximoValorPrestamo: [
-        (val) =>
+        val =>
           (val && val <= parseInt(sueldo_basico.value) * 2) ||
           'Solo se permite prestamo menor o igual a 2 SBU (' +
-          parseInt(sueldo_basico.value) * 2 +
-          ')',
+            parseInt(sueldo_basico.value) * 2 +
+            ')'
       ],
       btnModificarCouta,
       btnPagarCouta,
@@ -510,7 +526,7 @@ export default defineComponent({
       tabPrestamoEmpresarial,
       configuracionColumnas: configuracionColumnasPrestamo,
       accion,
-      accionesTabla,
+      accionesTabla
     }
-  },
+  }
 })

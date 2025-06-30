@@ -21,20 +21,28 @@ import { useAuthenticationStore } from 'stores/authentication'
 import GestorDocumentos from 'components/documentos/view/GestorDocumentos.vue'
 import { useNotificaciones } from 'shared/notificaciones'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import ErrorComponent from 'components/ErrorComponent.vue';
 
 export default defineComponent({
-  components: { TabLayout, SelectorImagen, GestorDocumentos },
+  components: { ErrorComponent, TabLayout, SelectorImagen, GestorDocumentos },
   emits: ['cerrar-modal'],
   setup(props, { emit }) {
-    const mixin = new ContenedorSimpleMixin(PrestamoQuirorafario, new PrestamoQuirorafarioController())
-    const mixinPrestamoQuirorafario = new ContenedorSimpleMixin(Archivo, new ArchivoPrestamoQuirorafarioController())
+    const mixin = new ContenedorSimpleMixin(
+      PrestamoQuirorafario,
+      new PrestamoQuirorafarioController()
+    )
+    const mixinPrestamoQuirorafario = new ContenedorSimpleMixin(
+      Archivo,
+      new ArchivoPrestamoQuirorafarioController()
+    )
 
-    const { entidad: prestamo, disabled, accion, } = mixin.useReferencias()
+    const { entidad: prestamo, disabled, accion } = mixin.useReferencias()
     const { setValidador, consultar, listar } = mixin.useComportamiento()
-    const { onBeforeGuardar, onGuardado, onBeforeModificar, onReestablecer } = mixin.useHooks()
+    const { onBeforeGuardar, onGuardado, onBeforeModificar, onReestablecer } =
+      mixin.useHooks()
     const store = useAuthenticationStore()
-    const {notificarAdvertencia} = useNotificaciones()
-    
+    const { notificarAdvertencia } = useNotificaciones()
+
     const is_month = ref(false)
     const refArchivoPrestamoQuirorafario = ref()
     const esRecursosHumanos = store.esRecursosHumanos
@@ -44,7 +52,6 @@ export default defineComponent({
       return accion.value === 'NUEVO'
     })
     const auxmes = ref()
-
 
     function convertir_fecha(fecha) {
       const dateParts = fecha.split('-') // Dividir el string en partes usando el guión como separador
@@ -78,23 +85,23 @@ export default defineComponent({
     }
 
     const limpiarArchivoPrestamoQuirorafario = () => {
-      const archivoPrestamoQuirorafario = refArchivoPrestamoQuirorafario.value;
-      archivoPrestamoQuirorafario.limpiarListado();
-      archivoPrestamoQuirorafario.quiero_subir_archivos = false;
-      archivoPrestamoQuirorafario.esConsultado = false;
+      const archivoPrestamoQuirorafario = refArchivoPrestamoQuirorafario.value
+      archivoPrestamoQuirorafario.limpiarListado()
+      archivoPrestamoQuirorafario.quiero_subir_archivos = false
+      archivoPrestamoQuirorafario.esConsultado = false
       // Realizar cambios en la interfaz de usuario en el siguiente ciclo de renderizado
       requestAnimationFrame(() => {
-        archivoPrestamoQuirorafario.quiero_subir_archivos = true;
-      });
-    };
+        archivoPrestamoQuirorafario.quiero_subir_archivos = true
+      })
+    }
 
     onReestablecer(() => {
-      setTimeout(limpiarArchivoPrestamoQuirorafario, 50);
-    });
+      setTimeout(limpiarArchivoPrestamoQuirorafario, 50)
+    })
 
     //Reglas de validacion
     const reglas = {
-      mes: { required },
+      mes: { required }
     }
     const v$ = useVuelidate(reglas, prestamo)
     setValidador(v$.value)
@@ -108,7 +115,7 @@ export default defineComponent({
       accion: ({ entidad }) => {
         accion.value = 'EDITAR'
         consultar(entidad)
-      },
+      }
     }
     /**Verifica si es un mes */
     function checkValue(val, reason, details) {
@@ -134,7 +141,7 @@ export default defineComponent({
       maskFecha,
       v$,
       disabled,
-      configuracionColumnas: configuracionColumnasPrestamoQuirorafario,
+      configuracionColumnas: configuracionColumnasPrestamoQuirorafario
     }
-  },
+  }
 })

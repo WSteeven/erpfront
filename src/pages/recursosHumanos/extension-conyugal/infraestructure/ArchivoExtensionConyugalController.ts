@@ -4,6 +4,6 @@ import { Documento } from 'components/documentos/domain/Documento'
 
 export class ArchivoExtensionConyugalController extends TransaccionSimpleController<Documento> {
   constructor() {
-    super(endpoints.archivo_extencion_conyugal)
+    super(endpoints.archivo_extension_conyugal)
   }
 }

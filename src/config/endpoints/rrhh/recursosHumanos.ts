@@ -70,8 +70,8 @@ export const recursosHumanos = {
     'recursos-humanos/archivo_prestamo_quirorafario'
   ),
   archivo_rol_pago: new Endpoint('recursos-humanos/archivo_rol_pago'),
-  archivo_extencion_conyugal: new Endpoint(
-    'recursos-humanos/archivo_extencion_conyugal'
+  archivo_extension_conyugal: new Endpoint(
+    'recursos-humanos/archivo_extension_conyugal'
   ),
 
   descuentos_permiso: new Endpoint('recursos-humanos/descuentos_permiso'),

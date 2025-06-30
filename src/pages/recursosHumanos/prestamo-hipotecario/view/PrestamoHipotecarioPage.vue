@@ -2,13 +2,13 @@
   <tab-layout
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
-    titulo-pagina="Prestamo Hipotecario"
+    titulo-pagina="Préstamo Hipotecario"
   >
     <template #formulario>
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-mb-md q-mt-md q-mx-md q-py-sm">
           <!-- Mes -->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-6">
             <label class="q-mb-sm block">Mes</label>
             <q-input
               v-model="prestamo.mes"
@@ -48,13 +48,11 @@
               </template>
 
               <template v-slot:error>
-                <div v-for="error of v$.mes.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="mes" :v$="v$"/>
               </template>
             </q-input>
           </div>
-          <div class="col-12 col-md-3" v-if="!esNuevo">
+          <div class="col-12 col-md-6" v-if="!esNuevo">
             <label class="q-mb-sm block">Empleado</label>
             <q-input v-model="prestamo.empleado_info" :disable="!esNuevo" outlined dense>
             </q-input>
