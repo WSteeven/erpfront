@@ -1,6 +1,7 @@
 <template>
   <tab-layout-filter-tabs2
     :mixin="mixin"
+    titulo-pagina="Préstamo Empresarial"
     :configuracionColumnas="configuracionColumnas"
     :permitirEliminar="false"
     :accion1="btnEliminarPrestamoEmpresarial"
@@ -36,14 +37,10 @@
               map-options
             >
               <template v-slot:error>
-                <div v-for="error of v$.solicitante.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="solicitante" :v$="v$"/>
               </template>
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
-                </q-item>
+                <no-option-component/>
               </template>
             </q-select>
           </div>
@@ -72,9 +69,7 @@
               </template>
 
               <template v-slot:error>
-                <div v-for="error of v$.fecha.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="fecha" :v$="v$"/>
               </template>
             </q-input>
           </div>
@@ -97,9 +92,7 @@
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.monto.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="monto" :v$="v$"/>
               </template>
             </q-input>
           </div>
@@ -117,9 +110,7 @@
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.plazo.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="plazo" :v$="v$"/>
               </template>
             </q-input>
           </div>
@@ -146,9 +137,7 @@
                 </q-icon>
               </template>
               <template v-slot:error>
-                <div v-for="error of v$.vencimiento.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="vencimiento" :v$="v$"/>
               </template>
             </q-input>
           </div>
@@ -173,10 +162,7 @@
               emit-value
               map-options
             >
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
-                </q-item>
+              <template v-slot:no-option><no-option-component/>
               </template>
             </q-select>
           </div>
@@ -194,9 +180,7 @@
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.valor_utilidad.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="valor_utilidad" :v$="v$"/>
               </template>
             </q-input>
           </div>
