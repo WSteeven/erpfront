@@ -41,6 +41,7 @@ export const tareas = {
   materiales_empleado_consolidado: new Endpoint('tareas/materiales-empleado-consolidado'),
   registros_tendidos: new Endpoint('tareas/registros-tendidos'),
   reportes_modulo_tareas: new Endpoint('tareas/reportes'),
+  reporte_asistencia_tecnicos: new Endpoint('tareas/reporte-asistencia'),
   resumen_tendidos: new Endpoint('tareas/resumen-tendidos'),
   seguimientos: new Endpoint('tareas/seguimientos'),
   movilizacion_subtarea: new Endpoint('tareas/movilizacion-subtarea'),

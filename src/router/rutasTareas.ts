@@ -92,6 +92,15 @@ const rutasTareas: RouteRecordRaw[] = [
     meta: { requiresAuth: true },
   },
   {
+    path: '/reporte-asistencia-tecnicos',
+    name: 'reporte_asistencia_tecnicos',
+    component: () =>
+        import(
+            'src/pages/gestionTrabajos/reportes/reportesAsistenciaTecnicos/view/ReporteAsistenciaTecnicoPage.vue'
+            ),
+    meta: { requiresAuth: false },
+  },
+  {
     path: '/reportes-materiales-utilizados',
     name: 'reportes_materiales_utilizados',
     component: () => import('gestionTrabajos/reportes/reporteMaterialesUtilizados/view/ReporteMaterialUtilizadoPage.vue'),
