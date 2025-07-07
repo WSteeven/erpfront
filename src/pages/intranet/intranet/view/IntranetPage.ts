@@ -593,6 +593,7 @@ export default defineComponent({
       enCamino: computed(() => movilizacionSubtareaStore.subtareaDestino),
       motivo: computed(() => movilizacionSubtareaStore.motivo),
       url_sistema : computed(()=>configuracionGeneralStore.configuracion?.sitio_web_erp),
+      link_app_movil : computed(()=>configuracionGeneralStore.configuracion?.link_app_movil),
       mostrarMenu: ref(false),
       store,
       usuarios,

@@ -362,7 +362,7 @@
                       color="green"
                       icon="android"
                       label="Android"
-                      :href="`${url_sistema}/firstred-app.apk`"
+                      :href="link_app_movil??`${url_sistema}/firstred-app.apk`"
                       target="_blank"
                       unelevated
                       rounded
