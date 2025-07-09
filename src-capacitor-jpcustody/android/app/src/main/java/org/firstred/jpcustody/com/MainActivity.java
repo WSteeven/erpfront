@@ -1,0 +1,5 @@
+package org.firstred.jpcustody.com;
+
+import com.getcapacitor.BridgeActivity;
+
+public class MainActivity extends BridgeActivity {}
