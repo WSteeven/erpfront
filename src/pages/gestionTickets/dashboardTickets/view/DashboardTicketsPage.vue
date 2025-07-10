@@ -115,7 +115,7 @@
             />
           </div>
 
-          <div v-if="mostrarSeccionEmpleado" class="col-12 col-md-10">
+          <div v-if="mostrarSeccionEmpleado" class="col-12 col-md-8">
             <label class="q-mb-sm block"
               >Seleccione un empleado para consultar</label
             >
@@ -183,6 +183,16 @@
             </q-select>
           </div>
 
+          <div class="col-12 col-md-2 q-pt-lg">
+            <q-checkbox
+                class="q-mt-sm q-pt-sm"
+                v-model="mostrarInactivos"
+                label="Inactivos"
+                outlined
+                @update:model-value="checkMostrarInactivos"
+                dense
+            ></q-checkbox>
+          </div>
           <div class="col-12 col-md-2">
             <label class="block q-mb-sm">&nbsp;</label>
             <q-btn

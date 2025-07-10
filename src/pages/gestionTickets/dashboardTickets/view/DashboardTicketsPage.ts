@@ -2,7 +2,11 @@
 import { configuracionColumnasSubtareasRealizadasPorGrupoTiposTrabajosEmergencia } from '../domain/configuracionColumnasSubtareasRealizadasPorGrupoTiposTrabajosEmergencia'
 import { configuracionColumnasSubtareasRealizadasPorRegion } from '../domain/configuracionColumnasSubtareasRealizadasPorRegion'
 import { configuracionColumnasSubtareasRealizadasPorGrupo } from '../domain/configuracionColumnasSubtareasRealizadasPorGrupo'
-import { generarColorAzulPastelClaro, obtenerFechaActual, ordernarListaString } from 'shared/utils'
+import {
+  generarColorAzulPastelClaro,
+  obtenerFechaActual,
+  ordernarListaString
+} from 'shared/utils'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { computed, defineComponent, reactive, ref, watchEffect } from 'vue'
 import { optionsPie, optionsLine } from 'config/graficoGenerico'
@@ -37,8 +41,8 @@ import { ReporteSubtareasRealizadas } from '../domain/ReporteSubtareasRealizadas
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { FiltroDashboardTicket } from '../domain/FiltroReporteMaterial'
 import { Ticket } from 'pages/gestionTickets/tickets/domain/Ticket'
-import ErrorComponent from 'components/ErrorComponent.vue';
-import NoOptionComponent from 'components/NoOptionComponent.vue';
+import ErrorComponent from 'components/ErrorComponent.vue'
+import NoOptionComponent from 'components/NoOptionComponent.vue'
 
 export default defineComponent({
   components: {
@@ -97,6 +101,7 @@ export default defineComponent({
     const modales = new ComportamientoModalesTicketAsignado()
     const empleadoResponsableDepartamento = ref()
     const esResponsableDepartamento = ref(false)
+    const mostrarInactivos = ref(false)
     const ticketsEmpleadoResponsable = ref([])
     const tabsTickets = ref('creados')
 
@@ -267,10 +272,10 @@ export default defineComponent({
       if (await v$.value.$validate()) {
         try {
           /* const empleadoSeleccionado: Empleado = empleados.value.filter((emp: Empleado) => emp.id === filtro.empleado)[0]
-
-          esResponsableDepartamento.value = empleadoSeleccionado.responsable_departamento
-          departamento = empleadoSeleccionado.departamento_id
-          filtro.departamento = empleadoSeleccionado.departamento_id */
+          
+                    esResponsableDepartamento.value = empleadoSeleccionado.responsable_departamento
+                    departamento = empleadoSeleccionado.departamento_id
+                    filtro.departamento = empleadoSeleccionado.departamento_id */
           cargando.activar()
 
           const { result } = await dashboardTicketController.listar({
@@ -656,6 +661,7 @@ export default defineComponent({
     }
 
     const ticketsPorEstadoListado = ref([])
+
     function clickGraficoTicketsEmpleado(
       data,
       categoriaGrafico: keyof typeof categoriaGraficosEmpleado
@@ -850,6 +856,18 @@ export default defineComponent({
       return conteo
     }
 
+    async function checkMostrarInactivos(val) {
+      filtro.empleado = null
+      await consultar()
+      listadosAuxiliares.empleados = await cargando.cargarConsulta(
+          async () =>
+              (
+                  await new EmpleadoController().listar({ estado: val ? 0 : 1 })
+              ).result
+      )
+      empleados.value = listadosAuxiliares.empleados
+    }
+
     function saludar() {
       console.log('hola')
     }
@@ -949,7 +967,9 @@ export default defineComponent({
       mostrarSeccionDepartamento,
       mostrarSeccionEmpleado,
       reporteExcel,
-      maskFecha
+      maskFecha,
+      mostrarInactivos,
+      checkMostrarInactivos
     }
   }
 })
