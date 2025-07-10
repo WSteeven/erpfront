@@ -19,6 +19,7 @@ export class ConfiguracionGeneral extends EntidadAuditable {
   correo_secundario: string | null
   sitio_web: string | null
   sitio_web_erp: string | null
+  link_app_movil: string | null
   direccion_secundaria1: string | null
   direccion_secundaria2: string | null
   favicon: string | null
@@ -45,6 +46,7 @@ export class ConfiguracionGeneral extends EntidadAuditable {
     this.correo_secundario = null
     this.sitio_web = null
     this.sitio_web_erp = null
+    this.link_app_movil = null
     this.direccion_secundaria1 = null
     this.direccion_secundaria2 = null
     this.favicon = null

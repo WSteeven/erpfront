@@ -203,6 +203,10 @@ module.exports = configure(function (/* ctx */) {
       // Quasar plugins
       plugins: ['Notify', 'Dialog', 'Loading']
     },
+    htmlVariables:{
+      title: 'FIRSTRED - JPCONSTRUCRED',
+      description: 'Gestiona nómina, empleados, inventario, vehiculos, proyectos y tickets desde un solo lugar.',
+    },
 
     // animations: 'all', // --- includes all animations
     // https://v2.quasar.dev/options/animations

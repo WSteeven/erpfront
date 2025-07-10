@@ -1,0 +1,1 @@
+import{l as i,by as f,e as l,c as o}from"./index.2ef7a81a.js";import{G as m}from"./Gasto.2c5038cc.js";const p=i("fondo_rotativo",()=>{const t=f.consultar,s=l(new m),a=o(!1),e=o([]),r=o([]),c=o([]),n=o([]);return{gasto:s,vehiculos:e,proyectos:c,tareas:n,empleados:r,accion_form:t,habilitar_observacion_autorizador:a}});export{p as u};

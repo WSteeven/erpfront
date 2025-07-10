@@ -138,6 +138,12 @@ export const useMenuStore = defineStore('menu', () => {
               link: 'reportes-modulo-tareas',
               icon: 'bi-clipboard-check',
               can: store.can('puede.acceder.reportes_modulo_tareas')
+            },{
+              title: 'Reporte de Asistencia de Técnicos',
+              link: 'reporte-asistencia-tecnicos',
+              icon: 'bi-clipboard-check',
+              // can: store.can('puede.acceder.reporte_asistencia_tecnicos')
+              can: true
             }
           ]
         }
