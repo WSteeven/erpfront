@@ -23,17 +23,15 @@
                 :input-debounce="0"
                 use-input
                 hint="Obligatorio"
-                :option-value="(v) => v.value"
-                :option-label="(v) => v.label"
+                :option-value="v => v.value"
+                :option-label="v => v.label"
                 emit-value
                 map-options
                 :error="!!v$.religion.$errors.length"
                 @blur="v$.religion.$touch"
               >
                 <template v-slot:error>
-                  <div v-for="error of v$.religion.$errors" :key="error.$uid">
-                    <div>{{ error.$message }}</div>
-                  </div>
+                  <error-component clave="religion" :v$="v$" />
                 </template>
               </q-select>
             </div>
@@ -56,20 +54,15 @@
                 :input-debounce="0"
                 use-input
                 hint="Obligatorio"
-                :option-value="(v) => v.value"
-                :option-label="(v) => v.label"
+                :option-value="v => v.value"
+                :option-label="v => v.label"
                 emit-value
                 map-options
                 :error="!!v$.orientacion_sexual.$errors.length"
                 @blur="v$.orientacion_sexual.$touch"
               >
                 <template v-slot:error>
-                  <div
-                    v-for="error of v$.orientacion_sexual.$errors"
-                    :key="error.$uid"
-                  >
-                    <div>{{ error.$message }}</div>
-                  </div>
+                  <error-component clave="orientacion_sexual" :v$="v$" />
                 </template>
               </q-select>
             </div>
@@ -92,20 +85,15 @@
                 :input-debounce="0"
                 use-input
                 hint="Obligatorio"
-                :option-value="(v) => v.value"
-                :option-label="(v) => v.label"
+                :option-value="v => v.value"
+                :option-label="v => v.label"
                 emit-value
                 map-options
                 :error="!!v$.identidad_genero.$errors.length"
                 @blur="v$.identidad_genero.$touch"
               >
                 <template v-slot:error>
-                  <div
-                    v-for="error of v$.identidad_genero.$errors"
-                    :key="error.$uid"
-                  >
-                    <div>{{ error.$message }}</div>
-                  </div>
+                  <error-component clave="identidad_genero" :v$="v$" />
                 </template>
               </q-select>
             </div>
@@ -138,8 +126,8 @@
               :input-debounce="0"
               use-input
               hint="Opcional"
-              :option-value="(v) => v.nombre"
-              :option-label="(v) => v.nombre"
+              :option-value="v => v.nombre"
+              :option-label="v => v.nombre"
               emit-value
               map-options
             >
@@ -158,9 +146,7 @@
               @blur="v$.lateralidad.$touch"
             >
               <template v-slot:error>
-                <div v-for="error of v$.lateralidad.$errors" :key="error.$uid">
-                  <div>{{ error.$message }}</div>
-                </div>
+                <error-component clave="lateralidad" :v$="v$" />
               </template>
             </q-input>
           </div>
@@ -183,15 +169,13 @@
               @filter="filtrarCargos"
               :error="!!v$.cargo.$errors.length"
               error-message="Debes seleccionar un cargo"
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.nombre"
+              :option-value="v => v.id"
+              :option-label="v => v.nombre"
               emit-value
               map-options
             >
               <template v-slot:error>
-                <div v-for="error of v$.cargo.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="cargo" :v$="v$" />
               </template>
             </q-select>
           </div>
@@ -397,12 +381,10 @@
               @blur="v$.antecedente_personal.hijos_vivos.$touch"
             >
               <template v-slot:error>
-                <div
-                  v-for="error of v$.antecedente_personal.hijos_vivos.$errors"
-                  :key="error.$uid"
-                >
-                  <div>{{ error.$message }}</div>
-                </div>
+                <error-component
+                  clave="antecedente_personal.hijos_vivos"
+                  :v$="v$"
+                />
               </template>
             </q-input>
           </div>
@@ -420,12 +402,10 @@
               @blur="v$.antecedente_personal.hijos_muertos.$touch"
             >
               <template v-slot:error>
-                <div
-                  v-for="error of v$.antecedente_personal.hijos_muertos.$errors"
-                  :key="error.$uid"
-                >
-                  <div>{{ error.$message }}</div>
-                </div>
+                <error-component
+                  clave="antecedente_personal.hijos_muertos"
+                  :v$="v$"
+                />
               </template>
             </q-input>
           </div>
@@ -500,8 +480,62 @@
             >
             </q-input>
           </div>
-
-          <div class="col-12 q-mb-md">
+          <pre v-if="false"
+            >{{ listadosAuxiliares.examenes_realizados }}
+          </pre>
+          <div
+            v-for="examen of listadosAuxiliares.examenes_realizados"
+            :key="examen.id"
+            class="col-12 q-mb-md"
+          >
+            <div>
+              <q-separator></q-separator>
+            </div>
+            <div v-if="accion === acciones.nuevo" class="row q-col-gutter-x-sm">
+              <div class="row col-12">
+                <div class="col-6 col-md-6 col-sm-12">
+                  Previamente me he realizado el examen:
+                  <strong>{{ examen.examen.toUpperCase() }}</strong
+                  >?
+                </div>
+                <div class="col-6 col-md-6 col-sm-12">
+                  <option-group-component
+                    v-model="examen.se_realizo_examen"
+                    :disable="disabled"
+                  />
+                </div>
+              </div>
+              <div
+                class="col-md-6 col-md-3 q-mb-md"
+                v-if="examen.se_realizo_examen"
+              >
+                <label class="q-mb-sm block">Fecha de realización</label>
+                <q-input
+                  v-model="examen.tiempo"
+                  placeholder="Obligatorio"
+                  :disable="disabled"
+                  outlined
+                  dense
+                >
+                </q-input>
+              </div>
+              <div
+                class="col-md-6 col-md-3 q-mb-md"
+                v-if="examen.se_realizo_examen"
+              >
+                <label class="q-mb-sm block">Resultado</label>
+                <q-input
+                  v-model="examen.resultado"
+                  placeholder="Obligatorio"
+                  :disable="disabled"
+                  outlined
+                  dense
+                >
+                </q-input>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 q-mb-md" v-if="accion === acciones.consultar">
             <essential-table
               :configuracionColumnas="
                 configuracionColumnasResultadoExamenPreocupacional
@@ -522,8 +556,77 @@
           </div>
 
           <div class="col-12 text-bold q-mb-md">HÁBITOS TÓXICOS</div>
-          <div class="col-12 q-mb-md">
-            <div class="text-grey-8 q-mb-md">(Opcional)</div>
+          <div class="text-grey-8 q-mb-md">(Opcional)</div>
+          <div
+            v-for="habito of listadosAuxiliares.habitos_toxicos"
+            :key="habito.id"
+            class="col-12 q-mb-md"
+          >
+          <div class="col-12" v-if="accion === acciones.nuevo">
+            <q-separator  />
+          </div>
+            <div v-if="accion === acciones.nuevo" class="row q-col-gutter-x-sm">
+              <div class="row col-12">
+                <div class="col-md-6 col-sm-12 col-xs-12">
+                  He consumido:
+                  <strong>{{ habito.tipo_habito_toxico.toUpperCase() }}</strong
+                  >?
+                </div>
+                <div class="col-md-6 col-sm-12">
+                  <option-group-component
+                    v-model="habito.consume"
+                    :disable="disabled"
+                  />
+                </div>
+              </div>
+              <div class="col-md-6 col-md-3 q-mb-md" v-if="habito.consume">
+                <label class="q-mb-sm block">Tiempo de consumo</label>
+                <q-input
+                  v-model="habito.tiempo_consumo_meses"
+                  placeholder="Obligatorio"
+                  hint="Ingrese un valor en meses"
+                  :disable="disabled"
+                  outlined
+                  dense
+                >
+                </q-input>
+              </div>
+              <div class="col-md-6 col-sm-12 q-mb-md" v-if="habito.consume">
+                <label class="q-mb-sm block">Cantidad</label>
+                <q-input
+                  v-model="habito.cantidad"
+                  placeholder="Obligatorio"
+                  :disable="disabled"
+                  outlined
+                  dense
+                >
+                </q-input>
+              </div>
+              <div class="col-md-6 col-sm-12 q-mb-md" v-if="habito.consume">
+                ¿Soy ex-consumidor?
+                <option-group-component
+                  v-model="habito.ex_consumidor"
+                  :disable="disabled"
+                />
+              </div>
+              <div
+                class="col-md-6 col-sm-12 q-mb-md"
+                v-if="habito.ex_consumidor"
+              >
+                <label class="q-mb-sm block">Tiempo de abstinencia</label>
+                <q-input
+                  v-model="habito.tiempo_abstinencia_meses"
+                  placeholder="Obligatorio"
+                  :disable="disabled"
+                  hint="Ingrese un valor en meses"
+                  outlined
+                  dense
+                >
+                </q-input>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 q-mb-md" v-if="accion === acciones.consultar">
             <essential-table
               :configuracionColumnas="
                 configuracionColumnasResultadoHabitoToxico
@@ -554,15 +657,15 @@
               no-caps
               unelevated
               @click="insertarFilaActividadFisica()"
-              >Insertar fila</q-btn
-            >
+              >Insertar fila
+            </q-btn>
             <span class="text-grey-8"
               >(Inserte un máximo de 1 fila) (Opcional)</span
             >
             <essential-table
               :configuracionColumnas="[
                 ...configuracionColumnasActividadFisica,
-                accionesTabla,
+                accionesTabla
               ]"
               :datos="fichaPreocupacional.actividades_fisicas"
               :permitirConsultar="false"
@@ -589,15 +692,15 @@
               no-caps
               unelevated
               @click="insertarFilaMedicacionHabitual()"
-              >Insertar fila</q-btn
-            >
+              >Insertar fila
+            </q-btn>
             <span class="text-grey-8"
               >(Inserte un máximo de 3 filas) (Opcional)</span
             >
             <essential-table
               :configuracionColumnas="[
                 ...configuracionColumnasMedicacionHabitual,
-                accionesTabla,
+                accionesTabla
               ]"
               :datos="fichaPreocupacional.medicaciones"
               :permitirConsultar="false"
@@ -637,16 +740,18 @@
               no-caps
               unelevated
               @click="insertarFilaAntecedenteTrabajoAnterior()"
-              >Insertar fila</q-btn
-            >
+              >Insertar fila
+            </q-btn>
             <span class="text-grey-8">(Opcional)</span>
             <essential-table
               v-if="mostrarTablaAntecedenteTrabajoAnteriorReactive"
               :configuracionColumnas="[
                 ...configuracionColumnasAntecedenteTrabajoAnteriorReactive,
-                accionesTabla,
+                accionesTabla
               ]"
               :datos="fichaPreocupacional.antecedentes_empleos_anteriores"
+              :v$="v$"
+              key-error="antecedentes_empleos_anteriores"
               :permitirConsultar="false"
               :permitirEliminar="false"
               :permitirEditar="false"
@@ -665,7 +770,14 @@
           <div class="col-12 text-bold q-mb-md">
             ACCIDENTES DE TRABAJO (DESCRIPCIÓN)
           </div>
-          <div class="col-12 col-md-6 q-mb-md">
+          <div class="col-md-12 col-xs-12">
+            <label>Ha tenido algún accidente de trabajo?</label>
+            <option-group-component
+                v-model="fichaPreocupacional.tiene_accidente_trabajo"
+                :disable="disabled"
+            />
+          </div>
+          <div class="col-12 col-md-6 q-mb-md" v-if="fichaPreocupacional.tiene_accidente_trabajo">
             <label class="q-mb-sm block"
               >Fue calificado por el Instituto de Seguridad Social
               correspondiente</label
@@ -703,7 +815,7 @@
             </q-input>
           </div>
 
-          <div class="col-12 col-md-6 q-mb-md">
+          <div class="col-12 col-md-6 q-mb-md" v-if="fichaPreocupacional.tiene_accidente_trabajo">
             <label class="q-mb-sm block">Fecha</label>
             <q-input
               v-model="fichaPreocupacional.accidente_trabajo.fecha"
@@ -740,7 +852,7 @@
             </q-input>
           </div>
 
-          <div class="col-12 col-md-6 q-mb-md">
+          <div class="col-12 col-md-6 q-mb-md" v-if="fichaPreocupacional.tiene_accidente_trabajo">
             <label class="q-mb-sm block">Observación</label>
             <q-input
               v-model="fichaPreocupacional.accidente_trabajo.observacion"
@@ -755,7 +867,14 @@
           <div class="col-12 text-bold q-mb-md">
             ENFERMEDADES PROFESIONALES (DESCRIPCIÓN)
           </div>
-          <div class="col-12 col-md-6 q-mb-md">
+          <div class="col-md-12 col-xs-12">
+            <label>Ha tenido alguna enfermedad profesional?</label>
+            <option-group-component
+                v-model="fichaPreocupacional.tiene_enfermedad_profesional"
+                :disable="disabled"
+            />
+          </div>
+          <div class="col-12 col-md-6 q-mb-md" v-if="fichaPreocupacional.tiene_enfermedad_profesional">
             <label class="q-mb-sm block"
               >Fue calificado por el Instituto de Seguridad Social
               correspondiente</label
@@ -798,7 +917,7 @@
             </q-input>
           </div>
 
-          <div class="col-12 col-md-6 q-mb-md">
+          <div class="col-12 col-md-6 q-mb-md" v-if="fichaPreocupacional.tiene_enfermedad_profesional">
             <label class="q-mb-sm block">Fecha</label>
             <q-input
               v-model="fichaPreocupacional.enfermedad_profesional.fecha"
@@ -835,7 +954,7 @@
             </q-input>
           </div>
 
-          <div class="col-12 col-md-6 q-mb-md">
+          <div class="col-12 col-md-6 q-mb-md" v-if="fichaPreocupacional.tiene_enfermedad_profesional">
             <label class="q-mb-sm block">Observación</label>
             <q-input
               v-model="fichaPreocupacional.enfermedad_profesional.observacion"
@@ -845,8 +964,9 @@
               dense
             >
             </q-input>
-          </div></div
-      ></q-expansion-item>
+          </div>
+        </div>
+      </q-expansion-item>
 
       <q-expansion-item
         class="overflow-hidden q-mb-md rounded bg-desenfoque-2"
@@ -892,14 +1012,14 @@
               no-caps
               unelevated
               @click="insertarFilaFrPuestoTrabajoActualReactive()"
-              >Insertar fila</q-btn
-            >
+              >Insertar fila
+            </q-btn>
             <span class="text-grey-8">(Opcional)</span>
             <essential-table
               v-if="mostrarTablaFrPuestoTrabajoActualReactive"
               :configuracionColumnas="[
                 ...configuracionColumnasFrPuestoTrabajoActualReactive,
-                accionesTabla,
+                accionesTabla
               ]"
               :datos="fichaPreocupacional.fr_puestos_trabajos_actuales"
               :permitirConsultar="false"
@@ -1057,23 +1177,26 @@
           </div>
         </div>
       </q-expansion-item>
-      
-      <div v-if="[acciones.consultar, acciones.editar].includes(accion)" class="q-mb-md q-pa-sm border-grey-6 rounded-field ">
+
+      <div
+        v-if="[acciones.consultar, acciones.editar].includes(accion)"
+        class="q-mb-md q-pa-sm border-grey-6 rounded-field"
+      >
         <gestor-archivos
-            ref="refArchivo"
-            label="Ficha preocupacional firmada"
-            :mixin="mixin"
-            :listarAlGuardar="true"
-            :idModelo="fichaPreocupacional.id"
+          ref="refArchivo"
+          label="Ficha preocupacional firmada"
+          :mixin="mixin"
+          :listarAlGuardar="true"
+          :idModelo="fichaPreocupacional.id"
         >
           <template #boton-subir>
             <q-btn
-                v-if="quieroSubirArchivos"
-                color="primary"
-                push
-                no-caps
-                class="full-width q-mb-lg"
-                @click="subirFichaMedicaFirmada"
+              v-if="quieroSubirArchivos"
+              color="primary"
+              push
+              no-caps
+              class="full-width q-mb-lg"
+              @click="subirFichaMedicaFirmada"
             >
               <q-icon name="bi-upload" class="q-mr-sm" size="xs" />
               Subir ficha médica firmada
@@ -1093,8 +1216,8 @@
           @click="descargarPdf()"
         >
           <q-icon name="bi-file-earmark-pdf" size="xs" class="q-mr-sm"></q-icon>
-          Descargar PDF</q-btn
-        >
+          Descargar PDF
+        </q-btn>
       </div>
     </template>
   </simple-layout>

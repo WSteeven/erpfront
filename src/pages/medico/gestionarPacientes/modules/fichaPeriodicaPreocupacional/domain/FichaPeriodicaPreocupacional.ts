@@ -20,6 +20,7 @@ export class FichaPeriodicaPreocupacional extends FichaMedica {
   identidad_genero: number | null
   lateralidad: string | null
   motivo_consulta: string | null
+  grupo_sanguineo: string | null
   antecedentes_gineco_obstetricos: AntecedenteGinecoObstetrico
   antecedente_personal: AntecedentePersonal
   habitos_toxicos: ResultadoHabitoToxico[]

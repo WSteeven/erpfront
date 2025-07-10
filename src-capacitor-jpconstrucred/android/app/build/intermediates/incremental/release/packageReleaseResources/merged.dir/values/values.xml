@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="ic_launcher_background">#EAF6F1</color>
+    <string name="app_name">FIRSTRED JPCONSTRUCRED</string>
+    <string name="custom_url_scheme">org.firstred.jpconstrucred.com</string>
+    <string name="gcm_defaultSenderId" translatable="false">750534196652</string>
+    <string name="google_api_key" translatable="false">AIzaSyCyqiugK4JDdEMmE3XzfE4Y2-Or0geOzpk</string>
+    <string name="google_app_id" translatable="false">1:750534196652:android:58e2bf41c3147b96af4e09</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyCyqiugK4JDdEMmE3XzfE4Y2-Or0geOzpk</string>
+    <string name="google_storage_bucket" translatable="false">firstredapp.firebasestorage.app</string>
+    <string name="package_name">org.firstred.jpconstrucred.com</string>
+    <string name="project_id" translatable="false">firstredapp</string>
+    <string name="title_activity_main">FIRSTRED JPCONSTRUCRED</string>
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+    <style name="AppTheme.NoActionBar" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:background">@null</item>
+    </style>
+    <style name="AppTheme.NoActionBarLaunch" parent="Theme.SplashScreen">
+        <item name="android:background">@drawable/splash</item>
+    </style>
+</resources>
