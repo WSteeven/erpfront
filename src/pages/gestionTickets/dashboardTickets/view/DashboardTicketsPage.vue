@@ -183,7 +183,7 @@
             </q-select>
           </div>
 
-          <div class="col-12 col-md-2 q-pt-lg">
+          <div class="col-12 col-md-2 q-pt-lg" v-if="mostrarSeccionEmpleado">
             <q-checkbox
                 class="q-mt-sm q-pt-sm"
                 v-model="mostrarInactivos"
