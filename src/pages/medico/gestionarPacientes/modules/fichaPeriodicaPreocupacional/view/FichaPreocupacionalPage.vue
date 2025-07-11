@@ -1,6 +1,26 @@
 <template>
   <simple-layout :mixin="mixin">
     <template #formulario>
+      <div class="row full-width q-col-gutter-sm justify-end" v-if="true">
+        <div class="q-pl-md" v-if="accion == acciones.consultar">
+          <q-btn outline dense @click="btnEditarFicha()" color="secondary">
+            <q-tooltip class="bg-dark">Editar</q-tooltip>
+            <q-icon class="bi-pencil-square" size="xs" />
+          </q-btn>
+        </div>
+        <div v-if="accion == acciones.editar">
+          <q-btn
+            outline
+            dense
+            class="q-pl-sm"
+            @click="btnCancelarEditarFicha"
+            color="negative"
+          >
+            <q-tooltip class="bg-dark">Cancelar Editar</q-tooltip>
+            <q-icon class="bi-x" size="sm" />
+          </q-btn>
+        </div>
+      </div>
       <q-expansion-item
         class="overflow-hidden q-mb-md rounded bg-desenfoque-2"
         label="Datos del empleado"
@@ -217,8 +237,7 @@
             <label class="q-mb-sm block">Descripción</label>
             <q-input
               v-model="
-                fichaPreocupacional.antecedente_personal
-                  .antecedentes_quirurgicos
+                fichaPreocupacional.antecedente_clinico_quirurgico
               "
               placeholder="Anotar la causa del problema en la versión del informante"
               :disable="disabled"
@@ -480,9 +499,7 @@
             >
             </q-input>
           </div>
-          <pre v-if="false"
-            >{{ listadosAuxiliares.examenes_realizados }}
-          </pre>
+
           <div
             v-for="examen of listadosAuxiliares.examenes_realizados"
             :key="examen.id"
@@ -491,7 +508,7 @@
             <div>
               <q-separator></q-separator>
             </div>
-            <div v-if="accion === acciones.nuevo" class="row q-col-gutter-x-sm">
+            <div v-if="[acciones.nuevo, acciones.editar].includes(accion)" class="row q-col-gutter-x-sm">
               <div class="row col-12">
                 <div class="col-6 col-md-6 col-sm-12">
                   Previamente me he realizado el examen:
@@ -545,6 +562,7 @@
               :permitirEliminar="false"
               :permitirEditar="false"
               :mostrarBotones="false"
+              :disable="disabled"
               :permitir-editar-celdas="true"
               :mostrar-header="false"
               :mostrar-footer="false"
@@ -562,10 +580,10 @@
             :key="habito.id"
             class="col-12 q-mb-md"
           >
-          <div class="col-12" v-if="accion === acciones.nuevo">
-            <q-separator  />
-          </div>
-            <div v-if="accion === acciones.nuevo" class="row q-col-gutter-x-sm">
+            <div class="col-12" v-if="[acciones.nuevo, acciones.editar].includes(accion)">
+              <q-separator />
+            </div>
+            <div v-if="[acciones.nuevo, acciones.editar].includes(accion)" class="row q-col-gutter-x-sm">
               <div class="row col-12">
                 <div class="col-md-6 col-sm-12 col-xs-12">
                   He consumido:
@@ -636,6 +654,7 @@
               :permitirEliminar="false"
               :permitirEditar="false"
               :mostrarBotones="false"
+              :disable="disabled"
               :permitir-editar-celdas="true"
               :mostrar-header="false"
               :mostrar-footer.="false"
@@ -672,6 +691,7 @@
               :permitirEliminar="false"
               :permitirEditar="false"
               :mostrarBotones="false"
+              :disable="disabled"
               :permitir-editar-celdas="true"
               :mostrar-header="false"
               :mostrar-footer="false"
@@ -707,6 +727,7 @@
               :permitirEliminar="false"
               :permitirEditar="false"
               :mostrarBotones="false"
+              :disable="disabled"
               :permitir-editar-celdas="true"
               :mostrar-header="false"
               :mostrar-footer="false"
@@ -756,6 +777,7 @@
               :permitirEliminar="false"
               :permitirEditar="false"
               :mostrarBotones="false"
+              :disable="disabled"
               :permitir-editar-celdas="true"
               :mostrar-header="false"
               :mostrar-footer="false"
@@ -773,11 +795,14 @@
           <div class="col-md-12 col-xs-12">
             <label>Ha tenido algún accidente de trabajo?</label>
             <option-group-component
-                v-model="fichaPreocupacional.tiene_accidente_trabajo"
-                :disable="disabled"
+              v-model="fichaPreocupacional.tiene_accidente_trabajo"
+              :disable="disabled"
             />
           </div>
-          <div class="col-12 col-md-6 q-mb-md" v-if="fichaPreocupacional.tiene_accidente_trabajo">
+          <div
+            class="col-12 col-md-6 q-mb-md"
+            v-if="fichaPreocupacional.tiene_accidente_trabajo"
+          >
             <label class="q-mb-sm block"
               >Fue calificado por el Instituto de Seguridad Social
               correspondiente</label
@@ -815,7 +840,10 @@
             </q-input>
           </div>
 
-          <div class="col-12 col-md-6 q-mb-md" v-if="fichaPreocupacional.tiene_accidente_trabajo">
+          <div
+            class="col-12 col-md-6 q-mb-md"
+            v-if="fichaPreocupacional.tiene_accidente_trabajo"
+          >
             <label class="q-mb-sm block">Fecha</label>
             <q-input
               v-model="fichaPreocupacional.accidente_trabajo.fecha"
@@ -852,7 +880,10 @@
             </q-input>
           </div>
 
-          <div class="col-12 col-md-6 q-mb-md" v-if="fichaPreocupacional.tiene_accidente_trabajo">
+          <div
+            class="col-12 col-md-6 q-mb-md"
+            v-if="fichaPreocupacional.tiene_accidente_trabajo"
+          >
             <label class="q-mb-sm block">Observación</label>
             <q-input
               v-model="fichaPreocupacional.accidente_trabajo.observacion"
@@ -870,11 +901,14 @@
           <div class="col-md-12 col-xs-12">
             <label>Ha tenido alguna enfermedad profesional?</label>
             <option-group-component
-                v-model="fichaPreocupacional.tiene_enfermedad_profesional"
-                :disable="disabled"
+              v-model="fichaPreocupacional.tiene_enfermedad_profesional"
+              :disable="disabled"
             />
           </div>
-          <div class="col-12 col-md-6 q-mb-md" v-if="fichaPreocupacional.tiene_enfermedad_profesional">
+          <div
+            class="col-12 col-md-6 q-mb-md"
+            v-if="fichaPreocupacional.tiene_enfermedad_profesional"
+          >
             <label class="q-mb-sm block"
               >Fue calificado por el Instituto de Seguridad Social
               correspondiente</label
@@ -917,7 +951,10 @@
             </q-input>
           </div>
 
-          <div class="col-12 col-md-6 q-mb-md" v-if="fichaPreocupacional.tiene_enfermedad_profesional">
+          <div
+            class="col-12 col-md-6 q-mb-md"
+            v-if="fichaPreocupacional.tiene_enfermedad_profesional"
+          >
             <label class="q-mb-sm block">Fecha</label>
             <q-input
               v-model="fichaPreocupacional.enfermedad_profesional.fecha"
@@ -954,7 +991,10 @@
             </q-input>
           </div>
 
-          <div class="col-12 col-md-6 q-mb-md" v-if="fichaPreocupacional.tiene_enfermedad_profesional">
+          <div
+            class="col-12 col-md-6 q-mb-md"
+            v-if="fichaPreocupacional.tiene_enfermedad_profesional"
+          >
             <label class="q-mb-sm block">Observación</label>
             <q-input
               v-model="fichaPreocupacional.enfermedad_profesional.observacion"
@@ -985,6 +1025,7 @@
               :permitirEliminar="false"
               :permitirEditar="false"
               :mostrarBotones="false"
+              :disable="disabled"
               :permitir-editar-celdas="true"
               :mostrar-header="false"
               :mostrar-footer="false"
@@ -1009,6 +1050,7 @@
               color="primary"
               class="q-mb-sm q-mr-sm"
               icon="bi-arrow-down"
+              :disable="disabled"
               no-caps
               unelevated
               @click="insertarFilaFrPuestoTrabajoActualReactive()"
@@ -1026,6 +1068,7 @@
               :permitirEliminar="false"
               :permitirEditar="false"
               :mostrarBotones="false"
+              :disable="disabled"
               :permitir-editar-celdas="true"
               :mostrar-header="false"
               :mostrar-footer="false"
@@ -1099,6 +1142,7 @@
               :permitirEliminar="false"
               :permitirEditar="false"
               :mostrarBotones="false"
+              :disable="disabled"
               :permitir-editar-celdas="true"
               :mostrar-header="false"
               :mostrar-footer="false"
@@ -1209,7 +1253,7 @@
     <template #custom-buttons>
       <div class="row q-gutter-x-xs">
         <q-btn
-          v-if="fichaPreocupacional.id && mostrarDescargarPdf"
+          v-if="fichaPreocupacional.id && mostrarDescargarPdf && accion==acciones.consultar"
           class="bg-white text-pink-10"
           no-caps
           push

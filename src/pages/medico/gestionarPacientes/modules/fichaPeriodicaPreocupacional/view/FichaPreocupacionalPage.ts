@@ -71,6 +71,7 @@ import { upperCase } from 'lodash'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useQuasar } from 'quasar'
 import { useCargandoStore } from 'stores/cargando'
+import { useFichaPreocupacional } from 'medico/gestionarPacientes/modules/fichaPeriodicaPreocupacional/application/useFichaPreocupacional'
 
 export default defineComponent({
   name: 'fichas_preocupacionales',
@@ -98,14 +99,7 @@ export default defineComponent({
      ************/
     const refArchivo = ref()
     const { confirmar } = useNotificaciones()
-    const configuracionColumnasFrPuestoTrabajoActualReactive = ref(
-      configuracionColumnasFrPuestoTrabajoActual
-    )
-    const configuracionColumnasAntecedenteTrabajoAnteriorReactive = ref(
-      configuracionColumnasAntecedenteTrabajoAnterior
-    )
-    const mostrarTablaFrPuestoTrabajoActualReactive = ref(false)
-    const mostrarTablaAntecedenteTrabajoAnteriorReactive = ref(false)
+
     const tipoFilaFrPuestoTrabajoActual = new FrPuestoTrabajoActual()
     const tipoFilaAntecedenteTrabajoAnterior = new AntecedenteTrabajoAnterior()
     const { notificarAdvertencia } = useNotificaciones()
@@ -133,8 +127,22 @@ export default defineComponent({
     } = mixin.useReferencias()
     const { setValidador, cargarVista, obtenerListados, consultar } =
       mixin.useComportamiento()
-    const { onBeforeGuardar, onReestablecer, onConsultado, onGuardado } =
-      mixin.useHooks()
+    const {
+      onBeforeGuardar,
+      onReestablecer,
+      onBeforeModificar,
+      onConsultado,
+      onGuardado
+    } = mixin.useHooks()
+
+    const {
+      configurarColumnasFrPuestoTrabajoActual,
+      configurarColumnasAntecedenteTrabajoAnterior,
+      configuracionColumnasFrPuestoTrabajoActualReactive,
+      configuracionColumnasAntecedenteTrabajoAnteriorReactive,
+      mostrarTablaAntecedenteTrabajoAnteriorReactive,
+      mostrarTablaFrPuestoTrabajoActualReactive
+    } = useFichaPreocupacional(medicoStore, listadosAuxiliares)
 
     cargarVista(async () => {
       await obtenerListados({
@@ -201,23 +209,6 @@ export default defineComponent({
           return rev
         })
 
-      /* watchEffect(() => {
-                                                              if (fichaPreocupacional.revisiones_actuales_organos_sistemas) {
-                                                                listadosAuxiliares.revisiones_actuales_organos_sistemas = listadosAuxiliares.revisiones_actuales_organos_sistemas.map((item) => {
-                                                                  const encontrado = fichaPreocupacional.revisiones_actuales_organos_sistemas.find((rev) => rev.organo_id === item.id)
-                                                                  if (encontrado) {
-                                                                    item.descripcion = encontrado.descripcion
-                                                                  }
-                                                                })
-                                                              }
-                                                            }) */
-
-      /* fichaPreocupacional.revisiones_actuales_organos_sistemas = listadosAuxiliares.sistemasOrganos.map((tipo: SistemaOrgano) => {
-                                                              const rev = new RevisionActualOrganoSistema()
-                                                              rev.organo = tipo.nombre
-                                                              return rev
-                                                            }) */
-      // --
       await configurarColumnasFrPuestoTrabajoActual()
       await configurarColumnasAntecedenteTrabajoAnterior()
 
@@ -318,8 +309,8 @@ export default defineComponent({
 
     const insertarFilaAntecedenteTrabajoAnterior = () => {
       /* const antecedenteTrabajoAnterior = new AntecedenteTrabajoAnterior()
-                                                            antecedenteTrabajoAnterior.id = fichaPreocupacional.antecedentes_empleos_anteriores?.length ? encontrarUltimoIdListado(fichaPreocupacional.antecedentes_empleos_anteriores) + 1 : 1
-                                                            fichaPreocupacional.antecedentes_empleos_anteriores.push(antecedenteTrabajoAnterior) */
+                                                                                                            antecedenteTrabajoAnterior.id = fichaPreocupacional.antecedentes_empleos_anteriores?.length ? encontrarUltimoIdListado(fichaPreocupacional.antecedentes_empleos_anteriores) + 1 : 1
+                                                                                                            fichaPreocupacional.antecedentes_empleos_anteriores.push(antecedenteTrabajoAnterior) */
       const fila = JSON.parse(
         JSON.stringify(tipoFilaAntecedenteTrabajoAnterior)
       )
@@ -376,7 +367,12 @@ export default defineComponent({
         '/' +
         fichaPreocupacional.id
       const filename =
-        'ficha_preocupacional_' + fichaPreocupacional.id + '_' + Date.now()
+        'ficha_preocupacional_' +
+        fichaPreocupacional.id +
+        '_' +
+        fichaPreocupacional.empleado +
+        '_' +
+        Date.now()
       await imprimirArchivo(url, 'GET', 'blob', 'pdf', filename)
     }
 
@@ -385,65 +381,7 @@ export default defineComponent({
     const hidratarAptitudMedica = (aptitudMedica: AptitudMedica) =>
       fichaPreocupacional.aptitud_medica.hydrate(aptitudMedica)
     const hidratarExamenFisicoRegional = (examen: ExamenFisicoRegional[]) =>
-      (examenesFisicosRegionalesAuxiliar.value = examen) // fichaReintegro.examenes_fisicos_regionales = examen
-    // const hidratarExamenFisicoRegional = (examen: ExamenFisicoRegional[]) => fichaPreocupacional.examenes_fisicos_regionales = examen
-
-    const configurarColumnasAntecedenteTrabajoAnterior = async () => {
-      configuracionColumnasAntecedenteTrabajoAnteriorReactive.value = [
-        ...configuracionColumnasAntecedenteTrabajoAnterior
-      ]
-
-      console.log(listadosAuxiliares.tiposFactoresRiesgos)
-      await listadosAuxiliares.tiposFactoresRiesgos.forEach(
-        (tipo: TipoFactorRiesgo) => {
-          configuracionColumnasAntecedenteTrabajoAnteriorReactive.value.push({
-            name: tipo.id + '' ?? '',
-            field: tipo.id + '' ?? '',
-            label: !!tipo.nombre ? 'R.' + tipo.nombre : '',
-            align: 'left',
-            type: 'boolean',
-            editable: true
-          })
-        }
-      )
-
-      console.log(configuracionColumnasAntecedenteTrabajoAnteriorReactive.value)
-      mostrarTablaAntecedenteTrabajoAnteriorReactive.value = true
-    }
-
-    const configurarColumnasFrPuestoTrabajoActual = async () => {
-      // Columnas
-      configuracionColumnasFrPuestoTrabajoActualReactive.value = [
-        ...configuracionColumnasFrPuestoTrabajoActual
-      ]
-
-      await listadosAuxiliares.tiposFactoresRiesgos.forEach(
-        (tipo: TipoFactorRiesgo) => {
-          configuracionColumnasFrPuestoTrabajoActualReactive.value.push({
-            name: tipo.nombre ?? '',
-            field: tipo.nombre ?? '',
-            label: tipo.nombre ?? '',
-            align: 'left',
-            sortable: true,
-            type: 'select_multiple',
-            editable: true,
-            options: listadosAuxiliares.categoriasFactoresRiesgos
-              .filter(
-                (categoria: CategoriaFactorRiesgo) =>
-                  categoria.tipo_factor_riesgo === tipo.id
-              )
-              .map((categoria: CategoriaFactorRiesgo) => {
-                return {
-                  label: categoria.nombre,
-                  value: categoria.id
-                }
-              })
-          })
-        }
-      )
-
-      mostrarTablaFrPuestoTrabajoActualReactive.value = true
-    }
+      (examenesFisicosRegionalesAuxiliar.value = examen)
 
     const configurarFilaFrPuestoTrabajoActual = () => {
       listadosAuxiliares.tiposFactoresRiesgos.forEach(
@@ -465,6 +403,75 @@ export default defineComponent({
     /********
      * Hooks
      ********/
+    onBeforeModificar(() => {
+      fichaPreocupacional.registro_empleado_examen =
+        medicoStore.idRegistroEmpleadoExamen ?? null
+
+      fichaPreocupacional.habitos_toxicos =
+        listadosAuxiliares.habitos_toxicos.filter(
+          (resultado: ResultadoHabitoToxico) =>
+            resultado.cantidad ||
+            resultado.tiempo_consumo_meses ||
+            resultado.tiempo_abstinencia_meses
+        )
+
+      if (
+        examenesFisicosRegionalesAuxiliar.value !== undefined &&
+        examenesFisicosRegionalesAuxiliar.value.length > 0
+      ) {
+        console.log(
+          'examenesFisicosRegionalesAuxiliar.value',
+          examenesFisicosRegionalesAuxiliar.value.length
+        )
+
+        fichaPreocupacional.examenes_fisicos_regionales =
+          examenesFisicosRegionalesAuxiliar.value
+      }
+
+      // Antecedentes familiares
+      fichaPreocupacional.antecedentes_familiares = [
+        ...listadosAuxiliares.antecedentes_familiares.filter(
+          (antecedente: AntecedenteFamiliar) => antecedente.descripcion
+        )
+      ]
+
+      fichaPreocupacional.revisiones_actuales_organos_sistemas =
+        listadosAuxiliares.revisiones_actuales_organos_sistemas
+          .filter((rev: RevisionActualOrganoSistema) => rev.descripcion)
+          .map((rev: RevisionActualOrganoSistema) => {
+            return {
+              organo_id: rev.organo_id,
+              descripcion: rev.descripcion
+            }
+          })
+
+      fichaPreocupacional.antecedentes_empleos_anteriores =
+        fichaPreocupacional.antecedentes_empleos_anteriores.map(
+          (antecedente: AntecedenteTrabajoAnterior) => {
+            const riesgos: number[] = []
+            const newItem: AntecedenteTrabajoAnterior =
+              new AntecedenteTrabajoAnterior()
+
+            for (const key in antecedente) {
+              if (
+                antecedente.hasOwnProperty(key) &&
+                !['id', 'created_at', 'updated_at'].includes(key)
+              ) {
+                const value = antecedente[key]
+                if (typeof value === 'boolean' && value) {
+                  riesgos.push(parseInt(key))
+                } else {
+                  newItem[key] = value
+                }
+              }
+            }
+            // 5917
+            newItem['tipos_riesgos_ids'] = riesgos.length ? riesgos : []
+
+            return newItem
+          }
+        )
+    })
     onBeforeGuardar(() => {
       fichaPreocupacional.registro_empleado_examen =
         medicoStore.idRegistroEmpleadoExamen ?? null
@@ -477,10 +484,6 @@ export default defineComponent({
           (antecedente: AntecedenteFamiliar) => antecedente.descripcion
         )
       ]
-      /*.map((antecedente: AntecedenteFamiliar) => {
-                                                              antecedente.tipo_antecedente_familiar = antecedente.tipo_antecedente_familiar_id
-                                                              return antecedente
-                                                            })*/
 
       // resultados_examenes_preocupacionales
       fichaPreocupacional.examenes_realizados =
@@ -528,9 +531,9 @@ export default defineComponent({
         )
 
       /* fichaPreocupacional.antecedentes_empleos_anteriores = fichaPreocupacional.antecedentes_empleos_anteriores.map((antecedente: AntecedenteTrabajoAnterior) => {
-                                                      
-                                                              return antecedente
-                                                            }) */
+                                                                                                      
+                                                                                                              return antecedente
+                                                                                                            }) */
 
       fichaPreocupacional.antecedentes_empleos_anteriores =
         fichaPreocupacional.antecedentes_empleos_anteriores.map(
@@ -579,7 +582,6 @@ export default defineComponent({
       listadosAuxiliares.revisiones_actuales_organos_sistemas =
         listadosAuxiliares.revisiones_actuales_organos_sistemas.map(
           (revision: RevisionActualOrganoSistema) => {
-            console.log(revision)
             // console.log(revision)
             const antecedenteAux =
               fichaPreocupacional.revisiones_actuales_organos_sistemas.find(
@@ -617,12 +619,23 @@ export default defineComponent({
       fichaPreocupacional.antecedentes_empleos_anteriores =
         fichaPreocupacional.antecedentes_empleos_anteriores.map(
           (antecedente: AntecedenteTrabajoAnterior) => {
-            const riesgos = antecedente.tipos_riesgos_ids?.reduce(
-              (acc, tipo_riesgo_id: number) => {
-                acc[tipo_riesgo_id.toString()] = true
-                return acc
-              },
-              {}
+            // const riesgos = antecedente.tipos_riesgos_ids?.reduce(
+            //   (acc, tipo_riesgo_id: number) => {
+            //     acc[tipo_riesgo_id.toString()] = true
+            //     return acc
+            //   },
+            //   {}
+            // )
+            // listadosAuxiliares.tiposFactoresRiesgos
+            const riesgosSeleccionados = antecedente.tipos_riesgos_ids || []
+            // Crear objeto completo con todos los tipos de riesgo: true o false
+            const riesgos: Record<string, boolean> = {}
+
+            listadosAuxiliares.tiposFactoresRiesgos.forEach(
+              (tipo: TipoFactorRiesgo) => {
+                const id = tipo.id
+                riesgos[id.toString()] = riesgosSeleccionados.includes(id)
+              }
             )
 
             // Crear un nuevo objeto con los campos de riesgos y otros campos
@@ -630,7 +643,7 @@ export default defineComponent({
               ...antecedente,
               ...riesgos
             }
-            delete newItem.tipos_riesgos_ids // Eliminar el campo tipos_riesgos_ids del nuevo objeto
+            // delete newItem.tipos_riesgos_ids // Eliminar el campo tipos_riesgos_ids del nuevo objeto
 
             return newItem
           }
@@ -638,12 +651,12 @@ export default defineComponent({
 
       // listadosAuxiliares.revisiones_actuales_organos_sistemas = fichaPreocupacional.revisiones_actuales_organos_sistemas
       /*.map((rev: RevisionActualOrganoSistema) => {
-                                                              return {
-                                                                organo_id: rev.organo_id,
-                                                                organo: rev.organo,
-                                                                descripcion: rev.descripcion,
-                                                              }
-                                                            })*/
+                                                                                                              return {
+                                                                                                                organo_id: rev.organo_id,
+                                                                                                                organo: rev.organo,
+                                                                                                                descripcion: rev.descripcion,
+                                                                                                              }
+                                                                                                            })*/
       setTimeout(async () => {
         await refArchivo.value.listarArchivosAlmacenados(entidad.id)
       }, 1)
@@ -709,6 +722,15 @@ export default defineComponent({
     const quieroSubirArchivos = computed(
       () => refArchivo.value?.quiero_subir_archivos
     )
+    const btnEditarFicha = () => {
+      accion.value = acciones.editar
+    }
+    const btnCancelarEditarFicha = () => {
+      notificarAdvertencia(
+        'Recuerda que no se guardarán los cambios realizados'
+      )
+      accion.value = acciones.consultar
+    }
 
     return {
       v$,
@@ -754,7 +776,9 @@ export default defineComponent({
       configuracionColumnasAntecedenteTrabajoAnteriorReactive,
       mostrarMasculino: medicoStore.empleado?.genero === 'M',
       mostrarFemenino: medicoStore.empleado?.genero === 'F',
-      mostrarDescargarPdf: authenticationStore.esMedico
+      mostrarDescargarPdf: authenticationStore.esMedico,
+      btnEditarFicha,
+      btnCancelarEditarFicha
     }
   }
 })
