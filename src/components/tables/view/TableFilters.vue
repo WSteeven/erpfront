@@ -3,10 +3,11 @@
     <small
       class="bg-solid justify-between row items-center q-mb-sm q-pb-xs q-px-md border-callout-info"
     >
-      <span
+      <span style="color: #000;"
         ><q-icon
           name="bi-info-circle-fill"
-          color="info"
+          color="primary"
+
           size="sm"
           class="q-mr-sm"
         ></q-icon>
@@ -19,10 +20,10 @@
         no-caps
         dense
         color="primary"
-        @click="() => (verEjemploFiltrosAvanzados = true)" 
+        @click="() => (verEjemploFiltrosAvanzados = true)"
       >
         <q-icon name="bi-eye" class="q-mr-sm"></q-icon>
-        Ver ejemplo</q-btn 
+        Ver ejemplo</q-btn
       >
     </small>
 
