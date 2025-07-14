@@ -1,5 +1,6 @@
+import { ActividadBitacora } from './../modules/actividadBitacora/domain/ActividadBitacora';
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
-import { ActividadBitacora } from './ActividadBitacora'
+
 
 export class Bitacora extends EntidadAuditable {
     zona: number | null = null
