@@ -19,12 +19,14 @@ export const configuracionColumnasBitacora: ColumnConfig<Bitacora>[] = [
     field: 'fecha_hora_inicio_turno',
     label: 'Fecha y hora de inicio de turno',
     align: 'left',
+    type: 'date',
   },
   {
     name: 'fecha_hora_fin_turno',
     field: 'fecha_hora_fin_turno',
     label: 'Fecha y hora de fin de turno',
     align: 'left',
+    type: 'date',
   },
   {
     name: 'agente_turno',

@@ -7,6 +7,9 @@
     :accion1="btnRegistrarActividades"
     :accion2="btnFinalizarBitacora"
     :permitir-editar="false"
+    :puede-filtrar="true"
+
+
     paginate
     full
   >
