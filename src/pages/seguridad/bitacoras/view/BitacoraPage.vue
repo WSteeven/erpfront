@@ -19,6 +19,7 @@
         :tabsOptions="tabsOptions"
         regresar-principio
         :mostrarRegresar="false"
+        
       >
         <template #tab1>
           <callout
