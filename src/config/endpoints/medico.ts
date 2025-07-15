@@ -51,7 +51,7 @@ export const medico = {
   tipos_antecedentes_familiares: new Endpoint('medico/tipos-antecedentes-familiares'),
   identidades_generos: new Endpoint('medico/identidades-generos'),
   orientaciones_sexuales: new Endpoint('medico/orientaciones-sexuales'),
-  tipos_antecedentes: new Endpoint('medico/tipos-antecedentes'),
+  examenes_organos_reproductivos: new Endpoint('medico/examenes-organos-reproductivos'),
   fichas_aptitudes_imprimir: new Endpoint('medico/fichas-aptitudes/imprimir'),
   fichas_preocupacionales_imprimir: new Endpoint('medico/fichas-preocupacionales/imprimir'),
   fichas_periodicas_imprimir: new Endpoint('medico/fichas-periodicas/imprimir'),

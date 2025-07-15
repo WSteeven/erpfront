@@ -1,14 +1,9 @@
-import {
-    configuracionColumnasAntecedenteTrabajoAnterior
-} from 'medico/gestionarPacientes/modules/fichaPeriodicaPreocupacional/domain/configuracionColumnasAntecedenteTrabajoAnterior';
-import {TipoFactorRiesgo} from 'medico/gestionarPacientes/modules/fichaPeriodicaPreocupacional/domain/TipoFactorRiesgo';
-import {
-    configuracionColumnasFrPuestoTrabajoActual
-} from 'medico/gestionarPacientes/modules/fichaPeriodicaPreocupacional/domain/configuracionColumnasFrPuestoTrabajoActual';
-import {
-    CategoriaFactorRiesgo
-} from 'medico/gestionarPacientes/modules/fichaPeriodicaPreocupacional/domain/CategoriaFactorRiesgo';
-import {ref} from 'vue';
+import { configuracionColumnasAntecedenteTrabajoAnterior } from 'medico/gestionarPacientes/modules/fichaPeriodicaPreocupacional/domain/configuracionColumnasAntecedenteTrabajoAnterior'
+import { TipoFactorRiesgo } from 'medico/gestionarPacientes/modules/fichaPeriodicaPreocupacional/domain/TipoFactorRiesgo'
+import { configuracionColumnasFrPuestoTrabajoActual } from 'medico/gestionarPacientes/modules/fichaPeriodicaPreocupacional/domain/configuracionColumnasFrPuestoTrabajoActual'
+import { CategoriaFactorRiesgo } from 'medico/gestionarPacientes/modules/fichaPeriodicaPreocupacional/domain/CategoriaFactorRiesgo'
+import { ref } from 'vue'
+import { AntecedenteTrabajoAnterior } from 'medico/gestionarPacientes/modules/fichaPeriodica/domain/AntecedenteTrabajoAnterior'
 
 export function useFichaPreocupacional(medicoStore, listadosAuxiliares) {
 
@@ -78,12 +73,20 @@ export function useFichaPreocupacional(medicoStore, listadosAuxiliares) {
         mostrarTablaFrPuestoTrabajoActualReactive.value = true
     }
 
+    const transformarAntecedentesEmpleosAnteriores= (antecedentes: AntecedenteTrabajoAnterior[]): AntecedenteTrabajoAnterior[] =>{
+        return  antecedentes.map((antecedente)=>{
+            antecedente.tipos_riesgos_ids = antecedente.riesgos.map((v)=>v.tipo_riesgo_id)
+            return antecedente
+        })
+    }
+
     return {
         mostrarTablaAntecedenteTrabajoAnteriorReactive,mostrarTablaFrPuestoTrabajoActualReactive,
         configuracionColumnasFrPuestoTrabajoActualReactive,
         configuracionColumnasAntecedenteTrabajoAnteriorReactive,
         configurarColumnasAntecedenteTrabajoAnterior,
         configurarColumnasFrPuestoTrabajoActual,
+        transformarAntecedentesEmpleosAnteriores,
 
     }
 }

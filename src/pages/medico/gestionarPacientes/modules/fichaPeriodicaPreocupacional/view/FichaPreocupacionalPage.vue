@@ -1063,7 +1063,7 @@
                 ...configuracionColumnasFrPuestoTrabajoActualReactive,
                 accionesTabla
               ]"
-              :datos="fichaPreocupacional.fr_puestos_trabajos_actuales"
+                  :datos="fichaPreocupacional.fr_puestos_trabajos_actuales"
               :permitirConsultar="false"
               :permitirEliminar="false"
               :permitirEditar="false"
