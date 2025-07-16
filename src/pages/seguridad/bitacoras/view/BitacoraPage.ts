@@ -41,7 +41,6 @@ import { BitacoraController } from '../infraestructure/BitacoraController'
 import { Bitacora } from '../doman/Bitacora'
 import { TabOption } from 'components/tables/domain/TabOption'
 
-
 export default defineComponent({
   components: {
     MultiplePageLayout,
@@ -116,6 +115,7 @@ export default defineComponent({
     /*************
      * Variables
      *************/
+    const $q = useQuasar()
     const refActividades = ref()
     const mostrarSolicitarArchivoActividad = ref(false)
     const modales = new ComportamientoModalesBitacora()
@@ -194,6 +194,8 @@ export default defineComponent({
         })
       }
     }
+
+
 
     const btnAgregarActividad: CustomActionTable<ActividadBitacora> = {
       titulo: 'Agregar actividad',
@@ -283,6 +285,36 @@ export default defineComponent({
         }) //refActividades.value.consultarEnModal({ entidad })
       }
     }
+
+    const marcarRevisadoDesdeTabla = () => {
+      $q.dialog({
+        title: 'Revisión de bitácora',
+        message: 'Ingrese la retroalimentación del supervisor:',
+        prompt: {
+          model: '',
+          type: 'textarea'
+        },
+        cancel: true,
+        persistent: true
+      }).onOk(async retro => {
+        if (!retro?.trim()) {
+          notificarAdvertencia('Debe ingresar una retroalimentación.')
+          return
+        }
+
+        await editarParcial(bitacora.id!, {
+          revisado_por_supervisor: true,
+          retroalimentacion_supervisor: retro
+        })
+
+        bitacora.revisado_por_supervisor = true
+        bitacora.retroalimentacion_supervisor = retro?.trim()
+      })
+    }
+
+    const esSupervisor = computed(() =>
+      authenticationStore.user.roles.includes('SUPERVISOR DE GUARDIAS')
+    )
 
     /***************
      * Orquestador
@@ -415,6 +447,7 @@ export default defineComponent({
       recargarZonas,
       consultarPrendasPermitidas,
       guardarActividad,
+      marcarRevisadoDesdeTabla,
       listadoActividadBitacora,
       btnRegistrarActividades,
       btnFinalizarBitacora,
@@ -427,6 +460,7 @@ export default defineComponent({
       refListadoSeleccionable,
       criterioBusqueda,
       listado,
+      esSupervisor,
       listar,
       filtrar,
       aplicarFiltro,

@@ -8,8 +8,6 @@
     :accion2="btnFinalizarBitacora"
     :permitir-editar="false"
     :puede-filtrar="true"
-
-
     paginate
     full
   >
@@ -19,7 +17,6 @@
         :tabsOptions="tabsOptions"
         regresar-principio
         :mostrarRegresar="false"
-        
       >
         <template #tab1>
           <callout
@@ -291,6 +288,30 @@
                   placeholder="Opcional"
                 ></voice-input>
               </div>
+
+              <div
+                v-if="bitacora.revisado_por_supervisor"
+                class="col-12 q-mt-lg"
+              >
+                <q-separator class="q-my-md" />
+                <div class="text-bold q-mb-sm">
+                  <q-icon
+                    name="bi-chat-square-quote"
+                    class="q-mr-sm"
+                    color="teal"
+                  />
+                  Retroalimentación del supervisor
+                </div>
+
+                <q-input
+                  v-model="bitacora.retroalimentacion_supervisor"
+                  type="textarea"
+                  outlined
+                  autogrow
+                  dense
+                  disable
+                />
+              </div>
             </div>
           </q-form>
         </template>
@@ -364,22 +385,23 @@
       </multiple-page-layout>
     </template>
 
-    <!--  <template #custom-buttons>
+    <template #custom-buttons>
       <q-btn
-        v-if="tabsPage == 1 && bitacora.id"
-        color="teal"
-        label="Registrar actividades"
-        icon="bi-list"
-        @click="
-          () => {
-            listarActividadBitacora({ bitacora_id: bitacora.id })
-            tabsPage = '2'
-          }
+        v-if="
+          bitacora.id &&
+          accion === acciones.consultar &&
+          bitacora.fecha_hora_fin_turno &&
+          !bitacora.revisado_por_supervisor &&
+          esSupervisor
         "
+        color="green"
+        icon="bi-check"
+        label="Marcar Bitácora como revisada"
+        @click="marcarRevisadoDesdeTabla"
         no-caps
-        push
-      ></q-btn>
-    </template> -->
+        unelevated
+      />
+    </template>
 
     <template #modales>
       <essential-selectable-table
