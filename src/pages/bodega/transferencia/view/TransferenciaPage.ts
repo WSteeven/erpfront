@@ -270,10 +270,12 @@ export default defineComponent({
     )
 
     async function recargarSucursales() {
-      const sucursales = (
-        await new SucursalController().listar({ campos: 'id,lugar' })
+      const sucursales_obtenidas = (
+        await new SucursalController().listar({ campos: 'id,lugar',activo:1})
       ).result
-      LocalStorage.set('sucursales', JSON.stringify(sucursales))
+      LocalStorage.set('sucursales', JSON.stringify(sucursales_obtenidas))
+      listadosAuxiliares.sucursales = sucursales_obtenidas
+      sucursales.value = listadosAuxiliares.sucursales
     }
 
     return {

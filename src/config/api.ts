@@ -122,7 +122,6 @@ export const endpoints = {
   pedidos: new Endpoint('pedidos'),
   preingresos: new Endpoint('preingresos'),
   procesadores: new Endpoint('procesadores'),
-  prestamos: new Endpoint('prestamos'),
   productos: new Endpoint('productos'),
   productos_perchas: new Endpoint('productos-perchas'),
   sucursales: new Endpoint('sucursales'),

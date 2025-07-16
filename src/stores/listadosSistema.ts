@@ -19,7 +19,7 @@ export const useListadosSistemaStore = defineStore('listadosSistema', () => {
     const autorizaciones = (await new AutorizacionController().listar({ campos: 'id,nombre' })).result
     LocalStorage.set('autorizaciones', JSON.stringify(autorizaciones))
 
-    const sucursales = (await new SucursalController().listar({ campos: 'id,lugar,cliente_id' })).result
+    const sucursales = (await new SucursalController().listar({ campos: 'id,lugar,cliente_id', activo:1 })).result
     LocalStorage.set('sucursales', JSON.stringify(sucursales))
 
     const condiciones = (await new CondicionController().listar({ campos: 'id,nombre' })).result

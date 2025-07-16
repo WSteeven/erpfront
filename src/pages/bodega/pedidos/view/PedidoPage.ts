@@ -52,9 +52,13 @@ import { StatusEssentialLoading } from 'components/loading/application/StatusEss
 import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController'
 import { EtapaController } from 'pages/gestionTrabajos/proyectos/modules/etapas/infraestructure/EtapaController'
 import { Tarea } from 'pages/gestionTrabajos/tareas/domain/Tarea'
+import ErrorComponent from 'components/ErrorComponent.vue'
+import NoOptionComponent from 'components/NoOptionComponent.vue';
 
 export default defineComponent({
   components: {
+    NoOptionComponent,
+    ErrorComponent,
     TabLayoutFilterTabs2,
     EssentialTable,
     EssentialSelectableTable,
@@ -183,9 +187,7 @@ export default defineComponent({
       tareas,
       filtrarTareas,
       sucursales,
-      filtrarSucursales,
-      incidentes,
-      filtrarIncidentes
+      filtrarSucursales
     } = useFiltrosListadosSelects(listadosAuxiliares)
 
     //Obtener los listados
@@ -408,10 +410,12 @@ export default defineComponent({
     // }
 
     async function recargarSucursales() {
-      const sucursales = (
-        await new SucursalController().listar({ campos: 'id,lugar' })
+      const sucursales_obtenidas = (
+        await new SucursalController().listar({ campos: 'id,lugar', activo: 1 })
       ).result
-      LocalStorage.set('sucursales', JSON.stringify(sucursales))
+      LocalStorage.set('sucursales', JSON.stringify(sucursales_obtenidas))
+      listadosAuxiliares.sucursales = sucursales_obtenidas
+      sucursales.value = listadosAuxiliares.sucursales
     }
 
     function eliminar({ posicion }) {

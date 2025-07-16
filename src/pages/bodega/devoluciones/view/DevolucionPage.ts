@@ -373,7 +373,7 @@ export default defineComponent({
 
     async function recargarSucursales() {
       const sucursales = (
-        await new SucursalController().listar({ campos: 'id,lugar' })
+        await new SucursalController().listar({ campos: 'id,lugar', activo:1 })
       ).result
       LocalStorage.set('sucursales', JSON.stringify(sucursales))
       listadosAuxiliares.sucursales = sucursales
@@ -433,7 +433,7 @@ export default defineComponent({
     async function refrescarListados(nombreListado: listados) {
       switch (nombreListado) {
         case 'incidentes':
-          cargarVista(async () => {
+          await cargarVista(async () => {
             await obtenerListados({
               incidentes: {
                 controller: new IncidenteController(),
