@@ -35,6 +35,19 @@ const menuSeguridad: Ref<MenuOption[]> = computed(() => {
           icon: 'bi-list-ul',
           can: store.can('puede.acceder.tipos_eventos_bitacoras')
         },
+        {
+          title: 'Reportes',
+          icon: 'bi-graph-up',
+          can: true, //store.can('puede.ver.reportes_seguridad')
+          children: [
+            {
+              title: 'Alimentación',
+              link: 'reporte-alimentacion',
+              icon: 'bi-cash-coin',
+              can:true // store.can('puede.ver.reporte_alimentacion')
+            }
+          ]
+        }
       ],
     },
   ]

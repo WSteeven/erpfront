@@ -25,6 +25,12 @@ const rutasSeguridad: RouteRecordRaw[] = [
     component: () => import('seguridad/tiposEventosBitacoras/view/TipoEventoBitacoraPage.vue'),
     meta: { requiresAuth: true },
   },
+    {
+    path: '/reporte-alimentacion',
+    name: 'reporte-alimentacion',
+    component: () => import('seguridad/reportes/alimentacion/view/ReporteAlimentacionPage.vue'),
+    meta: { requiresAuth: false },
+  },
 ]
 
 export default rutasSeguridad
