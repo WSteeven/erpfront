@@ -188,14 +188,19 @@ export default defineComponent({
       color: 'positive',
       visible: ({ entidad }) => !entidad.fecha_hora_fin_turno,
       accion: ({ entidad }) => {
+        if (!listadoActividadBitacora.value.length) {
+          notificarAdvertencia(
+            'No puede finalizar la bitácora sin registrar ninguna actividad.'
+          )
+          return
+        }
+
         confirmar('¿Está seguro de finalizar la bitácora?', async () => {
           const fecha_hora_fin_turno = (await obtenerTiempoActual()).fecha_hora
           editarParcial(entidad.id, { fecha_hora_fin_turno })
         })
       }
     }
-
-
 
     const btnAgregarActividad: CustomActionTable<ActividadBitacora> = {
       titulo: 'Agregar actividad',
