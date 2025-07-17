@@ -200,4 +200,4 @@
   </q-layout>
 </template>
 
-<script src="./ReporteAlimentacionPage.ts"></script>
+<script src="./ReporteAlimentacionGuardiaPage.ts"></script>

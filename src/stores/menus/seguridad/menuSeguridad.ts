@@ -46,7 +46,7 @@ const menuSeguridad: Ref<MenuOption[]> = computed(() => {
               link: 'reporte-alimentacion',
               icon: 'bi-cash-coin',
               can:true
-              //can: store.can('puede.ver.reporte_alimentacion')
+              //can: store.can('puede.ver.reporte_alimentacion_guardias')
             }
           ]
         }

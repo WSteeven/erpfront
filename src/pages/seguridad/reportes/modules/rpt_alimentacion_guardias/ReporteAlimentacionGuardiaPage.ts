@@ -11,11 +11,17 @@ import { useCargandoStore } from 'stores/cargando'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
-import { obtenerFechaActual } from 'shared/utils'
+import {
+  imprimirArchivo,
+  obtenerFechaActual
+} from 'shared/utils'
 import { maskFecha } from 'config/utils'
 import { Bitacora } from 'pages/seguridad/bitacoras/doman/Bitacora'
 import { BitacoraController } from 'pages/seguridad/bitacoras/infraestructure/BitacoraController'
 import { ZonaController } from 'pages/seguridad/zonas/infraestructure/ZonaController'
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
+import { apiConfig, endpoints } from 'config/api'
+import { AxiosResponse } from 'axios'
 
 export default defineComponent({
   components: {
@@ -28,8 +34,18 @@ export default defineComponent({
 
     const cargando = ref(false)
 
+    const { notificarError, notificarAdvertencia } = useNotificaciones()
+
     const filtros = reactive({
       empleado: null,
+      zona: null,
+      jornada: null,
+      fecha_inicio: '',
+      fecha_fin: '',
+      accion: ''
+    })
+    const reporte = reactive({
+      empleado: 1,
       zona: null,
       jornada: null,
       fecha_inicio: '',
@@ -69,9 +85,44 @@ export default defineComponent({
       zonas.value = listadosAuxiliares.zonas
     })
 
-    function buscarReporte(accion: string) {
-      filtros.accion = accion
-      console.log('Buscar reporte alimentación con filtros:', filtros)
+    /**
+     * Funciones
+     */
+    async function buscarReporte(accion: string) {
+      try {
+        const axios = AxiosHttpRepository.getInstance()
+        let url = axios.getEndpoint(endpoints.bitacoras) + '/reportes'
+        const filename = 'reporte_alimentacion_guardia'
+        switch (accion) {
+          case 'excel':
+            url =
+              apiConfig.URL_BASE +
+              axios.getEndpoint(endpoints.bitacoras) +'/'+
+              '/reportes'
+            reporte.accion = 'excel'
+            await imprimirArchivo(url, 'POST', 'blob', 'xlsx', filename, reporte)
+            break
+          case 'pdf':
+            url =
+              apiConfig.URL_BASE +
+              axios.getEndpoint(endpoints.bitacoras) + '/' +
+              '/reportes'
+            reporte.accion = 'pdf'
+            await imprimirArchivo(url, 'POST', 'blob', 'pdf', filename, reporte)
+            break
+          default:
+            reporte.accion = ''
+            const response: AxiosResponse = await axios.post(url, reporte)
+            if (response.data.results) {
+              listado.value = response.data.results
+              if (response.data.results.length < 1)
+                notificarAdvertencia('No se obtuvieron resultados')
+            }
+        }
+      } catch (e) {
+        console.log(e)
+        notificarError('Error al obtener reporte')
+      }
     }
 
     return {
