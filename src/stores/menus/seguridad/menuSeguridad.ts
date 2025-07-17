@@ -38,15 +38,15 @@ const menuSeguridad: Ref<MenuOption[]> = computed(() => {
         {
           title: 'Reportes',
           icon: 'bi-graph-up',
-          //can: true,
-          can: store.can('puede.ver.reportes_seguridad'),
+          can: true,
+          //can: store.can('puede.ver.reportes_seguridad'),
           children: [
             {
               title: 'Alimentación',
               link: 'reporte-alimentacion',
               icon: 'bi-cash-coin',
-              //can:true
-              can: store.can('puede.ver.reporte_alimentacion')
+              can:true
+              //can: store.can('puede.ver.reporte_alimentacion')
             }
           ]
         }

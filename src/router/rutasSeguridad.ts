@@ -28,8 +28,8 @@ const rutasSeguridad: RouteRecordRaw[] = [
     {
     path: '/reporte-alimentacion',
     name: 'reporte-alimentacion',
-    component: () => import('seguridad/reportes/alimentacion/view/ReporteAlimentacionPage.vue'),
-    meta: { requiresAuth: true },
+    component: () => import('seguridad/reportes/modules/rpt_alimentacion/ReporteAlimentacionPage.vue'),
+    meta: { requiresAuth: false },
   },
 ]
 
