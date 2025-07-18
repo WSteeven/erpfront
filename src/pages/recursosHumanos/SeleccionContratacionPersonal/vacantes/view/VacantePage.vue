@@ -8,6 +8,7 @@
     :tabDefecto="tabActual"
     ajustarCeldas
     :accion1="btnCompartirVacante"
+    :accion2="btnVerPostulantes"
   >
     <template #formulario>
       <q-form @submit.prevent>

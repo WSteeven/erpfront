@@ -139,8 +139,8 @@
             </q-btn>
           </div>
           <div class="q-pa-md row ">
-            <div class="col-6 q-my-sm">
-              <small><strong>¿Quieres ser parte de JP CONSTRUCRED?</strong></small>
+            <div class="col-6 q-my-sm text-right ">
+              <small>¿Quieres ser parte de JP CONSTRUCRED?</small>
             </div>
             <div class="col-6">
               <!-- Botones -->
