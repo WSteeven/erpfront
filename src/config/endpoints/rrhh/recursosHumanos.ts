@@ -17,7 +17,7 @@ export const recursosHumanos = {
   permiso_empleado: new Endpoint('recursos-humanos/permiso_empleado'),
   licencia_empleado: new Endpoint('recursos-humanos/licencia_empleado'),
   prestamo_empresarial: new Endpoint('recursos-humanos/prestamo_empresarial'),
-  solicitud_prestamo_empresarial: new Endpoint('recursos-humanos/solicitud_prestamo_empresarial'),
+  solicitud_prestamo_empresarial: new Endpoint('recursos-humanos/solicitud-prestamo-empresarial'),
   periodo: new Endpoint('recursos-humanos/periodo'),
   anticipo: new Endpoint('recursos-humanos/anticipo'),
   rol_pago: new Endpoint('recursos-humanos/rol_pago'),
@@ -71,8 +71,8 @@ export const recursosHumanos = {
     'recursos-humanos/archivo_prestamo_quirorafario'
   ),
   archivo_rol_pago: new Endpoint('recursos-humanos/archivo_rol_pago'),
-  archivo_extencion_conyugal: new Endpoint(
-    'recursos-humanos/archivo_extencion_conyugal'
+  archivo_extension_conyugal: new Endpoint(
+    'recursos-humanos/archivo_extension_conyugal'
   ),
 
   descuentos_permiso: new Endpoint('recursos-humanos/descuentos_permiso'),
@@ -105,6 +105,7 @@ export const recursosHumanos = {
     'recursos-humanos/verificar-todos-roles-finalizadas'
   ),
   finalizar_rol_pago: new Endpoint('recursos-humanos/finalizar-rol-pago'),
+  activar_rol_pago: new Endpoint('recursos-humanos/activar-rol-pago/'),
   habilitar_empleado: new Endpoint('recursos-humanos/habilitar-empleado'),
   generar_username: new Endpoint('recursos-humanos/generar-username'),
 

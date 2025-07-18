@@ -5,10 +5,16 @@ import { ApiError } from '../../error/domain/ApiError'
 import { ResponseItem } from '../domain/ResponseItem'
 import { AxiosError, AxiosResponse } from 'axios'
 import { ParamsType } from 'config/types'
+import { useNotificaciones } from 'shared/notificaciones'
+import { useNotificacionStore } from 'stores/notificacion'
+import { useQuasar } from 'quasar'
+import { useCargandoStore } from 'stores/cargando'
+import {useAuthenticationStore} from 'stores/authentication';
 
 export class ConsultableRepository<T> {
   private readonly httpRepository = AxiosHttpRepository.getInstance()
   private readonly endpoint: Endpoint
+  private readonly notificaciones = useNotificaciones()
 
   constructor(endpoint: Endpoint) {
     this.endpoint = endpoint
@@ -31,14 +37,16 @@ export class ConsultableRepository<T> {
         response,
         result: response.data.modelo
       }
-    } catch (error: AxiosError) {
-      console.log('error en consultableRepsitory', error)
-      const axiosError = error as AxiosError
-      try {
-        throw new ApiError(axiosError)
-      } catch (e) {
-        console.log('error en el api error linea 35', e)
-        throw e
+    } catch (error: any) {
+      switch (error.status) {
+        case 401:
+          this.notificaciones.notificarError(error.response.data.message)
+          const store = useAuthenticationStore()
+              store.isUserLoggedIn()
+          break
+        default:
+          const axiosError = error as AxiosError
+          throw new ApiError(axiosError)
       }
     }
   }

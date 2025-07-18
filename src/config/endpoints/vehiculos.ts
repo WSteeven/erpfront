@@ -23,6 +23,8 @@ export const vehiculos = {
   mantenimientos_vehiculos: new Endpoint('vehiculos/mantenimientos-vehiculos'),
   reporte_conductor_licencia: new Endpoint('vehiculos/reporte-conductor-licencia'),
   reporte_combustibles: new Endpoint('vehiculos/reporte-combustibles'),
+  reporte_bitacoras: new Endpoint('vehiculos/reporte-bitacoras'),
+  reporte_mantenimientos: new Endpoint('vehiculos/reporte-mantenimientos'),
   reporte_seguros_vehiculos: new Endpoint('vehiculos/reporte-seguros-vehiculos'),
 
 }

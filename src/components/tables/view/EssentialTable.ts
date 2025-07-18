@@ -1,5 +1,6 @@
 // Dependencias
 import {
+  acciones,
   accionesActivos,
   autorizacionesTransacciones,
   estadosCondicionesId,
@@ -27,7 +28,7 @@ import { formatBytes, getVisibleColumns } from 'shared/utils'
 import { ColumnConfig } from '../domain/ColumnConfig'
 import { offset } from 'config/utils_tablas'
 import { ParamsType } from 'config/types'
-import { exportFile, useQuasar } from 'quasar'
+import { exportFile } from 'quasar'
 
 // Componentes
 import PrevisualizarTablaPdf from 'components/tables/view/PrevisualizarTablaPdf.vue'
@@ -43,9 +44,11 @@ import { VisibleModal } from '../application/VisibleModal'
 import CampoBoleano from './partials/CampoBoleano.vue'
 import EstadosPostulaciones from './EstadosPostulaciones.vue'
 import ErrorComponent from 'components/ErrorComponent.vue'
+import SelectorImagen from 'components/SelectorImagen.vue';
 
 export default defineComponent({
   components: {
+    SelectorImagen,
     ErrorComponent,
     PrevisualizarTablaPdf,
     EditarTablaModal,
@@ -61,7 +64,7 @@ export default defineComponent({
   },
   props: {
     // eslint-disable-next-line vue/require-valid-default-prop
-    v$: { type: Object, default: {}, required:false },
+    v$: { type: Object, default: {}, required: false },
     keyError: { type: String, required: false },
     identificador: { type: Number, default: -1 },
     referencia: Object as () => Ref,
@@ -115,7 +118,7 @@ export default defineComponent({
     },
     ajustarCeldas: {
       type: Boolean,
-      default: false
+      default: true
     },
     accion1: {
       type: Object as () => CustomActionTable,
@@ -270,69 +273,46 @@ export default defineComponent({
     'filtrar',
     'toggle-filtros',
     'guardar-fila',
+    'guardar-fila-nueva',
     'update:selected',
-    'fila-modificada'
+    'fila-modificada',
+    'cancelar-editar',
+    'cancelar-consultar'
   ],
   setup(props, { emit }) {
+    /************
+     * Variables
+     ************/
     // const grid = ref(false)
     const inFullscreen = ref(false)
     const fila = ref()
     const posicionFilaEditada = ref()
     const listado = ref()
     const refEditarModal = ref()
-
-    watchEffect(() => (listado.value = props.datos))
-
-    // Acciones tabla
-    const consultar = (data: object) => emit('consultar', data)
-    const editar = (data: any) => {
-      // const { entidad, posicion } = data
-
-      emit('editar', data)
-
-      if (props.permitirEditarModal) {
-        console.log(fila.value)
-        fila.value = data.entidad
-        console.log(fila.value)
-        posicionFilaEditada.value = data.posicion
-        // console.log(posicionFilaEditada.value)
-        refEditarModal.value.abrir()
-      }
-    }
-    const eliminar = (data: object) => {
-      //  console.log('evento de eliminar: ', data)
-      emit('eliminar', data)
-    }
-
-    function abrirModalEntidad(entidad, posicion) {
-      fila.value = entidad
-      posicionFilaEditada.value = posicion
-      refEditarModal.value.abrir()
-    }
-
-    function abrirModalEditar(data: ParamsType) {
-      if (props.entidad) {
-        const filaVacia: EntidadAuditable = new props.entidad()
-        if (data) filaVacia.hydrate(data)
-        fila.value = filaVacia
-        // console.log(fila.value)
-        posicionFilaEditada.value = listado.value.length
-        refEditarModal.value.abrir()
-      } else {
-        console.log('Debe pasar un objeto Instanciable a la tabla')
-      }
-    }
-
-    /************
-     * Variables
-     ************/
     const filter = ref()
     const selected = ref([])
     const visibleColumns = ref(getVisibleColumns(props.configuracionColumnas))
     const refTable = ref()
     const archivos = ref([])
+    const accion = ref()
 
-    // Observers
+    /************
+     * Observers
+     ************/
+    watchEffect(() => (listado.value = props.datos))
+    /* watchEffect(() => {
+      // const total = props.datos.length; // Cantidad total de elementos
+      
+
+      console.log(listado.value)
+      
+      listado.value = props.datos.map((item, index) => ({
+        ...listado.value[index],
+        table_index: index // Asigna un índice numérico a cada elemento
+      }));
+      console.log(listado.value)
+    }) */
+
     const seleccionar = () => {
       emit('selected', selected.value)
       // emit('update:selected', selected.value);
@@ -355,6 +335,63 @@ export default defineComponent({
     /************
      * Funciones
      ************/
+    // Acciones tabla
+    const consultar = (data: object) => emit('consultar', data)
+
+    const abrirModalNuevoRegistro = (data: any) => {
+      fila.value = data.entidad
+      accion.value = acciones.nuevo
+      refEditarModal.value.abrir()
+    }
+
+    const editar = (data: any) => {
+      emit('editar', data)
+
+      if (props.permitirEditarModal) {
+        fila.value = data.entidad
+        posicionFilaEditada.value = data.posicion
+        accion.value = acciones.editar
+        refEditarModal.value.abrir()
+      }
+    }
+
+    const consultarEnModal = (data: any) => {
+      fila.value = data.entidad
+      // accion.value = acciones.nuevo
+      refEditarModal.value.abrir({ accion: acciones.consultar })
+    }
+
+    // AQUI ME QUEDE
+    const cancelar = () => {
+      console.log(fila.value)
+      if (fila.value.id) emit('cancelar-consultar')
+      else emit('cancelar-editar', getIndex(fila.value))
+    }
+
+    const eliminar = (data: object) => {
+      //  console.log('evento de eliminar: ', data)
+      emit('eliminar', data)
+    }
+
+    function abrirModalEntidad(entidad, posicion) {
+      fila.value = entidad
+      posicionFilaEditada.value = posicion
+      refEditarModal.value.abrir()
+    }
+
+    function abrirModalEditar(data: ParamsType) {
+      if (props.entidad) {
+        const filaVacia: EntidadAuditable = new props.entidad()
+        if (data) filaVacia.hydrate(data)
+        fila.value = filaVacia
+        // console.log(fila.value)
+        // posicionFilaEditada.value = listado.value.length
+        refEditarModal.value.abrir()
+      } else {
+        console.log('Debe pasar un objeto Instanciable a la tabla')
+      }
+    }
+
     const verVisorArchivos = ({ posicion }) => {
       archivos.value = listado.value[posicion].archivos
       visibleModalVisorArchivos.abrir()
@@ -368,14 +405,35 @@ export default defineComponent({
       fila.value = null
     }
 
-    function guardarFila(data) {
-      // console.log(data)
-      const posicion = props.datos.findIndex((fila: any) => fila.id === data.id)
-      // console.log(posicion)
+    const getIndex = data => {
+      if (data.table_index)
+        return listado.value.findIndex(
+          (fila: any) => fila.table_index === data.table_index
+        )
+      else if (data.id)
+        return props.datos.findIndex((fila: any) => fila.id === data.id)
+      else return posicionFilaEditada.value
+    }
 
-      if (props.editarFilaLocal) listado.value[posicion] = data
+    function guardarNuevaFila(data) {
+      if (props.editarFilaLocal) listado.value.unshift(data)
+      emit('guardar-fila-nueva', data)
       limpiarFila()
+    }
+
+    function guardarCambiosFila(data) {
+      const posicion = getIndex(data)
+      console.log(posicion, data)
+      console.log(props.editarFilaLocal)
+      console.log(posicionFilaEditada.value)
+
+      const dataAnterior = listado.value[posicion]
+      const dataNueva = { ...dataAnterior, ...data }
+
+      console.log(dataNueva)
+      if (props.editarFilaLocal) listado.value[posicion] = dataNueva
       emit('guardar-fila', data)
+      limpiarFila()
     }
 
     const rows = computed(() => listado.value?.length - 1 ?? 0)
@@ -409,6 +467,20 @@ export default defineComponent({
       }
     }
 
+    function extraerDisable(
+      accion: CustomActionTable,
+      propsTable: any
+    ): boolean {
+      if (accion && accion.disable && accion.hasOwnProperty('disable')) {
+        return accion.disable({
+          entidad: propsTable.row,
+          posicion: propsTable.rowIndex
+        })
+      } else {
+        return accion !== undefined ?? false
+      }
+    }
+
     function extraerIcono(accion: CustomActionTable, propsTable: any) {
       return typeof accion?.icono === 'function'
         ? accion.icono({
@@ -422,7 +494,7 @@ export default defineComponent({
       sortBy: 'desc',
       descending: false,
       page: 1,
-      rowsPerPage: props.altoFijo ? 15 : 0
+      rowsPerPage: props.altoFijo ? 30 : 0
     })
 
     const pagesNumber = computed(() => {
@@ -542,7 +614,6 @@ export default defineComponent({
       refTable.value.clearSelection()
     }
 
-
     return {
       refTable,
       refEditarModal,
@@ -554,6 +625,7 @@ export default defineComponent({
       // grid,
       inFullscreen,
       editar,
+      consultarEnModal,
       consultar,
       eliminar,
       filter,
@@ -563,7 +635,8 @@ export default defineComponent({
       previsualizarPdf,
       fila,
       limpiarFila,
-      guardarFila,
+      guardarCambiosFila,
+      guardarNuevaFila,
       listado,
       accionesActivos,
       autorizacionesTransacciones,
@@ -595,6 +668,12 @@ export default defineComponent({
       verVisorArchivos,
       archivos,
       visibleModalVisorArchivos,
+      emitirFila: (accion, rowIndex: number) =>
+        accion(listado.value[rowIndex], rowIndex),
+      cancelar,
+      abrirModalNuevoRegistro,
+      accion,
+      extraerDisable
     }
   }
 })

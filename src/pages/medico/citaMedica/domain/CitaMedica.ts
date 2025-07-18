@@ -21,6 +21,10 @@ export class CitaMedica extends EntidadAuditable {
   hora_accidente: string | null
   fecha_cita_medica: string | null
   hora_cita_medica: string | null
+  certificado_alta: string | null
+  observaciones_alta: string | null
+  restricciones_alta: string | null
+  accidente: number | null
 
   constructor() {
     super()
@@ -44,6 +48,10 @@ export class CitaMedica extends EntidadAuditable {
     this.hora_accidente = null
     this.fecha_cita_medica = null
     this.hora_cita_medica = null
+    this.certificado_alta = null
+    this.observaciones_alta = null
+    this.restricciones_alta = null
+    this.accidente = null
   }
 }
 

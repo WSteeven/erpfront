@@ -2,7 +2,7 @@
 import { configuracionColumnasPedidos } from '../domain/configuracionColumnasPedidos'
 import { helpers, required, requiredIf } from 'shared/i18n-validators'
 import { useVuelidate } from '@vuelidate/core'
-import { defineComponent, ref } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
 import { useOrquestadorSelectorDetalles } from 'pages/bodega/pedidos/application/OrquestadorSelectorDetalles'
 
 //Componentes
@@ -19,7 +19,14 @@ import { Pedido } from '../domain/Pedido'
 
 import { configuracionColumnasProductosSeleccionadosDespachado } from '../domain/configuracionColumnasProductosSeleccionadosDespachado'
 import { configuracionColumnasProductosSeleccionados } from '../domain/configuracionColumnasProductosSeleccionados'
-import { acciones, autorizaciones, autorizacionesTransacciones, estados, estadosTransacciones, tabOptionsPedidos } from 'config/utils'
+import {
+  acciones,
+  autorizaciones,
+  autorizacionesTransacciones,
+  estados,
+  estadosTransacciones,
+  tabOptionsPedidos
+} from 'config/utils'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { configuracionColumnasDetallesModal } from '../domain/configuracionColumnasDetallesModal'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
@@ -29,7 +36,7 @@ import { useNotificaciones } from 'shared/notificaciones'
 import { fechaMayorActual } from 'shared/validadores/validaciones'
 import { useAuthenticationStore } from 'stores/authentication'
 import { usePedidoStore } from 'stores/pedido'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { ValidarListadoProductos } from '../application/validaciones/ValidarListadoProductos'
 import { LocalStorage, useQuasar } from 'quasar'
 import { ClienteController } from 'sistema/clientes/infraestructure/ClienteController'
@@ -45,16 +52,47 @@ import { StatusEssentialLoading } from 'components/loading/application/StatusEss
 import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController'
 import { EtapaController } from 'pages/gestionTrabajos/proyectos/modules/etapas/infraestructure/EtapaController'
 import { Tarea } from 'pages/gestionTrabajos/tareas/domain/Tarea'
-
+import ErrorComponent from 'components/ErrorComponent.vue'
+import NoOptionComponent from 'components/NoOptionComponent.vue';
 
 export default defineComponent({
-  components: { TabLayoutFilterTabs2, EssentialTable, EssentialSelectableTable, ModalesEntidad, SelectorImagen },
-  setup() {
+  components: {
+    NoOptionComponent,
+    ErrorComponent,
+    TabLayoutFilterTabs2,
+    EssentialTable,
+    EssentialSelectableTable,
+    ModalesEntidad,
+    SelectorImagen
+  },
+  emits: ['guardado'],
+  setup(props, { emit }) {
     const mixin = new ContenedorSimpleMixin(Pedido, new PedidoController())
-    const { entidad: pedido, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
-    const { setValidador, obtenerListados, cargarVista, listar } = mixin.useComportamiento()
-    const { onReestablecer, onBeforeConsultar, onConsultado } = mixin.useHooks()
-    const { confirmar, prompt, notificarCorrecto, notificarError, notificarAdvertencia } = useNotificaciones()
+    const {
+      entidad: pedido,
+      disabled,
+      filtros,
+      accion,
+      listadosAuxiliares,
+      listado
+    } = mixin.useReferencias()
+    const {
+      setValidador,
+      obtenerListados,
+      cargarVista,
+      listar,
+      consultar,
+      reestablecer
+    } = mixin.useComportamiento()
+    const { onReestablecer, onBeforeConsultar, onConsultado, onGuardado } =
+      mixin.useHooks()
+    const {
+      confirmar,
+      prompt,
+      notificarCorrecto,
+      notificarError,
+      notificarAdvertencia
+    } = useNotificaciones()
 
     // modales
     const modales = new ComportamientoModalesPedido()
@@ -89,16 +127,28 @@ export default defineComponent({
     const esActivosFijos = store.esActivosFijos
     const esRRHH = store.esRecursosHumanos
     const esGerente = store.esGerente
+    const enRutaInspeccionIncidente = computed(() =>
+      ['inspecciones', 'incidentes'].includes(useRoute().name?.toString() ?? '')
+    )
 
+    /********
+     * Hooks
+     ********/
+    onGuardado((id: number) => emit('guardado', id))
     onReestablecer(() => {
       soloLectura.value = false
       cargarDatosDefecto()
     })
-    onBeforeConsultar(() =>tablaRefrescada.value = false)
+    onBeforeConsultar(() => (tablaRefrescada.value = false))
     onConsultado(() => {
-      tablaRefrescada.value=true
+      tablaRefrescada.value = true
       empleados.value = listadosAuxiliares.empleados
-      if (accion.value === acciones.editar && (esCoordinador || esActivosFijos || store.user.id === pedido.per_autoriza_id)) {
+      if (
+        accion.value === acciones.editar &&
+        (esCoordinador ||
+          esActivosFijos ||
+          store.user.id === pedido.per_autoriza_id)
+      ) {
         soloLectura.value = true
       }
       obtenerProyectos()
@@ -122,17 +172,22 @@ export default defineComponent({
       {
         label: 'Todos los elementos',
         value: 'todos'
-      },
+      }
     ]
 
-
     const {
-      empleados, filtrarEmpleados,
-      clientes, filtrarClientes,
-      proyectos, filtrarProyectos,
-      etapas, filtrarEtapas,
-      tareas, filtrarTareas,
-      sucursales, filtrarSucursales,
+      empleados,
+      filtrarEmpleados,
+      clientes,
+      filtrarClientes,
+      proyectos,
+      filtrarProyectos,
+      etapas,
+      filtrarEtapas,
+      tareas,
+      filtrarTareas,
+      sucursales,
+      filtrarSucursales
     } = useFiltrosListadosSelects(listadosAuxiliares)
 
     //Obtener los listados
@@ -143,7 +198,7 @@ export default defineComponent({
           controller: new EmpleadoController(),
           params: {
             campos: 'id,nombres,apellidos,cargo_id',
-            estado: 1,
+            estado: 1
           }
         },
         clientes: {
@@ -151,8 +206,8 @@ export default defineComponent({
           params: {
             campos: 'id,razon_social',
             requiere_bodega: 1,
-            estado: 1,
-          },
+            estado: 1
+          }
         },
         sucursales: JSON.parse(LocalStorage.getItem('sucursales')!.toString())
       })
@@ -163,24 +218,35 @@ export default defineComponent({
       sucursales.value = listadosAuxiliares.sucursales
     })
 
-
     /*****************************************************************************************
      * Validaciones
      ****************************************************************************************/
     const reglas = {
       justificacion: { required },
-      observacion_aut: { requiredIfCoordinador: requiredIf(() => pedido.tiene_observacion_aut!) },
+      observacion_aut: {
+        requiredIfCoordinador: requiredIf(() => pedido.tiene_observacion_aut!)
+      },
       sucursal: { required },
       per_retira: { requiredIfCheck: requiredIf(() => pedido.retira_tercero) },
       responsable: {
-        requiredIfCoordinador: requiredIf(() => (esCoordinador || !esTecnico || esRRHH) && !pedido.para_cliente)
+        requiredIfCoordinador: requiredIf(
+          () => (esCoordinador || !esTecnico || esRRHH) && !pedido.para_cliente
+        )
       },
-      etapa: { requiredIf: requiredIf(() => { if (etapas.value) return etapas.value.length && pedido.proyecto }) },
+      etapa: {
+        requiredIf: requiredIf(() => {
+          if (etapas.value) return etapas.value.length && pedido.proyecto
+        })
+      },
       tarea: { requiredIfTarea: requiredIf(() => pedido.es_tarea!) },
       fecha_limite: {
         required: requiredIf(() => accion.value === acciones.nuevo),
-        fechaMenor: helpers.withMessage('La fecha límite debe ser mayor a la fecha actual', (fechaMayorActual)) && accion.value === acciones.nuevo
-      },
+        fechaMenor:
+          helpers.withMessage(
+            'La fecha límite debe ser mayor a la fecha actual',
+            fechaMayorActual
+          ) && accion.value === acciones.nuevo
+      }
     }
 
     const v$ = useVuelidate(reglas, pedido)
@@ -189,28 +255,36 @@ export default defineComponent({
     const validarListadoProductos = new ValidarListadoProductos(pedido)
     mixin.agregarValidaciones(validarListadoProductos)
 
-
     /*******************************************************************************************
      * Funciones
      *****************************************************************************************
      */
-     async function filtrarPedidos(tab:string){
+    async function filtrarPedidos(tab: string) {
       tabSeleccionado.value = tab
-      await listar({ estado: tab })
-      puedeEditar.value = (esCoordinador || esActivosFijos || store.esJefeTecnico || esGerente || store.esCompras || store.can('puede.autorizar.pedidos')) && tabSeleccionado.value === estadosTransacciones.pendiente
-     }
+      await listar({ estado: tab, paginate: true })
+      filtros.fields = { estado: tab }
+      puedeEditar.value =
+        (esCoordinador ||
+          esActivosFijos ||
+          store.esJefeTecnico ||
+          esGerente ||
+          store.esCompras ||
+          store.esRecursosHumanos ||
+          store.can('puede.autorizar.pedidos')) &&
+        tabSeleccionado.value === estadosTransacciones.pendiente
+    }
 
     function cargarDatosDefecto() {
       pedido.solicitante = store.user.id
       pedido.responsable = store.user.id
-
     }
+
     async function obtenerProyectos() {
       cargando.activar()
       const response = await new ProyectoController().listar({
         empleado_id: pedido.responsable,
         campos: 'id,nombre,codigo_proyecto',
-        finalizado: 0,
+        finalizado: 0
       })
       listadosAuxiliares.proyectos = response.result
       proyectos.value = response.result
@@ -231,6 +305,7 @@ export default defineComponent({
         if (tarea) pedido.tarea = null
       }
     }
+
     async function obtenerEtapasProyecto(limpiarEtapa, limpiarTarea) {
       cargando.activar()
       if (pedido.proyecto) {
@@ -239,12 +314,20 @@ export default defineComponent({
         // if (proyectoSeleccionado) {
         //   console.log(proyectoSeleccionado)
         // }
-        const response = await new EtapaController().listar({ etapas_empleado: 1, empleado_id: pedido.responsable, proyecto_id: pedido.proyecto })
+        const response = await new EtapaController().listar({
+          etapas_empleado: 1,
+          empleado_id: pedido.responsable,
+          proyecto_id: pedido.proyecto
+        })
         etapasResponsable.value = response.result
         if (response.result.length < 1) {
           await obtenerTareasEtapa(null, false)
         } else {
-          const response = await new TareaController().listar({ activas_empleado: 1, empleado_id: pedido.responsable, proyecto_id: pedido.proyecto })
+          const response = await new TareaController().listar({
+            activas_empleado: 1,
+            empleado_id: pedido.responsable,
+            proyecto_id: pedido.proyecto
+          })
           listadosAuxiliares.tareas = response.result
           tareas.value = response.result
         }
@@ -257,17 +340,30 @@ export default defineComponent({
       }
       cargando.desactivar()
     }
-    async function obtenerTareasEtapa(idEtapa: number | null, limpiarTarea = true) {
+
+    async function obtenerTareasEtapa(
+      idEtapa: number | null,
+      limpiarTarea = true
+    ) {
       cargando.activar()
       limpiarCampos(false, limpiarTarea)
-      const response = await new TareaController().listar({ activas_empleado: 1, proyecto_id: pedido.proyecto, etapa_id: idEtapa, empleado_id: pedido.responsable, campos: 'id,codigo_tarea,titulo', finalizado: 0 })
+      const response = await new TareaController().listar({
+        activas_empleado: 1,
+        proyecto_id: pedido.proyecto,
+        etapa_id: idEtapa,
+        empleado_id: pedido.responsable,
+        campos: 'id,codigo_tarea,titulo',
+        finalizado: 0
+      })
       listadosAuxiliares.tareas = response.result
       tareas.value = response.result
       cargando.desactivar()
     }
 
     async function obtenerDatosTareaSeleccionada() {
-      const tareaSeleccionada = listadosAuxiliares.tareas.filter((v: Tarea) => v.id == pedido.tarea)[0]
+      const tareaSeleccionada = listadosAuxiliares.tareas.filter(
+        (v: Tarea) => v.id == pedido.tarea
+      )[0]
       if (tareaSeleccionada) {
         // console.log(tareaSeleccionada)
         pedido.cliente_id = tareaSeleccionada.cliente_id
@@ -285,7 +381,10 @@ export default defineComponent({
       limpiarCampos(true, true)
       cargando.activar()
       if (pedido.responsable) {
-        const response = await new ProyectoController().listar({ empleado_id: pedido.responsable, finalizado: 0 })
+        const response = await new ProyectoController().listar({
+          empleado_id: pedido.responsable,
+          finalizado: 0
+        })
         listadosAuxiliares.proyectos = response.result
         proyectos.value = response.result
         await obtenerEtapasProyecto(false, false)
@@ -310,13 +409,19 @@ export default defineComponent({
     //   cargando.desactivar()
     // }
 
-
     async function recargarSucursales() {
-      const sucursales = (await new SucursalController().listar({ campos: 'id,lugar' })).result
-      LocalStorage.set('sucursales', JSON.stringify(sucursales))
+      const sucursales_obtenidas = (
+        await new SucursalController().listar({ campos: 'id,lugar', activo: 1 })
+      ).result
+      LocalStorage.set('sucursales', JSON.stringify(sucursales_obtenidas))
+      listadosAuxiliares.sucursales = sucursales_obtenidas
+      sucursales.value = listadosAuxiliares.sucursales
     }
+
     function eliminar({ posicion }) {
-      confirmar('¿Está seguro de continuar?', () => pedido.listadoProductos.splice(posicion, 1))
+      confirmar('¿Está seguro de continuar?', () =>
+        pedido.listadoProductos.splice(posicion, 1)
+      )
     }
 
     /*******************************************************************************************
@@ -338,15 +443,22 @@ export default defineComponent({
           const data: CustomActionPrompt = {
             titulo: 'Causa de anulación',
             mensaje: 'Ingresa el motivo de la anulación',
-            accion: async (data) => {
+            accion: async data => {
               try {
-                const { result } = await new CambiarEstadoPedido().anular(entidad.id, data)
-                if (result.autorizacion === autorizacionesTransacciones.cancelado) {
+                const { result } = await new CambiarEstadoPedido().anular(
+                  entidad.id,
+                  data
+                )
+                if (
+                  result.autorizacion === autorizacionesTransacciones.cancelado
+                ) {
                   notificarCorrecto('Pedido anulado con éxito')
                   listado.value.splice(posicion, 1)
                 }
               } catch (e: any) {
-                notificarError('No se pudo anular, debes ingresar un motivo para la anulación')
+                notificarError(
+                  'No se pudo anular, debes ingresar un motivo para la anulación'
+                )
               }
             }
           }
@@ -354,7 +466,15 @@ export default defineComponent({
         })
       },
       visible: ({ entidad }) => {
-        return (tabSeleccionado.value === autorizacionesTransacciones.aprobado || tabSeleccionado.value === estadosTransacciones.parcial) && ((entidad.per_autoriza_id === store.user.id || entidad.solicitante_id === store.user.id) && entidad.estado === estadosTransacciones.pendiente || store.esActivosFijos) || store.esAdministrador
+        return (
+          ((tabSeleccionado.value === autorizacionesTransacciones.aprobado ||
+            tabSeleccionado.value === estadosTransacciones.parcial) &&
+            (((entidad.per_autoriza_id === store.user.id ||
+              entidad.solicitante_id === store.user.id) &&
+              entidad.estado === estadosTransacciones.pendiente) ||
+              store.esActivosFijos)) ||
+          store.esAdministrador
+        )
       }
     }
     const botonMarcarComoCompletado: CustomActionTable = {
@@ -367,15 +487,21 @@ export default defineComponent({
           const data: CustomActionPrompt = {
             titulo: 'Observación',
             mensaje: 'Ingresa el motivo de marcar como completo el pedido',
-            accion: async (data) => {
+            accion: async data => {
               try {
-                const { result } = await new CambiarEstadoPedido().marcarCompletado(entidad.id, data)
+                const { result } =
+                  await new CambiarEstadoPedido().marcarCompletado(
+                    entidad.id,
+                    data
+                  )
                 if (result.estado === estadosTransacciones.completa) {
                   notificarCorrecto('Pedido marcado completado con éxito')
                   listado.value.splice(posicion, 1)
                 }
               } catch (e: any) {
-                notificarError('No se pudo completar el pedido, debes ingresar un motivo para la anulación')
+                notificarError(
+                  'No se pudo completar el pedido, debes ingresar un motivo para la anulación'
+                )
               }
             }
           }
@@ -383,7 +509,11 @@ export default defineComponent({
         })
       },
       visible: () => {
-        return tabSeleccionado.value === estadosTransacciones.parcial && store.esBodeguero && store.esCoordinadorBodega
+        return (
+          tabSeleccionado.value === estadosTransacciones.parcial &&
+          store.esBodeguero &&
+          store.esCoordinadorBodega
+        )
       }
     }
     const botonEditarCantidad: CustomActionTable = {
@@ -395,7 +525,7 @@ export default defineComponent({
           mensaje: 'Ingresa la cantidad',
           tipo: 'number',
           defecto: pedido.listadoProductos[posicion].cantidad,
-          accion: (data) => pedido.listadoProductos[posicion].cantidad = data,
+          accion: data => (pedido.listadoProductos[posicion].cantidad = data)
         }
         prompt(data)
       },
@@ -411,7 +541,11 @@ export default defineComponent({
         pedidoStore.pedido = entidad
         router.push('transacciones-egresos')
       },
-      visible: ({ entidad }) => (tabSeleccionado.value == 'APROBADO' || tabSeleccionado.value == 'PARCIAL') && (esBodeguero||store.esBodegueroTelconet) && entidad.estado != estadosTransacciones.completa
+      visible: ({ entidad }) =>
+        (tabSeleccionado.value == 'APROBADO' ||
+          tabSeleccionado.value == 'PARCIAL') &&
+        (esBodeguero || store.esBodegueroTelconet) &&
+        entidad.estado != estadosTransacciones.completa
     }
     const botonCorregir: CustomActionTable = {
       titulo: 'Corregir pedido',
@@ -421,7 +555,11 @@ export default defineComponent({
         pedidoStore.pedido = entidad
         modales.abrirModalEntidad('CorregirPedidoPage')
       },
-      visible: ({ entidad }) => (tabSeleccionado.value == 'APROBADO' || tabSeleccionado.value == 'PARCIAL') && (esBodeguero || entidad.per_autoriza_id == store.user.id) && entidad.estado != estadosTransacciones.completa
+      visible: ({ entidad }) =>
+        (tabSeleccionado.value == 'APROBADO' ||
+          tabSeleccionado.value == 'PARCIAL') &&
+        (esBodeguero || entidad.per_autoriza_id == store.user.id) &&
+        entidad.estado != estadosTransacciones.completa
     }
     const botonImprimir: CustomActionTable = {
       titulo: 'Imprimir',
@@ -431,23 +569,35 @@ export default defineComponent({
         pedidoStore.idPedido = entidad.id
         await pedidoStore.imprimirPdf()
       },
-      visible: () => tabSeleccionado.value == 'APROBADO' || tabSeleccionado.value == 'PARCIAL' || tabSeleccionado.value == 'COMPLETA'
+      visible: () =>
+        tabSeleccionado.value == 'APROBADO' ||
+        tabSeleccionado.value == 'PARCIAL' ||
+        tabSeleccionado.value == 'COMPLETA'
     }
 
-
-
     return {
-      mixin, pedido, disabled, accion, v$, acciones,
+      mixin,
+      pedido,
+      disabled,
+      accion,
+      v$,
+      acciones,
       configuracionColumnas: configuracionColumnasPedidos,
       tablaRefrescada,
 
       //listados y filtros
-      clientes, filtrarClientes,
-      proyectos, filtrarProyectos,
-      etapas, filtrarEtapas,
-      tareas, filtrarTareas,
-      sucursales, filtrarSucursales,
-      empleados, filtrarEmpleados,
+      clientes,
+      filtrarClientes,
+      proyectos,
+      filtrarProyectos,
+      etapas,
+      filtrarEtapas,
+      tareas,
+      filtrarTareas,
+      sucursales,
+      filtrarSucursales,
+      empleados,
+      filtrarEmpleados,
       estados,
       autorizaciones,
 
@@ -459,7 +609,6 @@ export default defineComponent({
       limpiarProducto,
       seleccionarProducto,
       configuracionColumnasDetallesModal,
-
 
       //tabla
       configuracionColumnasProductosSeleccionados,
@@ -478,14 +627,22 @@ export default defineComponent({
 
       //flags
       soloLectura,
-      all, only_sucursal, only_cliente_tarea,
-      group, options_groups,
+      all,
+      only_sucursal,
+      only_cliente_tarea,
+      group,
+      options_groups,
 
       //Tabs
       tabOptionsPedidos,
       tabSeleccionado,
       puedeEditar,
-      esCoordinador, esCoordinadorBackup: store.esCoordinadorBackup, esBodeguero, esTecnico, esActivosFijos, esRRHH,
+      esCoordinador,
+      esCoordinadorBackup: store.esCoordinadorBackup,
+      esBodeguero,
+      esTecnico,
+      esActivosFijos,
+      esRRHH,
 
       obtenerProyectosTareasTecnico,
       obtenerEtapasProyecto,
@@ -508,10 +665,11 @@ export default defineComponent({
       checkEsTarea(val) {
         if (val) {
           if (!pedido.responsable) {
-            notificarAdvertencia('Debes seleccionar primero un empleado (técnico) responsable')
+            notificarAdvertencia(
+              'Debes seleccionar primero un empleado (técnico) responsable'
+            )
             pedido.es_tarea = false
-          }
-          else obtenerProyectos()
+          } else obtenerProyectos()
         } else {
           pedido.tarea = null
         }
@@ -520,12 +678,14 @@ export default defineComponent({
       //Filtros
       ordenarLista,
 
-      onRowClick: (row) => alert(`${row.name} clicked`),
+      onRowClick: row => alert(`${row.name} clicked`),
       obtenerDatosTareaSeleccionada,
 
       filtrarPedidos,
       recargarSucursales,
-
+      enRutaInspeccionIncidente,
+      consultar,
+      reestablecer
     }
   }
 })

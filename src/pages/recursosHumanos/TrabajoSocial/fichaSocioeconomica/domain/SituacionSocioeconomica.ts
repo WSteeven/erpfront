@@ -14,11 +14,15 @@ export class SituacionSocioeconomica extends EntidadAuditable {
   cantidad_tarjetas_credito: number | null
   vehiculo: string | null
   tiene_terreno: boolean
+  especificacion_terreno: string | null
   tiene_bienes: boolean
+  especificacion_bienes: string | null
   tiene_ingresos_adicionales: boolean
-  ingresos_adicionales: number|null
+  especificacion_ingresos_adicionales: string | null
+  ingresos_adicionales: number | null
 
   apoya_familiar_externo: boolean
+  valor_apoyo_familiar_externo: string | null
   familiar_externo_apoyado: string | null
 
   constructor() {
@@ -36,12 +40,15 @@ export class SituacionSocioeconomica extends EntidadAuditable {
     this.cantidad_tarjetas_credito = null
     this.vehiculo = null
     this.tiene_terreno = null
+    this.especificacion_terreno = null
     this.tiene_bienes = null
+    this.especificacion_bienes = null
     this.tiene_ingresos_adicionales = false
+    this.especificacion_ingresos_adicionales = null
     this.ingresos_adicionales = null
 
     this.apoya_familiar_externo = false
+    this.valor_apoyo_familiar_externo =null
     this.familiar_externo_apoyado = null
-
   }
 }

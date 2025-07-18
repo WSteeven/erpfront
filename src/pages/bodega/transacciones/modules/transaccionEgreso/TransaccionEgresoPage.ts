@@ -48,12 +48,17 @@ import { usePedidoStore } from 'stores/pedido'
 
 import { useTransferenciaStore } from 'stores/transferencia'
 import { ValidarListadoProductosEgreso } from './application/validaciones/ValidarListadoProductosEgreso'
-import { limpiarListado, ordenarLista, ordernarListaString } from 'shared/utils'
+import {
+  limpiarListado,
+  ordenarClientesPorBodeguero,
+  ordenarLista,
+  ordenarSucursalesPorBodeguero,
+  ordernarListaString
+} from 'shared/utils'
 import { useInventarioStore } from 'stores/inventario'
 import { useCargandoStore } from 'stores/cargando'
 import { Sucursal } from 'pages/administracion/sucursales/domain/Sucursal'
 import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
-import { Cliente } from 'sistema/clientes/domain/Cliente'
 import { ComportamientoModalesEmpleado } from 'pages/recursosHumanos/empleados/application/ComportamientoModalesEmpleado'
 import { useEmpleadoStore } from 'stores/empleado'
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
@@ -63,6 +68,11 @@ import { TareasEmpleadoController } from 'pages/gestionTrabajos/tareas/infraestr
 import { EtapaController } from 'pages/gestionTrabajos/proyectos/modules/etapas/infraestructure/EtapaController'
 import { ComportamientoModalesTransaccionEgreso } from './application/ComportamientoModalesGestionarEgresos'
 import { empresas } from 'config/utils/sistema'
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
+import { Inventario } from 'pages/bodega/inventario/domain/Inventario'
+import { Condicion } from 'pages/administracion/condiciones/domain/Condicion'
+import { Motivo } from 'pages/administracion/motivos/domain/Motivo'
+import { Tarea } from 'tareas/domain/Tarea'
 
 export default defineComponent({
   name: 'EgresoPage',
@@ -123,10 +133,6 @@ export default defineComponent({
     const usuarioLogueado = store.user
     const esBodeguero = store.esBodeguero
     const esCoordinador = store.esCoordinador
-    const rolSeleccionado =
-      store.user.roles.filter(
-        v => v.indexOf('BODEGA') > -1 || v.indexOf('COORDINADOR') > -1
-      ).length > 0
 
     const soloLectura = ref(false)
     const puedeEditarCantidad = ref(true)
@@ -151,7 +157,7 @@ export default defineComponent({
       tareas,
       filtrarTareas,
       sucursales,
-      filtrarSucursales
+      filtrarSucursalesPorBodeguero
     } = useFiltrosListadosSelects(listadosAuxiliares)
 
     cargarVista(async () => {
@@ -181,6 +187,14 @@ export default defineComponent({
         transaccion.solicitante = pedidoStore.pedido.solicitante_id
         transaccion.sucursal = pedidoStore.pedido.sucursal_id
       }
+
+      configuracionColumnasInventarios.find(
+        (item: ColumnConfig<Inventario>) => item.field == 'condiciones'
+      )!.options = JSON.parse(
+        LocalStorage.getItem('condiciones')!.toString()
+      ).map((v: Condicion) => {
+        return { label: v.nombre }
+      })
     })
 
     //hooks
@@ -240,12 +254,12 @@ export default defineComponent({
       },
       tarea: { requiredIfTarea: requiredIf(transaccion.es_tarea) },
       responsable: { required },
-      autorizacion: {
-        requiredIfCoordinador: requiredIf(
-          esCoordinador && !store.esBodegueroTelconet
-        ),
-        requiredIfEsVisibleAut: requiredIf(false)
-      },
+      // autorizacion: {
+      //   requiredIfCoordinador: requiredIf(
+      //     esCoordinador && !store.esBodegueroTelconet
+      //   ),
+      //   requiredIfEsVisibleAut: requiredIf(false)
+      // },
       observacion_aut: {
         requiredIfObsAutorizacion: requiredIf(false)
       },
@@ -270,7 +284,7 @@ export default defineComponent({
 
     function filtrarTransacciones(tab: string) {
       tabDefecto.value = tab
-      listar({ estado: tab }) //, paginate: paginate })
+      listar({ estado: tab, paginate: paginate })
 
       filtros.fields = { estado: tab }
     }
@@ -280,7 +294,7 @@ export default defineComponent({
       icono: 'bi-pencil-square',
       color: 'secondary',
       accion: async ({ entidad }) => {
-        console.log('diste clic en botonEditarEgreso', tabDefecto.value)
+        // console.log('diste clic en botonEditarEgreso', tabDefecto.value)
         transaccionStore.tab = tabDefecto.value
         transaccionStore.idTransaccion = entidad.id
         await transaccionStore.showPreviewEgreso()
@@ -358,13 +372,19 @@ export default defineComponent({
         )
       },
       visible: ({ entidad }) => {
-        console.log(entidad)
+        const motivosQueNoTienenResponsable = [
+          motivosTransaccionesBodega.venta,
+          motivosTransaccionesBodega.destruccion,
+          // motivosTransaccionesBodega.egresoTransferenciaBodegas,
+          motivosTransaccionesBodega.egresoLiquidacionMateriales,
+            motivosTransaccionesBodega.egresoAjusteRegularizacion,
+          motivosTransaccionesBodega.robo
+        ]
         return (
           store.can('puede.anular.egresos') &&
-          ((entidad.estado === estadosTransacciones.completa &&
-            entidad.estado_comprobante == estadosTransacciones.pendiente) ||
-            (entidad.estado === estadosTransacciones.completa &&
-              entidad.motivo === motivosTransaccionesBodega.venta))
+          ((entidad.estado === estadosTransacciones.completa && entidad.estado_comprobante == estadosTransacciones.pendiente) || //false
+            (entidad.estado === estadosTransacciones.completa && motivosQueNoTienenResponsable.includes(entidad.motivo))
+          )
         )
       }
     }
@@ -390,7 +410,7 @@ export default defineComponent({
         await cargarDatosPedido()
       } catch (error) {
         notificarError(error + '')
-        console.log(error)
+        // console.log(error)
         //En esta seccion se limpian los campos previamente llenados
         limpiarTransaccion()
         limpiarProducto()
@@ -456,7 +476,8 @@ export default defineComponent({
       transaccion.cliente = Number.isInteger(pedidoStore.pedido.cliente)
         ? pedidoStore.pedido.cliente
         : pedidoStore.pedido.cliente_id
-      transaccion.observacion_aut = pedidoStore.pedido.observacion_aut ?? pedidoStore.pedido.observacion_est
+      transaccion.observacion_aut =
+        pedidoStore.pedido.observacion_aut ?? pedidoStore.pedido.observacion_est
       listadoPedido.value = [
         ...pedidoStore.pedido.listadoProductos.filter(
           v => v.cantidad != v.despachado
@@ -476,7 +497,7 @@ export default defineComponent({
           ? pedidoStore.pedido.tarea
           : pedidoStore.pedido.tarea_id
         if (transaccion.tarea) await obtenerTareas()
-        obtenerDatosTareaSeleccionada(transaccion.tarea)
+        obtenerDatosTareaSeleccionada(transaccion.tarea!)
       }
       //copia el listado de productos del pedido en la transaccion, filtrando los productos pendientes de despachar
       transaccion.listadoProductosTransaccion = Array.from(
@@ -489,7 +510,7 @@ export default defineComponent({
         v => (v.cantidad = buscarCantidadPendienteEnPedido(v.id))
       )
       const detalles_ids = listadoPedido.value.map(v => v.id)
-      console.log(detalles_ids)
+      // console.log(detalles_ids)
       const data = {
         detalles: detalles_ids,
         sucursal_id: transaccion.sucursal,
@@ -513,15 +534,15 @@ export default defineComponent({
         if (cantidadPendiente) {
           if (cantidadPendiente <= v.cantidad) {
             v.cantidad = cantidadPendiente
-            console.log('hay más en inventario')
-          } else {
-            console.log('hay menos en inventario', v.detalle_id, v.cantidad)
+            // console.log('hay más en inventario')
+          // } else {
+            // console.log('hay menos en inventario', v.detalle_id, v.cantidad)
           }
         }
       })
     }
 
-    function seleccionarClientePropietario(val) {
+    function seleccionarClientePropietario(val: number) {
       const sucursalSeleccionada = sucursales.value.filter(
         (v: Sucursal) => v.id === val
       )
@@ -552,7 +573,7 @@ export default defineComponent({
      * @param detalle detalle_id del pedido
      * @returns int el resultado de la cantidad solicitada menos la cantidad despachada
      */
-    function buscarCantidadPendienteEnPedido(detalle) {
+    function buscarCantidadPendienteEnPedido(detalle: number) {
       const fila = pedidoStore.pedido.listadoProductos.filter(
         v => v.id === detalle
       )
@@ -658,25 +679,27 @@ export default defineComponent({
     tareas.value = listadosAuxiliares.tareas
     clientes.value = listadosAuxiliares.clientes
 
-    function obtenerDatosTareaSeleccionada(val) {
+    function obtenerDatosTareaSeleccionada(val: number) {
       const opcion_encontrada = listadosAuxiliares.tareas.filter(
-        v => v.id == val || v.codigo_tarea == val
+        (v: Tarea) => v.id == val || v.codigo_tarea == val.toString()
       )
-      console.log(opcion_encontrada)
+      // console.log(opcion_encontrada)
       transaccion.cliente = opcion_encontrada[0]['cliente_id']
       transaccion.tarea = opcion_encontrada[0]['id']
       transaccion.proyecto = opcion_encontrada[0]['proyecto_id']
     }
 
     /* function filtroSolicitante(val){
-        const opcion_encontrada = listadosAuxiliares.empleados.filter((v)=>v.id===val)
-    } */
+            const opcion_encontrada = listadosAuxiliares.empleados.filter((v)=>v.id===val)
+        } */
 
     async function recargarSucursales() {
-      const sucursales = (
-        await new SucursalController().listar({ campos: 'id,lugar,cliente_id' })
+      const sucursales_obtenidas = (
+        await new SucursalController().listar({ campos: 'id,lugar,cliente_id' , activo:1})
       ).result
-      LocalStorage.set('sucursales', JSON.stringify(sucursales))
+      LocalStorage.set('sucursales', JSON.stringify(sucursales_obtenidas))
+      listadosAuxiliares.sucursales = sucursales_obtenidas
+      sucursales.value = listadosAuxiliares.sucursales
     }
 
     async function infoEmpleado(id: number) {
@@ -732,7 +755,7 @@ export default defineComponent({
       tareas,
       filtrarTareas,
       sucursales,
-      filtrarSucursales,
+      filtrarSucursales: filtrarSucursalesPorBodeguero,
 
       //stores
       pedidoStore,
@@ -756,9 +779,9 @@ export default defineComponent({
       obtenerDatosTareaSeleccionada,
 
       //filtros
-      motivoSeleccionado(val) {
+      motivoSeleccionado(val: number) {
         const motivoSeleccionado = listadosAuxiliares.motivos.filter(
-          v => v.id === val
+          (v: Motivo) => v.id === val
         )[0]
         transaccion.aviso_liquidacion_cliente = [
           motivosTransaccionesBodega.destruccion,
@@ -773,19 +796,19 @@ export default defineComponent({
           motivosTransaccionesBodega.egresoTransferenciaBodegas
       },
 
-      checkRetiraOtro(val) {
+      checkRetiraOtro(val: any) {
         if (!val) {
           // transaccion.per_retira = store.user.id
           transaccion.per_retira = null
         }
       },
 
-      checkPedido(val) {
+      checkPedido(val: any) {
         if (!val) {
           limpiarTransaccion()
         }
       },
-      checkTarea(val) {
+      checkTarea(val: any) {
         if (val) {
           if (!transaccion.responsable) {
             notificarAdvertencia(
@@ -828,7 +851,6 @@ export default defineComponent({
       configuracionColumnasProductos,
 
       //rol
-      rolSeleccionado,
       esBodeguero,
       esBodegueroTelconet: store.esBodegueroTelconet,
       store,
@@ -847,28 +869,10 @@ export default defineComponent({
 
       //ordenacion de listas
       ordenarClientes() {
-        if (store.esBodegueroTelconet)
-          clientes.value = clientes.value.filter(
-            (v: Cliente) => v.razon_social!.indexOf('TELCONET') > -1
-          )
-        else
-          clientes.value.sort((a: Cliente, b: Cliente) =>
-            ordernarListaString(a.razon_social!, b.razon_social!)
-          )
+        ordenarClientesPorBodeguero(clientes, store.esBodegueroTelconet)
       },
       ordenarSucursales() {
-        if (store.esBodegueroTelconet) {
-          const sucursalesTelconet = sucursales.value.filter(
-            (v: Sucursal) => v.lugar!.indexOf('TELCONET') > -1
-          )
-          sucursales.value = sucursalesTelconet.sort(
-            (a: Sucursal, b: Sucursal) =>
-              ordernarListaString(a.lugar!, b.lugar!)
-          )
-        } else
-          sucursales.value.sort((a: Sucursal, b: Sucursal) =>
-            ordernarListaString(a.lugar!, b.lugar!)
-          )
+        ordenarSucursalesPorBodeguero(sucursales, store.esBodegueroTelconet)
       },
       ordenarLista,
       existeItemArmaFuego,

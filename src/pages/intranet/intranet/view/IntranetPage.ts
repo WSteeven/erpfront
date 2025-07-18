@@ -1,7 +1,9 @@
+import { Capacitor } from '@capacitor/core';
 //Dependencies
 import relativeTime from 'dayjs/plugin/relativeTime'
 import es from 'dayjs/locale/es'
 import dayjs from 'dayjs'
+import { PushNotifications } from '@capacitor/push-notifications'
 
 import { useAuthenticationStore } from 'stores/authentication'
 import loginJson from 'src/assets/lottie/welcome.json'
@@ -69,6 +71,14 @@ export default defineComponent({
   },
 
   setup() {
+    const tabsOptions = {
+      NOTICIAS: 'Noticias',
+      MIS_MODULOS: 'Mis módulos',
+      DEPARTAMENTOS: 'Departamentos',
+      EVENTOS: 'Eventos',
+      AREA_PERSONAL: 'Área personal',
+    }
+    const tabs = ref(tabsOptions.NOTICIAS)
     const departamentos: Ref<Departamento[]> = ref([])
     const departamentoSeleccionado = 1
     const empleados: Ref<Empleado[]> = ref([])
@@ -76,6 +86,7 @@ export default defineComponent({
     const usuarios = 20
     const carousel_noticias = ref(0)
     const carousel_vacantes = ref(0)
+    const carousel_extensiones = ref(0)
     const activeTab = ref(0)
 
     const modalNoticia = ref(false)
@@ -85,7 +96,7 @@ export default defineComponent({
     const noticiaCompleta = ref<Noticia | null>(null)
 
     //solicitudes
-    const { notificarError } = useNotificaciones()
+    const { notificarError, notificarInformacion } = useNotificaciones()
     const tiposSolicitudes = ref([
       { label: 'Permisos', value: 'permiso' },
       { label: 'Licencias', value: 'licencias' },
@@ -294,15 +305,15 @@ export default defineComponent({
         id: 1,
         name: 'Instructivos',
         icon: 'fa-solid fa-book-journal-whills',
-        link: 'https://drive.google.com/drive/folders/1Zv3eTjramxByFRht-L5Gz_nrulgFE32V?usp=sharing_eip_m&ts=64386770',
-        color: '#FF5733'
+        link: 'https://drive.google.com/drive/folders/1ILsatqtyrkV5tfofM2cTinLOfhIQMO-h?usp=drive_link',
+        color: 'teal-8'
       },
       {
         id: 2,
         name: 'Reglamentos y Normativas',
         icon: 'fa-solid fa-book-bookmark',
-        link: 'https://drive.google.com/drive/folders/1Zv3eTjramxByFRht-L5Gz_nrulgFE32V?usp=sharing_eip_m&ts=64386770',
-        color: '#581845'
+        link: 'https://drive.google.com/drive/folders/1k7WjBVUbYf4FY5wX0xoUP8r5gvWNA64e?usp=sharing',
+        color: 'teal-8'
       }
     ])
 
@@ -374,11 +385,33 @@ export default defineComponent({
     consultarDepartamentos()
 
     const empleadosCumpleaneros = ref<Empleado[]>([])
+    const empleadosConExtension = ref<Empleado[]>([])
+
+
+    const obtenerEmpleadosConExtension = async () => {
+      try {
+        const empleadoController = new EmpleadoController()
+        const empleados = (
+          await empleadoController.listar({
+            estado: 1
+          })
+        ).result
+
+        empleadosConExtension.value = empleados.filter((empleado: Empleado) => {
+          // Verifica que el campo extensión no sea nulo, undefined o vacío
+          return empleado.extension !== null && empleado.extension !== undefined
+        })
+
+        // console.log(empleadosConExtension.value)
+      } catch (err) {
+        console.log('Error al obtener empleados con extensión:', err)
+      }
+    }
 
     const obtenerEmpleadosCumpleaneros = async () => {
       // Obtener el mes actual
       const currentMonth = new Date().getUTCMonth()
-      console.log(currentMonth)
+      // console.log(currentMonth)
 
       try {
         const empleadoController = new EmpleadoController()
@@ -406,7 +439,7 @@ export default defineComponent({
             return dayA - dayB
           })
 
-        console.log(empleadosCumpleaneros.value)
+        // console.log(empleadosCumpleaneros.value)
       } catch (err) {
         console.log('Error al obtener empleados cumpleañeros:', err)
       }
@@ -465,14 +498,15 @@ export default defineComponent({
       obtenerEventos()
       obtenerVacantes()
       obtenerEmpleadosCumpleaneros()
+      obtenerEmpleadosConExtension()
     })
 
     useNotificaciones()
 
     const enviarSolicitud = () => {
-      console.log('Solicitud enviada:', {
-        tipo: solicitud.tipo_solicitud
-      })
+      // console.log('Solicitud enviada:', {
+      //   tipo: solicitud.tipo_solicitud
+      // })
 
       switch (solicitud.tipo_solicitud) {
         case 'permiso':
@@ -482,7 +516,7 @@ export default defineComponent({
           Router.push('/licencia-empleado')
           break
         case 'vacaciones':
-          Router.push('/vacacion')
+          Router.push('/solicitudes-vacaciones')
           break
         case 'prestamos':
           Router.push('/solicitud-prestamo-empresarial')
@@ -500,12 +534,12 @@ export default defineComponent({
     const getImagePerfil = usuario => {
       return usuario.foto_url == null
         ? `https://ui-avatars.com/api/?name=${usuario.nombres.slice(
-            0,
-            1
-          )}+${usuario.apellidos.slice(
-            0,
-            1
-          )}&bold=true&background=008000&color=ffff`
+          0,
+          1
+        )}+${usuario.apellidos.slice(
+          0,
+          1
+        )}&bold=true&background=008000&color=ffff`
         : usuario.foto_url
     }
 
@@ -522,8 +556,34 @@ export default defineComponent({
     }
 
     //ACCIONES DE BUSQUEDA DE MODULO
+    const token = ref('')
 
+    onMounted(async () => {
+      if (Capacitor.isNativePlatform()) {
+        await PushNotifications.requestPermissions().then(result => {
+          if (result.receive === 'granted') {
+            PushNotifications.register()
+          }
+        })
+
+        PushNotifications.addListener('registration', t => {
+          console.log('Push registration success, token:', t.value)
+          token.value = t.value
+        })
+
+        PushNotifications.addListener('registrationError', err => {
+          console.error('Registration error:', err)
+        })
+      }
+    })
+
+
+    function notificarProximamente(){
+      notificarInformacion('Próximamente disponible para iOS')
+    }
     return {
+      correo: computed(() => 'https://' + configuracionGeneralStore.configuracion?.sitio_web + '/webmail'),
+
       logoClaro: computed(
         () => configuracionGeneralStore.configuracion?.logo_claro
       ),
@@ -532,6 +592,8 @@ export default defineComponent({
       ),
       enCamino: computed(() => movilizacionSubtareaStore.subtareaDestino),
       motivo: computed(() => movilizacionSubtareaStore.motivo),
+      url_sistema : computed(()=>configuracionGeneralStore.configuracion?.sitio_web_erp),
+      link_app_movil : computed(()=>configuracionGeneralStore.configuracion?.link_app_movil),
       mostrarMenu: ref(false),
       store,
       usuarios,
@@ -542,6 +604,7 @@ export default defineComponent({
       subtareasPorAsignar,
       carousel_noticias,
       carousel_vacantes,
+      carousel_extensiones,
       activeTab,
       carousel_cumpleanos_mes,
       autoplay,
@@ -573,6 +636,7 @@ export default defineComponent({
       readMore,
       documentosIntranet,
       empleadosCumpleaneros,
+      empleadosConExtension,
       fechaActual,
       fechaSeleccionada,
       eventos,
@@ -587,12 +651,20 @@ export default defineComponent({
 
       calcularAntiguedad,
       calcularEdadEsteAno,
-
+      notificarProximamente,
       eventosFormateados,
       configuracion,
       cerrarModal() {
         modalNoticia.value = false
-      }
+      },
+      tabs,
+      tabsOptions,
+      tabsMenu: [tabsOptions.NOTICIAS,
+      tabsOptions.MIS_MODULOS,
+      tabsOptions.DEPARTAMENTOS,
+      tabsOptions.EVENTOS,
+      tabsOptions.AREA_PERSONAL],
+      token,
     }
   }
 })

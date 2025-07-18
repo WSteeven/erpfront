@@ -9,7 +9,7 @@ export const configuracionColumnasSubtarea: ColumnConfig<Subtarea>[] = [
   {
     name: 'codigo_subtarea',
     field: 'codigo_subtarea',
-    label: 'Código de subtarea',
+    label: 'Código subtarea',
     align: 'center',
     sortable: true,
   },
@@ -33,19 +33,19 @@ export const configuracionColumnasSubtarea: ColumnConfig<Subtarea>[] = [
   {
     name: 'grupo',
     field: 'grupo',
-    label: 'Grupo designado',
+    label: 'Grupo',
     align: 'left',
   },
   {
     name: 'tipo_trabajo',
     field: 'tipo_trabajo',
-    label: 'Tipo de trabajo',
+    label: 'Tipo trabajo',
     align: 'left',
   },
   {
     name: 'titulo',
     field: 'titulo',
-    label: 'Título del trabajo',
+    label: 'Título',
     align: 'left',
   },
   {

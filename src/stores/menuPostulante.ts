@@ -35,7 +35,7 @@ export const useMenuPostulanteStore = defineStore('menuExternal', () => {
       baseLinks.unshift({
         title: 'Inicio',
         icon: 'bi-house-door-fill',
-        link: 'intranet',
+        link: '/',
         can: true
       })
     }

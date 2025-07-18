@@ -14,6 +14,14 @@ import { rolesSistema } from 'config/utils'
 import { SelectOption } from 'components/tables/domain/SelectOption'
 import { format } from '@formkit/tempo'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { Sucursal } from 'pages/administracion/sucursales/domain/Sucursal'
+import { Ref } from 'vue'
+import { Cliente } from 'sistema/clientes/domain/Cliente'
+import { Capacitor } from '@capacitor/core'
+import { Directory, Filesystem } from '@capacitor/filesystem'
+import {Toast} from '@capacitor/toast'
+
+declare let cordova: any  // Asegúrate de que esto esté arriba si usas cordova plugins
 
 const authenticationStore = useAuthenticationStore()
 const usuario = authenticationStore.user
@@ -194,7 +202,7 @@ export function sleep(ms: number): Promise<void> {
 }
 
 export function isAxiosError(candidate: any): candidate is ApiError {
-  return candidate instanceof ApiError === true
+  return candidate instanceof ApiError
 }
 
 export async function notificarMensajesError(
@@ -331,6 +339,25 @@ export function obtenerPrimerUltimoDiaMes(formato = 'DD-MM-YYYY') {
 }
 
 /**
+ * Funcion para remover ÚNICAMENTE tildes en una cadena
+ * @param str cadena que se va a limpiar
+ */
+export function removeTildes(str: string) {
+  // Reemplaza las letras acentuadas por sus equivalentes sin tilde
+  return str
+    .replace(/á/g, 'a')
+    .replace(/é/g, 'e')
+    .replace(/í/g, 'i')
+    .replace(/ó/g, 'o')
+    .replace(/ú/g, 'u')
+    .replace(/Á/g, 'A')
+    .replace(/É/g, 'E')
+    .replace(/Í/g, 'I')
+    .replace(/Ó/g, 'O')
+    .replace(/Ú/g, 'U')
+}
+
+/**
  * Funcion para remover tildes o acentos de una cadena
  * @param accents cadena que se va a limpiar
  * @returns cadena sin acentos ni tildes
@@ -343,17 +370,17 @@ export async function obtenerTiempoActual() {
   const axios = AxiosHttpRepository.getInstance()
 
   try {
-    const fecha: AxiosResponse = await axios.get(
+    const fechaHora: AxiosResponse = await axios.get(
       axios.getEndpoint(endpoints.fecha)
     )
-    const hora: AxiosResponse = await axios.get(
-      axios.getEndpoint(endpoints.hora)
-    )
+    /* const hora: AxiosResponse = await axios.get(
+          axios.getEndpoint(endpoints.hora)
+        ) */
 
     return {
-      fecha: fecha.data,
-      hora: hora.data,
-      fecha_hora: fecha.data + ' ' + hora.data
+      fecha: fechaHora.data.split(' ')[0],
+      hora: fechaHora.data.split(' ')[1],
+      fecha_hora: fechaHora.data // + ' ' + hora.data
     }
   } catch (e: any) {
     throw new ApiError(e)
@@ -410,6 +437,19 @@ export function pushEventMesaggeServiceWorker(data: ServiceWorkerClass) {
   }
 }
 
+function blobToBase64(blob: Blob): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onloadend = () => {
+      const base64data = reader.result?.toString().split(',')[1]
+      if (base64data) resolve(base64data)
+      else reject('No se pudo convertir a base64')
+    }
+    reader.onerror = reject
+    reader.readAsDataURL(blob)
+  })
+}
+
 /**
  * Metodo generico para descargar archivos desde una API
  * @param ruta URL desde donde se descargará el archivo
@@ -422,55 +462,107 @@ export function pushEventMesaggeServiceWorker(data: ServiceWorkerClass) {
  * @returns mensaje que indica que no se puede imprimir el archivo
  */
 export async function imprimirArchivo(
-  ruta: string,
-  metodo: Method,
-  responseType: ResponseType,
-  formato: string,
-  titulo: string,
-  data?: any
+    ruta: string,
+    metodo: Method,
+    responseType: ResponseType,
+    formato: string,
+    titulo: string,
+    data?: any
 ) {
   const statusLoading = new StatusEssentialLoading()
   const { notificarError } = useNotificaciones()
-  statusLoading.activar()
   const axiosHttpRepository = AxiosHttpRepository.getInstance()
-  axios({
-    url: ruta,
-    method: metodo,
-    data: data,
-    responseType: responseType,
-    headers: {
-      Authorization: axiosHttpRepository.getOptions().headers.Authorization
-    }
-  })
-    .then(response => {
-      if (response.status === 200) {
-        if (
-          response.data.size < 100 ||
-          response.data.type == 'application/json'
-        )
-          throw 'No se obtuvieron resultados para generar el reporte'
-        else {
-          const fileURL = URL.createObjectURL(
-            new Blob([response.data], { type: `appication/${formato}` })
-          )
-          const link = document.createElement('a')
-          link.href = fileURL
-          link.target = '_blank'
-          link.setAttribute('download', `${titulo}.${formato}`)
-          document.body.appendChild(link)
-          link.click()
-          link.remove()
-        }
-        // } else if (response.status === 500) {
-        //   console.log(response)
-      } else {
-        notificarError('Se produjo un error inesperado')
+
+  statusLoading.activar()
+
+  try {
+    const response = await axios({
+      url: ruta,
+      method: metodo,
+      data: data,
+      responseType: responseType,
+      headers: {
+        Authorization: axiosHttpRepository.getOptions().headers.Authorization
       }
     })
-    .catch(async error => {
-      notificarError(error)
-    })
-    .finally(() => statusLoading.desactivar())
+
+    if (
+        response.status !== 200 ||
+        response.data.size < 100 ||
+        response.data.type === 'application/json'
+    ) {
+      throw 'No se obtuvieron resultados para generar el reporte'
+    }
+
+    const fileName = `${titulo}.${formato}`
+    const blob = new Blob([response.data], {type: `application/${formato}`})
+
+    if (!Capacitor.isNativePlatform()) {
+      // ✅ Web (Navegador)
+      const fileURL = URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = fileURL
+      link.target = '_blank'
+      link.setAttribute('download', fileName)
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+    } else {
+      // ✅ App móvil (Android/iOS)
+      const base64 = await blobToBase64(blob)
+
+      await Filesystem.writeFile({
+        path: fileName,
+        data: base64,
+        directory: Directory.Documents
+      })
+
+      console.log(`✅ Archivo ${fileName} guardado correctamente en el dispositivo.`)
+
+      //Notificacion tipo Toast
+      await Toast.show({
+        text:`✅ Archivo ${fileName} descargado con éxito.`,
+        duration :'short'
+      })
+
+      // Intentar abrir automáticamente
+      const { uri } =await Filesystem.getUri({
+        path: fileName,
+        directory: Directory.Documents
+      })
+
+      const mimeMap: Record<string, string> = {
+        pdf: 'application/pdf',
+        xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        csv: 'text/csv',
+        docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+      }
+
+      const mimeType = mimeMap[formato] || `application/${formato}`
+
+      cordova.plugins.fileOpener2.open(
+          uri,
+          mimeType,
+          {
+            error: (e: any) => console.error('❌ No se pudo abrir el archivo', e),
+            success: () => console.log('✅ Archivo abierto')
+          }
+      )
+    }
+  } catch (error: any) {
+    const blob = error?.response?.data
+    if (blob instanceof Blob && blob.type === 'application/json') {
+      const text = await blob.text()
+      const json = JSON.parse(text)
+      Object.values(json.errors).forEach((errorMsg: string) => {
+        notificarError(errorMsg)
+      })
+    } else {
+      notificarError(error?.message || 'Error inesperado')
+    }
+  } finally {
+    statusLoading.desactivar()
+  }
 }
 
 export async function downloadFile(data, titulo, formato) {
@@ -528,6 +620,31 @@ export function ordernarListaString(a: string, b: string) {
   return 0
 }
 
+export function ordenarSucursalesPorBodeguero(sucursales: Ref<Sucursal[]>, esBodegueroTelconet:boolean) {
+  if (esBodegueroTelconet) {
+    const sucursalesTelconet = sucursales.value.filter(
+        (v: Sucursal) => v.lugar!.indexOf('TELCONET') > -1
+    )
+    sucursales.value = sucursalesTelconet.sort(
+        (a: Sucursal, b: Sucursal) =>
+            ordernarListaString(a.lugar!, b.lugar!)
+    )
+  } else
+    sucursales.value.sort((a: Sucursal, b: Sucursal) =>
+        ordernarListaString(a.lugar!, b.lugar!)
+    )
+}
+
+export function ordenarClientesPorBodeguero(clientes: Ref<Cliente[]>, esBodegueroTelconet:boolean) {
+  if (esBodegueroTelconet)
+    clientes.value = clientes.value.filter(
+        (v: Cliente) => v.razon_social!.indexOf('TELCONET') > -1
+    )
+  else
+    clientes.value.sort((a: Cliente, b: Cliente) =>
+        ordernarListaString(a.razon_social!, b.razon_social!)
+    )
+}
 export function obtenerUbicacion(onUbicacionConcedida) {
   const onErrorDeUbicacion = err => {
     console.log('Error obteniendo ubicación: ', err)
@@ -901,17 +1018,12 @@ export async function notificarErrores(err) {
 }
 
 export const mapearOptionsSelect = (
-  listadoOpciones: {
-    id: number
-    nombre: string
-  }[]
+  listado: { id: number; nombre: string }[]
 ): SelectOption[] => {
-  return listadoOpciones.map((opcion: { id: number; nombre: string }) => {
-    return {
-      label: opcion.nombre,
-      value: opcion.id
-    }
-  })
+  return listado.map(opcion => ({
+    label: opcion.nombre,
+    value: opcion.id
+  }))
 }
 
 export const copiarAlPortapapeles = async (texto: string) => {

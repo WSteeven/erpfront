@@ -16,7 +16,8 @@ import { reactive } from 'vue'
 export const useBotonesTablaTicket = (mixin: ContenedorSimpleMixin<Ticket | any>, modales: ComportamientoModalesTicket | any) => {
   const { confirmar, prompt, notificarCorrecto, promptItems } = useNotificaciones()
   const notificaciones = useNotificaciones()
-  const { listado, listadosAuxiliares } = mixin.useReferencias()
+  const { entidad: ticket, listado, listadosAuxiliares } = mixin.useReferencias()
+  const { editarParcial } = mixin.useComportamiento()
 
   const cambiarEstadoTicket = new CambiarEstadoTicket()
   const ticketStore = useTicketStore()
@@ -195,7 +196,7 @@ export const useBotonesTablaTicket = (mixin: ContenedorSimpleMixin<Ticket | any>
   const btnReasignar: CustomActionTable = {
     titulo: 'Cambiar responsable',
     icono: 'bi-arrow-left-right',
-    color: 'positive',
+    color: 'teal',
     visible: ({ entidad }) => entidad.estado === estadosTickets.ASIGNADO,
     accion: async ({ entidad, posicion }) => {
       ticketStore.filaTicket = entidad
@@ -275,7 +276,7 @@ export const useBotonesTablaTicket = (mixin: ContenedorSimpleMixin<Ticket | any>
   const btnCalificarSolicitante: CustomActionTable = {
     titulo: 'Calificar',
     icono: 'bi-stars',
-    color: 'positive',
+    color: 'amber-8',
     visible: ({ entidad }) => [estadosTickets.FINALIZADO_SIN_SOLUCION, estadosTickets.FINALIZADO_SOLUCIONADO].includes(entidad.estado) && (authenticationStore.user.id === entidad.solicitante_id && entidad.pendiente_calificar_solicitante),
     accion: ({ entidad, posicion }) => {
       ticketStore.posicionFilaTicket = posicion
@@ -293,6 +294,18 @@ export const useBotonesTablaTicket = (mixin: ContenedorSimpleMixin<Ticket | any>
       ticketStore.posicionFilaTicket = posicion
       ticketStore.filaTicket = entidad
       modales.abrirModalEntidad('CalificarTicketPage')
+    }
+  }
+
+  const btnPausarRecurrente: CustomActionTable<Ticket> = {
+    titulo: ({ entidad }) => (entidad.recurrence_active ? 'Pausar ' : 'Activar ') + 'recurrencia',
+    icono: ({ entidad }) => entidad.recurrence_active ? 'bi-pause-fill' : 'bi-play-fill',
+    color: ({ entidad }) => entidad.recurrence_active ? 'blue-4' : 'blue',
+    visible: ({ entidad }) => entidad.is_recurring && entidad.solicitante_id === authenticationStore.user.id,
+    accion: ({ entidad }) => {
+      confirmar(`¿Está seguro de ${entidad.recurrence_active ? 'pausar' : 'activar'} la recurrencia del ticket?`, async () => {
+        await editarParcial(entidad.id, { recurrence_active: !entidad.recurrence_active })
+      })
     }
   }
 
@@ -314,5 +327,6 @@ export const useBotonesTablaTicket = (mixin: ContenedorSimpleMixin<Ticket | any>
     btnCalificarResponsable,
     btnAsignar,
     setFiltrarTickets,
+    btnPausarRecurrente,
   }
 }

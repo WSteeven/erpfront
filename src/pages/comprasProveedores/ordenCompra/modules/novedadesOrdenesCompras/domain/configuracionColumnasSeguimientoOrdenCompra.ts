@@ -9,7 +9,8 @@ export const configuracionColumnasSeguimientoOrdenCompra: ColumnConfig<NovedadOr
         align: 'left',
         type: 'text',
         sortable: true,
-        editable: false,
+        editable: true,
+        disableModal: true,
     },
     {
         name: 'actividad',

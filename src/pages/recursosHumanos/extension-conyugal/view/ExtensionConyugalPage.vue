@@ -2,7 +2,7 @@
   <tab-layout
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
-    titulo-pagina="Prestamo Hipotecario"
+    titulo-pagina="Extensión Conyugal"
   >
     <template #formulario>
       <q-form @submit.prevent>

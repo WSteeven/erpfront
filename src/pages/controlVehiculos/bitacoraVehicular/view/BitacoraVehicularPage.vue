@@ -14,6 +14,20 @@
     <template #formulario>
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-py-md">
+          <div class="col-12 col-md-3 col-sm-3">
+            <label class="q-mb-sm block">Tipo de vehículo</label>
+            <q-toggle
+              :label="bitacora.es_vehiculo_propio ? 'PROPIO' : 'ALQUILADO'"
+              v-model="bitacora.es_vehiculo_propio"
+              color="primary"
+              keep-color
+              icon="bi-check2-circle"
+              unchecked-icon="clear"
+              :disable="disabled"
+              @update:model-value="obtenerVehiculos"
+            />
+          </div>
+
           <!-- Vehiculo -->
           <div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Vehículo</label>
@@ -29,34 +43,34 @@
               @update:model-value="vehiculoSeleccionado"
               use-input
               input-debounce="0"
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.placa"
+              :option-value="v => v.id"
+              :option-label="v => v.placa"
               emit-value
               map-options
             >
-            <template v-slot:option="scope">
+              <template v-slot:option="scope">
                 <q-item v-bind="scope.itemProps">
                   <q-item-section>
                     <q-item-label>{{ scope.opt.placa }}</q-item-label>
                     <q-item-label caption
                       >{{ scope.opt.marca }}:
-                      {{ scope.opt.modelo }}</q-item-label
-                    >
+                      {{ scope.opt.modelo }}
+                    </q-item-label>
                   </q-item-section>
                 </q-item>
               </template>
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
-              </template></q-select>
+                <no-option-component />
+              </template>
+            </q-select>
           </div>
           <!-- Chofer -->
           <div
             class="col-12 col-md-3 q-mb-md"
-            v-if="accion == acciones.nuevo || bitacora.chofer"
+            v-if="
+              (accion == acciones.nuevo || bitacora.chofer) &&
+              bitacora.es_vehiculo_propio
+            "
           >
             <label class="q-mb-sm block">Chofer</label>
             <q-input
@@ -65,8 +79,36 @@
               disable
               outlined
               dense
-            ></q-input>
+            />
           </div>
+          <!-- Chofer -->
+          <div
+            class="col-12 col-md-3 q-mb-md"
+            v-if="!bitacora.es_vehiculo_propio"
+          >
+            <label class="q-mb-sm block">Chofer</label>
+            <q-select
+              v-model="bitacora.chofer"
+              :options="choferes"
+              :disable="disabled"
+              options-dense
+              outlined
+              dense
+              @filter="filtrarChoferes"
+              use-input
+              input-debounce="0"
+              @update:model-value="() => (bitacora.chofer_id = Number(bitacora.chofer))"
+              :option-label="item => item.apellidos + ' ' + item.nombres"
+              :option-value="item => item.id"
+              emit-value
+              map-options
+            >
+              <template v-slot:no-option>
+                <no-option-component />
+              </template>
+            </q-select>
+          </div>
+
           <!-- Fecha de registro -->
           <div class="col-6 col-md-3">
             <label class="q-mb-sm block">Fecha</label>
@@ -89,7 +131,6 @@
                     <q-date
                       v-model="bitacora.fecha"
                       :mask="maskFecha"
-                      :options="optionsFecha"
                       today-btn
                     >
                       <div class="row items-center justify-end">
@@ -105,18 +146,12 @@
                 </q-icon>
               </template>
               <template v-slot:error>
-                <div
-                  style="clear: inherit"
-                  v-for="error of v$.fecha.$errors"
-                  :key="error.$uid"
-                >
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="fecha" :v$="v$" />
               </template>
             </q-input>
           </div>
           <!-- Hora de inicio -->
-          <div class="col-3 col-md-3">
+          <div class="col-3 col-md-3 col-sm-6 col-xs-6">
             <label class="q-mb-sm block">Hora inicio labores vehículo</label>
             <q-input
               v-model="bitacora.hora_salida"
@@ -130,14 +165,12 @@
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.hora_salida.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="hora_salida" :v$="v$" />
               </template>
             </q-input>
           </div>
           <!-- Hora de llegada -->
-          <div class="col-3 col-md-3">
+          <div class="col-3 col-md-3 col-sm-6 col-xs-6">
             <label class="q-mb-sm block">Hora fin labores vehículo</label>
             <q-input
               v-model="bitacora.hora_llegada"
@@ -151,9 +184,7 @@
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.hora_llegada.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="hora_llegada" :v$="v$" />
               </template>
             </q-input>
           </div>
@@ -171,27 +202,27 @@
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.km_inicial.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="km_inicial" :v$="v$" />
               </template>
             </q-input>
           </div>
           <div class="col-6 col-md-3">
-            <label class="q-mb-sm block">Fotografía
+            <label class="q-mb-sm block"
+              >Fotografía
               <i class="bi bi-info-circle" />
               <q-tooltip
-                >Fotografía del inicio del día donde se muestre el kilometraje y combustible al inicio del día </q-tooltip
-              >
+                >Fotografía del inicio del día donde se muestre el kilometraje y
+                combustible al inicio del día
+              </q-tooltip>
             </label>
             <selector-imagen
               file_extensiones=".jpg, image/*"
               :imagen="bitacora.imagen_inicial"
-
               :disable="disabled"
+              placeholder="Obligatorio"
               :error="!!v$.imagen_inicial.$errors.length"
               :alto="'200px'"
-              @update:model-value="(data) => (bitacora.imagen_inicial = data)"
+              @update:model-value="data => (bitacora.imagen_inicial = data)"
             ></selector-imagen>
           </div>
           <!-- km final -->
@@ -209,9 +240,7 @@
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.km_final.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="km_final" :v$="v$" />
               </template>
             </q-input>
           </div>
@@ -228,17 +257,15 @@
               :error="!!v$.tanque_inicio.$errors.length"
               dense
               outlined
-              ><template v-slot:error>Ingresa un valor entre 0 y 100</template>
-              <template v-slot:prepend
-                ><q-icon name="bi-fuel-pump-fill"></q-icon
-              ></template>
-              <template v-slot:append
-                ><q-icon
-                  name="bi-percent"
-                  size="xs"
-                  color="black"
-                ></q-icon></template
-            ></q-input>
+            >
+              <template v-slot:error>Ingresa un valor entre 0 y 100</template>
+              <template v-slot:prepend>
+                <q-icon name="bi-fuel-pump-fill"></q-icon>
+              </template>
+              <template v-slot:append>
+                <q-icon name="bi-percent" size="xs" color="black"></q-icon>
+              </template>
+            </q-input>
             <q-knob
               v-if="$q.platform.is.android || $q.screen.xs"
               show-value
@@ -277,12 +304,12 @@
               outlined
             >
               <template v-slot:error>Ingresa un valor entre 25 y 100</template>
-              <template v-slot:prepend
-                ><q-icon name="bi-fuel-pump-fill"></q-icon
-              ></template>
-              <template v-slot:append
-                ><q-icon name="bi-percent" size="xs" color="black"></q-icon
-              ></template>
+              <template v-slot:prepend>
+                <q-icon name="bi-fuel-pump-fill"></q-icon>
+              </template>
+              <template v-slot:append>
+                <q-icon name="bi-percent" size="xs" color="black"></q-icon>
+              </template>
             </q-input>
             <q-knob
               v-if="$q.platform.is.android || $q.screen.xs"
@@ -297,12 +324,15 @@
               "
               track-color="transparent"
               instant-feedback
-              >{{ bitacora.tanque_final }}%</q-knob
-            >
+              >{{ bitacora.tanque_final }}%
+            </q-knob>
           </div>
 
           <!-- Tareas -->
-          <div class="col-12 col-md-3" v-if="accion == acciones.editar || accion == acciones.consultar">
+          <div
+            class="col-12 col-md-3"
+            v-if="accion == acciones.editar || accion == acciones.consultar"
+          >
             <label class="q-mb-sm block">Tareas</label>
             <q-select
               v-model="bitacora.tareas"
@@ -317,8 +347,8 @@
               input-debounce="0"
               @filter="filtrarTareas"
               multiple
-              :option-label="(item) => item.codigo_tarea"
-              :option-value="(item) => item.id"
+              :option-label="item => item.codigo_tarea"
+              :option-value="item => item.id"
               emit-value
               map-options
             >
@@ -331,16 +361,15 @@
                 </q-item>
               </template>
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
+                <no-option-component />
               </template>
             </q-select>
           </div>
           <!-- Tickets -->
-          <div class="col-12 col-md-3" v-if="accion == acciones.editar || accion == acciones.consultar">
+          <div
+            class="col-12 col-md-3"
+            v-if="accion == acciones.editar || accion == acciones.consultar"
+          >
             <label class="q-mb-sm block">Tickets</label>
             <q-select
               v-model="bitacora.tickets"
@@ -355,8 +384,8 @@
               input-debounce="0"
               @filter="filtrarTickets"
               multiple
-              :option-label="(item) => item.codigo"
-              :option-value="(item) => item.id"
+              :option-label="item => item.codigo"
+              :option-value="item => item.id"
               emit-value
               map-options
             >
@@ -369,11 +398,7 @@
                 </q-item>
               </template>
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
+                <no-option-component />
               </template>
             </q-select>
           </div>
@@ -395,6 +420,43 @@
           <!-- @update:model-value="checkFinalizada" -->
         </div>
 
+        <!-- Tanqueo de combustible -->
+        <q-expansion-item
+          v-if="accion == acciones.editar || accion == acciones.consultar"
+          class="overflow-hidden q-mb-md expansion"
+          label="Tanqueo de combustible"
+          header-class="text-bold bg-header-collapse"
+          default-opened
+        >
+          <div class="row q-col-gutter-sm q-pa-md">
+            <!-- Registrar tanqueo combustible -->
+            <div class="col-12 col-md-3 col-sm-3">
+              <label class="q-mb-sm block">Registrar tanqueo combustible</label>
+              <q-toggle
+                :label="bitacora.tiene_tanqueo ? 'SI' : 'NO'"
+                v-model="bitacora.tiene_tanqueo"
+                color="primary"
+                keep-color
+                icon="bi-check2-circle"
+                unchecked-icon="clear"
+                :disable="disabled"
+              />
+            </div>
+          </div>
+          <div
+            class="row q-col-gutter-sm q-pa-sm"
+            v-if="bitacora.tiene_tanqueo"
+          >
+            <div class="col-12">
+              <essential-table
+                :datos="bitacora.tanqueos"
+                :configuracion-columnas="configuracionColumnasTanqueos"
+                :accion1-header="btnAgregarTanqueo"
+                :alto-fijo="false"
+              />
+            </div>
+          </div>
+        </q-expansion-item>
         <!-- Actividades realizadas -->
         <q-expansion-item
           v-if="accion == acciones.editar || accion == acciones.consultar"
@@ -405,7 +467,7 @@
         >
           <div class="row q-col-gutter-sm q-pa-sm">
             <div class="col-12">
-              <essential-popup-editable-table
+              <essential-table
                 titulo="Actividades realizadas"
                 :configuracionColumnas="
                   accion === acciones.editar
@@ -423,7 +485,7 @@
                 :altoFijo="false"
                 :accion1Header="btnAgregarActividad"
                 :accion1="btnEliminar"
-              ></essential-popup-editable-table>
+              ></essential-table>
             </div>
           </div>
         </q-expansion-item>
@@ -444,7 +506,8 @@
                 name="bi-info-circle-fill"
                 class="q-mr-xs q-ml-xs"
                 size="1em"
-              /><b> Información </b>Las opciones se marcan con colores:
+              />
+              <b> Información </b>Las opciones se marcan con colores:
             </div>
             <div>
               <q-radio
@@ -926,7 +989,8 @@
                 name="bi-info-circle-fill"
                 class="q-mr-xs q-ml-xs"
                 size="1em"
-              /><b> Información </b>Todas las imágenes son obligatorias en cada
+              />
+              <b> Información </b>Todas las imágenes son obligatorias en cada
               bitácora
             </div>
           </div>
@@ -937,13 +1001,13 @@
               <selector-imagen
                 file_extensiones=".jpg, image/*"
                 :imagen="bitacora.checklistImagenVehiculo.imagen_frontal"
-                  :disable="disabled"
+                :disable="disabled"
                 :error="
                   !!v$.checklistImagenVehiculo.imagen_frontal.$errors.length
                 "
                 :alto="'200px'"
                 @update:model-value="
-                  (data) =>
+                  data =>
                     (bitacora.checklistImagenVehiculo.imagen_frontal = data)
                 "
               ></selector-imagen>
@@ -955,13 +1019,13 @@
               <selector-imagen
                 file_extensiones=".jpg, image/*"
                 :imagen="bitacora.checklistImagenVehiculo.imagen_trasera"
-                  :disable="disabled"
+                :disable="disabled"
                 :error="
                   !!v$.checklistImagenVehiculo.imagen_trasera.$errors.length
                 "
                 :alto="'200px'"
                 @update:model-value="
-                  (data) =>
+                  data =>
                     (bitacora.checklistImagenVehiculo.imagen_trasera = data)
                 "
               ></selector-imagen>
@@ -975,14 +1039,14 @@
                 :imagen="
                   bitacora.checklistImagenVehiculo.imagen_lateral_izquierda
                 "
-                  :disable="disabled"
+                :disable="disabled"
                 :error="
                   !!v$.checklistImagenVehiculo.imagen_lateral_izquierda.$errors
                     .length
                 "
                 :alto="'200px'"
                 @update:model-value="
-                  (data) =>
+                  data =>
                     (bitacora.checklistImagenVehiculo.imagen_lateral_izquierda =
                       data)
                 "
@@ -997,14 +1061,14 @@
                 :imagen="
                   bitacora.checklistImagenVehiculo.imagen_lateral_derecha
                 "
-                  :disable="disabled"
+                :disable="disabled"
                 :error="
                   !!v$.checklistImagenVehiculo.imagen_lateral_derecha.$errors
                     .length
                 "
                 :alto="'200px'"
                 @update:model-value="
-                  (data) =>
+                  data =>
                     (bitacora.checklistImagenVehiculo.imagen_lateral_derecha =
                       data)
                 "
@@ -1017,13 +1081,13 @@
               <selector-imagen
                 file_extensiones=".jpg, image/*"
                 :imagen="bitacora.checklistImagenVehiculo.imagen_tablero_km"
-                  :disable="disabled"
+                :disable="disabled"
                 :error="
                   !!v$.checklistImagenVehiculo.imagen_tablero_km.$errors.length
                 "
                 :alto="'200px'"
                 @update:model-value="
-                  (data) =>
+                  data =>
                     (bitacora.checklistImagenVehiculo.imagen_tablero_km = data)
                 "
               ></selector-imagen>
@@ -1035,14 +1099,14 @@
               <selector-imagen
                 file_extensiones=".jpg, image/*"
                 :imagen="bitacora.checklistImagenVehiculo.imagen_tablero_radio"
-                  :disable="disabled"
+                :disable="disabled"
                 :error="
                   !!v$.checklistImagenVehiculo.imagen_tablero_radio.$errors
                     .length
                 "
                 :alto="'200px'"
                 @update:model-value="
-                  (data) =>
+                  data =>
                     (bitacora.checklistImagenVehiculo.imagen_tablero_radio =
                       data)
                 "
@@ -1055,13 +1119,13 @@
               <selector-imagen
                 file_extensiones=".jpg, image/*"
                 :imagen="bitacora.checklistImagenVehiculo.imagen_asientos"
-                  :disable="disabled"
+                :disable="disabled"
                 :error="
                   !!v$.checklistImagenVehiculo.imagen_asientos.$errors.length
                 "
                 :alto="'200px'"
                 @update:model-value="
-                  (data) =>
+                  data =>
                     (bitacora.checklistImagenVehiculo.imagen_asientos = data)
                 "
               >
@@ -1073,19 +1137,19 @@
                 >Herramientas y accesorios
                 <q-tooltip class="bg-dark"
                   >La imágen debe incluir triángulos, extintor, gata, conos,
-                  caja de herramientas</q-tooltip
-                ></label
-              >
+                  caja de herramientas
+                </q-tooltip>
+              </label>
               <selector-imagen
                 file_extensiones=".jpg, image/*"
                 :imagen="bitacora.checklistImagenVehiculo.imagen_accesorios"
-                  :disable="disabled"
+                :disable="disabled"
                 :error="
                   !!v$.checklistImagenVehiculo.imagen_accesorios.$errors.length
                 "
                 :alto="'200px'"
                 @update:model-value="
-                  (data) =>
+                  data =>
                     (bitacora.checklistImagenVehiculo.imagen_accesorios = data)
                 "
               ></selector-imagen>
@@ -1108,6 +1172,12 @@
       </q-form>
     </template>
   </tab-layout-filter-tabs2>
+  <modales-entidad
+    :comportamiento="modales"
+    :persistente="false"
+    :mostrar-listado="false"
+    @guardado="data => guardado(data)"
+  ></modales-entidad>
 </template>
 
 <script src="./BitacoraVehicularPage.ts"></script>

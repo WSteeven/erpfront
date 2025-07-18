@@ -8,6 +8,7 @@ type AccionType = typeof acciones[keyof typeof acciones];
 export class Referencias {
 // export class Referencias<T> {
   tabs: Ref
+  tabsPage: Ref
   validador: Ref
   filtros: { [key: string]: any }
   listadoActividades: Ref<any[]>
@@ -20,7 +21,7 @@ export class Referencias {
   disabled: ComputedRef<boolean>
   listadosAuxiliares: UnwrapRef<any>
   errors: Ref
-  metaPagination: Ref<MetaPagination | undefined>
+  metaPagination: Ref<MetaPagination | undefined> // parece que no se usa
   pagination = ref({
     sortBy: 'desc',
     descending: false,
@@ -36,6 +37,7 @@ export class Referencias {
 
     // Para manipular los tabs
     this.tabs = ref()
+    this.tabsPage = ref('1')
 
     // Para ejecutar las validaciones
     this.validador = ref()

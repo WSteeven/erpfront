@@ -6,11 +6,15 @@ import { recursosHumanos } from './endpoints/rrhh/recursosHumanos'
 import { activosFijos } from './endpoints/activosFijos'
 import { comprasProveedores } from './endpoints/comprasProveedores'
 import { vehiculos } from 'config/endpoints/vehiculos'
+import { sso } from './endpoints/sso'
+import { seguridad } from './endpoints/seguridad'
 import { fondosRotativos } from 'config/endpoints/fondosRotativos'
+import { controlPersonal } from 'config/endpoints/rrhh/controlPersonal'
+import { appenate } from 'config/endpoints/appenate/telconet'
 
 export const apiConfig = {
   // URL_BASE: 'http://localhost:8000',
-  URL_BASE: process.env.API_URL,
+  URL_BASE: process.env.API_URL
 }
 
 export const endpoints = {
@@ -33,7 +37,7 @@ export const endpoints = {
   api_user_postulante: new Endpoint('user-postulante'),
   reset_password: new Endpoint('usuarios/reset-password'),
   perfil_usuario: new Endpoint('user/profile-information', false),
-  cambiar_contrasena: new Endpoint('user/password', false),
+  // cambiar_contrasena: new Endpoint('user/password', false),
   roles: new Endpoint('user/roles'),
   fecha: new Endpoint('obtener-fecha'),
   hora: new Endpoint('obtener-hora'),
@@ -55,10 +59,9 @@ export const endpoints = {
   cantones: new Endpoint('cantones'),
   parroquias: new Endpoint('parroquias'),
 
-
   /********************
-  * Modulo de  RR HH
-  *********************/
+   * Modulo de  RR HH
+   *********************/
   ...recursosHumanos,
   cargos: new Endpoint('cargos'),
   allroles: new Endpoint('roles'),
@@ -67,14 +70,22 @@ export const endpoints = {
   /******************************
    * Modulo de Vehiculos
    ******************************/
+  ...controlPersonal,
+
+  /******************************
+   * Modulo de Vehiculos
+   ******************************/
   ...vehiculos,
 
+  /******************************
+   * Modulo de APPENATE (progresivas de Telconet)
+   ******************************/
+  ...appenate,
 
   //Modulo de compras y proveedores
   ...comprasProveedores,
   empresas: new Endpoint('empresas'),
   proveedores: new Endpoint('proveedores'),
-
 
   // Modulo de Bodega
   autorizaciones: new Endpoint('autorizaciones'),
@@ -86,7 +97,9 @@ export const endpoints = {
   empleados_roles: new Endpoint('empleados-roles'), //con esta ruta se obtienen los empleados por el/los roles especificados
   empleados_permisos: new Endpoint('empleados-permisos'), //con esta ruta se obtienen los empleados por el/los permisos especificados
   control_stocks: new Endpoint('control-stocks'),
-  items_control_stocks_consolidados: new Endpoint('control-stocks/items-consolidados'),
+  items_control_stocks_consolidados: new Endpoint(
+    'control-stocks/items-consolidados'
+  ),
   codigos_clientes: new Endpoint('codigos-clientes'),
   detalles_materiales: new Endpoint('detalles-materiales'),
   detalles: new Endpoint('detalles'),
@@ -109,7 +122,6 @@ export const endpoints = {
   pedidos: new Endpoint('pedidos'),
   preingresos: new Endpoint('preingresos'),
   procesadores: new Endpoint('procesadores'),
-  prestamos: new Endpoint('prestamos'),
   productos: new Endpoint('productos'),
   productos_perchas: new Endpoint('productos-perchas'),
   sucursales: new Endpoint('sucursales'),
@@ -119,8 +131,10 @@ export const endpoints = {
   tipos_transacciones: new Endpoint('tipos-transacciones'),
   transacciones: new Endpoint('transacciones'),
   transacciones_egresos: new Endpoint('transacciones-egresos'),
+  reporte_vida_util_epps: new Endpoint('transacciones/reporte-vida-util-epps'),
   transacciones_ingresos: new Endpoint('transacciones-ingresos'),
   modificar_item_egreso: new Endpoint('modificar-item-egreso'),
+  quitar_item_ingreso: new Endpoint('quitar-item-ingreso'),
   gestionar_egresos: new Endpoint('gestionar-egresos'),
   transferencias: new Endpoint('transferencias'),
   traspasos: new Endpoint('traspasos'),
@@ -141,19 +155,21 @@ export const endpoints = {
   ...tareas,
 
   /***************
-  * Modulo medico
-  ****************/
+   * Modulo medico
+   ****************/
   ...medico,
 
   /********************
-  * Modulo de tickets
-  *********************/
+   * Modulo de tickets
+   *********************/
   ...tickets,
 
   /**************************
-  * Modulo de activos fijos
-  ***************************/
+   * Modulo de activos fijos
+   ***************************/
   ...activosFijos,
+  ...sso,
+  ...seguridad,
 
   /**
    * Modulo de fondos rotativos
@@ -162,7 +178,6 @@ export const endpoints = {
 
   usuarios_autorizadores: new Endpoint('usuarios-autorizadores'),
   lista_usuarios: new Endpoint('lista-usuarios'),
-
 
   /********************
    * Modulo de Ventas de Claro
@@ -175,15 +190,21 @@ export const endpoints = {
   productos_ventas: new Endpoint('ventas-claro/productos-ventas'),
   vendedores_claro: new Endpoint('ventas-claro/vendedores'),
   ventas: new Endpoint('ventas-claro/ventas'),
-  actualizar_comisiones_ventas: new Endpoint('ventas-claro/actualizar-comisiones-ventas'),
+  actualizar_comisiones_ventas: new Endpoint(
+    'ventas-claro/actualizar-comisiones-ventas'
+  ),
   obtener_comision: new Endpoint('ventas-claro/obtener-comision'),
   tipo_chargebacks: new Endpoint('ventas-claro/tipo-chargeback'),
   chargebacks: new Endpoint('ventas-claro/chargebacks'),
   cortes_pagos_comisiones: new Endpoint('ventas-claro/cortes-pagos-comisiones'),
   retenciones_chargebacks: new Endpoint('ventas-claro/retenciones-chargebacks'),
   pago_comision: new Endpoint('ventas-claro/pagos-comisiones'),
-  bono_mensual_cumplimiento: new Endpoint('ventas-claro/bonos-mensuales-cumplimientos'),
-  bono_trimestral_cumplimiento: new Endpoint('ventas-claro/bono-trimestral-cumplimiento'),
+  bono_mensual_cumplimiento: new Endpoint(
+    'ventas-claro/bonos-mensuales-cumplimientos'
+  ),
+  bono_trimestral_cumplimiento: new Endpoint(
+    'ventas-claro/bono-trimestral-cumplimiento'
+  ),
   cobrojp: new Endpoint('ventas-claro/cobrojp'),
   pago: new Endpoint('ventas-claro/pago'),
   reporte_ventas: new Endpoint('ventas-claro/reporte-ventas'),
@@ -195,12 +216,12 @@ export const endpoints = {
   novedades_ventas: new Endpoint('ventas-claro/novedades-ventas'),
 
   //intranet
-//Modulo de Intranet
+  //Modulo de Intranet
   noticias: new Endpoint('intranet/noticias'),
   eventos: new Endpoint('intranet/eventos'),
   etiquetas: new Endpoint('intranet/etiquetas'),
   categorias_noticias: new Endpoint('intranet/categorias'),
   tipos_eventos: new Endpoint('intranet/tipos-eventos'),
   organigrama: new Endpoint('intranet/organigrama'),
-  organigrama_datos: new Endpoint('intranet/organigrama/datos'),
+  organigrama_datos: new Endpoint('intranet/organigrama/datos')
 }

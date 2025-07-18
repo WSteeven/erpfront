@@ -18,58 +18,65 @@ import { ClienteController } from 'pages/sistema/clientes/infraestructure/Client
 import { ProductoController } from 'pages/bodega/productos/infraestructure/ProductoController'
 import { Sucursal } from 'pages/administracion/sucursales/domain/Sucursal'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { useNotificaciones } from 'shared/notificaciones'
-import { useControlStockStore } from 'stores/bodega/controlStock'
 import { ordenarLista } from 'shared/utils'
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
+import ErrorComponent from 'components/ErrorComponent.vue';
+import NoOptionComponent from 'components/NoOptionComponent.vue';
 
 
 export default defineComponent({
-  components: { TabLayout, ModalesEntidad },
+  components: { NoOptionComponent, ErrorComponent, TabLayout, ModalesEntidad },
   setup() {
-    const mixin = new ContenedorSimpleMixin(ControlStock, new ControlStockController())
-    const { entidad: stock, disabled, listadosAuxiliares, } = mixin.useReferencias()
-    const { setValidador, obtenerListados, cargarVista, listar } = mixin.useComportamiento()
-    const { confirmar, prompt, notificarCorrecto, notificarError } = useNotificaciones()
+    const mixin = new ContenedorSimpleMixin(
+      ControlStock,
+      new ControlStockController()
+    )
+    const {
+      entidad: stock,
+      disabled,
+      listadosAuxiliares
+    } = mixin.useReferencias()
+    const { setValidador, obtenerListados, cargarVista, listar } =
+      mixin.useComportamiento()
 
-
-    //stores
-    const controlStore = useControlStockStore()
-
-    const opciones_sucursales = ref([])
-    const opciones_productos = ref([])
     const opciones_detalles = ref([])
-    const { clientes } = useFiltrosListadosSelects(listadosAuxiliares)
+    const {
+      clientes,
+      productos,
+      filtrarProductos,
+      sucursales,
+      filtrarSucursales
+    } = useFiltrosListadosSelects(listadosAuxiliares)
     //Obtener listados
     cargarVista(async () => {
       await obtenerListados({
         sucursales: {
           controller: new SucursalController(),
-          params: { campos: 'id,lugar,cliente_id' },
+          params: { campos: 'id,lugar,cliente_id', activo: 1 }
         },
         productos: {
           controller: new ProductoController(),
-          params: { campos: 'id,nombre' },
+          params: { campos: 'id,nombre' }
         },
         detalles: {
           controller: new DetalleProductoController(),
-          params: { campos: 'id,producto_id,descripcion,modelo_id,serial' },
+          params: { campos: 'id,producto_id,descripcion,modelo_id,serial' }
         },
         clientes: {
           controller: new ClienteController(),
           params: {
             campos: 'id,razon_social',
             requiere_bodega: 1,
-            estado: 1,
-          },
-        },
+            estado: 1
+          }
+        }
       })
     })
 
     const reglas = {
       sucursal_id: { required },
       detalle_id: { required },
-      cliente_id: { required },
+      cliente_id: { required }
     }
 
     const v$ = useVuelidate(reglas, stock)
@@ -101,42 +108,44 @@ export default defineComponent({
     //   }, visible: () => true
     // }
 
-    const opciones_estados = [{
-      'nombre': 'SUFICIENTE', 'valor': 'STOCK SUFICIENTE',
-    }, {
-      'nombre': 'REORDEN', 'valor': 'PROXIMO A AGOTARSE',
-    }, {
-      'nombre': 'MINIMO', 'valor': 'DEBAJO DEL MINIMO'
-    }
+    const opciones_estados = [
+      {
+        nombre: 'SUFICIENTE',
+        valor: 'STOCK SUFICIENTE'
+      },
+      {
+        nombre: 'REORDEN',
+        valor: 'PROXIMO A AGOTARSE'
+      },
+      {
+        nombre: 'MINIMO',
+        valor: 'DEBAJO DEL MINIMO'
+      }
     ]
-    opciones_sucursales.value = listadosAuxiliares.sucursales
-    opciones_productos.value = listadosAuxiliares.productos
+    sucursales.value = listadosAuxiliares.sucursales
+    productos.value = listadosAuxiliares.productos
     opciones_detalles.value = listadosAuxiliares.detalles
     clientes.value = listadosAuxiliares.clientes
     return {
-      mixin, stock, v$, disabled,
+      mixin,
+      stock,
+      v$,
+      disabled,
       configuracionColumnas: configuracionColumnasControlStock,
       //listados
       opciones_estados,
-      opciones_sucursales,
-      opciones_productos,
+      productos,
+      filtrarProductos,
+      sucursales,
+      filtrarSucursales,
+
       opciones_detalles,
       clientes,
       ordenarLista,
-      filtroProductos(val, update) {
-        if (val === '') {
-          update(() => {
-            opciones_productos.value = listadosAuxiliares.productos
-          })
-          return
-        }
-        update(() => {
-          const needle = val.toLowerCase()
-          opciones_productos.value = listadosAuxiliares.productos.filter((v) => v.nombre.toLowerCase().indexOf(needle) > -1)
-        })
-      },
       seleccionarDetalle(val) {
-        opciones_detalles.value = listadosAuxiliares.detalles.filter((v) => v.producto_id === val)
+        opciones_detalles.value = listadosAuxiliares.detalles.filter(
+          v => v.producto_id === val
+        )
         stock.detalle_id = null
         if (opciones_detalles.value.length < 1) {
           stock.detalle_id = null
@@ -147,25 +156,27 @@ export default defineComponent({
       },
 
       seleccionarPropietario(val) {
-        const sucursalSeleccionada = opciones_sucursales.value.filter((v: Sucursal) => v.id === val)
+        const sucursalSeleccionada = sucursales.value.filter(
+          (v: Sucursal) => v.id === val
+        )
         stock.cliente_id = sucursalSeleccionada[0]['cliente_id']
       },
 
-      filtrarSucursales(val, update) {
+      /*filtrarSucursales(val, update) {
         if (val === '') {
           update(() => {
-            opciones_sucursales.value = listadosAuxiliares.sucursales
+            sucursales.value = listadosAuxiliares.sucursales
           })
           return
         }
         update(() => {
           const needle = val.toLowerCase()
-          opciones_sucursales.value = listadosAuxiliares.sucursales.filter((v: Sucursal) => v.lugar!.toLowerCase().indexOf(needle) > -1)
+          sucursales.value = listadosAuxiliares.sucursales.filter((v: Sucursal) => v.lugar!.toLowerCase().indexOf(needle) > -1)
         })
-      },
+      },*/
 
       //botones de tabla
-      btnActualizarStock,
+      btnActualizarStock
     }
   }
 })

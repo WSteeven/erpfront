@@ -2,8 +2,8 @@
   <basic-container>
     <template #contenido>
       <q-card-section>
-        <div class="column items-center justify-center" style="height: 50px">
-          <h5>
+        <div class="column items-center justify-center">
+          <h5 class="text-center text-body1 text-md-h5 text-bold q-mb-sm">
             <strong>{{ vacante.nombre }}</strong>
           </h5>
         </div>
@@ -33,7 +33,6 @@
             </q-badge>
           </div>
           <div class="col col-md-3 col-sm-4 col-xs-6">
-
             <q-badge outline color="primary">
               <q-icon class="bi-people-fill" />
               &nbsp; POSTULANTES
@@ -90,37 +89,41 @@
             {{ formacion.nivel }} - {{ formacion.nombre }} O EQUIVALENTE
           </div>
         </div>
-        <div class="row q-py-sm"
-             v-if="vacante.rango_edad"
-        >
-          <q-badge outline color="primary" >
+        <div class="row q-py-sm" v-if="vacante.rango_edad">
+          <q-badge outline color="primary">
             <!--          Edad personalizada -->
-            <div class="text-center" >
-              Edad entre <strong> {{ vacante.edad_personalizada.min }}</strong> a
+            <div class="text-center">
+              Edad entre
+              <strong> {{ vacante.edad_personalizada.min }}</strong> a
               <strong> {{ vacante.edad_personalizada.max }}</strong>
               años
             </div>
           </q-badge>
         </div>
 
-        <div
-          v-if="vacante.acepta_discapacitados"
-        >
-          <q-badge outline color="positive" >
-<!--              <q-icon class="bi-person-wheelchair" size="sm" />-->
-            <span class="material-icons" style="font-size: 20px;" >blind</span>
-               Esta vacante acepta personas discapacitadas
-            </q-badge>
-
+        <div v-if="vacante.acepta_discapacitados">
+          <q-badge outline color="positive">
+            <!--              <q-icon class="bi-person-wheelchair" size="sm" />-->
+            <span class="material-icons" style="font-size: 20px">blind</span>
+            Esta vacante acepta personas discapacitadas
+          </q-badge>
         </div>
 
         <div class="column items-center" v-if="vacante.estado_mi_postulacion">
           <div class="row rounded-4">
-           <p> Estado de mi postulación:
-            <strong> &nbsp; <q-chip> {{ vacante.estado_mi_postulacion }} </q-chip></strong></p>
+            <p>
+              Estado de mi postulación:
+              <strong>
+                &nbsp;
+                <q-chip> {{ vacante.estado_mi_postulacion }}</q-chip>
+              </strong>
+            </p>
           </div>
         </div>
-        <div class="column items-center" v-if="route.name !== 'rrhh_postulaciones'">
+        <div
+          class="column items-center q-pt-md"
+          v-if="route.name !== 'rrhh_postulaciones'"
+        >
           <div class="row" v-if="!vacante.es_completada">
             <q-btn
               v-if="!vacante.ya_postulada"
@@ -128,11 +131,11 @@
               rounded
               @click="btnPostular(vacante.id)"
               color="primary"
-              >Postularme</q-btn
-            >
+              >Postularme
+            </q-btn>
             <q-chip v-else color="primary" text-color="white" icon="bi-check"
-              >Ya has postulado a esta vacante</q-chip
-            >
+              >Ya has postulado a esta vacante
+            </q-chip>
             <q-btn
               :icon="vacante.es_favorita ? 'bi-heart-fill' : 'bi-heart'"
               color="red"

@@ -45,6 +45,20 @@ export const configuracionColumnasGasto: ColumnConfig<GastoCoordinadores>[] = [
     align: 'left',
     sortable: true
   },
+  {
+    name: 'revisado',
+    field: 'revisado',
+    label: 'Revisado',
+    align: 'left',
+    sortable: true
+  },
+  {
+    name: 'estado',
+    field: 'estado',
+    label: 'Estado',
+    align: 'left',
+    sortable: true
+  },
 
 
 

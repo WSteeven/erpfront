@@ -25,7 +25,7 @@ export const useVehiculoStore = defineStore('vehiculo', () => {
             const axios = AxiosHttpRepository.getInstance()
             const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.matriculas) + '/marcar-pagada/' + idMatricula.value
             const response: AxiosResponse = await axios.post(url, data)
-            if (response.status = 200) {
+            if (response.status == 200) {
                 notificarCorrecto(response.data.mensaje)
                 return true
             } else notificarAdvertencia(response.data.mensaje)
@@ -43,7 +43,7 @@ export const useVehiculoStore = defineStore('vehiculo', () => {
             const axios = AxiosHttpRepository.getInstance()
             const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.matriculas) + '/registrar-estimado-pagar/' + idMatricula.value
             const response: AxiosResponse = await axios.post(url, data)
-            if (response.status = 200) {
+            if (response.status == 200) {
                 notificarCorrecto(response.data.mensaje)
                 return response.data.modelo
             } else notificarAdvertencia(response.data.mensaje)
@@ -56,7 +56,7 @@ export const useVehiculoStore = defineStore('vehiculo', () => {
     }
 
     /**
-     * 
+     *
      */
     function resetearAsignacionVehiculo() {
         asignacion.hydrate(asignacionReset)

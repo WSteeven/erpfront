@@ -10,8 +10,10 @@
     :filtrar="filtrarSolicitudes"
     :tabDefecto="tabDefecto"
     :forzarListar="true"
+    ajustar-celdas
     :accion1="editarVacacion"
-    :accion2="btnImprimir"
+    :accion2="btnAnular"
+    :accion3="btnImprimir"
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -68,16 +70,10 @@
                 </q-item>
               </template>
               <template v-slot:error>
-                <div v-for="error of v$.periodo.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="periodo" :v$="v$"/>
               </template>
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
+                <no-option-component/>
               </template>
             </q-select>
           </div>
@@ -110,12 +106,7 @@
               dense
             >
               <template v-slot:error>
-                <div
-                  v-for="error of v$.dias_solicitados.$errors"
-                  :key="error.$uid"
-                >
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="dias_solicitados" :v$="v$"/>
               </template>
             </q-input>
           </div>
@@ -160,9 +151,7 @@
               </template>
 
               <template v-slot:error>
-                <div v-for="error of v$.fecha_inicio.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="fecha_inicio" :v$="v$"/>
               </template>
             </q-input>
           </div>
@@ -206,9 +195,7 @@
               </template>
 
               <template v-slot:error>
-                <div v-for="error of v$.fecha_fin.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="fecha_fin" :v$="v$"/>
               </template>
             </q-input>
           </div>
@@ -225,9 +212,7 @@
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.observacion.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="observacion" :v$="v$"/>
               </template>
             </q-input>
           </div>
@@ -257,11 +242,7 @@
               map-options
             >
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
+                <no-option-component/>
               </template>
             </q-select>
           </div>
@@ -287,16 +268,10 @@
               map-options
             >
               <template v-slot:error>
-                <div v-for="error of v$.reemplazo.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="reemplazo" :v$="v$"/>
               </template>
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
+               <no-option-component/>
               </template>
             </q-select>
           </div>
@@ -314,9 +289,7 @@
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.funciones.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="funciones" :v$="v$"/>
               </template></q-input
             >
           </div>

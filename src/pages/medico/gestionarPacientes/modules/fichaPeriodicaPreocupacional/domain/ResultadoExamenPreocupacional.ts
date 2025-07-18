@@ -3,6 +3,7 @@ import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 export class ResultadoExamenPreocupacional extends EntidadAuditable {
   tiempo: string | null
   resultado: number | null
+  se_realizo_examen:boolean
   // tipo_antecedente: number | string | null
   // tipo_antecedente_id: number | null
   examen_id: number | null
@@ -15,6 +16,7 @@ export class ResultadoExamenPreocupacional extends EntidadAuditable {
     this.resultado = null
     this.examen_id = null
     this.examen = null
+    this.se_realizo_examen=false
     // this.tipo_antecedente = null
     // this.tipo_antecedente_id = null
     this.ficha_preocupacional = null

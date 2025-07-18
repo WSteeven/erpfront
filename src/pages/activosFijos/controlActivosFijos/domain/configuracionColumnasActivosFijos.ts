@@ -10,11 +10,32 @@ export const configuracionColumnasActivosFijos: ColumnConfig<ActivoFijo>[] = [
         sortable: true
     },
     {
+        name: 'codigo_personalizado',
+        field: 'codigo_personalizado',
+        label: 'Código personalizado',
+        align: 'left',
+        sortable: true,
+    },
+    {
+        name: 'codigo_sistema_anterior',
+        field: 'codigo_sistema_anterior',
+        label: 'Código sistema anterior',
+        align: 'left',
+        sortable: true,
+    },
+    {
+        name: 'codigo_producto',
+        field: 'codigo_producto',
+        label: 'Código Producto',
+        align: 'left',
+        sortable: true,
+    },
+    {
         name: 'descripcion',
         field: 'descripcion',
         label: 'Activo fijo',
         align: 'left',
-        sortable: true
+        sortable: true,
     },
     {
         name: 'cliente',
@@ -30,24 +51,17 @@ export const configuracionColumnasActivosFijos: ColumnConfig<ActivoFijo>[] = [
         align: 'left',
         sortable: true
     },
-    {
+    /* {
         name: 'fecha_caducidad',
         field: 'fecha_caducidad',
         label: 'Fecha de caducidad',
         align: 'left',
         sortable: true
-    },
+    }, */
     {
         name: 'unidad_medida',
         field: 'unidad_medida',
         label: 'Unidad de medida',
-        align: 'left',
-        sortable: true,
-    },
-    {
-        name: 'etiqueta_personalizada',
-        field: 'etiqueta_personalizada',
-        label: 'Etiqueta personalizada',
         align: 'left',
         sortable: true,
     },

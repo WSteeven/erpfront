@@ -3,8 +3,15 @@
     ref="refEditarModal"
     :configuracionColumnas="configuracionColumnas"
     :fila="fila"
-    @limpiar="limpiarFila"
-    @guardar="guardarFila"
+    :accion="accion"
+    @limpiar="
+      () => {
+        cancelar()
+        limpiarFila()
+      }
+    "
+    @editar="guardarCambiosFila"
+    @guardar="guardarNuevaFila"
     :modalMaximized="modalMaximized"
   ></EditarTablaModal>
 
@@ -20,13 +27,15 @@
     :visible-columns="visibleColumns"
     :separator="$q.screen.xs ? 'horizontal' : separador"
     :hide-bottom="!mostrarFooter"
+    color="primary"
     flat
     bordered
+    dense
     square
     :selection="tipoSeleccion"
     v-model:selected="selected"
     :style="estilos"
-    class="bg-body-table my-sticky-column-table my-sticky-header-column-table borde rounded"
+    class="bg-body-table my-sticky-column-table my-sticky-header-column-table"
     :class="{
       'alto-fijo-desktop': !inFullscreen && altoFijo && !$q.screen.xs,
       'alto-fijo-mobile': !inFullscreen && altoFijo && $q.screen.xs,
@@ -54,7 +63,7 @@
     </template>
 
     <template #pagination="scope">
-      <botones-paginacion :scope="scope"> </botones-paginacion>
+      <botones-paginacion :scope="scope"></botones-paginacion>
     </template>
 
     <!-- Editar celdas -->
@@ -68,23 +77,45 @@
           'bg-body': $q.dark.isActive
         }"
       >
-
         <q-input
           :style="props.col.style"
           v-if="
-            props.col.editable && (!props.col.type || ['text', 'number', 'date', 'time'].includes(props.col.type))
+            props.col.editable &&
+            (!props.col.type ||
+              [
+                'float',
+                'textarea',
+                'text',
+                'number',
+                'date',
+                'time',
+                'search'
+              ].includes(props.col.type))
           "
           v-model="props.row[props.col.name]"
           @update:model-value="guardarCeldaEditada(props.row)"
-          :bg-color="$q.dark.isActive ? 'grey-10' : 'grey-3'"
-          :type="props.col.type ? props.col.type : 'text'"
+          :bg-color="$q.dark.isActive ? 'grey-10' : 'grey-2'"
+          :type="props.col.type != 'float' ? props.col.type : 'text'"
+          :mask="props.col.type == 'float' ? '#.##' : ''"
+          :fill-mask="props.col.type == 'float' ? '0' : ''"
+          :reverse-fill-mask="props.col.type == 'float'"
           :hint="props.col.hint"
           :disable="disable"
           :placeholder="props.col.placeholder"
+          class="q-py-none"
           :min="props.col.min"
           :max="props.col.max"
-          :error="!!v$[keyError]?.$each?.$response.$errors[props.rowIndex][props.col.name]?.length"
-          :autogrow="props.col.type === 'text' || !props.col.type"
+          :error="
+            !!v$[keyError]?.$each?.$response.$errors[props.rowIndex][
+              props.col.name
+            ]?.length
+          "
+          :autogrow="props.col.type === 'textarea'"
+          @keydown.enter="
+            props.col.accion
+              ? emitirFila(props.col.accion, props.rowIndex)
+              : null
+          "
           dense
           outlined
         >
@@ -97,6 +128,21 @@
               :clave="props.col.name"
             />
           </template>
+
+          <template #append v-if="props.col.icon">
+            <q-btn
+              color="primary"
+              dense
+              push
+              @click="
+                props.col.accion
+                  ? emitirFila(props.col.accion, props.rowIndex)
+                  : null
+              "
+            >
+              <q-icon :name="props.col.icon" size="xs"></q-icon>
+            </q-btn>
+          </template>
         </q-input>
         <!-- @keyup.enter="scope.set" -->
 
@@ -107,6 +153,7 @@
           :options="props.col.options"
           :options-label="v => v.label"
           :options-value="v => v.value"
+          class="q-py-none"
           options-dense
           outlined
           autogrow
@@ -115,7 +162,11 @@
           map-options
           use-input
           input-debounce="0"
-          :error="!!v$[keyError]?.$each?.$response.$errors[props.rowIndex][props.col.name]?.length"
+          :error="
+            !!v$[keyError]?.$each?.$response.$errors[props.rowIndex][
+              props.col.name
+            ]?.length
+          "
           :disable="disable"
           @filter="props.col.filtro"
           @update:model-value="guardarCeldaEditada(props.row)"
@@ -131,8 +182,23 @@
           </template>
         </q-select>
 
+        <selector-imagen
+          v-if="props.col.type === 'imagen'"
+          file_extensiones=".jpg, image/*"
+          :imagen="props.row[props.col.name]"
+          :disable="disable"
+          :placeholder="props.col.placeholder"
+          :error="
+            !!v$[keyError]?.$each?.$response.$errors[props.rowIndex][
+              props.col.name
+            ]?.length
+          "
+          :alto="props.col.height ?? '200px'"
+          @update:model-value="data => (props.row[props.col.name] = data)"
+        />
+
         <!-- Aún no está completado, porque falta controlar la manera de subir el archivo -->
-        <!-- <q-file
+        <q-file
           v-if="props.col.type === 'file'"
           v-model="props.row[props.col.name]"
           outlined
@@ -146,8 +212,10 @@
           :bg-color="$q.dark.isActive ? 'grey-10' : 'grey-3'"
           :accept="props.col.accept ?? '*'"
         >
-          <template v-slot:prepend> <q-icon name="attach_file" /> </template
-        ></q-file> -->
+          <template v-slot:prepend>
+            <q-icon name="attach_file" />
+          </template>
+        </q-file>
 
         <q-select
           v-if="props.col.type === 'select_multiple'"
@@ -164,7 +232,11 @@
           dense
           emit-value
           map-options
-          :error="!!v$[keyError]?.$each?.$response.$errors[props.rowIndex][props.col.name]?.length"
+          :error="
+            !!v$[keyError]?.$each?.$response.$errors[props.rowIndex][
+              props.col.name
+            ]?.length
+          "
           :disable="disable"
         >
           <template v-slot:error>
@@ -192,24 +264,25 @@
         </q-select>
 
         <q-toggle
-          v-if="props.col.type === 'boolean'"
+          v-if="['boolean', 'toggle'].includes(props.col.type)"
           v-model="props.row[props.col.name]"
           @update:model-value="guardarCeldaEditada(props.row)"
-          :label="props.row[props.col.name] ? 'SI' : 'NO'"
           keep-color
-          :disable="disable"
+          color="positive"
+          :disable="disable || props.col.disableTable"
         />
+        <!-- :label="props.row[props.col.name] ? 'SI' : 'NO'" -->
       </q-td>
 
       <q-td v-else :props="props">
         <span
-          v-if="!['select', 'boolean'].includes(props.col.type)"
+          v-if="!['selecdt', 'boolean', 'toggle'].includes(props.col.type)"
           :class="{
             'text-white': $q.dark.isActive,
             'text-dark': !$q.dark.isActive
           }"
-          >{{ props.row[props.col.name] }}</span
-        >
+          v-html="props.row[props.col.name]"
+        ></span>
       </q-td>
     </template>
 
@@ -227,7 +300,7 @@
 
       <div
         v-if="titulo"
-        class="row text-primary text-subtitle2 q-mb-lg items-center justify-between col-12"
+        class="row text-subtitle2 q-mb-lg items-center justify-between col-12"
         :class="{
           'titulo-tabla2': !$q.screen.xs,
           'justify-center': $q.screen.xs,
@@ -238,7 +311,6 @@
           <q-icon
             v-if="!$q.screen.xs"
             name="bi-grip-vertical"
-            color="info"
             class="q-mr-sm"
           ></q-icon>
           <span>{{ titulo }}</span>
@@ -320,13 +392,22 @@
         v-if="permitirFiltrar || mostrarCantidadElementos"
         class="row full-width justify-between q-col-gutter-x-sm items-center q-mb-md"
       >
-        <span class="row items-center q-px-md">
+        <!-- <span class="row items-center q-px-md">
           <q-icon
             name="bi-circle-fill"
             color="positive"
             class="q-mr-sm"
           ></q-icon>
           {{ 'Total de elementos: ' }} <b>{{ datos.length }}</b>
+        </span> -->
+        <span class="row items-center text-black q-mb-md">
+          {{ '# registros: ' }}
+          <q-icon
+            name="bi-check-circle-fill"
+            color="primary"
+            class="q-mx-sm"
+          ></q-icon>
+          <b>{{ datos.length }}</b>
         </span>
 
         <div class="row q-gutter-xs justify-end q-mb-md">
@@ -430,16 +511,17 @@
       </div>
 
       <!-- Botones Header -->
-      <div class="row full-width q-gutter-xs">
+      <div class="row full-width q-gutter-xs q-mb-sm">
         <!-- Boton 1 Header -->
+        <!-- :disable="extraerDisable(accion1Header, props)" -->
         <q-btn
           v-if="extraerVisible(accion1Header, props)"
           :color="accion1Header?.color ?? 'primary'"
           :class="{ 'q-mb-sm': $q.screen.xs, 'full-width': $q.screen.xs }"
-          push
-          rounded
+          unelevated
           no-caps
           @click="accion1Header.accion(identificador)"
+          class="text-icon"
         >
           <q-icon
             :name="extraerIcono(accion1Header) ?? ''"
@@ -556,6 +638,8 @@
             >{{ accion6Header.tooltip }}
           </q-tooltip>
         </q-btn>
+
+        <slot name="header"></slot>
       </div>
     </template>
 
@@ -624,6 +708,7 @@
             :identificador="identificador"
             :propsTable="props"
             :listado="listado"
+            :disable="disable"
           ></CustomButtons>
         </div>
       </q-td>
@@ -634,8 +719,9 @@
       <q-card
         v-if="$q.screen.xs"
         :class="props.selected ? 'bg-grey-2' : ''"
-        class="q-py-xs q-my-none custom-shadows full-width border-bottom no-border srodunded-card"
+        class="q-py-xs q-my-none custom-shadows full-width border-bottom no srodunded-card q-mb-xs"
         :style="props.selected ? 'transform: scale(0.95);' : ''"
+        style="font-size: 0.7rem"
       >
         <q-card-section v-if="tipoSeleccion !== 'none'">
           <q-checkbox dense v-model="props.selected" :label="props.row.name" />
@@ -721,6 +807,7 @@
                   :identificador="identificador"
                   :propsTable="props"
                   :listado="listado"
+                  :disable="disable"
                 ></CustomButtons>
               </div>
 
@@ -985,8 +1072,26 @@
                       'archivos'
                     ].includes(col.name)
                   "
-                  >{{ col.value }}</span
+                  class="ellipsis-3-lines"
+                  :class="{
+                      'text-negative text-bold':!!v$[keyError]?.$each?.$response.$errors[props.rowIndex][col.name]?.length
+                  }"
                 >
+<!--                  Se modifica para que en la tabla vista movil se muestren los campos requeridos que tienen errores -->
+                  <error-component
+                    v-if="
+                      !!v$[keyError]?.$each?.$response.$errors[props.rowIndex][
+                        col.name
+                      ]?.length
+                    "
+                    :v$="v$"
+                    is-collection
+                    :key-error="keyError"
+                    :index-error="props.rowIndex"
+                    :clave="col.name"
+                  />
+                  {{ col.value }}
+                </span>
               </q-item-label>
             </q-item-section>
           </q-item>
@@ -1272,7 +1377,11 @@
     <template #body-cell-autorizacion="props">
       <q-td :props="props">
         <q-chip
-          v-if="props.value === autorizacionesTransacciones['aprobado']"
+          v-if="
+            [autorizacionesTransacciones['aprobado'], 'VALIDADO'].includes(
+              props.value
+            )
+          "
           :class="{ 'bg-green-1': !$q.dark.isActive }"
         >
           <q-icon
@@ -1280,7 +1389,7 @@
             color="positive"
             class="q-mr-xs"
           ></q-icon>
-          APROBADO
+          {{ props.value }}
         </q-chip>
         <q-chip
           v-if="props.value === autorizacionesTransacciones['cancelado']"
@@ -1574,17 +1683,7 @@
           ></q-icon>
           PARCIAL
         </q-chip>
-        <!-- <q-chip
-          v-if="props.value === estadosTransacciones['pendiente']"
-          :class="{ 'bg-yellow-1': !$q.dark.isActive }"
-        >
-          <q-icon
-            name="bi-circle-fill"
-            color="warning"
-            class="q-mr-xs"
-          ></q-icon>
-          PENDIENTE
-        </q-chip> -->
+
         <q-chip
           v-if="props.value === estadosTransacciones.no_realizada"
           :class="{ 'bg-red-1': !$q.dark.isActive }"
@@ -1741,6 +1840,16 @@
         <campo-boleano :propsTable="props" />
       </q-td>
     </template> -->
+    <template #body-cell-justificado_por_atrasado="props">
+      <q-td :props="props">
+        <campo-boleano :propsTable="props" />
+      </q-td>
+    </template>
+    <template #body-cell-revisado="props">
+      <q-td :props="props">
+        <campo-boleano :propsTable="props" />
+      </q-td>
+    </template>
     <template #body-cell-opto_pago="props">
       <q-td :props="props">
         <campo-boleano :propsTable="props" />
@@ -1799,6 +1908,7 @@
         <q-chip
           v-if="props.value === 'TICKET REASIGNADO'"
           class="bg-blue-1 text-blue"
+          dense
         >
           <q-icon name="bi-arrow-left-right" class="q-mr-xs"></q-icon>
           {{ 'TICKET REASIGNADO' }}
@@ -1807,6 +1917,7 @@
         <q-chip
           v-if="props.value === 'TICKET PAUSADO'"
           class="bg-grey-2 text-grey-8"
+          dense
         >
           <q-icon
             name="bi-pause-circle-fill"
@@ -1819,6 +1930,7 @@
         <q-chip
           v-if="props.value === 'TICKET EJECUTADO'"
           class="bg-yellow-1 text-yellow-8"
+          dense
         >
           <q-icon
             name="bi-play-circle-fill"
@@ -1831,13 +1943,14 @@
         <q-chip
           v-if="props.value === 'TICKET FINALIZADO'"
           class="bg-green-1 text-positive"
+          dense
         >
           <q-icon
             name="bi-check-circle-fill"
             color="positive"
             class="q-mr-xs"
-          ></q-icon
-          >{{ 'TICKET FINALIZADO' }}
+          ></q-icon>
+          {{ 'TICKET FINALIZADO' }}
         </q-chip>
 
         <span
@@ -2048,11 +2161,11 @@
   display: block;
   width: 100%;
 } */
-/*.bg-header-table {
+.bg-header-table {
   .q-table__top {
     background-color: $grey-4 !important;
   }
-}*/
+}
 
 .my-sticky-dynamic {
   /* height or max-height is important */

@@ -10,12 +10,21 @@ export const configuracionColumnasResultadoExamenPreocupacional: ColumnConfig<Re
     sortable: true
   },
   {
+    name: 'se_realizo_examen',
+    field: 'se_realizo_examen',
+    label: '¿Se realizo examen?',
+    align: 'left',
+    type: 'boolean',
+    sortable: true,
+    editable: true,
+  },
+  {
     name: 'tiempo',
     field: 'tiempo',
-    label: 'Tiempo(años)',
+    label: 'Fecha Realización',
     align: 'left',
     sortable: true,
-    type: 'number',
+    type: 'text',
     editable: true,
   },
   {
@@ -25,6 +34,6 @@ export const configuracionColumnasResultadoExamenPreocupacional: ColumnConfig<Re
     align: 'left',
     sortable: true,
     type: 'text',
-    editable: true,
+    editable:true,
   },
 ]

@@ -1,7 +1,22 @@
 <template>
   <q-page padding>
     <q-card class="q-mb-md rounded no-border bg-desenfoque custom-shadow">
-      <q-card-section>
+        <q-card-section>
+        <div class="col-12 col-md-6">
+            <q-btn-toggle
+                v-model="tipoDashboard"
+                class="toggle-button-primary"
+                spread
+                no-caps
+                rounded
+                toggle-color="primary"
+                unelevated
+                :options="tiposDashboard"
+            />
+        </div>
+        </q-card-section>
+
+        <q-card-section v-if="tipoDashboard === SISTEMA">
         <div class="border-1 text-primary text-bold q-mb-lg">
           <q-icon name="bi-graph-up-arrow" class="q-mr-sm"></q-icon>
           Análisis de datos: Módulo de tareas
@@ -44,9 +59,7 @@
               </template>
 
               <template v-slot:error>
-                <div v-for="error of v$.fecha_inicio.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="fecha_inicio" :v$="v$"/>
               </template>
             </q-input>
           </div>
@@ -87,9 +100,7 @@
               </template>
 
               <template v-slot:error>
-                <div v-for="error of v$.fecha_fin.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="fecha_fin" :v$="v$"/>
               </template>
             </q-input>
           </div>
@@ -143,17 +154,11 @@
               map-options
             >
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
+                <no-option-component/>
               </template>
 
               <template v-slot:error>
-                <div v-for="error of v$.empleado.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="empleado" :v$="v$"/>
               </template>
             </q-select>
           </div>
@@ -194,22 +199,30 @@
               @blur="v$.grupo.$touch"
             >
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
+                <no-option-component/>
               </template>
 
               <template v-slot:error>
-                <div v-for="error of v$.grupo.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="grupo" :v$="v$"/>
               </template>
             </q-select>
           </div>
         </div>
       </q-card-section>
+        <q-card-section v-if="tipoDashboard===APPENATE">
+            <div class="border-1 text-primary text-bold q-mb-lg">
+                <q-icon name="bi-graph-up-arrow" class="q-mr-sm"></q-icon>
+                Análisis de datos: Módulo de tareas 
+            </div>
+            <!-- Tiempos -->
+            <div class="row q-col-gutter-sm">
+                <iframe title="Dashboard de Tareas de Técnicos"
+                        :width="$q.screen.width" :height="$q.screen.height"
+                        src="https://app.powerbi.com/view?r=eyJrIjoiZWIwM2ZlZDgtY2NiOS00YjJhLTllOGMtNzBkZTBiZTNkZDBhIiwidCI6IjhiODI2NjQwLTRkZTQtNDEyOS04MWNlLTU3NjE0MTIwZjAwMCIsImMiOjR9"
+                        frameborder="0"
+                        allowFullScreen="true"></iframe>
+            </div>
+        </q-card-section>
     </q-card>
 
     <q-card

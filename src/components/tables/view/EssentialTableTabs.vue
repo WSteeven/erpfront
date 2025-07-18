@@ -2,7 +2,7 @@
   <div>
     <!-- narrow-indicator -->
     <q-tabs
-      v-if="mostrarTabs"
+    v-if="mostrarTabs"
       v-model="tabSeleccionado"
       no-caps
       bordered
@@ -12,17 +12,18 @@
       :active-bg-color="activeBgColor"
       :indicator-color="indicatorColor"
       align="justify"
-      >
+      :class="{ 'border-bottom': !$q.screen.xs }"
+    >
       <q-tab
-      v-for="opcion in tabOptions"
-      :key="opcion.label"
-      :name="opcion.value + ''"
-      :disable="opcion.disable"
-      :class="{
-        'rounded shadow-chip q-mx-xs q-my-md': $q.screen.xs,
-        'tab-inactive': tabSeleccionado !== opcion.label && !$q.screen.xs
-      }"
-      @click="$emit('tab-seleccionado', tabSeleccionado)"
+        v-for="opcion in tabOptions"
+        :key="opcion.label"
+        :name="opcion.value + ''"
+        :disable="opcion.disable"
+        :class="{
+          'rounded shadow-chip q-mx-xs q-my-sm': $q.screen.xs,
+          'tab-inactive': tabSeleccionado !== opcion.label && !$q.screen.xs
+        }"
+        @click="$emit('tab-seleccionado', tabSeleccionado)"
       >
         <q-icon
           v-if="opcion.icono && !opcion.icono_derecha"
@@ -30,7 +31,7 @@
           :color="opcion.color_icono"
           class="q-mr-sm"
         ></q-icon>
-        <span>{{ opcion.label }}</span>
+        <span class="text-bold">{{ opcion.label }}</span>
         <q-icon
           v-if="opcion.icono && opcion.icono_derecha"
           :name="opcion.icono"
@@ -47,7 +48,7 @@
       </q-tab>
     </q-tabs>
 
-    <div :class="{ 'q-mx-sm': $q.screen.xs }">
+    <div>
       <essential-table-pagination
         v-if="paginate"
         ref="refTabla"
@@ -102,6 +103,7 @@
         :tipoSeleccion="tipoSeleccion"
         @selected="seleccionado"
         :mixin="mixin"
+        :mostrarColumnasVisibles="!$q.screen.xs"
       ></essential-table-pagination>
 
       <essential-table
@@ -157,6 +159,7 @@
         :separador="separador"
         :tipoSeleccion="tipoSeleccion"
         @selected="seleccionado"
+        :mostrarColumnasVisibles="!$q.screen.xs"
       ></essential-table>
     </div>
   </div>
@@ -170,6 +173,7 @@ import { TabOption } from 'components/tables/domain/TabOption'
 import { ColumnConfig } from '../domain/ColumnConfig'
 import { TipoSeleccion } from 'config/utils'
 import { computed, defineComponent, ref, watchEffect } from 'vue'
+import { useQuasar } from 'quasar'
 
 // Components
 import EssentialTablePagination from './EssentialTablePagination.vue'
@@ -363,11 +367,13 @@ export default defineComponent({
     const refTabla = ref()
     const tabSeleccionado = ref(props.tabDefecto)
     const mostrarTabs = ref(true)
+    const $q = useQuasar()
+
     const activeColor = computed(
       () =>
         props.tabOptions.find(
           (opcion: TabOption) => opcion.value === tabSeleccionado.value
-        )?.color_icono ?? 'white'
+        )?.color_icono ?? ($q.screen.sm || $q.screen.xs ? 'grey-3' : 'dark')
     )
 
     const indicatorColor = computed(
@@ -460,7 +466,7 @@ export default defineComponent({
       seleccionado,
       // seleccionarTab,
       getSearchValue,
-      toSearch,
+      toSearch
     }
   }
 })

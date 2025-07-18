@@ -1,6 +1,6 @@
 // Dependencias
 import { useVuelidate } from '@vuelidate/core'
-import { computed, defineComponent, ref } from 'vue'
+import { defineComponent } from 'vue'
 
 // Componentes
 import SelectorImagen from 'components/SelectorImagen.vue'
@@ -11,12 +11,10 @@ import { Familiares } from '../domain/Familiares'
 import { removeAccents } from 'shared/utils'
 import { required } from 'shared/i18n-validators'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
-import { useAuthenticationStore } from 'stores/authentication'
 import GestorDocumentos from 'components/documentos/view/GestorDocumentos.vue'
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import { FamiliaresController } from '../infraestructure/FamiliaresController'
 import { configuracionColumnasFamiliares } from '../domain/configuracionColumnasFamiliares'
-import { useRecursosHumanosStore } from 'stores/recursosHumanos'
 import { useFamiliarStore } from 'stores/familiar'
 import { parentezcos } from 'config/recursosHumanos.utils'
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
@@ -33,25 +31,14 @@ export default defineComponent({
       entidad: familiares,
       disabled,
       accion,
-      listadosAuxiliares,
+      listadosAuxiliares
     } = mixin.useReferencias()
     const { setValidador, cargarVista, obtenerListados, consultar } =
       mixin.useComportamiento()
-    const {
-      onGuardado,
-    } = mixin.useHooks()
-    const store = useAuthenticationStore()
-    const storeRecursosHumanos = useRecursosHumanosStore()
+    const { onGuardado } = mixin.useHooks()
 
-    const { empleados, filtrarEmpleados } =useFiltrosListadosSelects(listadosAuxiliares)
-
-    const esRecursosHumanos = store.esRecursosHumanos
-
-    const esAutorizador = ref(false)
-    const verEmpleado = computed(() => store.can('puede.ver.campo.empleado'))
-    const esNuevo = computed(() => {
-      return accion.value === 'NUEVO'
-    })
+    const { empleados, filtrarEmpleados } =
+      useFiltrosListadosSelects(listadosAuxiliares)
 
     const familiarStore = useFamiliarStore()
 
@@ -59,8 +46,8 @@ export default defineComponent({
       await obtenerListados({
         empleados: {
           controller: new EmpleadoController(),
-          params: { campos: 'id,nombres,apellidos', estado: 1 },
-        },
+          params: { campos: 'id,nombres,apellidos', estado: 1 }
+        }
       })
       empleados.value = listadosAuxiliares.empleados
     })
@@ -74,37 +61,31 @@ export default defineComponent({
     }
     accion.value = familiarStore.accion
 
-
-    onGuardado((entidad,data) => {
+    onGuardado((entidad, data) => {
       emit('cerrar-modal', false)
-      emit('guardado',{ key:'EmpleadoPage',model:data.modelo})
+      emit('guardado', { key: 'EmpleadoPage', model: data.modelo })
     })
     //Reglas de validacion
     const reglas = {
       nombres: { required },
       apellidos: { required },
       parentezco: { required },
-      identificacion: { required },
+      identificacion: { required }
     }
     const v$ = useVuelidate(reglas, familiares)
     setValidador(v$.value)
+
     return {
       removeAccents,
       mixin,
       familiares,
       parentezcos,
       filtrarEmpleados,
-      esAutorizador,
-      esRecursosHumanos,
-      esNuevo,
-      verEmpleado,
       empleados,
-      accion,
-      storeRecursosHumanos,
       familiarStore,
       v$,
       disabled,
-      configuracionColumnas: configuracionColumnasFamiliares,
+      configuracionColumnas: configuracionColumnasFamiliares
     }
-  },
+  }
 })

@@ -5,6 +5,8 @@ export interface CustomActionTable<T = any> {
   tooltip?: string
   accion: (param) => void
   visible?: funcionBoolean<T>
+  disable?: funcionBoolean<T>
+  forzarEditable?: boolean
   color?: string | funcion<T>
   icono?: string | funcion<T>
 }

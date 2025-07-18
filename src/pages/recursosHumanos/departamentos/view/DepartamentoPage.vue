@@ -104,6 +104,21 @@
             />
           </div>
 
+          <!-- Listado de productos -->
+          <div
+              v-if="departamento.empleados?.length > 0"
+              class="col-12 col-md-12 q-mt-xl"
+          >
+            <essential-table
+                titulo="Empleados del departamento"
+                :datos="departamento.empleados"
+                :configuracionColumnas="configuracionColumnasEmpleadosLite"
+                ajustarCeldas
+                :altoFijo="false"
+                :mostrarBotones="false"
+            >
+            </essential-table>
+          </div>
         </div>
       </q-form>
     </template>

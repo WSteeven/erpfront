@@ -6,6 +6,7 @@
       <option-group-component
         v-model="salud.tiene_discapacidad"
         :disable="disable"
+        @update:modelValue="(val)=>{if(val)agregarDiscapacidad(salud.discapacidades)}"
       />
     </div>
     <div class="col-12 col-md-9 col-sm-12" v-if="salud.tiene_discapacidad">
@@ -48,12 +49,58 @@
       />
     </div>
 
-    <!-- Antiguedad -->
+    <!-- Indique fecha que adquirio enfermedad cronica -->
     <div
       class="col-12 col-md-3 q-mb-md col-sm-3"
       v-if="salud.tiene_enfermedad_cronica"
     >
-      <label class="q-mb-sm block">Indique enfermedad crónica</label>
+      <label class="q-mb-sm block">Indique fecha adquirio enfermedad crónica</label>
+      <q-input
+        v-model="salud.fecha_enfermedad_cronica"
+        placeholder="Obligatorio"
+        :disable="disable"
+        autogrow
+        outlined
+        dense
+        :error="!!v$?.fecha_enfermedad_cronica.$errors.length"
+        @blur="v$?.fecha_enfermedad_cronica.$touch"
+      >
+        <template v-slot:append>
+          <q-icon name="event" class="cursor-pointer">
+            <q-popup-proxy
+              cover
+              transition-show="scale"
+              transition-hide="scale"
+            >
+              <q-date
+                v-model="salud.fecha_enfermedad_cronica"
+                :mask="maskFecha"
+                today-btn
+              >
+                <div class="row items-center justify-end">
+                  <q-btn
+                    v-close-popup
+                    label="Cerrar"
+                    color="primary"
+                    flat
+                  />
+                </div>
+              </q-date>
+            </q-popup-proxy>
+          </q-icon>
+        </template>
+        <template v-slot:error>
+          <error-component clave="fecha_enfermedad_cronica" :v$="v$"/>
+        </template>
+      </q-input>
+    </div>
+
+    <!-- Indique enfermedad crónica -->
+    <div
+      class="col-12 col-md-3 q-mb-md col-sm-3"
+      v-if="salud.tiene_enfermedad_cronica"
+    >
+      <label class="q-mb-sm block">Indique enfermedad crónica y cómo la adquirio</label>
       <q-input
         v-model="salud.enfermedad_cronica"
         placeholder="Obligatorio"
@@ -104,6 +151,7 @@
       <option-group-component
         v-model="salud.tiene_familiar_dependiente_discapacitado"
         :disable="disable"
+        @update:modelValue="(val)=>{if(val)agregarDiscapacidad(salud.discapacidades_familiar_dependiente)}"
       />
     </div>
 
@@ -166,6 +214,19 @@
       </q-select>
     </div>
 
+    <!-- imagen_rutagrama -->
+    <div class="col-12 col-md-3 q-mb-md col-sm-12" v-if="salud.tiene_familiar_dependiente_discapacitado">
+      <label for="q-mb-xl block">Identificación familiar discapacitado</label>
+      <selector-imagen
+        file_extensiones=".jpg, image/*"
+        placeholder="Obligatorio"
+        :imagen="salud.imagen_cedula_familiar_dependiente_discapacitado"
+        :error="!!v$.imagen_cedula_familiar_dependiente_discapacitado.$errors.length"
+        :disable="disable"
+        :alto="'300px'"
+        @update:model-value="data => (salud.imagen_cedula_familiar_dependiente_discapacitado = data)"
+      ></selector-imagen>
+    </div>
     <div
       class="col-12 col-md-6 col-sm-12"
       v-if="salud.tiene_familiar_dependiente_discapacitado"

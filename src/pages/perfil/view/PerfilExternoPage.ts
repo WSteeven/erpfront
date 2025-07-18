@@ -1,10 +1,7 @@
 // Dependencias
-import { useAuthenticationStore } from 'stores/authentication'
-import { defineComponent, reactive, ref } from 'vue'
+import { defineComponent, ref } from 'vue'
 import ModalEntidad from 'components/modales/view/ModalEntidad.vue'
 // Logica y controladores
-import { Perfil } from '../domain/Perfil'
-import { ComportamientoModalesPerfil } from '../application/ComportamientoModalesPerfil'
 import { useAuthenticationExternalStore } from 'stores/authenticationExternal'
 
 

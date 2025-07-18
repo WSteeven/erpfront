@@ -51,7 +51,7 @@ export const useProveedorStore = defineStore('proveedor', () => {
       const axios = AxiosHttpRepository.getInstance()
       const url = apiConfig.URL_BASE+'/'+axios.getEndpoint(endpoints.reporte_proveedores)
       const filename = 'reporte_todos_proveedores'
-      imprimirArchivo(url, 'GET', 'blob', 'xlsx', filename)
+      await imprimirArchivo(url, 'GET', 'blob', 'xlsx', filename)
     } catch (error:any) {
       notificarError(error)
     }finally{
@@ -68,14 +68,12 @@ export const useProveedorStore = defineStore('proveedor', () => {
       switch (accion) {
         case 'excel':
           data.accion = 'excel'
-          imprimirArchivo(url, 'POST', 'blob', 'xlsx', filename, data)
+          await imprimirArchivo(url, 'POST', 'blob', 'xlsx', filename, data)
           return listado
-          break
         case 'pdf':
           data.accion = 'pdf'
-          imprimirArchivo(url, 'POST', 'blob', 'pdf', filename, data)
+          await imprimirArchivo(url, 'POST', 'blob', 'pdf', filename, data)
           return listado
-          break
         default:
           data.accion = ''
           const response: AxiosResponse = await axios.post(url, data)
@@ -94,11 +92,11 @@ export const useProveedorStore = defineStore('proveedor', () => {
   }
 
   async function imprimirReporteCalificacion(entidad) {
-    console.log(entidad)
+    // console.log(entidad)
     const axios = AxiosHttpRepository.getInstance()
     const ruta = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.proveedores) + '/imprimir-calificacion/' + idProveedor.value
     const filename = 'calificacion_proveedor_' + entidad.ruc + '_' + entidad.sucursal
-    imprimirArchivo(ruta, 'GET', 'blob', 'xlsx', filename)
+    await imprimirArchivo(ruta, 'GET', 'blob', 'xlsx', filename)
   }
 
   async function actualizarCalificacion() {

@@ -21,9 +21,7 @@
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.lugar.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="lugar" :v$="v$"/>
               </template>
             </q-input>
           </div>
@@ -42,9 +40,7 @@
               unmasked-value
             >
               <template v-slot:error>
-                <div v-for="error of v$.telefono.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="telefono" :v$="v$"/>
               </template>
             </q-input>
           </div>
@@ -61,9 +57,7 @@
               type="email"
             >
               <template v-slot:error>
-                <div v-for="error of v$.correo.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="correo" :v$="v$"/>
               </template>
             </q-input>
           </div>
@@ -80,9 +74,7 @@
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.extension.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="extension" :v$="v$"/>
               </template>
             </q-input>
           </div>
@@ -110,18 +102,26 @@
               map-options
             >
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
+                <no-option-component/>
               </template>
               <template v-slot:error>
-                <div v-for="error of v$.cliente.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="cliente" :v$="v$"/>
               </template>
             </q-select>
+          </div>
+
+          <!-- Activo -->
+          <div class="col-12 col-md-3 col-sm-3">
+            <label class="q-mb-sm block">Estado</label>
+            <q-toggle
+                :label="sucursal.activo ? 'ACTIVO' : 'INACTIVO'"
+                v-model="sucursal.activo"
+                color="primary"
+                keep-color
+                icon="bi-check2-circle"
+                unchecked-icon="clear"
+                :disable="disabled"
+            />
           </div>
         </div>
       </q-form>

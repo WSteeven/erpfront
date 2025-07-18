@@ -4,7 +4,7 @@
     :configuracionColumnas="configuracionColumnas"
     :fila="fila"
     @limpiar="limpiarFila"
-    @guardar="guardarFila"
+    @editar="guardarFila"
     :modalMaximized="modalMaximized"
   ></EditarTablaModal>
   <div

@@ -25,7 +25,7 @@ import { ExtensionConyugalController } from '../infraestructure/ExtensionConyuga
 export default defineComponent({
   components: { TabLayout, SelectorImagen, GestorDocumentos },
   emits: ['cerrar-modal'],
-  setup(props, { emit }) {
+  setup() {
     const mixin = new ContenedorSimpleMixin(ExtensionConyugal, new ExtensionConyugalController())
     const mixinExtensionConyugal = new ContenedorSimpleMixin(Archivo, new ArchivoExtensionConyugalController())
     const { entidad: extensionconyugal, disabled, accion, } = mixin.useReferencias()
@@ -58,7 +58,7 @@ export default defineComponent({
     // }
     onBeforeGuardar(() => {
       extensionconyugal.tieneDocumento =
-        refArchivoExtensionConyugal.value.tamanioListado > 0 ? true : false
+        refArchivoExtensionConyugal.value.tamanioListado > 0
       if (!extensionconyugal.tieneDocumento) {
         notificarAdvertencia('Debe seleccionar al menos un archivo.')
       }
@@ -67,7 +67,7 @@ export default defineComponent({
     onBeforeModificar(() => {
       extensionconyugal.tieneDocumento = true
     })
-    onGuardado(async (id: number) => {
+    onGuardado(async () => {
       await subirArchivos()
       await listar()
       // emit('cerrar-modal')
@@ -110,8 +110,8 @@ export default defineComponent({
       },
     }
     /**Verifica si es un mes */
-    function checkValue(val, reason, details) {
-      is_month.value = reason === 'month' ? false : true
+    function checkValue(_:string, reason:string) {
+      is_month.value = reason !== 'month'
     }
 
     return {
@@ -128,7 +128,7 @@ export default defineComponent({
       verEmpleado,
       refArchivoExtensionConyugal,
       mixinExtensionConyugal,
-      endpoint: endpoints.archivo_extencion_conyugal,
+      endpoint: endpoints.archivo_extension_conyugal,
       accion,
       maskFecha,
       v$,

@@ -34,6 +34,9 @@ import { TransferenciaProductoRealizadaPusherEvent } from 'src/pusherEvents/tare
 import { TransferenciaProductoSolicitadaPusherEvent } from 'src/pusherEvents/tareas/TransferenciaProductosSolicitadaPusherEvent'
 import { NotificarEntregaActivoFijoPusherEvent } from 'src/pusherEvents/activosFijos/NotificarEntregaActivoFijoPusherEvent'
 import { PostulacionPusherEvent } from 'src/pusherEvents/recursosHumanos/seleccionContratacionPersonal/PostulacionPusherEvent'
+import {
+  NotificarAtrasoJefeInmediatoPusherEvent
+} from '../../pusherEvents/ControlPersonal/NotificarAtrasoJefeInmediatoPusherEvent'
 
 
 
@@ -193,5 +196,11 @@ export class NotificacionesSistema {
      **********************/
     const notificarEntregaActivoFijoPusherEvent = new NotificarEntregaActivoFijoPusherEvent()
     notificarEntregaActivoFijoPusherEvent.start()
+
+    /**
+     * Modulo de Control de Personal
+     */
+    const notificarAtrasoJefeInmediatoPusherEvent = new NotificarAtrasoJefeInmediatoPusherEvent()
+    notificarAtrasoJefeInmediatoPusherEvent.start()
   }
 }

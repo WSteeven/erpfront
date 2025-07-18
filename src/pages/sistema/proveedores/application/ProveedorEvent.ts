@@ -32,5 +32,9 @@ export class ProveedorEvent {
             notificacionStore.agregar(e.notificacion)
             notificarCorrecto('Un proveedor ha sido calificado, por favor revisa la notificación');
         })
+        proveedorCalificado.bind('proveedor-recalificado-event', (e)=>{
+            notificacionStore.agregar(e.notificacion)
+            notificarCorrecto('Un proveedor necesita ser recalificado, por favor realiza la gestión.');
+        })
     }
 }

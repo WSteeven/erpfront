@@ -35,7 +35,7 @@ export const useOrdenCompraStore = defineStore('ordenCompra', () => {
       const axios = AxiosHttpRepository.getInstance()
       const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.ordenes_compras) + '/imprimir/' + idOrden.value
       const filename = 'orden_compra_' + idOrden.value + '_' + Date.now()
-      imprimirArchivo(url, 'GET', 'blob', 'pdf', filename)
+      await imprimirArchivo(url, 'GET', 'blob', 'pdf', filename)
       console.log('Orden de compra impreso con éxito')
     } catch (e) {
       notificarAdvertencia('Error al imprimir la orden de compra. ' + e)
@@ -50,7 +50,7 @@ export const useOrdenCompraStore = defineStore('ordenCompra', () => {
       const axios = AxiosHttpRepository.getInstance()
       const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.ordenes_compras) + '/toProveedor/' + idOrden.value
       const response: AxiosResponse = await axios.get(url)
-      if (response.status = 200) notificarCorrecto(response.data.mensaje)
+      if (response.status === 200) notificarCorrecto(response.data.mensaje)
       else notificarAdvertencia(response.data.mensaje)
 
     } catch (e) {

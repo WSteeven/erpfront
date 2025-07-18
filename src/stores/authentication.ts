@@ -12,64 +12,134 @@ import { ResetPassword } from 'sistema/authentication/resetPassword/domain/Reset
 import { UltimoSaldoController } from 'pages/fondosRotativos/reportes/reporteSaldoActual/infrestucture/UltimoSaldoController'
 import { UserLogin } from 'sistema/authentication/login/domain/UserLogin'
 import { useListadosSistemaStore } from './listadosSistema'
+import { useNotificaciones } from 'shared/notificaciones'
 
 export const useAuthenticationStore = defineStore('authentication', () => {
   // Variables locales
   const axios = AxiosHttpRepository.getInstance()
   let usuarioFueConsultado = false
   const listadosSistemaStore = useListadosSistemaStore()
+  const { notificarError } = useNotificaciones()
 
   // State
-  const user = ref()
   const auth = ref(false)
+  const user = ref()
   const roles = ref()
   const permisos = ref()
   const nombre_usuario = ref() // Para resetear clave
   const saldo_actual = ref(0)
   const nombreUsuario = computed(
     () =>
-      `${user.value?.nombres}${user.value?.apellidos ? ' ' + user.value.apellidos : ''
+      `${user.value?.nombres}${
+        user.value?.apellidos ? ' ' + user.value.apellidos : ''
       }`
   )
 
-  const esCoordinador = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.coordinador) : false)
-  const esCoordinadorBackup = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.coordinadorBackup) : false)
-  const esCoordinadorBodega = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.coordinadorBodega) : false)
-  const esFiscalizador = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.fiscalizador) : false)
-  const esJefeTecnico = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.jefe_tecnico) : false)
-  const esSupervisorCampo = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.supervisor) : false)
-  const esTecnicoLider = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.tecnico_lider) : false)
-  const esBodeguero = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.bodega) : false)
-  const esBodegueroTelconet = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.bodegaTelconet) : false)
-  const esActivosFijos = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.activos_fijos) : false)
-  const esTecnico = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.tecnico) : false)
-  const esRecursosHumanos = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.rrhh) : false)
-  const esGerente = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.gerente) : false)
-  const esContabilidad = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.contabilidad) : false)
-  const esCompras = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.compras) : false)
-  const esAdministrador = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.administrador) : false)
-  const esAdministradorVehiculos = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.administradorVehiculos) : false)
-  const esSupervisorTecnico = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.esSupervisorTecnico) : false)
+  const esCoordinador = computed(() =>
+    user.value ? extraerRol(user.value.roles, rolesSistema.coordinador) : false
+  )
+  const esCoordinadorBackup = computed(() =>
+    user.value
+      ? extraerRol(user.value.roles, rolesSistema.coordinadorBackup)
+      : false
+  )
+  const esCoordinadorBodega = computed(() =>
+    user.value
+      ? extraerRol(user.value.roles, rolesSistema.coordinadorBodega)
+      : false
+  )
+  const esFiscalizador = computed(() =>
+    user.value ? extraerRol(user.value.roles, rolesSistema.fiscalizador) : false
+  )
+  const esJefeTecnico = computed(() =>
+    user.value ? extraerRol(user.value.roles, rolesSistema.jefe_tecnico) : false
+  )
+  const esSupervisorCampo = computed(() =>
+    user.value ? extraerRol(user.value.roles, rolesSistema.supervisor) : false
+  )
+  const esTecnicoLider = computed(() =>
+    user.value
+      ? extraerRol(user.value.roles, rolesSistema.tecnico_lider)
+      : false
+  )
+  const esBodeguero = computed(() =>
+    user.value ? extraerRol(user.value.roles, rolesSistema.bodega) : false
+  )
+  const esBodegueroTelconet = computed(() =>
+    user.value
+      ? extraerRol(user.value.roles, rolesSistema.bodegaTelconet)
+      : false
+  )
+  const esActivosFijos = computed(() =>
+    user.value
+      ? extraerRol(user.value.roles, rolesSistema.activos_fijos)
+      : false
+  )
+  const esTecnico = computed(() =>
+    user.value ? extraerRol(user.value.roles, rolesSistema.tecnico) : false
+  )
+  const esRecursosHumanos = computed(() =>
+    user.value ? extraerRol(user.value.roles, rolesSistema.rrhh) : false
+  )
+  const esGerente = computed(() =>
+    user.value ? extraerRol(user.value.roles, rolesSistema.gerente) : false
+  )
+  const esContabilidad = computed(() =>
+    user.value ? extraerRol(user.value.roles, rolesSistema.contabilidad) : false
+  )
+  const esCompras = computed(() =>
+    user.value ? extraerRol(user.value.roles, rolesSistema.compras) : false
+  )
+  const esAdministrador = computed(() =>
+    user.value
+      ? extraerRol(user.value.roles, rolesSistema.administrador)
+      : false
+  )
+  const esAdministradorVehiculos = computed(() =>
+    user.value
+      ? extraerRol(user.value.roles, rolesSistema.administradorVehiculos)
+      : false
+  )
+  const esSupervisorTecnico = computed(() =>
+    user.value
+      ? extraerRol(user.value.roles, rolesSistema.esSupervisorTecnico)
+      : false
+  )
   //ventas
-  const esJefeVentasClaro = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.jefe_ventas) : false)
-  const esSupervisorVentasClaro = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.supervisor_ventas) : false)
-  const esVendedor = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.vendedor) : false)
+  const esJefeVentasClaro = computed(() =>
+    user.value ? extraerRol(user.value.roles, rolesSistema.jefe_ventas) : false
+  )
+  const esSupervisorVentasClaro = computed(() =>
+    user.value
+      ? extraerRol(user.value.roles, rolesSistema.supervisor_ventas)
+      : false
+  )
+  const esVendedor = computed(() =>
+    user.value ? extraerRol(user.value.roles, rolesSistema.vendedor) : false
+  )
 
-  const esMedico = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.medico) : false)
-  const esMecanicoGeneral = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.mecanicoGeneral) : false)
+  const esMedico = computed(() =>
+    user.value ? extraerRol(user.value.roles, rolesSistema.medico) : false
+  )
+  const esMecanicoGeneral = computed(() =>
+    user.value
+      ? extraerRol(user.value.roles, rolesSistema.mecanicoGeneral)
+      : false
+  )
+  const esSso = computed(() =>
+    user.value ? extraerRol(user.value.roles, rolesSistema.sso) : false
+  )
 
   function extraerRol(roles: string[], rolConsultar: string) {
     return roles.some((rol: string) => rol === rolConsultar)
   }
 
   // Actions
-  const login = async (
-    credentiales: UserLogin
-  ): Promise<Empleado> => {
+  const login = async (credentiales: UserLogin): Promise<Empleado> => {
     try {
       /*const csrf_cookie = axios.getEndpoint(endpoints.csrf_cookie)
-      console.log('authentication...')
-      await axios.get(csrf_cookie) */
+            console.log('authentication...')
+            await axios.get(csrf_cookie) */
 
       const login = axios.getEndpoint(endpoints.login)
       const response: AxiosResponse = await axios.post(login, credentiales)
@@ -80,23 +150,25 @@ export const useAuthenticationStore = defineStore('authentication', () => {
       roles.value = response.data.modelo.roles
       permisos.value = response.data.modelo.permisos
 
-      listadosSistemaStore.cargarDatosLS()
+      await listadosSistemaStore.cargarDatosLS()
 
       return response.data.modelo
-    } catch (error: unknown) {
-      console.log(error)
-
+    } catch (error: any) {
+      // console.log(error)
+      notificarError(
+        error.response.statusText + ': ' + error.response.data.mensaje
+      )
       const axiosError = error as AxiosError
       throw new ApiError(axiosError)
     }
   }
 
-   // Actions
+  // Actions
   //  const loginPostulante = async (credentiales: UserLoginPostulante): Promise<Empleado> => {
   //   try {
-      /*const csrf_cookie = axios.getEndpoint(endpoints.csrf_cookie)
-      console.log('authentication...')
-      await axios.get(csrf_cookie) */
+  /*const csrf_cookie = axios.getEndpoint(endpoints.csrf_cookie)
+        console.log('authentication...')
+        await axios.get(csrf_cookie) */
 
   //     const login = axios.getEndpoint(endpoints.login)
   //     const response: AxiosResponse = await axios.post(login, credentiales)
@@ -118,7 +190,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
   // }
   const enviarCorreoRecuperacion = async (userLogin: ForgotPassword) => {
     try {
-      await axios.post(
+      return await axios.post(
         axios.getEndpoint(endpoints.enviar_correo_recuperacion),
         userLogin
       )
@@ -129,7 +201,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
   }
   const recuperacionCuenta = async (userLogin: ForgotPassword) => {
     try {
-      await axios.post(
+      return await axios.post(
         axios.getEndpoint(endpoints.recuperacion_cuenta),
         userLogin
       )
@@ -138,6 +210,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
       throw new ApiError(axiosError)
     }
   }
+
   async function consultar_saldo_actual() {
     try {
       const ultimo_saldo = new UltimoSaldoController()
@@ -223,6 +296,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
       throw new ApiError(axiosError)
     }
   }
+
   // console.log(user);
 
   return {
@@ -253,14 +327,21 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     esActivosFijos,
     esRecursosHumanos,
     esGerente,
-    esCompras, esContabilidad, esAdministrador, esAdministradorVehiculos, esMecanicoGeneral, esSupervisorTecnico,
-    esJefeVentasClaro, esSupervisorVentasClaro, esVendedor,
+    esCompras,
+    esContabilidad,
+    esAdministrador,
+    esAdministradorVehiculos,
+    esMecanicoGeneral,
+    esSupervisorTecnico,
+    esJefeVentasClaro,
+    esSupervisorVentasClaro,
+    esVendedor,
     esFiscalizador,
     esSupervisorCampo,
     esMedico,
+    esSso,
     consultar_saldo_actual,
     extraerRol,
-    listadoUsuarios,
-
+    listadoUsuarios
   }
 })

@@ -14,7 +14,7 @@
             <label class="q-mb-sm block">Producto</label>
             <q-select
               v-model="stock.producto"
-              :options="opciones_productos"
+              :options="productos"
               transition-show="scale"
               transition-hide="scale"
               options-dense
@@ -22,7 +22,7 @@
               outlined
               use-input
               input-debounce="0"
-              @filter="filtroProductos"
+              @filter="filtrarProductos"
               @update:model-value="seleccionarDetalle"
               :option-label="(item) => item.nombre"
               :option-value="(item) => item.id"
@@ -30,11 +30,7 @@
               map-options
             >
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
+                <no-option-component/>
               </template>
             </q-select>
           </div>
@@ -68,16 +64,10 @@
               map-options
             >
               <template v-slot:error>
-                <div v-for="error of v$.detalle_id.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="detalle_id" :v$="v$"/>
               </template>
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
+                <no-option-component/>
               </template>
             </q-select>
           </div>
@@ -86,7 +76,7 @@
             <label class="q-mb-sm block">Sucursal</label>
             <q-select
               v-model="stock.sucursal_id"
-              :options="opciones_sucursales"
+              :options="sucursales"
               transition-show="scale"
               transition-hide="scale"
               options-dense
@@ -95,7 +85,7 @@
               use-input
               input-debounce="0"
               @filter="filtrarSucursales"
-              @popup-show="ordenarLista(opciones_sucursales, 'lugar')"
+              @popup-show="ordenarLista(sucursales, 'lugar')"
               @update:model-value="seleccionarPropietario"
               :error="!!v$.sucursal_id.$errors.length"
               error-message="Debes seleccionar una sucursal"
@@ -104,10 +94,11 @@
               emit-value
               map-options
             >
+              <template v-slot:no-option>
+                <no-option-component/>
+              </template>
               <template v-slot:error>
-                <div v-for="error of v$.sucursal_id.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="sucursal_id" :v$="v$"/>
               </template>
             </q-select>
           </div>
@@ -131,9 +122,7 @@
               map-options
             >
               <template v-slot:error>
-                <div v-for="error of v$.cliente_id.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="cliente_id" :v$="v$"/>
               </template>
             </q-select>
           </div>

@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
-import {  AxiosResponse } from 'axios'
+import { AxiosResponse } from 'axios'
 import { endpoints } from 'src/config/api'
 
 export const useRecursosHumanosStore = defineStore('fondo_rotativo', () => {
@@ -11,8 +11,9 @@ export const useRecursosHumanosStore = defineStore('fondo_rotativo', () => {
   const porcentaje_endeudamiento = ref()
   const mensaje = ref()
   const axios = AxiosHttpRepository.getInstance()
-const listar_familiares = ref(true)
-  async function obtener_sueldo_basico() {
+  const listar_familiares = ref(true)
+
+  async function obtenerSueldoBasico() {
     try {
       const userApi = axios.getEndpoint(endpoints.sueldo_basico)
       const response = await axios.get<AxiosResponse>(userApi)
@@ -22,6 +23,7 @@ const listar_familiares = ref(true)
       setSueldoBasico(0)
     }
   }
+
   async function obtener_porcentaje_anticipo() {
     try {
       const userApi = axios.getEndpoint(endpoints.porcentaje_anticipo)
@@ -32,13 +34,14 @@ const listar_familiares = ref(true)
       setPorcentajeAnticipo(0)
     }
   }
-  async function nivel_endeudamiento(id_empleado) {
+
+  async function nivelEndeudamiento(empleado_id) {
     try {
       const userApi = axios.getEndpoint(endpoints.nivel_endeudamiento)
       const response = await axios.get<AxiosResponse>(userApi, {
         params: {
-          empleado: id_empleado,
-        },
+          empleado: empleado_id
+        }
       })
       setPorcentajeEndeudamiento(response.data.results.porcentaje)
       setTotalDescuento(response.data.results.total_descuento)
@@ -60,7 +63,6 @@ const listar_familiares = ref(true)
   }
   const setTotalDescuento = (total_descuento_data: number) => {
     total_descuento.value = total_descuento_data
-    console.log(total_descuento.value)
   }
   const setPorcentajeEndeudamiento = (porcentaje: number) => {
     porcentaje_endeudamiento.value = porcentaje
@@ -74,14 +76,14 @@ const listar_familiares = ref(true)
 
   return {
     getSueldoBasico,
-    obtener_sueldo_basico,
-    nivel_endeudamiento,
+    obtenerSueldoBasico,
+    nivelEndeudamiento,
     sueldo_basico,
     total_descuento,
     porcentaje_endeudamiento,
     listar_familiares,
     obtener_porcentaje_anticipo,
     mensaje,
-    porcentajeAnticipo,
+    porcentajeAnticipo
   }
 })

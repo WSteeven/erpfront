@@ -1,6 +1,7 @@
 <template>
   <q-page padding>
     <essential-table-tabs
+      :mixin="mixin"
       titulo="Despachos realizados"
       :configuracionColumnas="[...configuracionColumnas, accionesTabla]"
       :datos="listado"
@@ -14,11 +15,14 @@
       :accion2="botonImprimir"
       tabDefecto="PENDIENTE"
       :ajustarCeldas="true"
+      paginate
     ></essential-table-tabs>
 
-    <modal-entidad :comportamiento="modales"
-    :persistente="false"
-    :mostrar-listado="false"></modal-entidad>
+    <modal-entidad
+      :comportamiento="modales"
+      :persistente="false"
+      :mostrar-listado="false"
+    ></modal-entidad>
   </q-page>
 </template>
 <script src="./ComprobantePage.ts"></script>

@@ -17,6 +17,7 @@ import { ListableActivityRepository } from 'shared/controller/infraestructure/Li
 import { GuardableActivityRepository } from 'shared/controller/infraestructure/GuardableActivityRepository'
 import { GuardableListadoRepository } from 'shared/controller/infraestructure/GuardableListadoRepository'
 import { EditableListadoRepository } from 'shared/controller/infraestructure/EditableListadoRepository'
+import { EliminableListadoRepository } from 'shared/controller/infraestructure/listado/EliminableListadoRepository'
 
 export abstract class TransaccionSimpleController<T extends EntidadAuditable>
   implements Controller<T> {
@@ -31,6 +32,7 @@ export abstract class TransaccionSimpleController<T extends EntidadAuditable>
   private editableListadoRepository: EditableListadoRepository<T>
   private eliminableRepository: EliminableRepository<T>
   private eliminableFileRepository: EliminableFileRepository<T>
+  private eliminableListadoRepository: EliminableListadoRepository<T>
   private listableRepository: ListableRepository<T>
   private listableFileRepository: ListableFileRepository<T>
   private listableActivityRepository: ListableActivityRepository<T>
@@ -50,6 +52,7 @@ export abstract class TransaccionSimpleController<T extends EntidadAuditable>
     this.editableListadoRepository = new EditableListadoRepository(endpoint)
     this.eliminableFileRepository = new EliminableFileRepository(endpoint)
     this.eliminableRepository = new EliminableRepository(endpoint)
+    this.eliminableListadoRepository = new EliminableListadoRepository(endpoint)
     this.listableRepository = new ListableRepository(endpoint)
     this.listableFileRepository = new ListableFileRepository(endpoint)
     this.listableActivityRepository = new ListableActivityRepository(endpoint)
@@ -110,6 +113,10 @@ export abstract class TransaccionSimpleController<T extends EntidadAuditable>
   }
   async eliminar(id: number) {
     return await this.eliminableRepository.eliminar(id) //, params)
+  }
+
+  async eliminarListado(ids: number[]) {
+    return await this.eliminableListadoRepository.eliminar(ids) //, params)
   }
 
   async descargarListado(params?: any) {

@@ -1,0 +1,96 @@
+/* Fondo del tooltip */
+.introjs-tooltip {
+  background-color: #ffffff;
+  color: #333;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  //   font-size: 16px;
+  //   line-height: 1.6;
+  //   padding: 16px;
+  //   max-width: 320px;
+  border: 1px solid #e0e0e0;
+}
+
+/* Título del tooltip */
+.introjs-tooltip-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #0879dc;
+  //   margin-bottom: 8px;
+  //   background-color: #064fff;
+}
+
+/* Botones */
+.introjs-button {
+  background-color: #0879dc !important;
+  color: #ffffff !important;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 16px;
+  //   font-weight: 500;
+  //   font-size: 14px;
+  font-weight: normal; /* <-- sin negrita */
+  text-transform: none; /* <-- sin mayúsculas automáticas */
+  box-shadow: none; /* <-- sin sombra */
+  text-shadow: none !important; /* <-- sin sombra de texto */
+  letter-spacing: normal; /* <-- sin espaciado extra */
+  font-family: inherit; /* <-- misma fuente que el resto */
+  margin: 0 4px;
+  transition: background-color 0.3s ease;
+}
+
+.introjs-button:hover {
+  background-color: #0668be;
+}
+
+/* Botón de salir */
+/* .introjs-skipbutton,
+.introjs-donebutton {
+  background-color: #f44336;
+  padding: 0px;
+  margin: 0px;
+  height: 4px !important;
+  color: white;
+} */
+
+/* .introjs-skipbutton:hover,
+.introjs-donebutton:hover {
+  background-color: #d32f2f;
+} */
+
+/* Puntos de navegación (si usas bullets) */
+.introjs-bullets ul li a {
+  background: #ccc;
+  
+}
+.introjs-bullets ul li a.active {
+  background: #0879dc;
+}
+
+/* Resalte del elemento actual */
+.introjs-highlight {
+  border: 3px solid #0879dc;
+  border-radius: 8px;
+}
+
+/* Fondo oscurecido */
+.introjs-overlay {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+//---
+/* Permitir clics sobre elementos resaltados */
+/* Evita que el highlight bloquee clics */
+.introjs-helperLayer.no-block-highlight {
+  pointer-events: none !important;
+  background: transparent !important;
+  //   box-shadow: 0 0 0 3px #0879dc !important; /* opcional: resalta con tu color principal */
+  z-index: 19999 !important;
+}
+
+// comento este código porque al abrir el q-drawer se muestra hasta arriba
+/* .q-toggle {
+  z-index: 9999999999 !important;
+  position: relative !important;
+  pointer-events: auto !important;
+} */

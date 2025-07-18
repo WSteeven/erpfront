@@ -28,7 +28,7 @@ module.exports = configure(function (/* ctx */) {
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     // https://v2.quasar.dev/quasar-cli-vite/boot-files
-    boot: ['axios', 'global-variables'],
+    boot: ['axios', 'global-variables', 'push'],
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#css
     css: ['app.scss'],
@@ -40,7 +40,7 @@ module.exports = configure(function (/* ctx */) {
       'fontawesome-v6',
       // 'eva-icons',
       // 'themify',
-      // 'line-awesome',
+      'line-awesome',
       // 'roboto-font-latin-ext', // this or either 'roboto-font', NEVER both!
 
       'roboto-font', // optional, you are not bound to it
@@ -155,15 +155,26 @@ module.exports = configure(function (/* ctx */) {
         vehiculos: path.join(__dirname, './src/pages/controlVehiculos'),
         // Modulo medico
         medico: path.join(__dirname, './src/pages/medico'),
-        seleccionContratacion: path.join(__dirname, './src/pages/recursosHumanos/SeleccionContratacionPersonal'),
-        trabajoSocial: path.join(__dirname, './src/pages/recursosHumanos/TrabajoSocial'),
-        capacitacion: path.join(__dirname, './src/pages/recursosHumanos/Capacitacion'),
+        seleccionContratacion: path.join(
+          __dirname,
+          './src/pages/recursosHumanos/SeleccionContratacionPersonal'
+        ),
+        trabajoSocial: path.join(
+          __dirname,
+          './src/pages/recursosHumanos/TrabajoSocial'
+        ),
         activosFijos: path.join(__dirname, './src/pages/activosFijos'),
         controlActivosFijos: path.join(
           __dirname,
           './src/pages/activosFijos/controlActivosFijos'
         ),
-        sso: path.join(__dirname, './src/pages/sso')
+        sso: path.join(__dirname, './src/pages/sso'),
+        seguridad: path.join(__dirname, './src/pages/seguridad'),
+        comprasProveedores: path.join(
+          __dirname,
+          './src/pages/comprasProveedores'
+        ),
+        controlPersonal: path.join(__dirname, './src/pages/recursosHumanos/control_personal')
       }
     },
 
@@ -191,6 +202,10 @@ module.exports = configure(function (/* ctx */) {
 
       // Quasar plugins
       plugins: ['Notify', 'Dialog', 'Loading']
+    },
+    htmlVariables:{
+      title: 'FIRSTRED - JPCONSTRUCRED',
+      description: 'Gestiona nómina, empleados, inventario, vehiculos, proyectos y tickets desde un solo lugar.',
     },
 
     // animations: 'all', // --- includes all animations

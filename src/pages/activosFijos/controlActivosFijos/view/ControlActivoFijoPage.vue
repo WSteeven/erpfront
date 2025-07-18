@@ -4,18 +4,61 @@
     :configuracionColumnas="configuracionColumnas"
     :mostrar-button-submits="false"
     :accion1Header="btnDescargarReporte"
+    :accion1="btnEditarCodigoPersonalizado"
+    :accion2="btnEditarCodigoSistemaAnterior"
+    :accion3="btnDescargarEtiqueta"
+    ajustar-celdas
   >
+    <template #header-tabla-listado>
+      <q-select
+        v-model="impresoraSeleccionada"
+        :options="impresoras"
+        label="Selecciona una impresora"
+        transition-show="scale"
+        transition-hide="scale"
+        style="width: 300px"
+        options-dense
+        dense
+        outlined
+      >
+        <template v-slot:no-option>
+          <q-item>
+            <q-item-section class="text-grey">
+              No se han detectado impresoras
+            </q-item-section>
+          </q-item>
+        </template>
+
+        <template #after>
+          <q-btn
+            color="positive"
+            :icon="iconos.recargar"
+            @click="obtenerImpresoras()"
+            unelevated
+            dense
+          >
+            <q-tooltip>Recargar impresoras</q-tooltip>
+          </q-btn>
+        </template>
+      </q-select>
+    </template>
+
     <template #formulario>
       <q-form @submit.prevent>
         <div v-if="!activo.codigo">
-          Vaya a la pestaña de Listado y seleccione un activo fijo para observar
-          más detalles.
+          <callout
+            mensaje="Vaya a la pestaña <b>Listado</b> y <b>seleccione un activo fijo</b> para observar
+          más detalles."
+          ></callout>
+          <div class="row q-col-gutter-sm q-py-md">
+            <q-btn>Crear un activo</q-btn>
+          </div>
         </div>
         <div v-if="activo.codigo" class="row q-col-gutter-sm q-py-md">
           <div class="col-12 text-bold q-mb-sm">Información general</div>
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Código</label>
-            <q-input v-model="activo.codigo" disable outlined dense> </q-input>
+            <q-input v-model="activo.codigo" disable outlined dense></q-input>
           </div>
 
           <div class="col-12 col-md-3">
@@ -227,6 +270,7 @@
               :ajustarCeldas="true"
               :accion1="btnSubirActaEntregaRecepcion"
               :accion2="btnSubirJustificativoUso"
+              :accion3="btnDescargarEtiquetaPersonalizada"
             ></essential-table>
           </q-tab-panel>
 

@@ -68,10 +68,7 @@
       </div>
 
       <!-- observacion autorizacion -->
-      <div
-        v-if=" transaccion.observacion_aut"
-        class="col-12 col-md-3"
-      >
+      <div v-if="transaccion.observacion_aut" class="col-12 col-md-3">
         <label class="q-mb-sm block">Observacion</label>
         <q-input
           v-model="transaccion.observacion_aut"
@@ -79,7 +76,8 @@
           disable
           outlined
           dense
-/>    </div>
+        />
+      </div>
       <!-- Select sucursal -->
       <div class="col-12 col-md-3 q-mb-md">
         <label class="q-mb-sm block">Sucursal</label>

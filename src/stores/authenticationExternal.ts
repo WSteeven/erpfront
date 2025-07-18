@@ -12,6 +12,7 @@ import { ResetPassword } from 'sistema/authentication/resetPassword/domain/Reset
 import { UltimoSaldoController } from 'pages/fondosRotativos/reportes/reporteSaldoActual/infrestucture/UltimoSaldoController'
 import { UserLoginPostulante } from 'pages/recursosHumanos/seleccion_contratacion_personal/login-postulante/domain/UserLoginPostulante'
 import { tipoAutenticacion } from 'config/utils'
+
 export const useAuthenticationExternalStore = defineStore('authentication_external', () => {
   // Variables locales
   const axios = AxiosHttpRepository.getInstance()
@@ -84,8 +85,7 @@ export const useAuthenticationExternalStore = defineStore('authentication_extern
       console.log('login terceros', response)
       LocalStorage.set('token', response.data.access_token)
       LocalStorage.set('method_access', tipoAutenticacion.usuario_externo)
-      const url_redirect = response.data.url
-      window.location.href = url_redirect
+      window.location.href = response.data.url
     } catch (error) {
       console.log(error)
       const axiosError = error as AxiosError

@@ -19,7 +19,7 @@ export const useListadosSistemaStore = defineStore('listadosSistema', () => {
     const autorizaciones = (await new AutorizacionController().listar({ campos: 'id,nombre' })).result
     LocalStorage.set('autorizaciones', JSON.stringify(autorizaciones))
 
-    const sucursales = (await new SucursalController().listar({ campos: 'id,lugar,cliente_id' })).result
+    const sucursales = (await new SucursalController().listar({ campos: 'id,lugar,cliente_id', activo:1 })).result
     LocalStorage.set('sucursales', JSON.stringify(sucursales))
 
     const condiciones = (await new CondicionController().listar({ campos: 'id,nombre' })).result
@@ -37,8 +37,8 @@ export const useListadosSistemaStore = defineStore('listadosSistema', () => {
     const sub_detalles = (await new SubDetalleFondoController().listar({ campos: 'id,descripcion' })).result
     LocalStorage.set('sub_detalles', JSON.stringify(sub_detalles))
 
-    const tareas = (await new TareaController().listar({ campos: 'id,titulo' })).result
-    LocalStorage.set('tareas', JSON.stringify(tareas))
+    // const tareas = (await new TareaController().listar({ campos: 'id,titulo',activas_empleado:1 })).result
+    // LocalStorage.set('tareas', JSON.stringify(tareas))
 
     const usuariosInactivos = (await new EmpleadoController().listar({ campos: 'id,nombres,apellidos', estado: 0 })).result
     LocalStorage.set('usuariosInactivos', JSON.stringify(usuariosInactivos))

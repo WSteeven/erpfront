@@ -131,7 +131,7 @@ export default defineComponent({
     },
     full: {
       type: Boolean,
-      default: false,
+      default: true,
     },
     labelGuardar: {
       type: String,
@@ -144,6 +144,14 @@ export default defineComponent({
     paginate: {
       type: Boolean,
       default: false,
+    },
+    grid: {
+      type: Boolean,
+      default: true
+    },
+    mostrarColumnasVisibles: {
+      type: Boolean,
+      default: true
     },
   },
   components: { EssentialTable, EssentialTablePagination, ButtonSubmits },
@@ -169,9 +177,9 @@ export default defineComponent({
 
     // console.log(props.mostrarListado)
     if (props.mostrarListado) {
-      if(props.paginate) {
-        listar({paginate:1})
-      }else{
+      if (props.paginate) {
+        listar({ paginate: 1 })
+      } else {
         listar()
       }
     }
@@ -259,7 +267,8 @@ export default defineComponent({
       accion,
       filtros,
       accionTabla,
-      // tituloPagina: tituloTabla[0].toUpperCase() + tituloTabla.substring(1),
+      // eslint-disable-next-line vue/no-dupe-keys
+      tituloPagina: tituloTabla[0].toUpperCase() + tituloTabla.substring(1),
       seleccionado,
       columnas,
       // acciones tabla

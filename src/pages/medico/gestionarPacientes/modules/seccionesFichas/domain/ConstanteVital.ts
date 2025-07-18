@@ -14,15 +14,15 @@ export class ConstanteVital extends EntidadAuditable {
 
   constructor() {
     super()
-    this.presion_arterial = null
-    this.temperatura = null
-    this.frecuencia_cardiaca = null
-    this.saturacion_oxigeno = null
-    this.frecuencia_respiratoria = null
-    this.peso = null
-    this.talla = null
-    this.indice_masa_corporal = null
-    this.perimetro_abdominal = null
-    this.ficha_preocupacional = null
+    this.presion_arterial = 0
+    this.temperatura = 0
+    this.frecuencia_cardiaca = 0
+    this.saturacion_oxigeno = 0
+    this.frecuencia_respiratoria = 0
+    this.peso = 0
+    this.talla = 0
+    this.indice_masa_corporal = 0
+    this.perimetro_abdominal = 0
+    this.ficha_preocupacional = 0
   }
 }

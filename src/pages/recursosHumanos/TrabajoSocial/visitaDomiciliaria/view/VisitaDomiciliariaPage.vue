@@ -452,16 +452,17 @@
           default-opened
         >
           <informacion-vivienda
+            :mixin="mixin"
             :vivienda="visita.vivienda"
             :accion="accion"
             :disable="disabled"
           />
         </q-expansion-item>
 
-        <!-- 11. CROQUIS -->
+        <!-- 7. CROQUIS -->
         <q-expansion-item
           class="overflow-hidden q-mb-md expansion"
-          label="11. CROQUIS"
+          label="7. CROQUIS"
           header-class="text-bold bg-header-collapse"
           default-opened
         >

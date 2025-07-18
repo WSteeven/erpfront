@@ -1,5 +1,5 @@
 <template>
-  <q-splitter v-model="splitterModel" class="bg-primary">
+  <q-splitter v-model="splitterModel" class="bg-grey-1 custom-shadow5" >
     <template v-slot:before>
       <div class="text-center bg-primary q-pb-md q-pt-sm">
         <q-btn
@@ -49,14 +49,14 @@
         animated
         transition-prev="scale"
         transition-next="scale"
-        class="bg-primary"
+        class="bg-grey-1"
         keep-alive
       >
         <q-tab-panel
           v-for="registro in registros"
           :key="registro.id"
           :name="registro.id"
-          class="text-white q-pa-none"
+          class="q-pa-none"
         >
           <div class="row q-pa-md">
             <div class="col-12 col-md-6">
@@ -81,9 +81,9 @@
           v-model="tabEstadoExamen"
           align="justify"
           active-color="primary"
-          indicator-color="transparent"
-          active-bg-color="white"
+          indicator-color="primary"
           active-class="tab-active"
+          class="border-bottom"
           dense
         >
           <q-tab

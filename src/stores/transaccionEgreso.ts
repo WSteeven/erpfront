@@ -10,7 +10,7 @@ import { ApiError } from 'shared/error/domain/ApiError'
 import { imprimirArchivo, notificarMensajesError } from 'shared/utils'
 import { useNotificaciones } from 'shared/notificaciones'
 
-export const useTransaccionEgresoStore = defineStore('transaccion', () => {
+export const useTransaccionEgresoStore = defineStore('transaccionEgreso', () => {
     //State
     const transaccion = reactive(new Transaccion()) //la transaccion
     const transaccionReset = new Transaccion()
@@ -49,7 +49,7 @@ export const useTransaccionEgresoStore = defineStore('transaccion', () => {
         transaccion.hydrate(transaccionReset)
     }
 
-    async function filtrarEgresosComprobantes(filtro){
+    async function filtrarEgresosComprobantes(filtro:string){
       try {
           statusLoading.activar()
             const axios = AxiosHttpRepository.getInstance()
@@ -61,22 +61,23 @@ export const useTransaccionEgresoStore = defineStore('transaccion', () => {
         } catch (error:any) {
             const errorApi = new ApiError(error)
             const mensajes: string[] = errorApi.erroresValidacion
-            notificarMensajesError(mensajes, notificaciones)
+            await notificarMensajesError(mensajes, notificaciones)
         }finally{
             statusLoading.desactivar()
         }
     }
-    async function filtrarTransaccionesEgresos(filtro){
+    async function filtrarTransaccionesEgresos(filtro:string, paginate=false){
         try {
             statusLoading.activar()
             const axios = AxiosHttpRepository.getInstance()
-            const url = axios.getEndpoint(endpoints.egresos_filtrados)+'?estado='+filtro
+            const url = paginate? axios.getEndpoint(endpoints.egresos_filtrados)+'?estado='+filtro+'&paginate=1' : axios.getEndpoint(endpoints.egresos_filtrados)+'?estado='+filtro
             const response: AxiosResponse=await axios.get(url)
+            console.log(response)
             return response.data.results
         } catch (error:any) {
             const errorApi = new ApiError(error)
             const mensajes:string[]= errorApi.erroresValidacion
-            notificarMensajesError(mensajes, notificaciones)
+            await notificarMensajesError(mensajes, notificaciones)
         }finally{
             statusLoading.desactivar()
         }
@@ -86,7 +87,7 @@ export const useTransaccionEgresoStore = defineStore('transaccion', () => {
         const axios = AxiosHttpRepository.getInstance()
         const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.transacciones_egresos) + '/imprimir/' + idTransaccion.value
         const filename = 'egreso_' + idTransaccion.value + '_' + Date.now()
-        imprimirArchivo(url, 'GET', 'blob', 'pdf', filename)
+        await imprimirArchivo(url, 'GET', 'blob', 'pdf', filename)
         console.log('Egreso impreso con éxito.')
     }
 

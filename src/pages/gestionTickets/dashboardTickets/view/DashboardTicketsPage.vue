@@ -1,6 +1,6 @@
 <template>
   <q-page padding>
-    <q-card class="q-mb-md rounded no-border custom-shadow">
+    <q-card class="q-mb-md rounded no-border custom-shaddow bg-body">
       <q-card-section>
         <div class="border-1 text-primary text-bold q-mb-lg">
           <q-icon name="bi-graph-up-arrow" class="q-mr-sm"></q-icon>
@@ -46,9 +46,7 @@
               </template>
 
               <template v-slot:error>
-                <div v-for="error of v$.fecha_inicio.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="fecha_inicio" :v$="v$"/>
               </template>
             </q-input>
           </div>
@@ -89,9 +87,7 @@
               </template>
 
               <template v-slot:error>
-                <div v-for="error of v$.fecha_fin.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="fecha_fin" :v$="v$"/>
               </template>
             </q-input>
           </div>
@@ -119,7 +115,7 @@
             />
           </div>
 
-          <div v-if="mostrarSeccionEmpleado" class="col-12 col-md-10">
+          <div v-if="mostrarSeccionEmpleado" class="col-12 col-md-8">
             <label class="q-mb-sm block"
               >Seleccione un empleado para consultar</label
             >
@@ -144,17 +140,11 @@
               map-options
             >
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
+                <no-option-component/>
               </template>
 
               <template v-slot:error>
-                <div v-for="error of v$.empleado.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="empleado" :v$="v$"/>
               </template>
             </q-select>
           </div>
@@ -184,21 +174,25 @@
               @blur="v$.departamento.$touch"
             >
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
+                <no-option-component/>
               </template>
 
               <template v-slot:error>
-                <div v-for="error of v$.departamento.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="departamento" :v$="v$"/>
               </template>
             </q-select>
           </div>
 
+          <div class="col-12 col-md-2 q-pt-lg" v-if="mostrarSeccionEmpleado">
+            <q-checkbox
+                class="q-mt-sm q-pt-sm"
+                v-model="mostrarInactivos"
+                label="Inactivos"
+                outlined
+                @update:model-value="checkMostrarInactivos"
+                dense
+            ></q-checkbox>
+          </div>
           <div class="col-12 col-md-2">
             <label class="block q-mb-sm">&nbsp;</label>
             <q-btn
@@ -206,7 +200,7 @@
               label="Reporte Excel"
               color="positive"
               class="full-width"
-              square
+              no-caps
               unelevated
               no-wrap
               @click="reporteExcel()"

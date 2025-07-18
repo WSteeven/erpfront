@@ -27,6 +27,13 @@ export const configuracionColumnasDepartamento: ColumnConfig<Departamento>[] = [
     align: 'left',
   },
   {
+    name: 'cant_empleados',
+    field: 'cant_empleados',
+    label: 'Cant. Miembros',
+    align: 'center',
+    sortable: true,
+  },
+  {
     name: 'activo',
     field: 'activo',
     label: 'Activo',

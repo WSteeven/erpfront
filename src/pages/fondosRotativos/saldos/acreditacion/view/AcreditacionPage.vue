@@ -8,11 +8,22 @@
     :filtrar="filtrarAcreditacion"
     tabDefecto="1"
     :forzarListar="true"
+    paginate
     ajustarCeldas
   >
     <template #formulario>
       <q-form @submit.prevent>
-        <div class="row q-col-gutter-sm q-mb-md">
+        <div class="row q-col-gutter-sm q-mb-md" >
+          <div class="col-12 col-md-4">
+            <label class="q-mb-sm block">Modo de carga</label>
+            <option-group-component
+              v-model="modoIndividual"
+              :disable="disabled"
+              :options="options"
+            />
+          </div>
+          </div>
+        <div class="row q-col-gutter-sm q-mb-md" v-if="modoIndividual">
           <!-- fecha de acreditacion -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Fecha</label>
@@ -255,6 +266,40 @@
               {{ acreditacion.saldo_actual.toFixed(2) }}
             </q-chip>
           </div>
+        </div>
+        <div class="row q-col-gutter-sm q-mb-md" v-else>
+          <!-- Documento -->
+          <div class="col-12 col-md-12" v-if="accion == acciones.nuevo">
+            <label class="q-mb-sm block"
+            >Reporte de Produbanco <i class="bi bi-info-circle"></i>
+              <q-tooltip class="bg-light-blue-7">Suba el reporte emitido por PRODUBANCO</q-tooltip></label
+            >
+            <gestor-documentos
+              ref="refArchivo"
+              :mixin="mixin2"
+              :endpoint="endpoint"
+              :disable="disabled"
+              :permitir-eliminar="false"
+              :mostrar-listado="false"
+              :listar-al-guardar="false"
+              :esMultiple="false"
+            >
+              <template #boton-subir>
+                <q-btn
+                  v-if="refArchivo?.quiero_subir_archivos"
+                  color="positive"
+                  push
+                  no-caps
+                  class="full-width q-mb-lg"
+                  @click="subirArchivos()"
+                >
+                  <q-icon name="bi-upload" class="q-mr-sm" size="xs"></q-icon>
+                  Subir archivos seleccionados</q-btn
+                >
+              </template>
+            </gestor-documentos>
+          </div>
+
         </div>
       </q-form>
       <div

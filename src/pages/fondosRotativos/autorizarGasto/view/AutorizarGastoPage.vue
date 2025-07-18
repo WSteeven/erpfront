@@ -9,7 +9,7 @@
       </div>
     </div>
 
-    <div :class="{ 'bg-desenfoque rounded q-pa-sm': $q.screen.xs }">
+    <div :class="{ 'bg-desenfoque rounded q-pa-sm': $q.screen.xs }" class="borde custom-shadow rounded">
       <essential-table-tabs
         :configuracionColumnas="[
           ...configuracionColumnasAutorizarGasto,

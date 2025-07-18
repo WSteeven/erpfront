@@ -26,7 +26,6 @@ export class ApiError extends Error {
   }
   private obtenerHeaders(error: AxiosError) {
     let headers = null
-    console.log('tiene errores:',error);
 
     if (error.response?.data.errors) {
       console.log('tiene errores:');

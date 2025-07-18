@@ -27,16 +27,10 @@
               map-options
             >
               <template v-slot:error>
-                <div v-for="error of v$.tipo.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="tipo" :v$="v$"/>
               </template>
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
+                <no-option-component/>
               </template>
             </q-select>
           </div>
@@ -45,7 +39,7 @@
             <label class="q-mb-sm block">Categoria</label>
             <q-select
               v-model="producto.categoria"
-              :options="opciones"
+              :options="categorias"
               hint="Agregue elementos desde el panel de categorías"
               transition-show="jump-up"
               transition-hide="jump-down"
@@ -58,23 +52,17 @@
               error-message="Debes seleccionar una categoría"
               use-input
               input-debounce="0"
-              @filter="filterFn"
+              @filter="filtrarCategorias"
               :option-value="(v) => v.id"
               :option-label="(v) => v.nombre"
               emit-value
               map-options
             >
               <template v-slot:error>
-                <div v-for="error of v$.categoria.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="categoria" :v$="v$"/>
               </template>
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
+                <no-option-component/>
               </template>
             </q-select>
           </div>
@@ -98,19 +86,10 @@
               map-options
             >
               <template v-slot:error>
-                <div
-                  v-for="error of v$.unidad_medida.$errors"
-                  :key="error.$uid"
-                >
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="unidad_medida" :v$="v$"/>
               </template>
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
+                <no-option-component/>
               </template>
             </q-select>
           </div>
@@ -127,9 +106,7 @@
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.nombre.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="nombre" :v$="v$"/>
               </template>
             </q-input>
           </div>

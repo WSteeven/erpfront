@@ -92,6 +92,15 @@ const rutasTareas: RouteRecordRaw[] = [
     meta: { requiresAuth: true },
   },
   {
+    path: '/reporte-asistencia-tecnicos',
+    name: 'reporte_asistencia_tecnicos',
+    component: () =>
+        import(
+            'src/pages/gestionTrabajos/reportes/reportesAsistenciaTecnicos/view/ReporteAsistenciaTecnicoPage.vue'
+            ),
+    meta: { requiresAuth: false },
+  },
+  {
     path: '/reportes-materiales-utilizados',
     name: 'reportes_materiales_utilizados',
     component: () => import('gestionTrabajos/reportes/reporteMaterialesUtilizados/view/ReporteMaterialUtilizadoPage.vue'),
@@ -182,6 +191,13 @@ const rutasTareas: RouteRecordRaw[] = [
     component: () => import('gestionTrabajos/nodos/view/NodoPage.vue'),
     meta: { requiresAuth: true },
   },
+  {
+    path: '/aceptar-transferencia-producto',
+    name: 'aceptar_transferencia_producto',
+    component: () => import('pages/bodega/transacciones/modules/aceptarTransferenciaProducto/view/AceptarTransferenciaProductoPage.vue'),
+    meta: { requiresAuth: true, permissionRequired: false },
+  },
+
   /*{
     path: '/reporte-trabajos-realizados',
     name: 'reporte_trabajos_realizados',

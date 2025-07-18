@@ -5,7 +5,7 @@ import { descargarArchivoUrl, formatBytes } from 'shared/utils'
 import { useNotificaciones } from 'shared/notificaciones'
 import { AxiosError, AxiosResponse } from 'axios'
 import { accionesTabla } from 'config/utils'
-import { defineComponent, ref, watchEffect } from 'vue'
+import { defineComponent, ref } from 'vue'
 import { apiConfig } from 'config/api'
 
 // Componentes
@@ -130,11 +130,11 @@ export default defineComponent({
         notificarCorrecto(response.data.mensaje)
 
         // Restablecer el componente q-uploader para mostrar el botón de "añadir archivos" nuevamente
-        await refGestor.value.reset()
-        quiero_subir_archivos.value = false
-        if (props.esObligatorio) quiero_subir_archivos.value = true
+        quiero_subir_archivos.value = props.esObligatorio;
       } catch (error: unknown) {
+        console.log('error en el catch', error)
         const axiosError = error as AxiosError
+        console.log(axiosError)
         notificarError(axiosError.response?.data.message)
       }
     }
@@ -142,12 +142,12 @@ export default defineComponent({
       try {
         paramsForm = params
         if (refGestor.value) {
-          await refGestor.value.upload()
-          await refGestor.value.reset()
-          await refGestor.value.removeUploadedFiles()
-          await refGestor.value.removeQueuedFiles()
+          refGestor.value.upload()
+          refGestor.value.reset()
+          refGestor.value.removeUploadedFiles()
+          refGestor.value.removeQueuedFiles()
         }
-      } catch (error) {}
+      } catch (error) {console.log(error)}
     }
 
     function onRejected(rejectedEntries) {
@@ -176,7 +176,6 @@ export default defineComponent({
       formatBytes,
       onFileAdded,
       onFileRemoved,
-      watchEffect,
       quiero_subir_archivos,
       esConsultado,
       columnas: [...configuracionColumnasDocumento, accionesTabla],

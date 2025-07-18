@@ -1,23 +1,22 @@
 <template>
-  <q-page :padding="!$q.screen.xs">
-    <transition name="scale" mode="out-in">
-      <slot name="modales" />
-    </transition>
-
-    <!-- <div class="text-center q-mb-md q-pa-sm bg-grey-2 border-bottom"> -->
-    <!-- <small class="block text-bold"> {{ tituloTabla }}</small> -->
-    <!-- <q-icon name="bi-app-indicator" class="q-mr-sm"></q-icon> -->
-    <!-- <small class="text-grey-9 text-bold">{{ subtituloPagina }}</small> -->
-    <!-- </div> -->
+  <!-- :padding="!$q.screen.xs" -->
+  <q-page padding>
+    <!-- <component :is="full ? 'q-page' : 'div'" > -->
+    <!-- <transition name="scale" mode="out-in"> -->
+    <slot name="modales" />
+    <!-- </transition> -->
+    <div v-if="tituloPagina" class="text-h5 text-bold q-mb-md">
+      {{ tituloPagina }}
+    </div>
 
     <!-- Tabs -->
     <q-tabs
       v-model="tabs"
       align="left"
-      switch-indicator
       active-class="tab-active"
-      indicator-color="transparent"
+      indicator-color="primary"
       dense
+      class="border-bottom"
     >
       <q-tab
         v-if="mostrarFormulario"
@@ -43,19 +42,20 @@
     </q-tabs>
 
     <!-- Tab content -->
+    <!-- class="bg-desenfoque border-white" -->
     <q-tab-panels
       v-model="tabs"
       animated
       transition-prev="scale"
       transition-next="scale"
-      class="bg-desenfoque border-white"
+      class="bodrde roundded cusdtom-shadow q-mt-lg"
       keep-alive
-      :class="{ 'rounded-tabpanel': !$q.screen.xs }"
     >
+      <!-- :class="{ 'rounded-tabpanel': !$q.screen.xs }" -->
       <!-- Formulario -->
-      <q-tab-panel name="formulario" :class="{ 'q-pa-none': full }">
+      <q-tab-panel name="formulario" class="q-pa-none">
         <slot name="formulario" />
-        <div :class="{ 'q-pa-md': full }">
+        <div>
           <div class="row justify-end q-col-gutter-x-xs">
             <span>
               <slot name="custom-buttons"></slot>
@@ -77,7 +77,7 @@
       </q-tab-panel>
 
       <!-- Listado -->
-      <q-tab-panel name="listado">
+      <q-tab-panel name="listado" class="q-pa-none">
         <!-- :paginate="paginate" -->
         <essential-table-pagination
           v-if="paginate"
@@ -85,6 +85,7 @@
           :titulo="tituloTabla"
           :configuracionColumnas="columnas"
           :datos="listado"
+          :grid="grid"
           :permitirConsultar="puedeVer"
           :permitirEditar="puedeEditar"
           :permitirEliminar="puedeEliminar"
@@ -104,19 +105,26 @@
           :accion4Header="accion4Header"
           :permitirFiltrar="puedeFiltrar"
           :mostrarExportar="puedeExportar"
+          :mostrarColumnasVisibles="mostrarColumnasVisibles"
           :ajustarCeldas="ajustarCeldas"
           @consultar="accionTabla.consultar"
           @editar="accionTabla.editar"
           @eliminar="accionTabla.eliminar"
           @filtrar="filtrarTodos"
           :mixin="mixin"
-        ></essential-table-pagination>
+        >
+          <template #header-tabla-listado
+            >hola
+            <slot name="header"></slot>
+          </template>
+        </essential-table-pagination>
 
         <essential-table
           v-else
           :titulo="tituloTabla"
           :configuracionColumnas="columnas"
           :datos="listado"
+          :grid="grid"
           :permitirConsultar="puedeVer"
           :permitirEditar="puedeEditar"
           :permitirEliminar="puedeEliminar"
@@ -136,12 +144,17 @@
           :accion4Header="accion4Header"
           :permitirFiltrar="puedeFiltrar"
           :mostrarExportar="puedeExportar"
+          :mostrarColumnasVisibles="mostrarColumnasVisibles"
           :ajustarCeldas="ajustarCeldas"
           @consultar="accionTabla.consultar"
           @editar="accionTabla.editar"
           @eliminar="accionTabla.eliminar"
           @filtrar="filtrarTodos"
-        ></essential-table>
+        >
+          <template #header>
+            <slot name="header-tabla-listado"></slot>
+          </template>
+        </essential-table>
       </q-tab-panel>
 
       <!-- Custom listado -->
@@ -149,6 +162,7 @@
         <slot name="custom-listado" />
       </q-tab-panel>
     </q-tab-panels>
+    <!-- </component> -->
   </q-page>
 </template>
 

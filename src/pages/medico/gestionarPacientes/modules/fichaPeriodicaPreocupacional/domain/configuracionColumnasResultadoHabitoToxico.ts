@@ -10,12 +10,20 @@ export const configuracionColumnasResultadoHabitoToxico: ColumnConfig<ResultadoH
     sortable: true
   },
   {
+    name: 'consume',
+    field: 'consume',
+    label: '¿Es consumidor?',
+    align: 'left',
+    sortable: true,
+    type: 'toggle',
+    editable: true,
+  },{
     name: 'tiempo_consumo_meses',
     field: 'tiempo_consumo_meses',
     label: 'Tiempo de consumo(meses)',
     align: 'left',
     sortable: true,
-    type: 'number',
+    type: 'text',
     editable: true,
   },
   {
@@ -24,7 +32,7 @@ export const configuracionColumnasResultadoHabitoToxico: ColumnConfig<ResultadoH
     label: 'Cantidad',
     align: 'left',
     sortable: true,
-    type: 'number',
+    type: 'text',
     editable: true,
   },
   {
@@ -42,7 +50,7 @@ export const configuracionColumnasResultadoHabitoToxico: ColumnConfig<ResultadoH
     label: 'Tiempo abstinencia(meses)',
     align: 'left',
     sortable: true,
-    type: 'number',
+    type: 'text',
     editable: true,
   },
 ]

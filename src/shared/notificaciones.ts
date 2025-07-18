@@ -13,7 +13,7 @@ export function useNotificaciones() {
 
   const base = {
     html: true,
-    textColor: $q.dark.isActive ? 'white' : 'black',
+    textColor: $q?.dark.isActive ? 'white' : 'black',
     position: 'bottom',
     // multiLine: true,
     // progress: true,
@@ -100,6 +100,7 @@ export function useNotificaciones() {
       title: config.titulo ?? 'Confirmación',
       message: config.mensaje,
       prompt: {
+        placeholder: config.placeholder ?? null,
         model: config.defecto,
         type: config.tipo ?? 'text', // optional
         isValid: val => config.validacion ? config.validacion(val) : true, //val => val <= data.entidad.cantidad,

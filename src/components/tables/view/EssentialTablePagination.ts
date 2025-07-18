@@ -400,9 +400,6 @@ export default defineComponent({
     })
 
     function establecerFiltros() {
-      console.log('consultar cien')
-      console.log(filtros.fields)
-
       refTableFilters.value.filtrar()
       // emit('filtrar', filtros.value)
     }
@@ -417,14 +414,16 @@ export default defineComponent({
      * @param request valor a buscar
      */
     const toSearch = async (request) => {
-      console.log(request)
-      console.log(filter)
 
       if (filter.value) {
-        await listar({
-          search: filter.value,
-          ...filtros.fields,
-        })
+        setTimeout(async () => {
+          await listar({
+            search: filter.value,
+            ...filtros.fields,
+            paginate: true,
+            page: 1
+          })
+        }, 1100)
       } else {
         onRequest(1)
       }
@@ -435,6 +434,7 @@ export default defineComponent({
 
       await listar({
         ...filtros.fields,
+        search: filter.value,
         paginate: true,
         page: page
       })

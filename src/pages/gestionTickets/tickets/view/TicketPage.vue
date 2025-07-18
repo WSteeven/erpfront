@@ -14,8 +14,10 @@
     :accion3="btnSeguimiento"
     :accion4="btnCancelar"
     :accion5="btnCalificarSolicitante"
+    :accion6="btnPausarRecurrente"
     subtitulo-pagina="Módulo de Tickets"
     ajustar-celdas
+    paginate
   >
     <template #formulario>
       <div class="q-pa-md">
@@ -100,8 +102,8 @@
             <div class="col-12 col-md-6">
               <label class="q-mb-sm block"
                 >Departamento(s) que atenderá(n)
-                <small class="text-negative text-italic"
-                  >*Crea tickets individuales a cada departamento</small
+                <small class="text-primary text-italic"
+                  >*Crea una copia del ticket para cada departamento</small
                 ></label
               >
               <q-select
@@ -164,7 +166,11 @@
                   :key="responsable"
                   class="q-pa-sm full-width"
                 >
-                  <q-icon name="bi-person-fill"></q-icon>
+                  <q-icon
+                    name="bi-person-fill"
+                    class="q-mr-sm"
+                    color="primary"
+                  ></q-icon>
                   <span class="q-mr-xs">{{ responsable.empleado }}</span>
                   <b>{{ `| ${responsable.departamento}` }}</b>
                 </div>
@@ -387,14 +393,24 @@
             </div>
           </div>
 
-          <q-separator v-if="destinatarios.length"></q-separator>
-          <div
+          <!-- <q-separator v-if="destinatarios.length"></q-separator> -->
+          <!-- <div
             v-if="destinatarios.length"
             class="col-12 text-primary bg-background-header-grey q-px-md q-py-sm q-mb-md"
           >
             <q-icon name="bi-view-list"></q-icon>
             Categorías y tipos
+          </div> -->
+          <q-separator color="primary"></q-separator>
+          <div
+            id="step1"
+            class="col-12 text-primary bg-blue-1 q-px-md q-py-sm text-bold"
+          >
+            <q-icon name="bi-view-list" class="q-mr-sm"></q-icon>
+            Categorías y tipos
           </div>
+          <q-separator color="primary" class="q-mb-lg"></q-separator>
+
           <div
             v-for="destinatario in destinatarios"
             :key="destinatario.departamento_id"
@@ -411,9 +427,14 @@
               >
               <q-select
                 v-model="destinatario.categoria_id"
-                :options="destinatario.categorias"
+                :options="destinatario.categorias_filter"
                 transition-show="scale"
                 transition-hide="scale"
+                @filter="
+                  (val, update) =>
+                    (destinatario.categorias_filter =
+                      filtrarCategoriasTiposTickets(val, update, destinatario))
+                "
                 hint="Obligatorio"
                 options-dense
                 dense
@@ -444,15 +465,6 @@
                     </q-item-section>
                   </q-item>
                 </template>
-
-                <!-- <template v-slot:error>
-                  <div
-                    v-for="error of v$.categoria_tipo_ticket.$errors"
-                    :key="error.$uid"
-                  >
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
-                </template> -->
               </q-select>
             </div>
 
@@ -461,16 +473,27 @@
               <label class="q-mb-sm block">Tipo de ticket</label>
               <q-select
                 v-model="destinatario.tipo_ticket_id"
-                :options="destinatario.tipos_tickets"
+                :options="destinatario.tipos_tickets_filter"
                 transition-show="scale"
                 transition-hide="scale"
                 hint="Obligatorio"
+                @filter="
+                  (val, update) =>
+                    (destinatario.tipos_tickets_filter = filtrarTiposTickets(
+                      val,
+                      update,
+                      destinatario
+                    ))
+                "
                 options-dense
                 dense
                 outlined
                 :disable="disabled"
                 :option-label="item => item.nombre"
                 :option-value="item => item.id"
+                @update:model-value="
+                  establecerIdDestinatarioAutomatico(destinatario)
+                "
                 use-input
                 input-debounce="0"
                 emit-value
@@ -495,6 +518,25 @@
                   </div>
                 </template> -->
               </q-select>
+            </div>
+
+            <div
+              v-if="
+                obtenerDestinatarioAutomatico(destinatario.tipo_ticket_id) &&
+                !ticket.ticket_interno
+              "
+              class="col-12 col-md-3"
+            >
+              <label class="q-mb-sm block">Destinatario automático</label>
+              <q-input
+                :model-value="
+                  obtenerDestinatarioAutomatico(destinatario.tipo_ticket_id)
+                "
+                outlined
+                disable
+                dense
+                autogrow
+              />
             </div>
           </div>
 
@@ -530,6 +572,135 @@
                 multiple
               >
               </q-select>
+            </div>
+          </div>
+
+          <q-separator color="primary"></q-separator>
+          <div
+            id="step2"
+            class="col-12 text-primary bg-blue-1 q-px-md q-py-sm text-bold"
+          >
+            <q-icon name="bi-repeat" class="q-mr-sm"></q-icon>
+            Crear mismo ticket periódicamente
+          </div>
+          <q-separator color="primary"></q-separator>
+
+          <div class="row q-pa-md">
+            <div class="col-12 col-md-3">
+              <q-toggle
+                ref="step3"
+                v-model="ticket.is_recurring"
+                label="¿Es recurrente?"
+                :disable="disabled"
+              />
+            </div>
+
+            <div
+              id="step4"
+              v-show="ticket.is_recurring"
+              class="col-12 col-md-4"
+            >
+              <q-btn-toggle
+                v-model="ticket.recurrence_active"
+                class="toggle-button-primary"
+                :disable="disabled"
+                spread
+                no-caps
+                rounded
+                toggle-color="primary"
+                unelevated
+                :options="[
+                  {
+                    label: 'Activar',
+                    value: true,
+                    icon: 'bi-play-fill'
+                  },
+                  {
+                    label: 'Pausar',
+                    value: false,
+                    icon: 'bi-pause-fill'
+                  }
+                ]"
+              />
+            </div>
+          </div>
+
+          <div
+            id="step5"
+            v-show="ticket.is_recurring"
+            class="row q-gutter-md q-pa-md"
+          >
+            <div class="col-12 col-md-3">
+              <label class="q-mb-sm block">Frecuencia</label>
+              <q-select
+                v-model="ticket.recurrence_frequency"
+                :options="frequencyOptions"
+                :disable="disabled"
+                dense
+                outlined
+                options-dense
+                :option-label="item => item.label"
+                :option-value="item => item.value"
+                :error="!!v$.recurrence_frequency.$errors.length"
+                @blur="v$.recurrence_frequency.$touch"
+                emit-value
+                map-options
+              >
+                <template v-slot:error>
+                  <div
+                    v-for="error of v$.recurrence_frequency.$errors"
+                    :key="error.$uid"
+                  >
+                    <div class="error-msg">{{ error.$message }}</div>
+                  </div>
+                </template>
+              </q-select>
+            </div>
+
+            <div class="col-12 col-md-3">
+              <label class="q-mb-sm block">Hora</label>
+              <q-input
+                v-model="ticket.recurrence_time"
+                readonly
+                dense
+                outlined
+              />
+            </div>
+
+            <div
+              v-if="ticket.recurrence_frequency === 'WEEKLY'"
+              class="col-12 col-md-3"
+            >
+              <label class="q-mb-sm block">Día de la semana</label>
+              <q-select
+                v-model="ticket.recurrence_day_of_week"
+                :options="daysOfWeekOptions"
+                :rules="[val => val !== null || 'Selecciona un día']"
+                :disable="disabled"
+                dense
+                outlined
+                options-dense
+                emit-value
+                map-options
+              />
+            </div>
+
+            <div
+              v-if="ticket.recurrence_frequency === 'MONTHLY'"
+              class="col-12 col-md-3"
+            >
+              <label class="q-mb-sm block">Día del mes</label>
+              <q-input
+                v-model="ticket.recurrence_day_of_month"
+                :disable="disabled"
+                type="number"
+                dense
+                outlined
+                :rules="[
+                  val => !!val || 'El día es requerido',
+                  val => (val >= 1 && val <= 31) || 'Día entre 1 y 31'
+                ]"
+              />
             </div>
           </div>
 
