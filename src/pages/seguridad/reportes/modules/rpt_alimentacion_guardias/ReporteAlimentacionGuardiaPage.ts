@@ -11,10 +11,7 @@ import { useCargandoStore } from 'stores/cargando'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
-import {
-  imprimirArchivo,
-  obtenerFechaActual
-} from 'shared/utils'
+import { imprimirArchivo, obtenerFechaActual } from 'shared/utils'
 import { maskFecha } from 'config/utils'
 import { Bitacora } from 'pages/seguridad/bitacoras/doman/Bitacora'
 import { BitacoraController } from 'pages/seguridad/bitacoras/infraestructure/BitacoraController'
@@ -38,14 +35,6 @@ export default defineComponent({
 
     const filtros = reactive({
       empleado: null,
-      zona: null,
-      jornada: null,
-      fecha_inicio: '',
-      fecha_fin: '',
-      accion: ''
-    })
-    const reporte = reactive({
-      empleado: 1,
       zona: null,
       jornada: null,
       fecha_inicio: '',
@@ -89,6 +78,7 @@ export default defineComponent({
      * Funciones
      */
     async function buscarReporte(accion: string) {
+      cargando.value = true;
       try {
         const axios = AxiosHttpRepository.getInstance()
         let url = axios.getEndpoint(endpoints.bitacoras) + '/reportes'
@@ -97,22 +87,31 @@ export default defineComponent({
           case 'excel':
             url =
               apiConfig.URL_BASE +
-              axios.getEndpoint(endpoints.bitacoras) +'/'+
-              '/reportes'
-            reporte.accion = 'excel'
-            await imprimirArchivo(url, 'POST', 'blob', 'xlsx', filename, reporte)
+              axios.getEndpoint(endpoints.bitacoras) +
+              '/' +
+              'reportes'
+            filtros.accion = 'excel'
+            await imprimirArchivo(
+              url,
+              'POST',
+              'blob',
+              'xlsx',
+              filename,
+              filtros
+            )
             break
           case 'pdf':
             url =
               apiConfig.URL_BASE +
-              axios.getEndpoint(endpoints.bitacoras) + '/' +
-              '/reportes'
-            reporte.accion = 'pdf'
-            await imprimirArchivo(url, 'POST', 'blob', 'pdf', filename, reporte)
+              axios.getEndpoint(endpoints.bitacoras) +
+              '/' +
+              'reportes'
+            filtros.accion = 'pdf'
+            await imprimirArchivo(url, 'POST', 'blob', 'pdf', filename, filtros)
             break
           default:
-            reporte.accion = ''
-            const response: AxiosResponse = await axios.post(url, reporte)
+            filtros.accion = ''
+            const response: AxiosResponse = await axios.post(url, filtros)
             if (response.data.results) {
               listado.value = response.data.results
               if (response.data.results.length < 1)
