@@ -1,4 +1,4 @@
-import { defineComponent, reactive, ref } from 'vue'
+import { defineComponent, reactive, ref, watch } from 'vue'
 import { useQuasar, LocalStorage } from 'quasar'
 
 // Componentes
@@ -30,6 +30,7 @@ export default defineComponent({
     useCargandoStore().setQuasar($q)
 
     const cargando = ref(false)
+    const mostrarJornada = ref(false) // variable para mostrar el select de jornada
 
     const { notificarError, notificarAdvertencia } = useNotificaciones()
 
@@ -74,11 +75,18 @@ export default defineComponent({
       zonas.value = listadosAuxiliares.zonas
     })
 
+    // 👇 limpiar jornada si el toggle se apaga
+    watch(mostrarJornada, val => {
+      if (!val) {
+        filtros.jornada = null
+      }
+    })
+
     /**
      * Funciones
      */
     async function buscarReporte(accion: string) {
-      cargando.value = true;
+      cargando.value = true
       try {
         const axios = AxiosHttpRepository.getInstance()
         let url = axios.getEndpoint(endpoints.bitacoras) + '/reportes'
@@ -110,7 +118,7 @@ export default defineComponent({
             await imprimirArchivo(url, 'POST', 'blob', 'pdf', filename, filtros)
             break
           default:
-            filtros.accion = ''
+            filtros.accion = 'consulta'
             const response: AxiosResponse = await axios.post(url, filtros)
             if (response.data.results) {
               listado.value = response.data.results
@@ -129,6 +137,7 @@ export default defineComponent({
       listado,
       empleados,
       zonas,
+      mostrarJornada,
       buscarReporte,
       filtrarEmpleados
     }

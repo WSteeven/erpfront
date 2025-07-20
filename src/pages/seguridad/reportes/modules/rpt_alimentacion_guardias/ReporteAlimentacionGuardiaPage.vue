@@ -47,20 +47,33 @@
                 />
               </div>
 
-              <!-- Jornada -->
+              <!-- Toggle Jornada -->
               <div class="col-12 col-md-2">
-                <label class="q-mb-sm block">Seleccione jornada</label>
-                <q-select
-                  v-model="filtros.jornada"
-                  :options="['DIURNA', 'NOCTURNA']"
-                  transition-show="scale"
-                  transition-hide="scale"
-                  options-dense
+                <q-toggle
+                  v-model="mostrarJornada"
+                  label="¿Filtrar por jornada?"
+                  color="primary"
                   dense
-                  outlined
-                  label="Seleccione una jornada"
+                  left-label
                 />
               </div>
+
+              <!-- Jornada (solo si mostrarJornada) -->
+              <template v-if="mostrarJornada">
+                <div class="col-12 col-md-2">
+                  <label class="q-mb-sm block">Seleccione jornada</label>
+                  <q-select
+                    v-model="filtros.jornada"
+                    :options="['DIURNA', 'NOCTURNA']"
+                    transition-show="scale"
+                    transition-hide="scale"
+                    options-dense
+                    dense
+                    outlined
+                    label="Seleccione jornada"
+                  />
+                </div>
+              </template>
 
               <!-- Fecha inicio -->
               <div class="col-12 col-md-2">
@@ -73,23 +86,14 @@
                 >
                   <template v-slot:append>
                     <q-icon name="event" class="cursor-pointer">
-                      <q-popup-proxy
-                        cover
-                        transition-show="scale"
-                        transition-hide="scale"
-                      >
+                      <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                         <q-date
                           v-model="filtros.fecha_inicio"
                           mask="YYYY-MM-DD"
                           today-btn
                         >
                           <div class="row items-center justify-end">
-                            <q-btn
-                              v-close-popup
-                              label="Cerrar"
-                              color="primary"
-                              flat
-                            />
+                            <q-btn v-close-popup label="Cerrar" color="primary" flat />
                           </div>
                         </q-date>
                       </q-popup-proxy>
@@ -109,23 +113,14 @@
                 >
                   <template v-slot:append>
                     <q-icon name="event" class="cursor-pointer">
-                      <q-popup-proxy
-                        cover
-                        transition-show="scale"
-                        transition-hide="scale"
-                      >
+                      <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                         <q-date
                           v-model="filtros.fecha_fin"
                           mask="YYYY-MM-DD"
                           today-btn
                         >
                           <div class="row items-center justify-end">
-                            <q-btn
-                              v-close-popup
-                              label="Cerrar"
-                              color="primary"
-                              flat
-                            />
+                            <q-btn v-close-popup label="Cerrar" color="primary" flat />
                           </div>
                         </q-date>
                       </q-popup-proxy>
@@ -138,7 +133,6 @@
               <div class="col-12 col-md-12 q-mt-md">
                 <div class="text-center">
                   <q-btn-group push>
-                    <!-- Botón Buscar -->
                     <q-btn
                       color="primary"
                       class="full-width"
@@ -152,7 +146,6 @@
                       <span>Buscar</span>
                     </q-btn>
 
-                    <!-- Botón Excel -->
                     <q-btn
                       color="positive"
                       class="full-width"
@@ -162,15 +155,10 @@
                       glossy
                       @click="buscarReporte('excel')"
                     >
-                      <q-icon
-                        name="bi-file-earmark-excel-fill"
-                        size="xs"
-                        class="q-mr-sm"
-                      />
+                      <q-icon name="bi-file-earmark-excel-fill" size="xs" class="q-mr-sm" />
                       <span>Excel</span>
                     </q-btn>
 
-                    <!-- Botón PDF -->
                     <q-btn
                       color="negative"
                       class="full-width"
@@ -180,24 +168,19 @@
                       glossy
                       @click="buscarReporte('pdf')"
                     >
-                      <q-icon
-                        name="bi-file-earmark-pdf-fill"
-                        size="xs"
-                        class="q-mr-sm"
-                      />
+                      <q-icon name="bi-file-earmark-pdf-fill" size="xs" class="q-mr-sm" />
                       <span>PDF</span>
                     </q-btn>
                   </q-btn-group>
                 </div>
               </div>
             </div>
-
-            <!-- FIN: Filtros -->
           </div>
         </q-card>
       </q-page>
     </q-page-container>
   </q-layout>
 </template>
+
 
 <script src="./ReporteAlimentacionGuardiaPage.ts"></script>
