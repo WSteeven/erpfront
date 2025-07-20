@@ -9,7 +9,7 @@ export const configuracionColumnasBitacora: ColumnConfig<Bitacora>[] = [
     align: 'left',
     type: 'text',
     operador: 'like',
-    sortable: true,
+    sortable: true
   },
   {
     name: 'jornada',
@@ -18,7 +18,7 @@ export const configuracionColumnasBitacora: ColumnConfig<Bitacora>[] = [
     align: 'left',
     type: 'text',
     operador: 'like',
-    sortable: true,
+    sortable: true
   },
   {
     name: 'fecha_hora_inicio_turno',
@@ -27,7 +27,7 @@ export const configuracionColumnasBitacora: ColumnConfig<Bitacora>[] = [
     align: 'left',
     type: 'date',
     operador: '=',
-    sortable: true,
+    sortable: true
   },
   {
     name: 'fecha_hora_fin_turno',
@@ -36,7 +36,7 @@ export const configuracionColumnasBitacora: ColumnConfig<Bitacora>[] = [
     align: 'left',
     type: 'date',
     operador: '=',
-    sortable: true,
+    sortable: true
   },
   {
     name: 'agente_turno',
@@ -44,7 +44,7 @@ export const configuracionColumnasBitacora: ColumnConfig<Bitacora>[] = [
     label: 'Agente de turno',
     align: 'left',
     operador: 'like',
-    sortable: true,
+    sortable: true
   },
   {
     name: 'protector',
@@ -52,7 +52,7 @@ export const configuracionColumnasBitacora: ColumnConfig<Bitacora>[] = [
     label: 'Protector',
     align: 'left',
     operador: 'like',
-    sortable: true,
+    sortable: true
   },
   {
     name: 'conductor',
@@ -60,7 +60,7 @@ export const configuracionColumnasBitacora: ColumnConfig<Bitacora>[] = [
     label: 'Conductor',
     align: 'left',
     operador: 'like',
-    sortable: true,
+    sortable: true
   },
   {
     name: 'observaciones',
@@ -69,6 +69,25 @@ export const configuracionColumnasBitacora: ColumnConfig<Bitacora>[] = [
     align: 'left',
     type: 'text',
     operador: 'like',
-    sortable: true,
+    sortable: true
   },
+  {
+    name: 'revisado_por_supervisor',
+    field: 'revisado_por_supervisor',
+    label: 'Revisado por supervisor',
+    align: 'left',
+    type: 'select',
+    operador: '=',
+    filtrar: true,
+    sortable: true,
+    options: [
+      { label: 'Sí', value: 1 },
+      { label: 'No', value: 0 }
+    ],
+    formato: val => (val ? 'Sí' : 'No'),
+    filtro: (val, update) => {
+      // 👇 Extrae solo el value
+      update(val?.value ?? null)
+    }
+  }
 ]
