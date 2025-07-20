@@ -31,6 +31,11 @@ export default defineComponent({
 
     const cargando = ref(false)
     const mostrarJornada = ref(false) // variable para mostrar el select de jornada
+    const mostrarZona = ref(false) // variable para mostrar el select de zona
+
+    // Variables de resumen
+    const resumenGuardia = ref('-')
+    const totalMonto = ref(0)
 
     const { notificarError, notificarAdvertencia } = useNotificaciones()
 
@@ -44,6 +49,37 @@ export default defineComponent({
     })
 
     const listado = ref([])
+
+    const columnasDetalle = [
+      {
+        name: 'fecha',
+        label: 'Fecha',
+        align: 'left',
+        field: 'fecha',
+        sortable: true
+      },
+      {
+        name: 'zona',
+        label: 'Zona',
+        align: 'left',
+        field: 'zona',
+        sortable: true
+      },
+      {
+        name: 'jornadas',
+        label: 'Jornadas',
+        align: 'left',
+        field: 'jornadas'
+      },
+      {
+        name: 'monto',
+        label: 'Monto',
+        align: 'right',
+        field: 'monto',
+        sortable: true
+      }
+    ]
+
     const zonas = ref([])
 
     // Lógica de mezcla para reutilizar carga
@@ -75,11 +111,16 @@ export default defineComponent({
       zonas.value = listadosAuxiliares.zonas
     })
 
-    // 👇 limpiar jornada si el toggle se apaga
+    //  limpiar jornada si el toggle se apaga
     watch(mostrarJornada, val => {
       if (!val) {
         filtros.jornada = null
       }
+    })
+
+    //  limpiar zona si el toggle se apaga
+    watch(mostrarZona, val => {
+      if (!val) filtros.zona = null
     })
 
     /**
@@ -91,53 +132,72 @@ export default defineComponent({
         const axios = AxiosHttpRepository.getInstance()
         let url = axios.getEndpoint(endpoints.bitacoras) + '/reportes'
         const filename = 'reporte_alimentacion_guardia'
-        switch (accion) {
-          case 'excel':
-            url =
-              apiConfig.URL_BASE +
-              axios.getEndpoint(endpoints.bitacoras) +
-              '/' +
-              'reportes'
-            filtros.accion = 'excel'
-            await imprimirArchivo(
-              url,
-              'POST',
-              'blob',
-              'xlsx',
-              filename,
-              filtros
-            )
-            break
-          case 'pdf':
-            url =
-              apiConfig.URL_BASE +
-              axios.getEndpoint(endpoints.bitacoras) +
-              '/' +
-              'reportes'
-            filtros.accion = 'pdf'
-            await imprimirArchivo(url, 'POST', 'blob', 'pdf', filename, filtros)
-            break
-          default:
-            filtros.accion = 'consulta'
-            const response: AxiosResponse = await axios.post(url, filtros)
-            if (response.data.results) {
-              listado.value = response.data.results
-              if (response.data.results.length < 1)
-                notificarAdvertencia('No se obtuvieron resultados')
-            }
+
+        filtros.accion = accion
+
+        if (accion === 'excel' || accion === 'pdf') {
+          url = apiConfig.URL_BASE + url
+
+          const extension = accion === 'excel' ? 'xlsx' : 'pdf'
+          await imprimirArchivo(
+            url,
+            'POST',
+            'blob',
+            extension,
+            filename,
+            filtros
+          )
+          return
         }
-      } catch (e) {
-        console.log(e)
-        notificarError('Error al obtener reporte')
+
+        // consulta
+        const response: AxiosResponse = await axios.post(url, filtros)
+        const data = response.data
+
+        listado.value = data.detalle || []
+        resumenGuardia.value = data.guardia || '-'
+        totalMonto.value = data.monto_total || 0
+
+        if (listado.value.length < 1) {
+          notificarAdvertencia(
+            'No se encontraron registros para los filtros ingresados.'
+          )
+        }
+      } catch (error: any) {
+        // Validación (422)
+        if (error.response?.status === 422) {
+          const errores = error.response.data.errors
+          const mensajes = Object.values(errores).flat()
+          notificarAdvertencia(mensajes.join('\n'))
+        }
+
+        //  No encontrado (404)
+        else if (error.response?.status === 404) {
+          notificarAdvertencia(
+            error.response.data.message || 'No se encontraron resultados'
+          )
+        }
+
+        // Error inesperado
+        else {
+          console.error('Error inesperado:', error)
+          notificarError('Ocurrió un error inesperado al generar el reporte')
+        }
+      } finally {
+        cargando.value = false
       }
     }
 
     return {
       filtros,
       listado,
+      columnasDetalle,
       empleados,
       zonas,
       mostrarJornada,
+      mostrarZona,
+      resumenGuardia,
+      totalMonto,
       buscarReporte,
       filtrarEmpleados
     }

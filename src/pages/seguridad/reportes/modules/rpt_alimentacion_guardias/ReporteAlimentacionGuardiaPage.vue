@@ -4,11 +4,16 @@
       <q-page padding>
         <q-card>
           <div class="q-pa-md">
-            <p class="text-primary">Reporte de Alimentación de Guardias</p>
+            <q-card-section class="q-px-lg q-pt-lg q-pb-sm">
+              <div class="text-h6 text-bold text-warning flex items-center">
+                <q-icon name="assignment" class="q-mr-sm" />
+                Reporte de Alimentación de Guardias
+              </div>
+            </q-card-section>
 
             <div class="row q-col-gutter-sm q-pa-sm q-py-md">
               <!-- Guardia -->
-              <div class="col-12 col-md-3">
+              <div class="col-12 col-md-4">
                 <label class="q-mb-sm block">Seleccione un guardia</label>
                 <q-select
                   v-model="filtros.empleado"
@@ -20,7 +25,6 @@
                   outlined
                   use-input
                   input-debounce="0"
-                  label="Buscar..."
                   :option-label="item => item.nombres + ' ' + item.apellidos"
                   :option-value="item => item.id"
                   emit-value
@@ -28,72 +32,34 @@
                 />
               </div>
 
-              <!-- Zona -->
-              <div class="col-12 col-md-2">
-                <label class="q-mb-sm block">Seleccione una zona</label>
-                <q-select
-                  v-model="filtros.zona"
-                  :options="zonas"
-                  transition-show="scale"
-                  transition-hide="scale"
-                  options-dense
-                  dense
-                  outlined
-                  label="Seleccione una zona"
-                  :option-label="item => item.nombre"
-                  :option-value="item => item.id"
-                  emit-value
-                  map-options
-                />
-              </div>
-
-              <!-- Toggle Jornada -->
-              <div class="col-12 col-md-2">
-                <q-toggle
-                  v-model="mostrarJornada"
-                  label="¿Filtrar por jornada?"
-                  color="primary"
-                  dense
-                  left-label
-                />
-              </div>
-
-              <!-- Jornada (solo si mostrarJornada) -->
-              <template v-if="mostrarJornada">
-                <div class="col-12 col-md-2">
-                  <label class="q-mb-sm block">Seleccione jornada</label>
-                  <q-select
-                    v-model="filtros.jornada"
-                    :options="['DIURNA', 'NOCTURNA']"
-                    transition-show="scale"
-                    transition-hide="scale"
-                    options-dense
-                    dense
-                    outlined
-                    label="Seleccione jornada"
-                  />
-                </div>
-              </template>
-
               <!-- Fecha inicio -->
               <div class="col-12 col-md-2">
                 <label class="q-mb-sm block">Fecha de inicio</label>
                 <q-input
                   v-model="filtros.fecha_inicio"
-                  placeholder="Opcional"
+                  placeholder="Obligatorio"
                   outlined
                   dense
                 >
                   <template v-slot:append>
                     <q-icon name="event" class="cursor-pointer">
-                      <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                      <q-popup-proxy
+                        cover
+                        transition-show="scale"
+                        transition-hide="scale"
+                      >
                         <q-date
                           v-model="filtros.fecha_inicio"
                           mask="YYYY-MM-DD"
                           today-btn
                         >
                           <div class="row items-center justify-end">
-                            <q-btn v-close-popup label="Cerrar" color="primary" flat />
+                            <q-btn
+                              v-close-popup
+                              label="Cerrar"
+                              color="primary"
+                              flat
+                            />
                           </div>
                         </q-date>
                       </q-popup-proxy>
@@ -113,14 +79,23 @@
                 >
                   <template v-slot:append>
                     <q-icon name="event" class="cursor-pointer">
-                      <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                      <q-popup-proxy
+                        cover
+                        transition-show="scale"
+                        transition-hide="scale"
+                      >
                         <q-date
                           v-model="filtros.fecha_fin"
                           mask="YYYY-MM-DD"
                           today-btn
                         >
                           <div class="row items-center justify-end">
-                            <q-btn v-close-popup label="Cerrar" color="primary" flat />
+                            <q-btn
+                              v-close-popup
+                              label="Cerrar"
+                              color="primary"
+                              flat
+                            />
                           </div>
                         </q-date>
                       </q-popup-proxy>
@@ -128,6 +103,107 @@
                   </template>
                 </q-input>
               </div>
+
+              <!-- Zona -->
+
+              <template v-if="!mostrarZona">
+                <div class="col-12 col-md-2">
+                  <label class="q-mb-sm block">¿Filtrar por zona?</label>
+                  <q-toggle
+                    v-model="mostrarZona"
+                    color="primary"
+                    dense
+                    left-label
+                  />
+                </div>
+              </template>
+
+              <template v-else>
+                <div class="col-12 col-md-2">
+                  <label class="q-mb-sm block row items-center justify-between">
+                    <span>Seleccione una zona</span>
+                    <q-btn
+                      flat
+                      dense
+                      round
+                      size="sm"
+                      icon="close"
+                      color="red"
+                      @click="
+                        () => {
+                          mostrarZona = false
+                          filtros.zona = null
+                        }
+                      "
+                    >
+                      <q-tooltip>Eliminar Zona</q-tooltip>
+                    </q-btn>
+                  </label>
+
+                  <q-select
+                    v-model="filtros.zona"
+                    :options="zonas"
+                    transition-show="scale"
+                    transition-hide="scale"
+                    options-dense
+                    dense
+                    outlined
+                    label="Opcional"
+                    :option-label="item => item.nombre"
+                    :option-value="item => item.id"
+                    emit-value
+                    map-options
+                  />
+                </div>
+              </template>
+
+              <!-- Jornada -->
+              <template v-if="!mostrarJornada">
+                <div class="col-12 col-md-2">
+                  <label class="q-mb-sm block">¿Filtrar por jornada?</label>
+                  <q-toggle
+                    v-model="mostrarJornada"
+                    color="primary"
+                    dense
+                    left-label
+                  />
+                </div>
+              </template>
+
+              <template v-else>
+                <div class="col-12 col-md-2">
+                  <label class="q-mb-sm block row items-center justify-between">
+                    <span>Seleccione jornada</span>
+                    <q-btn
+                      flat
+                      dense
+                      round
+                      size="sm"
+                      icon="close"
+                      color="red"
+                      @click="
+                        () => {
+                          mostrarJornada = false
+                          filtros.jornada = null
+                        }
+                      "
+                    >
+                      <q-tooltip>Eliminar jornada</q-tooltip>
+                    </q-btn>
+                  </label>
+
+                  <q-select
+                    v-model="filtros.jornada"
+                    :options="['DIURNA', 'NOCTURNA']"
+                    transition-show="scale"
+                    transition-hide="scale"
+                    options-dense
+                    dense
+                    outlined
+                    label="Opcional"
+                  />
+                </div>
+              </template>
 
               <!-- Botones -->
               <div class="col-12 col-md-12 q-mt-md">
@@ -143,7 +219,7 @@
                       @click="buscarReporte('consulta')"
                     >
                       <q-icon name="bi-search" size="xs" class="q-pr-sm" />
-                      <span>Buscar</span>
+                      <span>Consultar</span>
                     </q-btn>
 
                     <q-btn
@@ -155,7 +231,11 @@
                       glossy
                       @click="buscarReporte('excel')"
                     >
-                      <q-icon name="bi-file-earmark-excel-fill" size="xs" class="q-mr-sm" />
+                      <q-icon
+                        name="bi-file-earmark-excel-fill"
+                        size="xs"
+                        class="q-mr-sm"
+                      />
                       <span>Excel</span>
                     </q-btn>
 
@@ -168,7 +248,11 @@
                       glossy
                       @click="buscarReporte('pdf')"
                     >
-                      <q-icon name="bi-file-earmark-pdf-fill" size="xs" class="q-mr-sm" />
+                      <q-icon
+                        name="bi-file-earmark-pdf-fill"
+                        size="xs"
+                        class="q-mr-sm"
+                      />
                       <span>PDF</span>
                     </q-btn>
                   </q-btn-group>
@@ -177,10 +261,103 @@
             </div>
           </div>
         </q-card>
+        <!-- resumen -->
+        <q-card v-if="listado.length > 0" class="q-mt-md q-pa-md">
+          <div class="text-h6 text-primary">Resumen general</div>
+          <q-separator class="q-my-sm" />
+
+          <div class="row q-col-gutter-md">
+            <div class="col-12 col-md-4">
+              <q-card flat bordered class="q-pa-md">
+                <q-item>
+                  <q-item-section avatar>
+                    <q-icon name="person" size="md" color="primary" />
+                  </q-item-section>
+                  <q-item-section>
+                    <q-item-label class="text-subtitle2">{{
+                      resumenGuardia
+                    }}</q-item-label>
+                    <q-item-label caption>GUARDIA DE SEGURIDAD</q-item-label>
+                  </q-item-section>
+                </q-item>
+              </q-card>
+            </div>
+            <div class="col-12 col-md-4">
+              <q-card flat bordered class="q-pa-md">
+                <q-item>
+                  <q-item-section avatar>
+                    <q-icon name="event" size="md" color="primary" />
+                  </q-item-section>
+                  <q-item-section>
+                    <q-item-label class="text-subtitle1"
+                      >{{ filtros.fecha_inicio }} al
+                      {{ filtros.fecha_fin }}</q-item-label
+                    >
+                    <q-item-label caption>PERIODO</q-item-label>
+                  </q-item-section>
+                </q-item>
+              </q-card>
+            </div>
+            <div class="col-12 col-md-4">
+              <q-card flat bordered class="q-pa-md">
+                <q-item>
+                  <q-item-section avatar>
+                    <q-icon name="attach_money" size="md" color="primary" />
+                  </q-item-section>
+                  <q-item-section>
+                    <q-item-label class="text-subtitle1"
+                      >{{ totalMonto }}.00</q-item-label
+                    >
+                    <q-item-label caption>TOTAL DE ALIMENTACION</q-item-label>
+                  </q-item-section>
+                </q-item>
+              </q-card>
+            </div>
+          </div>
+        </q-card>
+        <!-- resumen por dia -->
+        <q-card class="q-mt-md q-pa-md" flat bordered>
+          <div class="text-h6 text-primary">Detalle por día</div>
+          <q-separator class="q-my-sm" />
+
+          <q-table
+            :rows="listado"
+            :columns="columnasDetalle"
+            row-key="fecha"
+            dense
+            flat
+            bordered
+            :pagination="{ rowsPerPage: 10 }"
+            :rows-per-page-options="[5, 10, 20, 50]"
+          >
+            <template v-slot:body-cell-jornadas="props">
+              <q-td :props="props">
+                <q-chip
+                  v-for="jornada in props.value"
+                  :key="jornada"
+                  dense
+                  :color="jornada === 'NOCTURNA' ? 'indigo-7' : 'amber-7'"
+                  text-color="white"
+                  class="q-mr-xs"
+                  icon="schedule"
+                >
+                  {{ jornada }}
+                </q-chip>
+              </q-td>
+            </template>
+
+            <template v-slot:body-cell-monto="props">
+              <q-td :props="props">
+                <q-badge color="green-6">${{ props.value }}</q-badge>
+              </q-td>
+            </template>
+          </q-table>
+        </q-card>
+
+        <!-- fin de resumen -->
       </q-page>
     </q-page-container>
   </q-layout>
 </template>
-
 
 <script src="./ReporteAlimentacionGuardiaPage.ts"></script>
