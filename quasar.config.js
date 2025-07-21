@@ -163,6 +163,10 @@ module.exports = configure(function (/* ctx */) {
           __dirname,
           './src/pages/recursosHumanos/TrabajoSocial'
         ),
+        capacitacion: path.join(
+          __dirname,
+          './src/pages/recursosHumanos/Capacitacion'
+        ),
         activosFijos: path.join(__dirname, './src/pages/activosFijos'),
         controlActivosFijos: path.join(
           __dirname,

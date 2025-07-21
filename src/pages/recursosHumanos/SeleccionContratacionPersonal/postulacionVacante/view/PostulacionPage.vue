@@ -18,6 +18,9 @@
     :accion6="btnCitaMedica"
     :accion7="btnDescartar"
     :accion8="btnDarAltaEmpleado"
+    :accion9="btnVerEntrevista"
+    :accion10="btnHabilitarEvaluacionValanti"
+    :accion11="btnHabilitarEvaluacionPersonalidad"
   >
     <!-- :accion2="btnBancoPostulantes" -->
     <template #formulario>
@@ -90,7 +93,7 @@
               </q-btn>
               <!-- Boton Imprimir -->
               <q-btn
-                v-if="btnImprimir.visible"
+                v-if="false"
                 :color="btnImprimir.color"
                 class="full-width"
                 no-caps

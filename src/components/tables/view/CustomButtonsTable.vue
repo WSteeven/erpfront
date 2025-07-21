@@ -279,6 +279,30 @@
           accion11.tooltip
         }}</q-tooltip>
       </q-btn>
+
+      <!-- Accion 12 -->
+      <q-btn
+          v-if="extraerVisible(accion12)"
+          :color="extraerColor(accion12) || 'primary'"
+          dense
+          rounded
+          no-caps
+          no-wrap
+          unelevated
+          class="q-px-sm"
+          @click="ejecutarAccion(accion12)"
+      >
+        <q-icon
+            v-if="accion12?.icono"
+            :name="extraerIcono(accion12) ?? ''"
+            size="xs"
+            class="q-mr-xs"
+        ></q-icon>
+        <span>{{ extraerTitulo(accion12) }}</span>
+        <q-tooltip v-if="accion12?.tooltip" class="bg-dark">{{
+            accion12.tooltip
+          }}</q-tooltip>
+      </q-btn>
     </q-btn-group>
 
     <!-- :rounded="$q.screen.sm || $q.screen.md || $q.screen.lg || $q.screen.xl" -->
@@ -566,6 +590,30 @@
               accion11.tooltip
             }}</q-tooltip>
           </q-btn>
+
+          <!-- Accion 12 -->
+          <q-btn
+              v-if="extraerVisible(accion12)"
+              :color="extraerColor(accion12) || 'primary'"
+              dense
+              rounded
+              no-caps
+              no-wrap
+              unelevated
+              class="q-px-sm"
+              @click="ejecutarAccion(accion12)"
+          >
+            <q-icon
+                v-if="accion12?.icono"
+                :name="extraerIcono(accion12) ?? ''"
+                size="xs"
+                class="q-mr-xs"
+            ></q-icon>
+            <span>{{ extraerTitulo(accion12) }}</span>
+            <q-tooltip v-if="accion12?.tooltip" class="bg-dark">{{
+                accion12.tooltip
+              }}</q-tooltip>
+          </q-btn>
         </q-list>
       </q-btn-dropdown>
     </q-btn-group>
@@ -628,6 +676,10 @@ const props = defineProps({
     required: false
   },
   accion11: {
+    type: Object as () => CustomActionTable,
+    required: false
+  },
+  accion12: {
     type: Object as () => CustomActionTable,
     required: false
   },

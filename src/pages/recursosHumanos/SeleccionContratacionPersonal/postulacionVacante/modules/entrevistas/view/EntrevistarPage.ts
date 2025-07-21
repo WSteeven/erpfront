@@ -15,29 +15,34 @@ import { usePostulacionStore } from 'stores/recursosHumanos/seleccionContratacio
 import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller';
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
 import OptionGroupComponent from 'components/optionGroup/view/OptionGroupComponent.vue';
+import ErrorComponent from 'components/ErrorComponent.vue';
 
 export default defineComponent({
-  components: { OptionGroupComponent },
-  props: {
-    mixinModal: {
-      type: Object as () => ContenedorSimpleMixin<Entrevista>,
-      required: true,
-    },
-  },
+  components: { ErrorComponent, OptionGroupComponent },
   emits: ['cerrar-modal', 'guardado'],
   setup(props, { emit }) {
-    const mixin = new ContenedorSimpleMixin(Entrevista, new EntrevistaController())
-    const { entidad: entrevista, disabled, listadosAuxiliares } = mixin.useReferencias()
-    const { cargarVista, obtenerListados, } = mixin.useComportamiento()
-    const { confirmar, notificarCorrecto, notificarAdvertencia } = useNotificaciones()
+    const mixin = new ContenedorSimpleMixin(
+      Entrevista,
+      new EntrevistaController()
+    )
+    const {
+      entidad: entrevista,
+      disabled,
+      listadosAuxiliares
+    } = mixin.useReferencias()
+    const { cargarVista, obtenerListados } = mixin.useComportamiento()
+    const { confirmar, notificarCorrecto, notificarAdvertencia } =
+      useNotificaciones()
 
     const postulacionStore = usePostulacionStore()
 
     const cargando = new StatusEssentialLoading()
 
-    const direccionDefault = 'Machala - El Oro - Ecuador. Napoleón Mera y 8.ª Norte, portón plomo (a la vuelta de mueblería/carpintería Daquilema).'
+    const direccionDefault =
+      'Machala - El Oro - Ecuador. Napoleón Mera y 8.ª Norte, portón plomo (a la vuelta de mueblería/carpintería Daquilema).'
 
-    const { cantones, filtrarCantones } = useFiltrosListadosSelects(listadosAuxiliares)
+    const { cantones, filtrarCantones } =
+      useFiltrosListadosSelects(listadosAuxiliares)
     cargarVista(async () => {
       await obtenerListados({
         cantones: new CantonController()
@@ -49,7 +54,7 @@ export default defineComponent({
       fecha_hora: { required },
       duracion: { required },
       link: { required: requiredIf(() => !entrevista.presencial) },
-      direccion: { required: requiredIf(() => entrevista.presencial) },
+      direccion: { required: requiredIf(() => entrevista.presencial) }
     }
     const v$ = useVuelidate(reglas, entrevista)
 
@@ -65,7 +70,7 @@ export default defineComponent({
     onMounted(() => {
       entrevista.postulacion_id = postulacionStore.idPostulacion
       entrevista.duracion = 30
-      entrevista.canton = 53//canton machala por defecto
+      entrevista.canton = 53 //canton machala por defecto
       entrevista.direccion = direccionDefault
     })
 
@@ -83,7 +88,10 @@ export default defineComponent({
             const response: AxiosResponse = await axios.post(ruta, entrevista)
             notificarCorrecto(response.data.mensaje)
             emit('cerrar-modal', false)
-            emit('guardado', { formulario: 'EntrevistarPage', modelo: response.data.modelo })
+            emit('guardado', {
+              formulario: 'EntrevistarPage',
+              modelo: response.data.modelo
+            })
           })
         } catch (error: any) {
           notificarAdvertencia(error)
@@ -98,7 +106,8 @@ export default defineComponent({
     }
     return {
       v$,
-      entrevista, disabled,
+      entrevista,
+      disabled,
       mask: 'YYYY-MM-DD HH:mm',
 
       optionsFecha,
@@ -115,9 +124,11 @@ export default defineComponent({
         }
       ],
       //listados
-      cantones, filtrarCantones,
+      cantones,
+      filtrarCantones,
       // functions
-      agendar, cancelar,
+      agendar,
+      cancelar
     }
   }
 })

@@ -164,6 +164,10 @@ export default defineComponent({
       type: Object as () => CustomActionTable,
       required: false
     },
+    accion12: {
+      type: Object as () => CustomActionTable,
+      required: false
+    },
     accion1Header: {
       type: Object as () => CustomActionTable,
       required: false
@@ -268,6 +272,7 @@ export default defineComponent({
     'accion9',
     'accion10',
     'accion11',
+    'accion12',
     'selected',
     'onScroll',
     'filtrar',

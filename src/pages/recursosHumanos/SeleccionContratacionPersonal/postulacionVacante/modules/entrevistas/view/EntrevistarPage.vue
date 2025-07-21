@@ -51,9 +51,7 @@
             </template>
 
             <template v-slot:error>
-              <div v-for="error of v$.fecha_hora.$errors" :key="error.$uid">
-                <div class="error-msg">{{ error.$message }}</div>
-              </div>
+              <error-component clave="fecha_hora" :v$="v$"/>
             </template>
           </q-input>
         </div>
@@ -73,9 +71,7 @@
             dense
           >
             <template v-slot:error>
-              <div v-for="error of v$.duracion.$errors" :key="error.$uid">
-                <div class="error-msg">{{ error.$message }}</div>
-              </div>
+              <error-component clave="duracion" :v$="v$"/>
             </template>
           </q-input>
         </div>
@@ -144,9 +140,7 @@
             @blur="v$.direccion.$touch"
           >
             <template v-slot:error>
-              <div v-for="error of v$.direccion.$errors" :key="error.$uid">
-                <div class="error-msg">{{ error.$message }}</div>
-              </div>
+              <error-component clave="direccion" :v$="v$"/>
             </template>
           </q-input>
         </div>
@@ -163,9 +157,7 @@
             @blur="v$.link.$touch"
           >
             <template v-slot:error>
-              <div v-for="error of v$.link.$errors" :key="error.$uid">
-                <div class="error-msg">{{ error.$message }}</div>
-              </div>
+              <error-component clave="link" :v$="v$"/>
             </template>
           </q-input>
         </div>

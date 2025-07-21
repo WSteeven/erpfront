@@ -44,6 +44,7 @@
         "src/pages/recursosHumanos/SeleccionContratacionPersonal/*"
       ],
       "trabajoSocial/*": ["src/pages/recursosHumanos/TrabajoSocial/*"],
+      "capacitacion/*": ["src/pages/recursosHumanos/Capacitacion/*"],
 
       "activosFijos/*": ["src/pages/activosFijos/*"],
       "controlActivosFijos/*": ["src/pages/activosFijos/controlActivosFijos/*"],

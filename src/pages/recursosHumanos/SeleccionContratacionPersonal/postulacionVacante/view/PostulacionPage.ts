@@ -200,6 +200,7 @@ export default defineComponent({
       tabActual.value = tab
       await listar({ estado: tabActual.value })
     }
+
     async function subirArchivos() {
       await refArchivo.value?.subir()
     }
@@ -279,6 +280,7 @@ export default defineComponent({
         cargando.desactivar()
       }
     }
+
     async function visualizarVacante(id: number) {
       vacanteStore.idVacante = id
       modalesVacante.abrirModalEntidad('VisualizarVacantePage')
@@ -339,6 +341,41 @@ export default defineComponent({
       },
       visible: () => tabActual.value === estadosPostulacion.PRESELECCIONADO
     }
+    const btnVerEntrevista: CustomActionTable = {
+      // Puede ver los detalles de la entrevista o reagendarla
+      titulo: 'Ver Entrevista',
+      color: 'positive',
+      icono: 'bi-clock-fill',
+      tooltip: 'Ver, reagendar o colocar comentarios de la entrevista',
+      accion: async ({ entidad }) => {
+        postulacionStore.idPostulacion = entidad?.id ?? postulacion.id
+        modales.abrirModalEntidad('EntrevistarPage')
+      },
+      visible: () => tabActual.value === estadosPostulacion.ENTREVISTA
+    }
+    const btnHabilitarEvaluacionValanti: CustomActionTable = {
+      // Puede ver los detalles de la entrevista o reagendarla
+      titulo: 'Evaluación Valanti',
+      color: 'info',
+      icono: 'bi-compass-fill',
+      tooltip: 'Ver o habilitar Evaluación Valanti',
+      accion: async ({ entidad }) => {
+        console.log('Evaluacion Valanti', entidad)
+      },
+      visible: () => tabActual.value === estadosPostulacion.ENTREVISTA
+    }
+    const btnHabilitarEvaluacionPersonalidad: CustomActionTable = {
+      // Puede ver los detalles de la entrevista o reagendarla
+      titulo: 'Evaluación Personalidad',
+      color: 'positive',
+      icono: 'fa-solid fa-brain',
+      tooltip: 'Ver, habilitar Evaluación de Personalidad',
+      accion: async ({ entidad }) => {
+        console.log('Evaluación de Personalidad', entidad)
+      },
+      visible: () => tabActual.value === estadosPostulacion.ENTREVISTA
+    }
+
     const btnSeleccionar: CustomActionTable = {
       titulo: 'Seleccionar',
       color: 'positive',
@@ -492,6 +529,9 @@ export default defineComponent({
       btnConsultar,
       btnBancoPostulantes,
       btnEntrevistar,
+      btnVerEntrevista,
+      btnHabilitarEvaluacionValanti,
+      btnHabilitarEvaluacionPersonalidad,
       btnSeleccionar,
       btnCitaMedica,
       btnDarAltaEmpleado,
