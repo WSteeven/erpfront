@@ -179,10 +179,10 @@ export default defineComponent({
     onModificado((id, responseData) => {
       idEntidad.value = id
       setTimeout(async () => {
-        await subirArchivos(), 1
+        await subirArchivos()
         emit('guardado', { page: 'DiagnosticoRecetaPage', entidad: responseData.modelo, hook: 'onModificado' })
-      })
-      // emit('cerrar-modal')
+      },1)
+      emit('cerrar-modal')
     })
 
     /*******
