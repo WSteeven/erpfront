@@ -37,6 +37,9 @@ export default defineComponent({
     const resumenGuardia = ref('-')
     const totalMonto = ref(0)
 
+    const mostrarVarios = ref(false)
+    const guardiasDetalle = ref<any[]>([])
+
     const { notificarError, notificarAdvertencia } = useNotificaciones()
 
     const filtros = reactive({
@@ -115,12 +118,18 @@ export default defineComponent({
     watch(mostrarJornada, val => {
       if (!val) {
         filtros.jornada = null
+      } else {
+        filtros.empleado = null // limpiar empleado al activar filtro por jornada
       }
     })
 
     //  limpiar zona si el toggle se apaga
     watch(mostrarZona, val => {
-      if (!val) filtros.zona = null
+      if (!val) {
+        filtros.zona = null
+      } else {
+        filtros.empleado = null // limpiar empleado al activar filtro por zona
+      }
     })
 
     /**
@@ -154,11 +163,26 @@ export default defineComponent({
         const response: AxiosResponse = await axios.post(url, filtros)
         const data = response.data
 
-        listado.value = data.detalle || []
-        resumenGuardia.value = data.guardia || '-'
-        totalMonto.value = data.monto_total || 0
+        mostrarVarios.value = data.total?.guardia === 'TODOS'
 
-        if (listado.value.length < 1) {
+        if (mostrarVarios.value) {
+          guardiasDetalle.value = data.detalle || []
+          listado.value = []
+          resumenGuardia.value = 'TODOS'
+        } else {
+          listado.value = data.detalle || []
+          guardiasDetalle.value = []
+          resumenGuardia.value = data.total?.guardia || data.guardia || '-'
+        }
+
+        totalMonto.value = mostrarVarios.value
+          ? data.total?.monto_total ?? 0
+          : data.monto_total ?? 0
+
+        if (
+          (!mostrarVarios.value && listado.value.length < 1) ||
+          (mostrarVarios.value && guardiasDetalle.value.length < 1)
+        ) {
           notificarAdvertencia(
             'No se encontraron registros para los filtros ingresados.'
           )
@@ -199,7 +223,9 @@ export default defineComponent({
       resumenGuardia,
       totalMonto,
       buscarReporte,
-      filtrarEmpleados
+      filtrarEmpleados,
+      mostrarVarios,
+      guardiasDetalle
     }
   }
 })

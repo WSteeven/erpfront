@@ -13,24 +13,26 @@
 
             <div class="row q-col-gutter-sm q-pa-sm q-py-md">
               <!-- Guardia -->
-              <div class="col-12 col-md-4">
-                <label class="q-mb-sm block">Seleccione un guardia</label>
-                <q-select
-                  v-model="filtros.empleado"
-                  :options="empleados"
-                  transition-show="scale"
-                  transition-hide="scale"
-                  options-dense
-                  dense
-                  outlined
-                  use-input
-                  input-debounce="0"
-                  :option-label="item => item.nombres + ' ' + item.apellidos"
-                  :option-value="item => item.id"
-                  emit-value
-                  map-options
-                />
-              </div>
+              <template v-if="!mostrarZona && !mostrarJornada">
+                <div class="col-12 col-md-4">
+                  <label class="q-mb-sm block">Seleccione un guardia</label>
+                  <q-select
+                    v-model="filtros.empleado"
+                    :options="empleados"
+                    transition-show="scale"
+                    transition-hide="scale"
+                    options-dense
+                    dense
+                    outlined
+                    use-input
+                    input-debounce="0"
+                    :option-label="item => item.nombres + ' ' + item.apellidos"
+                    :option-value="item => item.id"
+                    emit-value
+                    map-options
+                  />
+                </div>
+              </template>
 
               <!-- Fecha inicio -->
               <div class="col-12 col-md-2">
@@ -136,7 +138,7 @@
                         }
                       "
                     >
-                      <q-tooltip>Eliminar Zona</q-tooltip>
+                      <q-tooltip>Quitar Filtro de Zona</q-tooltip>
                     </q-btn>
                   </label>
 
@@ -261,53 +263,125 @@
             </div>
           </div>
         </q-card>
-        <!-- resumen -->
-        <q-card v-if="listado.length > 0" class="q-mt-md q-pa-md">
+
+        <!-- Resumen general -->
+        <q-card
+          v-if="(!mostrarVarios && listado.length > 0) || mostrarVarios"
+          class="q-mt-md q-pa-md"
+        >
           <div class="text-h6 text-primary">Resumen general</div>
           <q-separator class="q-my-sm" />
 
           <div class="row q-col-gutter-md">
-            <div class="col-12 col-md-4">
-              <q-card flat bordered class="q-pa-md">
+            <!-- Guardia -->
+            <div class="col-12 col-md-4" v-if="!mostrarVarios">
+              <q-card
+                flat
+                bordered
+                class="q-pa-md full-height"
+                style="height: 100%"
+              >
                 <q-item>
                   <q-item-section avatar>
                     <q-icon name="person" size="md" color="primary" />
                   </q-item-section>
                   <q-item-section>
-                    <q-item-label class="text-subtitle2">{{
-                      resumenGuardia
-                    }}</q-item-label>
+                    <q-item-label class="text-subtitle2">
+                      {{ resumenGuardia }}
+                    </q-item-label>
                     <q-item-label caption>GUARDIA DE SEGURIDAD</q-item-label>
                   </q-item-section>
                 </q-item>
               </q-card>
             </div>
+
+            <!-- Zona -->
+            <div class="col-12 col-md-4" v-if="mostrarZona && filtros.zona">
+              <q-card
+                flat
+                bordered
+                class="q-pa-md full-height"
+                style="height: 100%"
+              >
+                <q-item>
+                  <q-item-section avatar>
+                    <q-icon name="map" size="md" color="primary" />
+                  </q-item-section>
+                  <q-item-section>
+                    <q-item-label class="text-subtitle2">
+                      {{
+                        zonas.find(z => z.id === filtros.zona)?.nombre || '-'
+                      }}
+                    </q-item-label>
+                    <q-item-label caption>ZONA</q-item-label>
+                  </q-item-section>
+                </q-item>
+              </q-card>
+            </div>
+
+            <!-- Jornada -->
+            <div
+              class="col-12 col-md-4"
+              v-if="mostrarJornada && filtros.jornada"
+            >
+              <q-card
+                flat
+                bordered
+                class="q-pa-md full-height"
+                style="height: 100%"
+              >
+                <q-item>
+                  <q-item-section avatar>
+                    <q-icon name="schedule" size="md" color="primary" />
+                  </q-item-section>
+                  <q-item-section>
+                    <q-item-label class="text-subtitle2">
+                      {{ filtros.jornada }}
+                    </q-item-label>
+                    <q-item-label caption>JORNADA</q-item-label>
+                  </q-item-section>
+                </q-item>
+              </q-card>
+            </div>
+
+            <!-- Periodo - siempre mostrar -->
             <div class="col-12 col-md-4">
-              <q-card flat bordered class="q-pa-md">
+              <q-card
+                flat
+                bordered
+                class="q-pa-md full-height"
+                style="height: 100%"
+              >
                 <q-item>
                   <q-item-section avatar>
                     <q-icon name="event" size="md" color="primary" />
                   </q-item-section>
                   <q-item-section>
-                    <q-item-label class="text-subtitle1"
-                      >{{ filtros.fecha_inicio }} al
-                      {{ filtros.fecha_fin }}</q-item-label
-                    >
+                    <q-item-label class="text-subtitle1">
+                      {{ filtros.fecha_inicio }} al {{ filtros.fecha_fin }}
+                    </q-item-label>
                     <q-item-label caption>PERIODO</q-item-label>
                   </q-item-section>
                 </q-item>
               </q-card>
             </div>
+
+            <!-- Total alimentación -->
             <div class="col-12 col-md-4">
-              <q-card flat bordered class="q-pa-md">
+              <q-card
+                flat
+                bordered
+                class="q-pa-md full-height"
+                style="height: 100%"
+              >
                 <q-item>
                   <q-item-section avatar>
                     <q-icon name="attach_money" size="md" color="primary" />
                   </q-item-section>
                   <q-item-section>
-                    <q-item-label class="text-subtitle1"
-                      >{{ totalMonto }}.00</q-item-label
-                    >
+                    <q-item-label class="text-subtitle1">
+                      ${{ totalMonto }}.00
+                    </q-item-label>
                     <q-item-label caption>TOTAL DE ALIMENTACION</q-item-label>
                   </q-item-section>
                 </q-item>
@@ -315,11 +389,16 @@
             </div>
           </div>
         </q-card>
-        <!-- resumen por dia -->
-        <q-card class="q-mt-md q-pa-md" flat bordered>
+
+        <!-- Tabla de detalle para un solo guardia -->
+        <q-card
+          class="q-mt-md q-pa-md"
+          flat
+          bordered
+          v-if="!mostrarVarios && listado.length > 0"
+        >
           <div class="text-h6 text-primary">Detalle por día</div>
           <q-separator class="q-my-sm" />
-
           <q-table
             :rows="listado"
             :columns="columnasDetalle"
@@ -327,8 +406,8 @@
             dense
             flat
             bordered
-            :pagination="{ rowsPerPage: 10 }"
-            :rows-per-page-options="[5, 10, 20, 50]"
+            class="q-mb-md"
+            :pagination="{ rowsPerPage: 5 }"
           >
             <template v-slot:body-cell-jornadas="props">
               <q-td :props="props">
@@ -345,13 +424,59 @@
                 </q-chip>
               </q-td>
             </template>
-
             <template v-slot:body-cell-monto="props">
               <q-td :props="props">
                 <q-badge color="green-6">${{ props.value }}</q-badge>
               </q-td>
             </template>
           </q-table>
+        </q-card>
+
+        <!-- Detalle por guardias (varios) -->
+        <q-card class="q-mt-md q-pa-md" flat bordered v-if="mostrarVarios">
+          <div class="text-h6 text-primary">Detalle por guardia</div>
+          <q-separator class="q-my-sm" />
+
+          <q-expansion-item
+            v-for="(guardia, index) in guardiasDetalle"
+            :key="index"
+            :label="guardia.guardia"
+            :caption="'Total alimentación: $' + guardia.monto_total"
+            expand-separator
+            header-class="bg-grey-1 text-bold"
+          >
+            <q-table
+              :rows="guardia.detalle"
+              :columns="columnasDetalle"
+              row-key="fecha"
+              dense
+              flat
+              bordered
+              class="q-mb-md"
+              :pagination="{ rowsPerPage: 5 }"
+            >
+              <template v-slot:body-cell-jornadas="props">
+                <q-td :props="props">
+                  <q-chip
+                    v-for="jornada in props.value"
+                    :key="jornada"
+                    dense
+                    :color="jornada === 'NOCTURNA' ? 'indigo-7' : 'amber-7'"
+                    text-color="white"
+                    class="q-mr-xs"
+                    icon="schedule"
+                  >
+                    {{ jornada }}
+                  </q-chip>
+                </q-td>
+              </template>
+              <template v-slot:body-cell-monto="props">
+                <q-td :props="props">
+                  <q-badge color="green-6">${{ props.value }}</q-badge>
+                </q-td>
+              </template>
+            </q-table>
+          </q-expansion-item>
         </q-card>
 
         <!-- fin de resumen -->
