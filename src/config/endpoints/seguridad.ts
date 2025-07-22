@@ -12,6 +12,4 @@ export const seguridad = {
   restricciones_prendas_zonas: new Endpoint('seguridad/restricciones-prendas-zonas'),
   restricciones_prendas_zonas_datos: new Endpoint('seguridad/restricciones-prendas-zonas-datos'),
   tipos_eventos_bitacoras: new Endpoint('seguridad/tipos-eventos-bitacoras'),
-  // reporte de alimentacion
-  reporte_alimentacion: new Endpoint('seguridad/reporte-alimentacion'),
 }
