@@ -41,7 +41,7 @@ import { usePostulacionStore } from 'stores/recursosHumanos/seleccionContratacio
 import { configuracionColumnasReferencias } from '../domain/configuracionColumnasReferencias'
 import { useNotificaciones } from 'shared/notificaciones'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
-import { endpoints } from 'config/api'
+import {apiConfig, endpoints} from 'config/api'
 import { AxiosResponse } from 'axios'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { usePostulanteStore } from 'stores/recursosHumanos/seleccionContratacion/postulante'
@@ -50,6 +50,10 @@ import { TipoDiscapacidadController } from 'recursosHumanos/tipo-discapacidad/in
 import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
 import { TipoDiscapacidadPorcentaje } from 'recursosHumanos/empleados/domain/TipoDiscapacidadPorcentaje'
 import { TipoDiscapacidad } from 'recursosHumanos/tipo-discapacidad/domain/TipoDiscapacidad'
+import { imprimirArchivo } from 'shared/utils'
+import {useNotificacionStore} from 'stores/notificacion';
+import {useCargandoStore} from 'stores/cargando';
+import {useQuasar} from 'quasar';
 
 export default defineComponent({
   components: {
@@ -85,6 +89,9 @@ export default defineComponent({
     const { confirmar, notificarCorrecto, notificarAdvertencia } =
       useNotificaciones()
 
+    // Stores
+    useNotificacionStore().setQuasar(useQuasar())
+    useCargandoStore().setQuasar(useQuasar())
     const cargando = new StatusEssentialLoading()
     const {
       autenticado,
@@ -106,6 +113,7 @@ export default defineComponent({
     const { paises, filtrarPaises } =
       useFiltrosListadosSelects(listadosAuxiliares)
 
+    const axios = AxiosHttpRepository.getInstance()
     const refArchivo = ref()
     const idRegistro = ref() //el id del usuario que se adjuntará el archivo de CV
     const CURRICULUM = 'CURRICULUM'
@@ -260,7 +268,6 @@ export default defineComponent({
     async function darAltaEmpleado(postulacion_id: number, posicion: number) {
       try {
         cargando.activar()
-        const axios = AxiosHttpRepository.getInstance()
         const ruta =
           axios.getEndpoint(endpoints.postulacion_vacante) +
           '/dar-alta/' +
@@ -284,6 +291,36 @@ export default defineComponent({
     async function visualizarVacante(id: number) {
       vacanteStore.idVacante = id
       modalesVacante.abrirModalEntidad('VisualizarVacantePage')
+    }
+
+    async function habilitarTestPersonalidad(id: number) {
+      try {
+        cargando.activar()
+        const ruta =
+          axios.getEndpoint(endpoints.habilitar_test_personalidad) + id
+        const response: AxiosResponse = await axios.post(ruta)
+        console.log(response)
+        await obtenerResultadosTestPersonalidad(id)
+        notificarCorrecto(response.data.mensaje)
+        return response.data.link
+      } catch (e) {
+        console.error(e)
+      } finally {
+        cargando.desactivar()
+      }
+    }
+
+    async function obtenerResultadosTestPersonalidad(id:number) {
+      try {
+        const ruta =
+            apiConfig.URL_BASE +
+            '/' +
+          axios.getEndpoint(endpoints.resultados_test_personalidad)+id
+        await imprimirArchivo(ruta, 'GET', 'blob', 'xlsx', 'resultados_16pf')
+        notificarCorrecto('Archivo descargado con éxito')
+      } catch (e) {
+        console.error(e)
+      }
     }
 
     /***************************************************************************
@@ -372,6 +409,18 @@ export default defineComponent({
       tooltip: 'Ver, habilitar Evaluación de Personalidad',
       accion: async ({ entidad }) => {
         console.log('Evaluación de Personalidad', entidad)
+        const link = await habilitarTestPersonalidad(entidad.id)
+        console.log('Link', link)
+        navigator.clipboard
+          .writeText(link)
+          .then(() => {
+            notificarCorrecto('¡El enlace ha sido copiado al portapapeles!')
+          })
+          .catch(err => {
+            console.log(err)
+            notificarError('Error al copiar el enlace')
+          })
+        notificarCorrecto('Se ha habilitado la evaluación de personalidad')
       },
       visible: () => tabActual.value === estadosPostulacion.ENTREVISTA
     }
@@ -386,7 +435,6 @@ export default defineComponent({
           async () => {
             try {
               cargando.activar()
-              const axios = AxiosHttpRepository.getInstance()
               const ruta =
                 axios.getEndpoint(endpoints.postulacion_vacante) +
                   '/seleccionar/' +
@@ -454,7 +502,6 @@ export default defineComponent({
           async () => {
             try {
               cargando.activar()
-              const axios = AxiosHttpRepository.getInstance()
               const ruta =
                 axios.getEndpoint(endpoints.postulacion_vacante) +
                   '/descartar/' +

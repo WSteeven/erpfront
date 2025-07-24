@@ -652,6 +652,12 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/perfil/view/PerfilExternoPage.vue'),
         meta: { requiresAuth: true },
       },
+      {
+        path: '/test-personalidad/:token',
+        name: 'test_personalidad',
+        component: () => import('seleccionContratacion/postulacionVacante/modules/testPersonalidad/view/TestPersonalidadPage.vue'),
+        meta: { requiresAuth: true, permissionRequired: false }
+      },
     ],
   },
   {

@@ -465,7 +465,7 @@ export async function imprimirArchivo(
     ruta: string,
     metodo: Method,
     responseType: ResponseType,
-    formato: string,
+    formato: 'pdf'|'xlsx'|string,
     titulo: string,
     data?: any
 ) {
