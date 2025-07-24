@@ -7,29 +7,36 @@ import OptionGroupComponent from 'components/optionGroup/view/OptionGroupCompone
 import { useNotificaciones } from 'shared/notificaciones'
 import CalloutComponent from 'components/CalloutComponent.vue'
 import { useRoute } from 'vue-router'
-import {AxiosHttpRepository} from 'shared/http/infraestructure/AxiosHttpRepository';
-import {endpoints} from 'config/api';
-import {AxiosResponse} from 'axios';
-import {userIsAuthenticated} from 'shared/helpers/verifyAuthenticatedUser';
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
+import { endpoints } from 'config/api'
+import { AxiosResponse } from 'axios'
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { EvaluacionPersonalidad } from 'seleccionContratacion/postulacionVacante/modules/testPersonalidad/domain/EvaluacionPersonalidad'
+import { EvaluacionPersonalidadController } from 'seleccionContratacion/postulacionVacante/modules/testPersonalidad/infraestructure/EvaluacionPersonalidadController'
 
 export default defineComponent({
   components: { CalloutComponent, OptionGroupComponent },
   setup() {
+    const mixin = new ContenedorSimpleMixin(
+      EvaluacionPersonalidad,
+      new EvaluacionPersonalidadController()
+    )
+    const { entidad: evaluacion } = mixin.useReferencias()
+    const { guardar } = mixin.useComportamiento()
+
+    const { notificarCorrecto, notificarAdvertencia, notificarError } =
+      useNotificaciones()
+
     const route = useRoute()
     const token = route.params.token
-    const respuestasTestPersonalidad = ref({})
     const componenteCargado = ref(false)
     const finalizado = ref(false)
     const disable = ref(false)
-    const { notificarCorrecto,notificarAdvertencia, notificarError } = useNotificaciones()
     const preguntasPorPagina = 10
     const paginaActual = ref(0)
     const error = ref(null)
-    const {
-      autenticado,
-      tipoAutenticacion,
-      store
-    } = userIsAuthenticated()
+    const completado = ref(false)
+    const mensaje = ref('')
 
     const totalPaginas = computed(() =>
       Math.ceil(preguntasTestPersonalidad.length / preguntasPorPagina)
@@ -44,12 +51,19 @@ export default defineComponent({
 
     async function validarToken() {
       try {
-        const axios  = AxiosHttpRepository.getInstance()
-        const ruta =  axios.getEndpoint(endpoints.validar_token_test_personalidad)
+        const axios = AxiosHttpRepository.getInstance()
+        const ruta = axios.getEndpoint(
+          endpoints.validar_token_test_personalidad
+        )
 
-        const response:AxiosResponse =await axios.post(`${ruta}/${token}`)
-        if(response.status===200) notificarCorrecto(response.data.mensaje)
-        error.value = false
+        const response: AxiosResponse = await axios.post(`${ruta}/${token}`)
+        if (response.status === 200) {
+          notificarCorrecto(response.data.mensaje)
+          error.value = false
+          completado.value = response.data.contestado
+          if (completado.value) error.value = true // para indicarle que esta completado
+          mensaje.value = response.data.mensaje
+        }
       } catch (err) {
         error.value = true
         notificarError(err.response?.data?.message || 'Acceso no válido')
@@ -63,7 +77,7 @@ export default defineComponent({
           tiempoRestante.value--
         } else {
           clearInterval(temporizador)
-          enviarRespuestas()
+          enviarRespuestas(true)
         }
       }, 1000)
     }
@@ -88,23 +102,26 @@ export default defineComponent({
       }))
     }
 
-    function enviarRespuestas() {
-      console.log('respuestas', respuestasTestPersonalidad.value)
-      const hayNulos = Object.values(respuestasTestPersonalidad.value).some(
-        v => v === null
-      )
-      if (hayNulos)
-        notificarAdvertencia(
-          'Aún tienes preguntas sin responder, por favor contesta todas las preguntas antes de enviar las respuestas'
-        )
-      else console.log('Aqui si se guarda')
+    async function enviarRespuestas(omitirNulos = false) {
+      console.log('respuestas', evaluacion.respuestas)
+      const hayNulos = Object.values(evaluacion.respuestas).some(v => v === null)
+      if (omitirNulos) await guardar(evaluacion, false)
+      else {
+        if (hayNulos){
+          notificarAdvertencia(
+            'Aún tienes preguntas sin responder, por favor contesta todas las preguntas antes de enviar las respuestas'
+          )
+        }
+        else await guardar(evaluacion, false)
+      }
     }
 
     onMounted(() => {
       validarToken()
       preguntasTestPersonalidad.forEach(
-        pregunta => (respuestasTestPersonalidad.value[pregunta.id] = null)
+        pregunta => (evaluacion.respuestas[pregunta.id] = null)
       )
+      evaluacion.token = token
       componenteCargado.value = true
       iniciarTemporizador()
     })
@@ -115,10 +132,13 @@ export default defineComponent({
 
     return {
       preguntasTestPersonalidad,
-      respuestasTestPersonalidad,
+      evaluacion,
       finalizado,
       disable,
-      componenteCargado, error,
+      componenteCargado,
+      error,
+      completado,
+      mensaje,
       totalPaginas,
       paginaActual,
       preguntasPaginadas,

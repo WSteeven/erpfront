@@ -41,7 +41,7 @@ import { usePostulacionStore } from 'stores/recursosHumanos/seleccionContratacio
 import { configuracionColumnasReferencias } from '../domain/configuracionColumnasReferencias'
 import { useNotificaciones } from 'shared/notificaciones'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
-import {apiConfig, endpoints} from 'config/api'
+import { apiConfig, endpoints } from 'config/api'
 import { AxiosResponse } from 'axios'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { usePostulanteStore } from 'stores/recursosHumanos/seleccionContratacion/postulante'
@@ -51,9 +51,9 @@ import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
 import { TipoDiscapacidadPorcentaje } from 'recursosHumanos/empleados/domain/TipoDiscapacidadPorcentaje'
 import { TipoDiscapacidad } from 'recursosHumanos/tipo-discapacidad/domain/TipoDiscapacidad'
 import { imprimirArchivo } from 'shared/utils'
-import {useNotificacionStore} from 'stores/notificacion';
-import {useCargandoStore} from 'stores/cargando';
-import {useQuasar} from 'quasar';
+import { useNotificacionStore } from 'stores/notificacion'
+import { useCargandoStore } from 'stores/cargando'
+import { useQuasar } from 'quasar'
 
 export default defineComponent({
   components: {
@@ -298,24 +298,58 @@ export default defineComponent({
         cargando.activar()
         const ruta =
           axios.getEndpoint(endpoints.habilitar_test_personalidad) + id
-        const response: AxiosResponse = await axios.post(ruta)
-        console.log(response)
-        await obtenerResultadosTestPersonalidad(id)
-        notificarCorrecto(response.data.mensaje)
-        return response.data.link
-      } catch (e) {
+        const response: AxiosResponse = await axios.post(ruta, null, {
+          responseType: 'blob'
+        })
+
+        const contentType = response.headers['content-type']
+        const disposition = response.headers['content-disposition']
+        // Si es un archivo (descarga)
+        if (
+          contentType?.includes(
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+          ) ||
+          disposition?.includes('attachment')
+        ) {
+          await imprimirArchivo(
+            URL.createObjectURL(response.data),
+            'GET',
+            'blob',
+            'xlsx',
+            'resultados_16pf'
+          )
+          notificarCorrecto('Archivo descargado con éxito')
+          return
+        }
+
+        // Si no es un archivo, intentamos leer como JSON (respuesta con link)
+        const reader = new FileReader()
+        reader.onload = async function () {
+          const result = JSON.parse(reader.result as string)
+
+          if (result.link) {
+            await navigator.clipboard.writeText(result.link)
+            notificarCorrecto('¡El enlace ha sido copiado al portapapeles!')
+          }
+        }
+        reader.readAsText(response.data)
+      } catch (e: any) {
         console.error(e)
+        notificarAdvertencia(
+          'Hubo un problema al habilitar el test de personalidad.'
+        )
       } finally {
         cargando.desactivar()
       }
     }
 
-    async function obtenerResultadosTestPersonalidad(id:number) {
+    async function obtenerResultadosTestPersonalidad(id: number) {
       try {
         const ruta =
-            apiConfig.URL_BASE +
-            '/' +
-          axios.getEndpoint(endpoints.resultados_test_personalidad)+id
+          apiConfig.URL_BASE +
+          '/' +
+          axios.getEndpoint(endpoints.resultados_test_personalidad) +
+          id
         await imprimirArchivo(ruta, 'GET', 'blob', 'xlsx', 'resultados_16pf')
         notificarCorrecto('Archivo descargado con éxito')
       } catch (e) {

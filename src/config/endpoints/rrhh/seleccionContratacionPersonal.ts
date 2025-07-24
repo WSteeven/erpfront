@@ -20,6 +20,7 @@ export const seleccionContratacionPersonal = {
   vacantes_favoritas: new Endpoint('seleccion-contratacion/vacantes-favoritas'),
   bancos_postulantes: new Endpoint('seleccion-contratacion/bancos-postulantes'),
   usuarios_externos: new Endpoint('seleccion-contratacion/usuarios-externos'),
+  evaluaciones_personalidades: new Endpoint('seleccion-contratacion/evaluaciones-personalidades'),
   validar_token_test_personalidad: new Endpoint('seleccion-contratacion/validar-token-test-personalidad'),
   habilitar_test_personalidad: new Endpoint('seleccion-contratacion/habilitar-test-personalidad/'),
   resultados_test_personalidad: new Endpoint('seleccion-contratacion/resultados-test-personalidad/'),

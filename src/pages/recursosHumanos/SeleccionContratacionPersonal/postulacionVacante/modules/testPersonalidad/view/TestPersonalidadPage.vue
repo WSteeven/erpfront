@@ -1,6 +1,9 @@
 <template>
   <div v-if="error">
-    <q-banner class="bg-red-2 text-red">
+    <div v-if="completado">
+      <callout-component :mensaje="mensaje" tipo="info" />
+    </div>
+    <q-banner v-else class="bg-red-2 text-red">
       No tienes los permisos necesarios para contestar este test.
     </q-banner>
   </div>
@@ -15,9 +18,9 @@
               v-for="n in preguntasTestPersonalidad.length"
               :key="n"
               :label="n.toString()"
-              :color="respuestasTestPersonalidad[n] ? 'green' : 'grey'"
+              :color="evaluacion.respuestas[n] ? 'green' : 'grey'"
               :class="
-                respuestasTestPersonalidad[n] ? 'bg-green-1' : 'bg-grey-1'
+                evaluacion.respuestas[n] ? 'bg-green-1' : 'bg-grey-1'
               "
               flat
               dense
@@ -30,7 +33,7 @@
           label="Enviar respuestas"
           color="primary"
           class="full-width q-mt-xl"
-          @click="enviarRespuestas"
+          @click="enviarRespuestas()"
           :disable="disable"
         />
       </div>
@@ -62,7 +65,7 @@
             </div>
             <option-group-component
               v-if="componenteCargado"
-              v-model="respuestasTestPersonalidad[pregunta.id]"
+              v-model="evaluacion.respuestas[pregunta.id]"
               :options="getOpciones(pregunta)"
               :horizontal="false"
               type="radio"
