@@ -109,6 +109,8 @@ export const recursosHumanos = {
   generar_username: new Endpoint('recursos-humanos/generar-username'),
 
 
+  pagar_prestamos_rol_actual: new Endpoint('recursos-humanos/pagar-prestamos-rol-actual/'),
+  calcular_cuotas_descuento: new Endpoint('recursos-humanos/calcular-cuotas-descuento'),
   actualizar_rol_pago: new Endpoint('recursos-humanos/actualizar-rol-pago/'),
   agregar_nuevos_empleados: new Endpoint('recursos-humanos/agregar-nuevos-empleados/'),
   valores_cargados_roles: new Endpoint('recursos-humanos/valores-cargados-roles'),
@@ -127,6 +129,7 @@ export const recursosHumanos = {
   rubros: new Endpoint('recursos-humanos/rubros'),
   tipos_discapacidades: new Endpoint('recursos-humanos/tipos-discapacidades'),
   anular_prestamo_empresarial: new Endpoint('recursos-humanos/anular-prestamo-empresarial'),
+  actualizar_prestamo_empresarial: new Endpoint('recursos-humanos/actualizar-prestamo-empresarial'),
   asignar_alimentacion: new Endpoint('recursos-humanos/asignar-alimentacion'),
   alimentacion: new Endpoint('recursos-humanos/alimentacion'),
   detalle_alimentacion: new Endpoint('recursos-humanos/detalle-alimentacion'),

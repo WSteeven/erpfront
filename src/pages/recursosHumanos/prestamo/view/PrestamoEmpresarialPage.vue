@@ -5,6 +5,7 @@
     :configuracionColumnas="configuracionColumnas"
     :permitirEliminar="false"
     :accion1="btnEliminarPrestamoEmpresarial"
+    :accion2="btnActualizarPrestamoEmpresarial"
     :tabOptions="tabPrestamoEmpresarial"
     :filtrar="filtrarPrestamoEmpresarial"
     tabDefecto="ACTIVO"
@@ -25,22 +26,21 @@
               dense
               outlined
               :disable="!esNuevo"
-              :readonly="disabled"
               :error="!!v$.solicitante.$errors.length"
               error-message="Debes seleccionar un empleado"
               use-input
               input-debounce="0"
               @filter="filtrarEmpleados"
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.nombres + ' ' + v.apellidos"
+              :option-value="v => v.id"
+              :option-label="v => v.nombres + ' ' + v.apellidos"
               emit-value
               map-options
             >
               <template v-slot:error>
-                <error-component clave="solicitante" :v$="v$"/>
+                <error-component clave="solicitante" :v$="v$" />
               </template>
               <template v-slot:no-option>
-                <no-option-component/>
+                <no-option-component />
               </template>
             </q-select>
           </div>
@@ -58,10 +58,23 @@
             >
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
-                  <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                    <q-date v-model="prestamo.fecha" :mask="maskFecha" today-btn>
+                  <q-popup-proxy
+                    cover
+                    transition-show="scale"
+                    transition-hide="scale"
+                  >
+                    <q-date
+                      v-model="prestamo.fecha"
+                      :mask="maskFecha"
+                      today-btn
+                    >
                       <div class="row items-center justify-end">
-                        <q-btn v-close-popup label="Cerrar" color="primary" flat />
+                        <q-btn
+                          v-close-popup
+                          label="Cerrar"
+                          color="primary"
+                          flat
+                        />
                       </div>
                     </q-date>
                   </q-popup-proxy>
@@ -69,7 +82,7 @@
               </template>
 
               <template v-slot:error>
-                <error-component clave="fecha" :v$="v$"/>
+                <error-component clave="fecha" :v$="v$" />
               </template>
             </q-input>
           </div>
@@ -92,7 +105,7 @@
               dense
             >
               <template v-slot:error>
-                <error-component clave="monto" :v$="v$"/>
+                <error-component clave="monto" :v$="v$" />
               </template>
             </q-input>
           </div>
@@ -110,7 +123,7 @@
               dense
             >
               <template v-slot:error>
-                <error-component clave="plazo" :v$="v$"/>
+                <error-component clave="plazo" :v$="v$" />
               </template>
             </q-input>
           </div>
@@ -127,17 +140,30 @@
             >
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
-                  <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                    <q-date v-model="prestamo.vencimiento" :mask="maskFecha" today-btn>
+                  <q-popup-proxy
+                    cover
+                    transition-show="scale"
+                    transition-hide="scale"
+                  >
+                    <q-date
+                      v-model="prestamo.vencimiento"
+                      :mask="maskFecha"
+                      today-btn
+                    >
                       <div class="row items-center justify-end">
-                        <q-btn v-close-popup label="Cerrar" color="primary" flat />
+                        <q-btn
+                          v-close-popup
+                          label="Cerrar"
+                          color="primary"
+                          flat
+                        />
                       </div>
                     </q-date>
                   </q-popup-proxy>
                 </q-icon>
               </template>
               <template v-slot:error>
-                <error-component clave="vencimiento" :v$="v$"/>
+                <error-component clave="vencimiento" :v$="v$" />
               </template>
             </q-input>
           </div>
@@ -153,19 +179,33 @@
               dense
               outlined
               :disable="disabled"
-              :readonly="disabled"
               use-input
               input-debounce="0"
               @filter="filtrarPeriodo"
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.nombre"
+              :option-value="v => v.id"
+              :option-label="v => v.nombre"
               emit-value
               map-options
             >
-              <template v-slot:no-option><no-option-component/>
+              <template v-slot:no-option>
+                <no-option-component />
               </template>
             </q-select>
           </div>
+
+          <!-- Estado -->
+          <div class="col-12 col-md-3" v-if="!esNuevo">
+            <label class="q-mb-sm block">Estado</label>
+            <q-input v-model="prestamo.estado" :disable="true" outlined dense />
+          </div>
+
+          <!-- Motivo -->
+          <div class="col-12 col-md-3" v-if="!esNuevo && prestamo.motivo">
+            <label class="q-mb-sm block">Motivo de anulación </label>
+            <q-input v-model="prestamo.motivo" autogrow :disable="true" outlined dense />
+          </div>
+
+
           <!-- Valor  -->
           <div class="col-12 col-md-3" v-if="prestamo.periodo != null">
             <label class="q-mb-sm block">Valor Utilidades </label>
@@ -180,7 +220,7 @@
               dense
             >
               <template v-slot:error>
-                <error-component clave="valor_utilidad" :v$="v$"/>
+                <error-component clave="valor_utilidad" :v$="v$" />
               </template>
             </q-input>
           </div>
@@ -189,16 +229,21 @@
       <essential-table
         v-if="prestamo.plazo > 0 && prestamo.plazo <= 12"
         titulo="Plazo de Prestamo"
-        :configuracionColumnas="[...configuracionColumnasPlazoPrestamo, accionesTabla]"
+        :configuracionColumnas="[
+          ...configuracionColumnasPlazoPrestamo,
+          accionesTabla
+        ]"
         :datos="prestamo.plazos"
         :permitirConsultar="false"
         :permitirEditar="false"
         :permitirEliminar="false"
-        :accion1="btnModificarCouta"
-        :accion2="btnPagarCouta"
-        :accion3="btnAplazarCouta"
-        :accion4="btnEditarTotalCouta"
+        :accion1="btnModificarCuota"
+        :accion2="btnPagarCuota"
+        :accion3="btnAplazarCuota"
+        :accion4="btnEditarTotalCuota"
+        :accion5="btnComentario"
         :altoFijo="false"
+        ajustar-celdas
       >
       </essential-table>
       <!-- <label v-if="esMayorPrestamo" class="q-mb-sm text-red text-h6 block"

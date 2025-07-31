@@ -1,16 +1,19 @@
-import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable';
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
+import { PlazoPrestamo } from 'recursosHumanos/prestamo/domain/PlazoPrestamo'
 
 export class Prestamo extends EntidadAuditable {
   id: number | null
   solicitante: number | null
   solicitante_info: string | null
   fecha: string | null
+  motivo: string | null
+  estado: string | null
   vencimiento: string | null
   periodo: number | null
   valor_utilidad: number | null
   monto: number | null
-  plazo
-  plazos: any[] | null
+  plazo: number | null
+  plazos: PlazoPrestamo[] | null
 
   constructor() {
     super()
@@ -20,6 +23,8 @@ export class Prestamo extends EntidadAuditable {
     this.fecha = null
     this.vencimiento = null
     this.periodo = null
+    this.motivo = null
+    this.estado = null
     this.valor_utilidad = null
     this.monto = null
     this.plazo = null

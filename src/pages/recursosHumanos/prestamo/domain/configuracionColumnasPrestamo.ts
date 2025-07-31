@@ -2,12 +2,12 @@ import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
 import { Prestamo } from './Prestamo'
 
 export const configuracionColumnasPrestamo: ColumnConfig<Prestamo>[] = [
-    {
-      name: 'fecha',
-      field: 'fecha',
-      label: 'Fecha',
-      align: 'left',
-      sortable: true
+  {
+    name: 'fecha',
+    field: 'fecha',
+    label: 'Fecha',
+    align: 'left',
+    sortable: true
   },
   {
     name: 'solicitante_info',
@@ -15,19 +15,26 @@ export const configuracionColumnasPrestamo: ColumnConfig<Prestamo>[] = [
     label: 'Solicitante',
     align: 'left',
     sortable: true
-},
+  },
   {
     name: 'monto',
     field: 'monto',
-    label: 'monto',
+    label: 'Monto',
     align: 'left',
     sortable: true
-},
-{
-  name: 'plazo',
-  field: 'plazo',
-  label: 'Plazo',
-  align: 'left',
-  sortable: true
-},
+  },
+  {
+    name: 'plazo',
+    field: 'plazo',
+    label: 'Plazo (meses)',
+    align: 'left',
+    sortable: true
+  },
+  {
+    name: 'estado',
+    field: 'estado',
+    label: 'Estado',
+    align: 'left',
+    sortable: true
+  }
 ]

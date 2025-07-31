@@ -1,28 +1,29 @@
 // Dependencias
 import { configuracionColumnasPrestamo } from '../domain/configuracionColumnasPrestamo'
 import { configuracionColumnasPlazoPrestamo } from '../domain/configuracionColumnasPlazoPrestamo'
-import {
-  requiredIf,
-  required,
-} from 'shared/i18n-validators'
+import { required, requiredIf } from 'shared/i18n-validators'
 import { maxValue, minValue } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
-import { defineComponent, ref, computed, watchEffect } from 'vue'
+import { computed, defineComponent, ref, watchEffect } from 'vue'
 
 // Componentes
 import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
+import EssentialTable from 'components/tables/view/EssentialTable.vue'
+import NoOptionComponent from 'components/NoOptionComponent.vue'
+import ErrorComponent from 'components/ErrorComponent.vue'
 import SelectorImagen from 'components/SelectorImagen.vue'
-import ErrorComponent from 'components/ErrorComponent.vue';
-import NoOptionComponent from 'components/NoOptionComponent.vue';
 
 //Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { PrestamoController } from '../infraestructure/PrestamoController'
 import { Prestamo } from '../domain/Prestamo'
-import { removeAccents } from 'shared/utils'
-import { acciones, accionesTabla, maskFecha, tabPrestamoEmpresarial } from 'config/utils'
+import {
+  acciones,
+  accionesTabla,
+  maskFecha,
+  tabPrestamoEmpresarial
+} from 'config/utils'
 import { MotivoPermisoEmpleadoController } from 'pages/recursosHumanos/motivo/infraestructure/MotivoPermisoEmpleadoController'
-import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { useNotificaciones } from 'shared/notificaciones'
@@ -53,7 +54,7 @@ export default defineComponent({
     } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista, listar } =
       mixin.useComportamiento()
-    const { onBeforeModificar } = mixin.useHooks()
+    const { onBeforeModificar, onBeforeConsultar } = mixin.useHooks()
 
     const {
       confirmar,
@@ -65,11 +66,15 @@ export default defineComponent({
     const key_enter = ref(0)
     const motivos = ref([])
 
-    const tipos = ref([
-      { id: 1, nombre: 'Prestamo Descuento' },
-      { id: 2, nombre: 'Anticipo' }
-    ])
+    /*const tipos = ref([
+              { id: 1, nombre: 'Prestamo Descuento' },
+              { id: 2, nombre: 'Anticipo' }
+            ])*/
     const esConsultado = ref(false)
+
+    onBeforeConsultar(async () => {
+      await consultarEmpleados()
+    })
     onBeforeModificar(() => (esConsultado.value = true))
     const maximoAPrestar = ref()
     const esMayorPrestamo = ref(false)
@@ -86,7 +91,7 @@ export default defineComponent({
     const prestamoEmpresarialCustomController = new PrestamoCustomController()
 
     const esNuevo = computed(() => {
-      return accion.value === 'NUEVO'
+      return accion.value === acciones.nuevo
     })
     cargarVista(async () => {
       await obtenerListados({
@@ -117,7 +122,9 @@ export default defineComponent({
       plazos: { required }
     }))
     prestamo.plazos = []
-    const plazo_pago = ref({ id: 0, vencimiento: '', plazo: 0 })
+
+    // const plazo_pago = ref({ id: 0, vencimiento: '', plazo: 0 })
+
     function tabla_plazos() {
       key_enter.value++
       if (key_enter.value >= 1) {
@@ -132,13 +139,22 @@ export default defineComponent({
             id: index - 1,
             num_cuota: index,
             fecha_vencimiento: calcular_fechas(index, 'meses'),
-            valor_couta: (valor_cuota / plazo_prestamo).toFixed(2),
-            pago_couta: false
+            valor_cuota: (valor_cuota / plazo_prestamo).toFixed(2),
+            pago_cuota: false
           }
           prestamo.plazos!.push(plazo)
         }
       }
     }
+
+    async function consultarEmpleados() {
+      const { result } = await new EmpleadoController().listar({
+        campos: 'id,nombres,apellidos'
+      })
+      empleados.value = result
+      listadosAuxiliares.empleados = result
+    }
+
     function calcular_fechas(cuota: number, plazo: string) {
       const day = 1000 * 60 * 60 * 24
       const week = 7 * day
@@ -146,7 +162,7 @@ export default defineComponent({
       const year = 12 * month
       const fechaPrestamo = parse(
         prestamo.fecha !== null ? prestamo.fecha : new Date().toString(),
-        'YYYY-MM-DD'
+        maskFecha
       )
       switch (plazo) {
         case 'dias':
@@ -167,15 +183,16 @@ export default defineComponent({
       // Formatear la fecha en formato 'YYYY-MM-DD'
       return format(fechaPrestamo, 'YYYY-MM-DD')
     }
+
     const v$ = useVuelidate(reglas, prestamo)
     setValidador(v$.value)
 
     watchEffect(() => {
       try {
-        if (accion.value == acciones.nuevo ? true : false) {
+        if (accion.value == acciones.nuevo) {
           if (prestamo.plazo != null) {
             const valor_cuota = prestamo.monto !== null ? prestamo.monto : 0
-            const plazo_prestamo = prestamo.plazo != null ? prestamo.plazo : 0
+            const plazo_prestamo = prestamo.plazo ?? 0
             const valor_pago = valor_cuota / plazo_prestamo
             if (
               valor_pago <= 200 &&
@@ -193,7 +210,7 @@ export default defineComponent({
             } else {
               if (prestamo.plazo > 0) {
                 notificarError(
-                  'Las Coutas no deben exeder al 40% del sueldo del empleado'
+                  'Las cuotas no deben exeder al 40% del sueldo del empleado'
                 )
               }
             }
@@ -213,10 +230,10 @@ export default defineComponent({
       const valor_prestamo = prestamo.monto == null ? 0 : prestamo.monto
 
       if (valor_utilidad > 0) {
-        const indice_couta = prestamo.plazos!.findIndex(
-          couta => couta.num_cuota === prestamo.plazo + 1
+        const indice_cuota = prestamo.plazos!.findIndex(
+          cuota => cuota.num_cuota === prestamo.plazo + 1
         )
-        if (indice_couta == -1) {
+        if (indice_cuota == -1) {
           const periodo_seleccionado = periodos.value.find(
             periodo => periodo.id === prestamo.periodo
           )
@@ -225,57 +242,68 @@ export default defineComponent({
             num_cuota: prestamo.plazos!.length + 1,
             fecha_vencimiento:
               periodo_seleccionado.nombre.split('-')[0] + '-04-15',
-            valor_couta: prestamo.valor_utilidad,
-            pago_couta: false
+            valor_cuota: prestamo.valor_utilidad,
+            pago_cuota: false
           }
           prestamo.plazos!.push(nuevaCuota)
         } else {
-          //   prestamo.plazos![indice_couta].fecha_pago ='15-04-' + prestamo.utilidad
-          prestamo.plazos![indice_couta].valor_couta = prestamo.valor_utilidad
+          //   prestamo.plazos![indice_cuota].fecha_pago ='15-04-' + prestamo.utilidad
+          prestamo.plazos![indice_cuota].valor_cuota = prestamo.valor_utilidad
         }
         const valorAnterior = valor_prestamo / prestamo.plazo
         calcular_valores_prestamo(valor_utilidad, valor_prestamo, valorAnterior)
       }
     }
 
-    const btnModificarCouta: CustomActionTable = {
+    const btnModificarCuota: CustomActionTable = {
       titulo: 'editar',
       icono: 'bi-pencil-square',
       color: 'secondary',
       accion: ({ posicion }) => {
         console.log(posicion)
-        modificarCouta(posicion)
+        modificarcuota(posicion)
       },
-      visible: () => (accion.value == 'NUEVO' ? true : false)
+      visible: () => accion.value == 'NUEVO'
     }
-    const btnPagarCouta: CustomActionTable = {
+    const btnPagarCuota: CustomActionTable = {
       titulo: 'pagar',
       icono: 'bi-cash',
       color: 'primary',
       accion: ({ posicion }) => {
         pagar(posicion)
       },
-      visible: () => (accion.value == 'EDITAR' ? true : false)
+      visible: () => accion.value == acciones.editar
     }
-    const btnAplazarCouta: CustomActionTable = {
+    const btnAplazarCuota: CustomActionTable = {
       titulo: 'Aplazar',
       icono: 'bi-cash-stack',
       color: 'warning',
       accion: ({ posicion }) => {
         aplazar(posicion)
       },
-      visible: () => (accion.value == 'EDITAR' ? true : false)
+      visible: () => accion.value == acciones.editar
     }
-    const btnEditarTotalCouta: CustomActionTable = {
+    const btnEditarTotalCuota: CustomActionTable = {
       titulo: 'Editar Valor a Pagar',
       icono: 'bi-pencil-square',
       color: 'warning',
       accion: ({ posicion }) => {
-        modificar_total_couta(posicion)
+        modificar_total_cuota(posicion)
       },
-      visible: () => (accion.value == 'EDITAR' ? true : false)
+      visible: () => accion.value == acciones.editar
     }
-    function aplazar(indice_couta) {
+
+    const btnComentario: CustomActionTable = {
+      titulo: 'Editar Comentario',
+      icono: 'bi-pencil-square',
+      color: 'positive',
+      accion: ({ posicion }) => {
+        modificarComentario(posicion)
+      },
+      visible: () => accion.value == acciones.editar
+    }
+
+    function aplazar(indice_cuota) {
       const fechaActual = prestamo.plazos![prestamo.plazo - 1].fecha_vencimiento
       const [anio, mes, dia] = fechaActual.split('-')
       // Crear un objeto de fecha con el formato yyyy-mm-dd
@@ -287,29 +315,32 @@ export default defineComponent({
       const nuevoMes = fechaObj.getMonth() + 1 // Sumamos 1 ya que los meses van de 0 a 11
       const nuevoAnio = fechaObj.getFullYear()
       // Formatear la nueva fecha a dd-mm-yyyy
-      const nuevaFechaStr = `${nuevoAnio}-${nuevoMes
+      prestamo.plazos![
+        indice_cuota
+      ].fecha_vencimiento = `${nuevoAnio}-${nuevoMes
         .toString()
         .padStart(2, '0')}-${nuevaFecha.toString().padStart(2, '0')}`
-      prestamo.plazos![indice_couta].fecha_vencimiento = nuevaFechaStr
+      // prestamo.plazos![indice_cuota].fecha_vencimiento = nuevaFechaStr
     }
-    function modificarCouta(indice_couta) {
+
+    function modificarcuota(indice_cuota) {
       confirmar(
-        '¿Está seguro de modificar la couta N' + (indice_couta + 1) + '?',
+        '¿Está seguro de modificar la cuota N' + (indice_cuota + 1) + '?',
         () => {
           const data: CustomActionPrompt = {
-            titulo: 'Modificar couta',
-            mensaje: 'Ingrese nuevo valor de la couta',
+            titulo: 'Modificar cuota',
+            mensaje: 'Ingrese nuevo valor de la cuota',
             accion: async data => {
               try {
                 const valor_prestamo = prestamo.monto ?? 0 // == null ? 0 : prestamo.monto
                 if (data > valor_prestamo) {
                   esMayorPrestamo.value = true
                   notificarAdvertencia(
-                    'La suma de todas las coutas no debe superar al valor del prestamo'
+                    'La suma de todas las cuotas no debe superar al valor del prestamo'
                   )
                 }
-                prestamo.plazos![indice_couta].valor_couta = data
-                calcular_valores_prestamo_indice(indice_couta, valor_prestamo)
+                prestamo.plazos![indice_cuota].valor_cuota = data
+                calcular_valores_prestamo_indice(indice_cuota, valor_prestamo)
               } catch (e: any) {
                 notificarError('No se pudo modificar, debes ingresar monto')
               }
@@ -319,14 +350,30 @@ export default defineComponent({
         }
       )
     }
-    function modificar_total_couta(indice_couta) {
-      confirmar('¿Está seguro de modificar la couta?', () => {
+
+    function modificarComentario(indice_cuota) {
+      const data: CustomActionPrompt = {
+        titulo: 'Modificar comentario',
+        mensaje: 'Ingrese o modifique el comentario de esta cuota',
+        accion: async data => {
+          try {
+            prestamo.plazos![indice_cuota].comentario = data
+          } catch (e: any) {
+            notificarError('No se pudo modificar, debes ingresar un comentario')
+          }
+        }
+      }
+      prompt(data)
+    }
+
+    function modificar_total_cuota(indice_cuota) {
+      confirmar('¿Está seguro de modificar la cuota?', () => {
         const data: CustomActionPrompt = {
-          titulo: 'Modificar couta',
-          mensaje: 'Ingrese nuevo valor total de la couta',
+          titulo: 'Modificar cuota',
+          mensaje: 'Ingrese nuevo valor total de la cuota',
           accion: async data => {
             try {
-              prestamo.plazos![indice_couta].valor_a_pagar = data
+              prestamo.plazos![indice_cuota].valor_a_pagar = data
             } catch (e: any) {
               notificarError('No se pudo modificar, debes ingresar monto')
             }
@@ -335,13 +382,14 @@ export default defineComponent({
         prompt(data)
       })
     }
+
     function calcular_valores_prestamo_indice(indiceExcluido, valor_prestamo) {
-      const numero_couta = prestamo.plazos![indiceExcluido].num_cuota
+      const numero_cuota = prestamo.plazos![indiceExcluido].num_cuota
       prestamo.plazos!.map(cuotaAnterior => {
-        if (cuotaAnterior.num_cuota !== numero_couta) {
-          cuotaAnterior.valor_couta = (
+        if (cuotaAnterior.num_cuota !== numero_cuota) {
+          cuotaAnterior.valor_cuota = (
             (parseFloat(valor_prestamo.toString()) -
-              prestamo.plazos![indiceExcluido].valor_couta) /
+              prestamo.plazos![indiceExcluido].valor_cuota) /
             (prestamo.plazo - 1)
           ).toFixed(2)
           return cuotaAnterior
@@ -366,7 +414,7 @@ export default defineComponent({
           porcentaje_resta = 0 // Asignar un valor predeterminado o manejarlo de otra forma apropiada
         }
         prestamo.plazos!.slice(0, -1).map(cuotaAnterior => {
-          cuotaAnterior.valor_couta = (
+          cuotaAnterior.valor_cuota = (
             valorAnterior -
             valorAnterior * porcentaje_resta
           ).toFixed(2)
@@ -374,38 +422,39 @@ export default defineComponent({
         })
       }
     }
-    function pagar(indice_couta) {
-      confirmar('¿Está seguro de pagar la couta?', () => {
+
+    function pagar(indice_cuota) {
+      confirmar('¿Está seguro de pagar la cuota?', () => {
         const data: CustomActionPrompt = {
-          titulo: 'Pagar couta',
-          mensaje: 'Ingrese valor de la couta a pagar',
+          titulo: 'Pagar cuota',
+          mensaje: 'Ingrese valor de la cuota a pagar',
           accion: async data => {
             try {
               if (
-                data > parseFloat(prestamo.plazos![indice_couta].valor_couta)
+                data > parseFloat(prestamo.plazos![indice_cuota].valor_cuota)
               ) {
                 notificarError(
                   'No se pudo pagar, debes ingresar monto menor o igual a ' +
-                    prestamo.plazos![indice_couta].valor_couta
+                    prestamo.plazos![indice_cuota].valor_cuota
                 )
                 return
               }
               const fecha_actual = new Date()
               if (
-                data == parseFloat(prestamo.plazos![indice_couta].valor_couta)
+                data == parseFloat(prestamo.plazos![indice_cuota].valor_cuota)
               ) {
-                prestamo.plazos![indice_couta].pago_couta = true
-                prestamo.plazos![indice_couta].fecha_pago = fecha_actual
+                prestamo.plazos![indice_cuota].pago_cuota = true
+                prestamo.plazos![indice_cuota].fecha_pago = fecha_actual
                   .toISOString()
                   .slice(0, 10)
-                actualizar_fecha_plazos(indice_couta + 1)
+                actualizar_fecha_plazos(indice_cuota + 1)
               }
-              prestamo.plazos![indice_couta].fecha_pago = fecha_actual
+              prestamo.plazos![indice_cuota].fecha_pago = fecha_actual
                 .toISOString()
                 .slice(0, 10)
-              prestamo.plazos![indice_couta].valor_pagado = parseFloat(data)
-              prestamo.plazos![indice_couta].valor_a_pagar = (
-                prestamo.plazos![indice_couta].valor_couta - data
+              prestamo.plazos![indice_cuota].valor_pagado = parseFloat(data)
+              prestamo.plazos![indice_cuota].valor_a_pagar = (
+                prestamo.plazos![indice_cuota].valor_cuota - data
               ).toFixed(2)
             } catch (e: any) {
               notificarError('No se pudo pagar, a ocurido un error: ' + e)
@@ -415,13 +464,15 @@ export default defineComponent({
         prompt(data)
       })
     }
-    function actualizar_fecha_plazos(indice_couta) {
-      prestamo.plazos!.slice(indice_couta).forEach(element => {
+
+    function actualizar_fecha_plazos(indice_cuota) {
+      prestamo.plazos!.slice(indice_cuota).forEach(element => {
         const fecha = new Date(element.fecha_vencimiento)
         fecha.setMonth(fecha.getMonth() - 1)
         element.fecha_vencimiento = fecha.toISOString().slice(0, 10)
       })
     }
+
     /**
      * La función `filtrarPeriodo` filtra una lista de períodos en función de un valor dado y actualiza la
      * lista filtrada.
@@ -447,6 +498,19 @@ export default defineComponent({
         )
       })
     }
+
+    const btnActualizarPrestamoEmpresarial: CustomActionTable = {
+      titulo: 'Actualizar préstamo',
+      icono: 'bi-arrow-clockwise',
+      color: 'warning',
+      tooltip: 'Actualizar el estado del préstamo',
+      visible: () =>
+        authenticationStore.can('puede.editar.prestamo_empresarial') &&
+        tabActualPrestamoEmpresarial == 'ACTIVO',
+      accion: ({ entidad}) => {
+        actualizarPrestamoEmpresarial(entidad.id)
+      }
+    }
     const btnEliminarPrestamoEmpresarial: CustomActionTable = {
       titulo: '',
       icono: 'bi-trash',
@@ -459,6 +523,19 @@ export default defineComponent({
         eliminar_prestamoempresarial({ entidad, posicion })
       }
     }
+
+    async function actualizarPrestamoEmpresarial(id:number ) {
+      try {
+        await prestamoEmpresarialCustomController.actualizarPrestamoEmpresarial(id)
+        notificarCorrecto('Se ha actualizado  el PrestamoEmpresarial')
+        await filtrarPrestamoEmpresarial(tabActualPrestamoEmpresarial)
+      } catch (e: any) {
+        notificarError(
+          'No se pudo actualizar, ocurrio un error'
+        )
+      }
+    }
+
     async function eliminar_prestamoempresarial({ entidad, posicion }) {
       try {
         const data: CustomActionPrompt = {
@@ -482,6 +559,7 @@ export default defineComponent({
         )
       }
     }
+
     let tabActualPrestamoEmpresarial = 'ACTIVO'
 
     function filtrarPrestamoEmpresarial(tabSeleccionado: string) {
@@ -490,42 +568,36 @@ export default defineComponent({
     }
 
     return {
-      removeAccents,
       mixin,
       prestamo,
       empleados,
       sueldo_basico,
       periodos,
-      watchEffect,
       filtrarEmpleados,
       filtrarPeriodo,
       filtrarPrestamoEmpresarial,
-      recargar_tabla,
-      esMayorPrestamo,
-      maximoValorPrestamo: [
-        val =>
-          (val && val <= parseInt(sueldo_basico.value) * 2) ||
-          'Solo se permite prestamo menor o igual a 2 SBU (' +
-            parseInt(sueldo_basico.value) * 2 +
-            ')'
-      ],
-      btnModificarCouta,
-      btnPagarCouta,
-      btnEditarTotalCouta,
-      btnAplazarCouta,
+      // esMayorPrestamo,
+      // maximoValorPrestamo: [
+      //   val =>
+      //     (val && val <= parseInt(sueldo_basico.value) * 2) ||
+      //     'Solo se permite prestamo menor o igual a 2 SBU (' +
+      //       parseInt(sueldo_basico.value) * 2 +
+      //       ')'
+      // ],
+      btnModificarCuota,
+      btnPagarCuota,
+      btnEditarTotalCuota,
+      btnComentario,
+      btnAplazarCuota,
       btnEliminarPrestamoEmpresarial,
+      btnActualizarPrestamoEmpresarial,
       esNuevo,
       configuracionColumnasPlazoPrestamo,
-      esConsultado,
-      plazo_pago,
-      motivos,
-      tipos,
       maskFecha,
       v$,
       disabled,
       tabPrestamoEmpresarial,
       configuracionColumnas: configuracionColumnasPrestamo,
-      accion,
       accionesTabla
     }
   }

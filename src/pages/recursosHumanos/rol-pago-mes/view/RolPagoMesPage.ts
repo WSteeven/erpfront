@@ -1,5 +1,5 @@
 // Dependencias
-import {AxiosError, AxiosResponse} from 'axios'
+import { AxiosResponse } from 'axios'
 import { configuracionColumnasRolPago } from '../../rol-pago/domain/configuracionColumnasRolPago'
 import { required } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
@@ -60,12 +60,7 @@ export default defineComponent({
       RolPagoMes,
       new RolPagoMesController()
     )
-    const {
-      entidad: rolpago,
-      accion,
-      disabled,
-      listadosAuxiliares
-    } = mixin.useReferencias()
+    const { entidad: rolpago, accion, disabled } = mixin.useReferencias()
     const { setValidador, listar } = mixin.useComportamiento()
     const mixinRolEmpleado = new ContenedorSimpleMixin(
       RolPago,
@@ -89,16 +84,21 @@ export default defineComponent({
     const { onConsultado } = mixin.useHooks()
     useCargandoStore().setQuasar(useQuasar())
     useNotificacionStore().setQuasar(useQuasar())
-    const { notificarAdvertencia, notificarCorrecto, notificarError, confirmar, promptItems } =
-      useNotificaciones()
+    const {
+      notificarAdvertencia,
+      notificarCorrecto,
+      notificarError,
+      confirmar,
+      promptItems
+    } = useNotificaciones()
 
     const { btnFinalizarRolPago, btnActivarRolPago } =
       useBotonesTablaRolPagoMes(mixin)
-    const { btnIniciar, btnFinalizar } = useBotonesTablaRolPago(
-      roles_empleados,
-      modalesRolPago,
-      listadosAuxiliares
-    )
+    const { btnIniciar, btnFinalizar } =
+      useBotonesTablaRolPago()
+      // roles_empleados,
+      // modalesRolPago,
+      // listadosAuxiliares
     const { btnImprimir, btnGenerarReporte } =
       useBotonesImpresionTablaRolPago(rolpago)
     const rolPagoStore = useRolPagoStore()
@@ -371,7 +371,9 @@ export default defineComponent({
         if (response.status === 200) notificarCorrecto(response.data.mensaje)
         else notificarAdvertencia(response.data.mensaje)
       } catch (e: any) {
-        notificarError(e.response.data.message||'Ha ocurrido un error al enviar el mail')
+        notificarError(
+          e.response.data.message || 'Ha ocurrido un error al enviar el mail'
+        )
       } finally {
         cargando.desactivar()
       }
@@ -442,6 +444,33 @@ export default defineComponent({
       },
       visible: () =>
         authenticationStore.can('puede.ver.btn.actualizar_rol_pago')
+    }
+    const btnPagarPrestamosRolActual: CustomActionTable = {
+      titulo: 'Pagar préstamos',
+      icono: 'bi-cash',
+      color: 'primary',
+      tooltip: 'Pagar las cuotas de préstamos en el rol actual',
+      accion: async ({ entidad }) => {
+        await pagarCoutaPrestamoRolActual(entidad.id)
+      },
+      visible: () => authenticationStore.can('puede.editar.rol_pago')
+    }
+
+    async function pagarCoutaPrestamoRolActual(rol_id: number) {
+      try {
+        cargando.activar()
+        const axios = AxiosHttpRepository.getInstance()
+        const ruta =
+          axios.getEndpoint(endpoints.pagar_prestamos_rol_actual) + rol_id
+        const response: AxiosResponse = await axios.post(ruta)
+        if (response.status) {
+          notificarCorrecto('Prestamos pagados con éxito')
+        }
+      } catch (error) {
+        notificarAdvertencia('error: ' + error)
+      } finally {
+        cargando.desactivar()
+      }
     }
 
     async function actualizarRolPago(idRolPago: number) {
@@ -520,6 +549,7 @@ export default defineComponent({
       btnActivarRolPago,
       btnFinalizarMasivo,
       btnFinalizar,
+      btnPagarPrestamosRolActual,
       btnEliminarRolPago,
       btnEditarRolPagoEmpleado,
       btnImprimirRolPago,

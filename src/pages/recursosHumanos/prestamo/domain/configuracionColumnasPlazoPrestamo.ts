@@ -26,14 +26,14 @@ export const configuracionColumnasPlazoPrestamo: ColumnConfig<PlazoPrestamo>[] =
   {
     name: 'valor_couta',
     field: 'valor_couta',
-    label: 'Valor Couta',
+    label: 'Valor Cuota',
     align: 'left',
     sortable: true
 },
 {
   name: 'valor_pagado',
   field: 'valor_pagado',
-  label: 'Valor a Pagado',
+  label: 'Valor Pagado',
   align: 'left',
   sortable: true
 },
@@ -45,6 +45,13 @@ export const configuracionColumnasPlazoPrestamo: ColumnConfig<PlazoPrestamo>[] =
     sortable: true
 },
 {
+  name: 'comentario',
+  field: 'comentario',
+  label: 'Comentario',
+  align: 'left',
+  sortable: true
+},
+  {
   name: 'pago_couta',
   field: 'pago_couta',
   label: 'Pago',

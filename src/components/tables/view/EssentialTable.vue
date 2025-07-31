@@ -1624,7 +1624,34 @@
     </template>
 
     <template #body-cell-estado="props">
+        <!-- estado activo -->
       <q-td :props="props">
+        <q-chip
+            v-if="props.value === 'ACTIVO'"
+            :class="{ 'bg-green-1': !$q.dark.isActive }"
+        >
+          <q-icon
+              name="bi-circle-fill"
+              color="positive"
+              class="q-mr-xs"
+          ></q-icon>
+          ACTIVO
+        </q-chip>
+
+        <!-- estado inactivo -->
+        <q-chip
+            v-if="props.value === 'INACTIVO'"
+            :class="{ 'bg-red-1': !$q.dark.isActive }"
+        >
+          <!-- One of primary, secondary, accent, dark, positive, negative, info, warning -->
+          <q-icon
+              name="bi-circle-fill"
+              color="negative"
+              class="q-mr-xs"
+          ></q-icon>
+          INACTIVO
+        </q-chip>
+
         <!-- estado retrasado -->
         <q-chip
           v-if="props.value === 'RETRASADO'"
