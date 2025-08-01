@@ -49,13 +49,6 @@ export const recursosHumanos = {
   datos_empleado: new Endpoint('recursos-humanos/datos_empleado/'),
   sueldo_basico: new Endpoint('recursos-humanos/sueldo_basico'),
   nivel_endeudamiento: new Endpoint('recursos-humanos/nivel_endeudamiento'),
-  aprobar_prestamo_empresarial: new Endpoint(
-    'recursos-humanos/aprobar_prestamo_empresarial'
-  ),
-  rechazar_prestamo_empresarial: new Endpoint(
-    'recursos-humanos/rechazar_prestamo_empresarial'
-  ),
-
 
   archivo_permiso_empleado: new Endpoint(
     'recursos-humanos/archivo_permiso_empleado'
@@ -111,6 +104,8 @@ export const recursosHumanos = {
 
   pagar_prestamos_rol_actual: new Endpoint('recursos-humanos/pagar-prestamos-rol-actual/'),
   calcular_cuotas_descuento: new Endpoint('recursos-humanos/calcular-cuotas-descuento'),
+  calcular_cuotas_prestamo_empresarial: new Endpoint('recursos-humanos/calcular-cuotas-prestamo-empresarial'),
+  aplazar_cuota_descuento: new Endpoint('recursos-humanos/aplazar-cuota-descuento/'),
   actualizar_rol_pago: new Endpoint('recursos-humanos/actualizar-rol-pago/'),
   agregar_nuevos_empleados: new Endpoint('recursos-humanos/agregar-nuevos-empleados/'),
   valores_cargados_roles: new Endpoint('recursos-humanos/valores-cargados-roles'),

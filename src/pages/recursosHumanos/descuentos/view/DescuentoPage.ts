@@ -14,7 +14,11 @@ import { acciones, accionesTabla, maskFecha } from 'config/utils'
 import { configuracionColumnasCuotasDescuento } from 'recursosHumanos/descuentos/domain/configuracionColumnasCuotasDescuento'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { CuotaDescuento } from 'recursosHumanos/descuentos/domain/CuotaDescuento'
-import {encontrarUltimoIdListado, isAxiosError, notificarMensajesError, ordenarLista} from 'shared/utils'
+import {
+  isAxiosError,
+  notificarMensajesError,
+  ordenarLista
+} from 'shared/utils'
 import EssentialEditor from 'components/editores/EssentialEditor.vue'
 import { useNotificaciones } from 'shared/notificaciones'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
@@ -25,7 +29,7 @@ import NoOptionComponent from 'components/NoOptionComponent.vue'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { endpoints } from 'config/api'
-import {AxiosError, AxiosResponse} from 'axios'
+import { AxiosError, AxiosResponse } from 'axios'
 
 export default defineComponent({
   components: {
@@ -53,8 +57,6 @@ export default defineComponent({
       prompt,
       confirmar,
       notificarCorrecto,
-      notificarError,
-      notificarAdvertencia
     } = useNotificaciones()
     const tabDefecto = ref('0')
     const is_month = ref(false)
@@ -133,68 +135,31 @@ export default defineComponent({
       }
     }
 
-    function calcularCantidadCuotasOld() {
-      descuento.cuotas = []
-
-      const valorTotal = Number(descuento.valor)
-      const cantidadCuotas = Number(descuento.cantidad_cuotas)
-
-      const valorCuotaRedondeada =
-        Math.floor((valorTotal / cantidadCuotas) * 100) / 100
-      const totalParcial = valorCuotaRedondeada * descuento.cantidad_cuotas
-      const diferencia = parseFloat((valorTotal - totalParcial).toFixed(2))
-
-      //Comprobamos si el valor de cuota es mayor a 2 digitos para redondearlo
-      const fechaObj = new Date(descuento.mes_inicia_cobro + '-01')
-      //Creamos los registros
-
-      for (let i = 0; i < descuento.cantidad_cuotas; i++) {
-        const cuota = new CuotaDescuento()
-        cuota.num_cuota = i + 1
-        cuota.id = descuento.cuotas.length
-          ? encontrarUltimoIdListado(descuento.cuotas) + 1
-          : 1
-        cuota.valor_cuota =
-          i === 0
-            ? parseFloat(
-                (valorCuotaRedondeada + Math.abs(diferencia)).toFixed(2)
-              )
-            : valorCuotaRedondeada
-        cuota.mes_vencimiento = fechaObj.toISOString().slice(0, 7)
-        //sumar un mes a la fecha
-        fechaObj.setMonth(fechaObj.getMonth() + 1)
-        cuota.pagada = false
-        descuento.cuotas.push(cuota)
+    async function aplazarCuota(entidad, posicion, comentario) {
+      try {
+        cargando.activar()
+        const axios = AxiosHttpRepository.getInstance()
+        const ruta =
+          axios.getEndpoint(endpoints.aplazar_cuota_descuento) + entidad.id
+        const response: AxiosResponse = await axios.post(ruta, {
+          comentario: comentario
+        })
+        console.log(response)
+        if (response.status == 200) {
+          notificarCorrecto(response.data.mensaje)
+          descuento.cuotas[posicion] = response.data.cuota
+        }
+      } catch (e) {
+        const axiosError = e as AxiosError
+        if (isAxiosError(axiosError)) {
+          const mensajes: string[] = error.erroresValidacion
+          await notificarMensajesError(mensajes, this.notificaciones)
+        }
+      } finally {
+        cargando.desactivar()
       }
     }
 
-    /*************************************************************************
-     * Botones de tabla
-     *************************************************************************/
-    const btnPagarCuota: CustomActionTable<CuotaDescuento> = {
-      titulo: 'Pagar',
-      icono: 'bi-cash',
-      color: 'secondary',
-      accion: ({ entidad }) => {
-        // put here some code for action}
-        confirmar('¿Está seguro de marcar esta cuota como pagada?', () => {
-          entidad.pagada = !entidad.pagada
-          notificarCorrecto('¡Cuota marcada como pagada exitosamente!')
-        })
-      },
-      visible: ({ entidad }) =>
-        [acciones.nuevo, acciones.editar].includes(accion.value) &&
-        !entidad.pagada
-    }
-    const btnEditarValorCuota: CustomActionTable = {
-      titulo: 'Editar',
-      icono: 'bi-pencil-square',
-      color: 'secondary',
-      accion: () => {
-        // put here some code for action
-      },
-      visible: () => [acciones.nuevo, acciones.editar].includes(accion.value)
-    }
     const btnComentarioCuota: CustomActionTable<CuotaDescuento> = {
       titulo: 'Comentario',
       icono: 'bi-chat-square-text-fill',
@@ -216,32 +181,21 @@ export default defineComponent({
       titulo: 'Aplazar',
       icono: 'bi-caret-down-fill',
       color: 'warning',
-      accion: ({ entidad }) => {
+      accion: ({ entidad, posicion }) => {
+        console.log(entidad, posicion)
         confirmar(
-          'Se modificará el mes de vencimiento hasta el mes siguiente de la ultima cuota. ¿Está seguro de continuar?',
-          () => {
-            const ultima_cuota: CuotaDescuento = descuento.cuotas.at(-1)
-            // Extraemos el año y mes de la última cuota
-            const [year, month] = ultima_cuota.mes_vencimiento
-              .split('-')
-              .map(Number)
-            const fechaObj = new Date(year, month - 1, 1)
-
-            console.log(
-              'Fecha antes de modificar:',
-              fechaObj.toISOString().slice(0, 7)
-            )
-
-            // Sumar un mes a la fecha
-            fechaObj.setMonth(fechaObj.getMonth() + 1)
-
-            // Convertimos el resultado nuevamente a formato yyyy-mm
-            const nuevoMesVencimiento = fechaObj.toISOString().slice(0, 7)
-            console.log('Fecha luego de modificar:', nuevoMesVencimiento)
-
-            // Actualizar mes de vencimiento de la entidad
-            entidad.mes_vencimiento = nuevoMesVencimiento
-            notificarCorrecto('¡Se aplazó correctamente la cuota!')
+          'Se modificará el mes de vencimiento hasta el mes siguiente de la ultima cuota. ¡Esta acción es irreversible! ¿Está seguro de continuar?',
+          async () => {
+            const data: CustomActionPrompt = {
+              titulo: 'Comentario',
+              mensaje: 'Escribe el motivo por el vas a aplazar la cuota',
+              // defecto: entidad.comentario,
+              accion: async data => {
+                // entidad.comentario = data
+                await aplazarCuota(entidad, posicion, data)
+              }
+            }
+            prompt(data)
           }
         )
       },
@@ -279,10 +233,8 @@ export default defineComponent({
       ordenarLista,
 
       //botones de tabla
-      btnEditarValorCuota,
       btnComentarioCuota,
       btnAplazarCuota,
-      btnPagarCuota,
 
       barraDefault: [
         ['bold', 'italic', 'strike', 'underline', 'subscript', 'superscript'],

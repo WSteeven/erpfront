@@ -99,7 +99,7 @@ export const tabOptionsPedidos: TabOption[] = [
   { label: 'Completados', value: 'COMPLETA' },
 ]
 
-export const tabOptionsSolicitudPedido: TabOption[] = [
+export const tabOptionsSolicitudPrestamo: TabOption[] = [
   { label: 'Pendiente', value: '1' },
   { label: 'Validado', value: '4' },
   { label: 'Aprobados', value: '2' },

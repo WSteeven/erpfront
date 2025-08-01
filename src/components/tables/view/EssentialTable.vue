@@ -1867,6 +1867,11 @@
         <campo-boleano :propsTable="props" />
       </q-td>
     </template> -->
+    <template #body-cell-gestionada="props">
+      <q-td :props="props">
+        <campo-boleano :propsTable="props" />
+      </q-td>
+    </template>
     <template #body-cell-justificado_por_atrasado="props">
       <q-td :props="props">
         <campo-boleano :propsTable="props" />
@@ -2119,7 +2124,7 @@
     </template>
 
     <!-- esta pagado -->
-    <template #body-cell-pago_couta="props">
+    <template #body-cell-pago_cuota="props">
       <q-td :props="props">
         <q-icon
           v-if="props.value"

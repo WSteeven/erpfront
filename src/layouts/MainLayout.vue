@@ -554,24 +554,24 @@
       </q-scroll-area>
 
       <q-btn
-          color="primary"
-          no-caps
-          class="full-width q-mb-md"
-          label="Cerrar sesión"
-          icon="bi-x"
-          target="_blank"
-          @click="logout()"
+        color="primary"
+        no-caps
+        class="full-width q-mb-md"
+        label="Cerrar sesión"
+        icon="bi-x"
+        target="_blank"
+        @click="logout()"
       />
-<!--      <q-btn-->
-<!--        color="blue-14"-->
-<!--        no-caps-->
-<!--        class="full-width q-mb-md"-->
-<!--        label="Descarga la app móvil"-->
-<!--        icon="bi-google-play"-->
-<!--        target="_blank"-->
-<!--        @click="logout()"-->
-<!--      >-->
-<!--      </q-btn>-->
+      <!--      <q-btn-->
+      <!--        color="blue-14"-->
+      <!--        no-caps-->
+      <!--        class="full-width q-mb-md"-->
+      <!--        label="Descarga la app móvil"-->
+      <!--        icon="bi-google-play"-->
+      <!--        target="_blank"-->
+      <!--        @click="logout()"-->
+      <!--      >-->
+      <!--      </q-btn>-->
     </q-drawer>
 
     <modales-entidad :comportamiento="modales" @guardado="guardado" />
@@ -592,6 +592,7 @@
         <!-- Aplica keep-alive aquí -->
         <keep-alive
           :exclude="[
+            'PrestamoEmpresarial',
             'PrefacturaPage',
             'intranet_page',
             'transacciones_ingresos',

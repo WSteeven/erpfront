@@ -32,10 +32,15 @@ import { useRecursosHumanosStore } from 'stores/recursosHumanos'
 import { PeriodoController } from 'pages/recursosHumanos/periodo/infraestructure/PeriodoController'
 import { PrestamoCustomController } from '../infraestructure/PrestamoCustomController'
 import { useAuthenticationStore } from 'stores/authentication'
-import { format, parse } from '@formkit/tempo'
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
+import { endpoints } from 'config/api'
+import { AxiosError, AxiosResponse } from 'axios'
+import { isAxiosError, notificarMensajesError } from 'shared/utils'
+import {StatusEssentialLoading} from 'components/loading/application/StatusEssentialLoading';
 
 export default defineComponent({
+  name:'PrestamoEmpresarial',
   components: {
     NoOptionComponent,
     ErrorComponent,
@@ -54,8 +59,8 @@ export default defineComponent({
     } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista, listar } =
       mixin.useComportamiento()
-    const { onBeforeModificar, onBeforeConsultar } = mixin.useHooks()
-
+    const { onGuardado, onReestablecer, onBeforeModificar, onBeforeConsultar } =
+      mixin.useHooks()
     const {
       confirmar,
       prompt,
@@ -63,15 +68,27 @@ export default defineComponent({
       notificarAdvertencia,
       notificarError
     } = useNotificaciones()
-    const key_enter = ref(0)
+    // const key_enter = ref(0)
     const motivos = ref([])
 
     /*const tipos = ref([
-              { id: 1, nombre: 'Prestamo Descuento' },
-              { id: 2, nombre: 'Anticipo' }
-            ])*/
+                      { id: 1, nombre: 'Prestamo Descuento' },
+                      { id: 2, nombre: 'Anticipo' }
+                    ])*/
     const esConsultado = ref(false)
+    const cargando = new StatusEssentialLoading()
+    const is_month = ref(false)
 
+
+    /*************************************************************************
+     * HOOKS
+     *************************************************************************/
+    onGuardado(() => {
+      recursosHumanosStore.resetearSolicitudPrestamo()
+    })
+    onReestablecer(() => {
+      recursosHumanosStore.resetearSolicitudPrestamo()
+    })
     onBeforeConsultar(async () => {
       await consultarEmpleados()
     })
@@ -108,6 +125,10 @@ export default defineComponent({
       empleados.value = listadosAuxiliares.empleados
       periodos.value = listadosAuxiliares.periodos
       motivos.value = listadosAuxiliares.motivos
+
+      if (recursosHumanosStore.solicitudPrestamo.id) {
+        await cargarDatosSolicitudPrestamo()
+      }
     })
 
     maximoAPrestar.value = parseInt(sueldo_basico.value) * 2
@@ -119,34 +140,78 @@ export default defineComponent({
       monto: { required },
       valor_utilidad: { requiredIf: requiredIf(prestamo.periodo != null) },
       plazo: { required, minValue: minValue(1), maxValue: maxValue(12) },
-      plazos: { required }
+      plazos: { required },
+      fecha_inicio_cobro: { required }
     }))
     prestamo.plazos = []
 
+    async function cargarDatosSolicitudPrestamo() {
+      // Copiamos los valores de la solicitud en el préstamo
+      prestamo.solicitante = recursosHumanosStore.solicitudPrestamo.solicitante
+      prestamo.solicitante_info =
+        recursosHumanosStore.solicitudPrestamo.solicitante_info
+      prestamo.fecha = recursosHumanosStore.solicitudPrestamo.fecha
+      prestamo.fecha_inicio_cobro = recursosHumanosStore.solicitudPrestamo.fecha
+      prestamo.monto = recursosHumanosStore.solicitudPrestamo.monto
+      prestamo.plazo = Number.parseInt(
+        recursosHumanosStore.solicitudPrestamo.plazo
+      )
+      prestamo.estado = 'ACTIVO'
+      prestamo.periodo = recursosHumanosStore.solicitudPrestamo.periodo
+      prestamo.valor_utilidad =
+        recursosHumanosStore.solicitudPrestamo.valor_utilidad
+      prestamo.id_solicitud_prestamo_empresarial =
+        recursosHumanosStore.solicitudPrestamo.id
+      await calcularCantidadCuotas()
+    }
+
     // const plazo_pago = ref({ id: 0, vencimiento: '', plazo: 0 })
 
-    function tabla_plazos() {
-      key_enter.value++
-      if (key_enter.value >= 1) {
-        prestamo.plazos = []
-      }
-      const valor_cuota = prestamo.monto !== null ? prestamo.monto : 0
-      const plazo_prestamo = prestamo.plazo != null ? prestamo.plazo : 0
-      const valor_pago = valor_cuota / plazo_prestamo
-      if (valor_pago <= 200) {
-        for (let index = 1; index <= prestamo.plazo; index++) {
-          const plazo = {
-            id: index - 1,
-            num_cuota: index,
-            fecha_vencimiento: calcular_fechas(index, 'meses'),
-            valor_cuota: (valor_cuota / plazo_prestamo).toFixed(2),
-            pago_cuota: false
-          }
-          prestamo.plazos!.push(plazo)
+    async function calcularCantidadCuotas() {
+      try {
+        cargando.activar()
+        const axios = AxiosHttpRepository.getInstance()
+        const ruta = axios.getEndpoint(
+          endpoints.calcular_cuotas_prestamo_empresarial
+        )
+        const response: AxiosResponse = await axios.post(ruta, prestamo)
+        console.log(response)
+        if (response.status == 200) notificarCorrecto('Cuotas calculadas')
+        prestamo.plazos = response.data.cuotas
+      } catch (e) {
+        const axiosError = e as AxiosError
+        if (isAxiosError(axiosError)) {
+          const mensajes: string[] = error.erroresValidacion
+          await notificarMensajesError(mensajes, this.notificaciones)
         }
+      } finally {
+        cargando.desactivar()
       }
     }
 
+    /*
+          function tabla_plazos() {
+              key_enter.value++
+              if (key_enter.value >= 1) {
+                prestamo.plazos = []
+              }
+              const valor_cuota = prestamo.monto !== null ? prestamo.monto : 0
+              const plazo_prestamo = prestamo.plazo != null ? prestamo.plazo : 0
+              const valor_pago = valor_cuota / plazo_prestamo
+              if (valor_pago <= 200) {
+                for (let index = 1; index <= prestamo.plazo; index++) {
+                  const plazo = {
+                    id: index - 1,
+                    num_cuota: index,
+                    fecha_vencimiento: calcular_fechas(index, 'meses'),
+                    valor_cuota: (valor_cuota / plazo_prestamo).toFixed(2),
+                    pago_cuota: false
+                  }
+                  prestamo.plazos!.push(plazo)
+                }
+              }
+            }
+        */
     async function consultarEmpleados() {
       const { result } = await new EmpleadoController().listar({
         campos: 'id,nombres,apellidos'
@@ -155,7 +220,7 @@ export default defineComponent({
       listadosAuxiliares.empleados = result
     }
 
-    function calcular_fechas(cuota: number, plazo: string) {
+    /*function calcular_fechas(cuota: number, plazo: string) {
       const day = 1000 * 60 * 60 * 24
       const week = 7 * day
       const month = 4 * week
@@ -183,39 +248,13 @@ export default defineComponent({
       // Formatear la fecha en formato 'YYYY-MM-DD'
       return format(fechaPrestamo, 'YYYY-MM-DD')
     }
-
+*/
     const v$ = useVuelidate(reglas, prestamo)
     setValidador(v$.value)
 
     watchEffect(() => {
       try {
         if (accion.value == acciones.nuevo) {
-          if (prestamo.plazo != null) {
-            const valor_cuota = prestamo.monto !== null ? prestamo.monto : 0
-            const plazo_prestamo = prestamo.plazo ?? 0
-            const valor_pago = valor_cuota / plazo_prestamo
-            if (
-              valor_pago <= 200 &&
-              prestamo.plazo > 0 &&
-              prestamo.plazo <= 12
-            ) {
-              tabla_plazos()
-              prestamo.vencimiento =
-                prestamo.plazos != null
-                  ? prestamo.plazos[prestamo.plazo - 1].fecha_vencimiento
-                  : null
-              if (prestamo.valor_utilidad != null) {
-                recargar_tabla()
-              }
-            } else {
-              if (prestamo.plazo > 0) {
-                notificarError(
-                  'Las cuotas no deben exeder al 40% del sueldo del empleado'
-                )
-              }
-            }
-          }
-        } else {
           prestamo.vencimiento =
             prestamo.plazos != null
               ? prestamo.plazos[prestamo.plazo - 1].fecha_vencimiento
@@ -224,41 +263,42 @@ export default defineComponent({
       } catch (error) {}
     })
 
-    function recargar_tabla() {
-      const valor_utilidad =
-        prestamo.valor_utilidad == null ? 0 : prestamo.valor_utilidad
-      const valor_prestamo = prestamo.monto == null ? 0 : prestamo.monto
-
-      if (valor_utilidad > 0) {
-        const indice_cuota = prestamo.plazos!.findIndex(
-          cuota => cuota.num_cuota === prestamo.plazo + 1
-        )
-        if (indice_cuota == -1) {
-          const periodo_seleccionado = periodos.value.find(
-            periodo => periodo.id === prestamo.periodo
-          )
-
-          const nuevaCuota = {
-            num_cuota: prestamo.plazos!.length + 1,
-            fecha_vencimiento:
-              periodo_seleccionado.nombre.split('-')[0] + '-04-15',
-            valor_cuota: prestamo.valor_utilidad,
-            pago_cuota: false
+    /*function recargar_tabla() {
+          const valor_utilidad =
+            prestamo.valor_utilidad == null ? 0 : prestamo.valor_utilidad
+          const valor_prestamo = prestamo.monto == null ? 0 : prestamo.monto
+    
+          if (valor_utilidad > 0) {
+            const indice_cuota = prestamo.plazos!.findIndex(
+              cuota => cuota.num_cuota === prestamo.plazo + 1
+            )
+            if (indice_cuota == -1) {
+              const periodo_seleccionado = periodos.value.find(
+                periodo => periodo.id === prestamo.periodo
+              )
+    
+              const nuevaCuota = {
+                num_cuota: prestamo.plazos!.length + 1,
+                fecha_vencimiento:
+                  periodo_seleccionado.nombre.split('-')[0] + '-04-15',
+                valor_cuota: prestamo.valor_utilidad,
+                pago_cuota: false
+              }
+              prestamo.plazos!.push(nuevaCuota)
+            } else {
+              //   prestamo.plazos![indice_cuota].fecha_pago ='15-04-' + prestamo.utilidad
+              prestamo.plazos![indice_cuota].valor_cuota = prestamo.valor_utilidad
+            }
+            const valorAnterior = valor_prestamo / prestamo.plazo
+            calcular_valores_prestamo(valor_utilidad, valor_prestamo, valorAnterior)
           }
-          prestamo.plazos!.push(nuevaCuota)
-        } else {
-          //   prestamo.plazos![indice_cuota].fecha_pago ='15-04-' + prestamo.utilidad
-          prestamo.plazos![indice_cuota].valor_cuota = prestamo.valor_utilidad
-        }
-        const valorAnterior = valor_prestamo / prestamo.plazo
-        calcular_valores_prestamo(valor_utilidad, valor_prestamo, valorAnterior)
-      }
-    }
+        }*/
 
     const btnModificarCuota: CustomActionTable = {
-      titulo: 'editar',
+      titulo: 'Modificar Cuota',
       icono: 'bi-pencil-square',
       color: 'secondary',
+      tooltip: 'Modificar el valor de la cuota',
       accion: ({ posicion }) => {
         console.log(posicion)
         modificarcuota(posicion)
@@ -334,7 +374,7 @@ export default defineComponent({
               try {
                 const valor_prestamo = prestamo.monto ?? 0 // == null ? 0 : prestamo.monto
                 if (data > valor_prestamo) {
-                  esMayorPrestamo.value = true
+                  // esMayorPrestamo.value = true
                   notificarAdvertencia(
                     'La suma de todas las cuotas no debe superar al valor del prestamo'
                   )
@@ -398,7 +438,7 @@ export default defineComponent({
       })
     }
 
-    function calcular_valores_prestamo(
+    /*function calcular_valores_prestamo(
       valor_utilidad,
       valor_prestamo,
       valorAnterior
@@ -421,7 +461,7 @@ export default defineComponent({
           return cuotaAnterior
         })
       }
-    }
+    }*/
 
     function pagar(indice_cuota) {
       confirmar('¿Está seguro de pagar la cuota?', () => {
@@ -507,7 +547,7 @@ export default defineComponent({
       visible: () =>
         authenticationStore.can('puede.editar.prestamo_empresarial') &&
         tabActualPrestamoEmpresarial == 'ACTIVO',
-      accion: ({ entidad}) => {
+      accion: ({ entidad }) => {
         actualizarPrestamoEmpresarial(entidad.id)
       }
     }
@@ -524,15 +564,15 @@ export default defineComponent({
       }
     }
 
-    async function actualizarPrestamoEmpresarial(id:number ) {
+    async function actualizarPrestamoEmpresarial(id: number) {
       try {
-        await prestamoEmpresarialCustomController.actualizarPrestamoEmpresarial(id)
+        await prestamoEmpresarialCustomController.actualizarPrestamoEmpresarial(
+          id
+        )
         notificarCorrecto('Se ha actualizado  el PrestamoEmpresarial')
         await filtrarPrestamoEmpresarial(tabActualPrestamoEmpresarial)
       } catch (e: any) {
-        notificarError(
-          'No se pudo actualizar, ocurrio un error'
-        )
+        notificarError('No se pudo actualizar, ocurrio un error')
       }
     }
 
@@ -567,6 +607,12 @@ export default defineComponent({
       tabActualPrestamoEmpresarial = tabSeleccionado
     }
 
+    /**Verifica si es un mes */
+    function checkMes(_, reason) {
+      is_month.value = reason !== 'month'
+      if(!is_month.value) calcularCantidadCuotas()
+    }
+
     return {
       mixin,
       prestamo,
@@ -576,6 +622,8 @@ export default defineComponent({
       filtrarEmpleados,
       filtrarPeriodo,
       filtrarPrestamoEmpresarial,
+      calcularCantidadCuotas,
+      checkMes,
       // esMayorPrestamo,
       // maximoValorPrestamo: [
       //   val =>
@@ -594,6 +642,7 @@ export default defineComponent({
       esNuevo,
       configuracionColumnasPlazoPrestamo,
       maskFecha,
+      is_month,
       v$,
       disabled,
       tabPrestamoEmpresarial,

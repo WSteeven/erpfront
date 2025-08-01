@@ -86,6 +86,55 @@
               </template>
             </q-input>
           </div>
+
+          <!-- Mes que inicia el cobro -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Mes inicia cobro</label>
+            <q-input
+              v-model="prestamo.fecha_inicio_cobro"
+              mask="####-##"
+              placeholder="Obligatorio"
+              :error="!!v$.fecha_inicio_cobro.$errors.length"
+              :disable="disabled"
+              @blur="v$.fecha_inicio_cobro.$touch"
+              outlined
+              dense
+            >
+              <template v-slot:append>
+                <q-icon name="event" class="cursor-pointer">
+                  <q-popup-proxy
+                    cover
+                    transition-show="scale"
+                    transition-hide="scale"
+                    v-model="is_month"
+                  >
+                    <q-date
+                      v-model="prestamo.fecha_inicio_cobro"
+                      minimal
+                      :mask="maskFecha"
+                      emit-immediately
+                      default-view="Years"
+                      @update:model-value="checkMes"
+                    >
+                      <div class="row items-center justify-end">
+                        <q-btn
+                          v-close-popup
+                          label="Cerrar"
+                          color="primary"
+                          flat
+                        />
+                      </div>
+                    </q-date>
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
+
+              <template v-slot:error>
+                <error-component clave="fecha_inicio_cobro" :v$="v$" />
+              </template>
+            </q-input>
+          </div>
+
           <!-- Valor  -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Valor </label>
@@ -94,6 +143,7 @@
               placeholder="Obligatorio"
               type="number"
               :disable="!esNuevo"
+              @update:model-value="calcularCantidadCuotas"
               :error="!!v$.monto.$errors.length"
               @blur="v$.monto.$touch"
               :hint="
@@ -119,6 +169,7 @@
               :disable="!esNuevo"
               :error="!!v$.plazo.$errors.length"
               @blur="v$.plazo.$touch"
+              @update:model-value="calcularCantidadCuotas"
               outlined
               dense
             >
@@ -202,9 +253,14 @@
           <!-- Motivo -->
           <div class="col-12 col-md-3" v-if="!esNuevo && prestamo.motivo">
             <label class="q-mb-sm block">Motivo de anulación </label>
-            <q-input v-model="prestamo.motivo" autogrow :disable="true" outlined dense />
+            <q-input
+              v-model="prestamo.motivo"
+              autogrow
+              :disable="true"
+              outlined
+              dense
+            />
           </div>
-
 
           <!-- Valor  -->
           <div class="col-12 col-md-3" v-if="prestamo.periodo != null">

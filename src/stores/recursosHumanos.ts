@@ -1,8 +1,9 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { reactive, ref } from 'vue'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { AxiosResponse } from 'axios'
 import { endpoints } from 'src/config/api'
+import { SolicitudPrestamo } from 'recursosHumanos/solicitudes/solicitud-prestamo/domain/SolicitudPrestamo'
 
 export const useRecursosHumanosStore = defineStore('fondo_rotativo', () => {
   const sueldo_basico = ref()
@@ -12,6 +13,12 @@ export const useRecursosHumanosStore = defineStore('fondo_rotativo', () => {
   const mensaje = ref()
   const axios = AxiosHttpRepository.getInstance()
   const listar_familiares = ref(true)
+
+  const solicitudPrestamo = reactive(new SolicitudPrestamo())
+
+  function resetearSolicitudPrestamo() {
+    solicitudPrestamo.hydrate(new SolicitudPrestamo())
+  }
 
   async function obtenerSueldoBasico() {
     try {
@@ -84,6 +91,8 @@ export const useRecursosHumanosStore = defineStore('fondo_rotativo', () => {
     listar_familiares,
     obtener_porcentaje_anticipo,
     mensaje,
-    porcentajeAnticipo
+    porcentajeAnticipo,
+    solicitudPrestamo,
+    resetearSolicitudPrestamo
   }
 })
