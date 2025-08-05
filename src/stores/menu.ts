@@ -565,6 +565,12 @@ export const useMenuStore = defineStore('menu', () => {
               link: 'reporte-vacaciones',
               icon: 'bi-sunglasses',
               can: store.can('puede.acceder.reportes_rrhh') || true
+            },
+            {
+              title: 'Reporte de Préstamos Empresariales',
+              link: 'reporte-prestamos-empresariales',
+              icon: 'bi-file',
+              can: store.can('puede.acceder.reportes_rrhh')
             }
           ]
         }

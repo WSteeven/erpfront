@@ -10,6 +10,7 @@ export class PlazoPrestamo extends EntidadAuditable {
   valor_a_pagar: number | null
   pago_cuota: boolean | null
   comentario: string | null
+  estado: boolean
 
   constructor() {
     super()
@@ -22,5 +23,6 @@ export class PlazoPrestamo extends EntidadAuditable {
     this.valor_a_pagar = null
     this.pago_cuota = false
     this.comentario = null
+    this.estado = true
   }
 }

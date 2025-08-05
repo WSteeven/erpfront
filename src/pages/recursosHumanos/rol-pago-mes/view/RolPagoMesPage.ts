@@ -445,15 +445,16 @@ export default defineComponent({
       visible: () =>
         authenticationStore.can('puede.ver.btn.actualizar_rol_pago')
     }
-    const btnPagarPrestamosRolActual: CustomActionTable = {
+    const btnPagarPrestamosRolActual: CustomActionTable<RolPagoMes> = {
       titulo: 'Pagar préstamos',
       icono: 'bi-cash',
       color: 'primary',
       tooltip: 'Pagar las cuotas de préstamos en el rol actual',
       accion: async ({ entidad }) => {
+        console.log('Pagar préstamos',entidad)
         await pagarCoutaPrestamoRolActual(entidad.id)
       },
-      visible: () => authenticationStore.can('puede.editar.rol_pago')
+      visible: ({entidad}) => authenticationStore.can('puede.editar.rol_pago') && !entidad.es_quincena
     }
 
     async function pagarCoutaPrestamoRolActual(rol_id: number) {

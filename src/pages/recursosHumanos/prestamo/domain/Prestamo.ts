@@ -9,6 +9,7 @@ export class Prestamo extends EntidadAuditable {
   fecha_inicio_cobro: string | null
   motivo: string | null
   estado: string | null
+  saldo_pendiente: number | null
   vencimiento: string | null
   periodo: number | null
   valor_utilidad: number | null
@@ -27,6 +28,7 @@ export class Prestamo extends EntidadAuditable {
     this.vencimiento = null
     this.periodo = null
     this.motivo = null
+    this.saldo_pendiente = 0
     this.estado = null
     this.valor_utilidad = null
     this.monto = null

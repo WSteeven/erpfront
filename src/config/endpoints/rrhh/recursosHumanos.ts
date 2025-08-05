@@ -4,6 +4,7 @@ import { trabajoSocial } from 'config/endpoints/rrhh/trabajoSocial'
 
 export const recursosHumanos = {
   empleados: new Endpoint('empleados'),
+  obtener_empleados_prestamos_empresariales: new Endpoint('obtener-empleados-prestamos-empresariales'),
   empleados_delegados: new Endpoint('recursos-humanos/empleados-delegados'),
   departamentos: new Endpoint('recursos-humanos/departamentos'),
   motivo_permiso_empleado: new Endpoint('recursos-humanos/motivo_permiso_empleado'),
@@ -16,6 +17,7 @@ export const recursosHumanos = {
   permiso_empleado: new Endpoint('recursos-humanos/permiso_empleado'),
   licencia_empleado: new Endpoint('recursos-humanos/licencia_empleado'),
   prestamo_empresarial: new Endpoint('recursos-humanos/prestamo_empresarial'),
+  reporte_prestamos_empresariales: new Endpoint('recursos-humanos/reporte-prestamos-empresariales'),
   solicitud_prestamo_empresarial: new Endpoint('recursos-humanos/solicitud-prestamo-empresarial'),
   periodo: new Endpoint('recursos-humanos/periodo'),
   anticipo: new Endpoint('recursos-humanos/anticipo'),
@@ -105,6 +107,9 @@ export const recursosHumanos = {
   pagar_prestamos_rol_actual: new Endpoint('recursos-humanos/pagar-prestamos-rol-actual/'),
   calcular_cuotas_descuento: new Endpoint('recursos-humanos/calcular-cuotas-descuento'),
   calcular_cuotas_prestamo_empresarial: new Endpoint('recursos-humanos/calcular-cuotas-prestamo-empresarial'),
+  pagar_cuota_prestamo: new Endpoint('recursos-humanos/pagar-cuota-prestamo/'),
+  aplazar_cuota_prestamo_empresarial: new Endpoint('recursos-humanos/aplazar-cuota-prestamo/'),
+  recalcular_cuotas_prestamo_empresarial: new Endpoint('recursos-humanos/recalcular-cuotas-prestamo-empresarial'),
   aplazar_cuota_descuento: new Endpoint('recursos-humanos/aplazar-cuota-descuento/'),
   actualizar_rol_pago: new Endpoint('recursos-humanos/actualizar-rol-pago/'),
   agregar_nuevos_empleados: new Endpoint('recursos-humanos/agregar-nuevos-empleados/'),

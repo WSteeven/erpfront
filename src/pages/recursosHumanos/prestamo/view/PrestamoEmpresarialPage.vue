@@ -170,6 +170,7 @@
               :error="!!v$.plazo.$errors.length"
               @blur="v$.plazo.$touch"
               @update:model-value="calcularCantidadCuotas"
+              @wheel.prevent
               outlined
               dense
             >
@@ -232,7 +233,7 @@
               :disable="disabled"
               use-input
               input-debounce="0"
-              @filter="filtrarPeriodo"
+              @filter="filtrarPeriodos"
               :option-value="v => v.id"
               :option-label="v => v.nombre"
               emit-value
@@ -248,6 +249,12 @@
           <div class="col-12 col-md-3" v-if="!esNuevo">
             <label class="q-mb-sm block">Estado</label>
             <q-input v-model="prestamo.estado" :disable="true" outlined dense />
+          </div>
+
+          <!-- Saldo pendiente -->
+          <div class="col-12 col-md-3" v-if="!esNuevo">
+            <label class="q-mb-sm block">Saldo Pendiente</label>
+            <q-input v-model="prestamo.saldo_pendiente" disable outlined dense />
           </div>
 
           <!-- Motivo -->
@@ -281,9 +288,9 @@
             </q-input>
           </div>
         </div>
-      </q-form>
+
       <essential-table
-        v-if="prestamo.plazo > 0 && prestamo.plazo <= 12"
+        v-if="prestamo.plazo && prestamo.monto"
         titulo="Plazo de Prestamo"
         :configuracionColumnas="[
           ...configuracionColumnasPlazoPrestamo,
@@ -302,9 +309,7 @@
         ajustar-celdas
       >
       </essential-table>
-      <!-- <label v-if="esMayorPrestamo" class="q-mb-sm text-red text-h6 block"
-        >La suma de todas las coutas no debe superar al valor del prestamo</label
-      > -->
+      </q-form>
     </template>
   </tab-layout-filter-tabs2>
 </template>
