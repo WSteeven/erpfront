@@ -89,6 +89,8 @@ export default defineComponent({
       reporte.transferencia = null
       reporte.accion = ''
     }
+
+    
     async function buscarReporte(accion: string) {
       try {
         const axios = AxiosHttpRepository.getInstance()

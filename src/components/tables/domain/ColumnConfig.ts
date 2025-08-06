@@ -38,5 +38,7 @@ export interface ColumnConfig<T> {
   disableModal?: boolean
   disableTable?: boolean
   columnClass?: string,
+  value?: any,
   height?: string,
+  formato?: (val: any, entidad?: T) => string,
 }
