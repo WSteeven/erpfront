@@ -586,9 +586,6 @@
         <!-- <transition name="scale" mode="out-in">
           <essential-loading></essential-loading>
         </transition> -->
-        <div class="text-right absolute-bottom">
-          <footer-component></footer-component>
-        </div>
         <!-- Aplica keep-alive aquí -->
         <keep-alive
           :exclude="[
@@ -612,6 +609,9 @@
         >
           <component :is="Component" />
         </keep-alive>
+
+        <!-- Footer siempre visible, pero se adapta según plataforma -->
+        <footer-component/>
       </router-view>
     </q-page-container>
   </q-layout>

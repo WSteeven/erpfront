@@ -535,7 +535,9 @@ export default defineComponent({
         }
       })*/
 
-      pageContainerStyle: { marginTop: '10px',  },/* Capacitor.isNativePlatform() || $q.screen.xs ? { marginTop: '10px' } : {
+      pageContainerStyle: { marginTop: '0px',
+      },
+      /*pageContainerStyle: { marginTop: '10px',  },/* Capacitor.isNativePlatform() || $q.screen.xs ? { marginTop: '10px' } : {
               backgroundImage: `url(${fondo})`,
               backgroundSize: 'auto',
               backgroundPosition: 'top right',
