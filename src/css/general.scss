@@ -1,4 +1,10 @@
 // Custom scrollbar
+#q-app {
+  box-sizing: border-box;
+  padding: env(safe-area-inset-top, 24px) env(safe-area-inset-right, 0px) env(safe-area-inset-bottom, 24px) env(safe-area-inset-left, 0px);
+  height: 100%;
+}
+
 body {
   // background-color: $grey-5;
   /* Versión con rgba para mayor control de opacidad si se necesita */
@@ -8,6 +14,9 @@ body {
     rgba(30, 58, 138, 1) 100%
   ); */
   //background: linear-gradient(to bottom right, #a9abbe, #e2e4ec);
+
+  //padding-top: env(safe-area-inset-top);
+  //padding-bottom: env(safe-area-inset-bottom);
 
   &::-webkit-scrollbar {
     width: 10px;

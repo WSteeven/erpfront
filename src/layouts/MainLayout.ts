@@ -49,6 +49,7 @@ import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpReposi
 import { endpoints } from 'config/api'
 import { AxiosResponse } from 'axios'
 import { useNotificaciones } from 'shared/notificaciones'
+import { Device } from '@capacitor/device'
 
 export default defineComponent({
   name: 'MainLayout',
@@ -434,16 +435,23 @@ export default defineComponent({
      */
     // Función para actualizar el color de la barra de estado
     const updateStatusBarColor = async () => {
-      if (Capacitor.isNativePlatform()) {
-        await StatusBar.setOverlaysWebView({ overlay: false }); // el contenido ya no se dibuja debajo
+      if (!Capacitor.isNativePlatform()) return // Solo se ejecuta en plataformas nativas
 
+      const info = await Device.getInfo()
+      const isAndroid = info.platform === 'android'
+      const androidVersion = parseInt(info.osVersion.split('.')[0], 10) // Obtener la versión principal de Android. eg."15.0.0" -> 15
+
+      // Solo aplicar estos métodos si es Android < 15
+      if (isAndroid && androidVersion < 15) {
+        await StatusBar.setOverlaysWebView({ overlay: false }) // evita que el contenido se solape
         const color = $q.dark.isActive ? '#060606' : '#FFFFFF' // Ajusta los colores según tus necesidades
         await StatusBar.setBackgroundColor({ color })
-
-        // Cambiar el color del texto de la barra de estado
-        const style = $q.dark.isActive ? Style.Dark : Style.Light // Texto blanco en tema oscuro, negro en tema claro
-        StatusBar.setStyle({ style }) // Cambiar el estilo del texto
       }
+
+      // Cambiar el color del texto de la barra de estado
+      // Esto es seguro para todas las versiones
+      const style = $q.dark.isActive ? Style.Dark : Style.Light // Texto blanco en tema oscuro, negro en tema claro
+      await StatusBar.setStyle({style}) // Cambiar el estilo del texto
     }
 
     watch(
@@ -518,13 +526,22 @@ export default defineComponent({
       resetearBuscador,
       posicionResultados,
       fondo,
-      pageContainerStyle: { marginTop: '10px' },/* Capacitor.isNativePlatform() || $q.screen.xs ? { marginTop: '10px' } : {
-        backgroundImage: `url(${fondo})`,
-        backgroundSize: 'auto',
-        backgroundPosition: 'top right',
-        marginTop: '90px',
-        backgroundRepeat: 'no-repeat',
-      } */
+      /*pageContainerStyle: computed(() => {
+        return {
+          paddingTop: 'env(safe-area-inset-top, 24px)',
+          paddingBottom: 'env(safe-area-inset-bottom, 24px)',
+          paddingLeft: 'env(safe-area-inset-left, 0px)',
+          paddingRight: 'env(safe-area-inset-right, 0px)'
+        }
+      })*/
+
+      pageContainerStyle: { marginTop: '10px',  },/* Capacitor.isNativePlatform() || $q.screen.xs ? { marginTop: '10px' } : {
+              backgroundImage: `url(${fondo})`,
+              backgroundSize: 'auto',
+              backgroundPosition: 'top right',
+              marginTop: '90px',
+              backgroundRepeat: 'no-repeat',
+            } */
       // idledFor,
       // tiempoInactividad,
       // mostrarAlertaInactividad,
