@@ -83,9 +83,7 @@
                   </template>
 
                   <template v-slot:error>
-                    <div v-for="error of v$.mes.$errors" :key="error.$uid">
-                      <div class="error-msg">{{ error.$message }}</div>
-                    </div>
+                    <error-component clave="mes" :v$="v$" />
                   </template>
                 </q-input>
               </div>
