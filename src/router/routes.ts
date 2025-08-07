@@ -263,6 +263,12 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
+        path: '/cuentas-bancarias',
+        name: 'cuentas_bancarias',
+        component: () => import('pages/administracion/cuentasBancarias/view/CuentaBancariaPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/estados-transacciones',
         name: 'estados_transacciones',
         component: () =>

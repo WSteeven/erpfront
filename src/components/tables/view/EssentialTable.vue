@@ -1867,7 +1867,11 @@
         <campo-boleano :propsTable="props" />
       </q-td>
     </template> -->
-    <template #body-cell-gestionada="props">
+    <template #body-cell-es_principal="props">
+      <q-td :props="props">
+        <campo-boleano :propsTable="props" />
+      </q-td>
+    </template><template #body-cell-gestionada="props">
       <q-td :props="props">
         <campo-boleano :propsTable="props" />
       </q-td>

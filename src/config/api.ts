@@ -24,6 +24,7 @@ export const endpoints = {
   usuarios: new Endpoint('usuarios'),
   configuracion: new Endpoint('configuracion'),
   auditorias: new Endpoint('auditorias'),
+  adm_cuentas_bancarias: new Endpoint('cuentas-bancarias'),
   login: new Endpoint('usuarios/login'),
   login_externos: new Endpoint('usuarios-externos/login'),
   // login_terceros: new Endpoint('login-social-network/'),

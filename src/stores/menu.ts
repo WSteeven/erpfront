@@ -1021,6 +1021,12 @@ export const useMenuStore = defineStore('menu', () => {
       can: store.can('puede.acceder.clientes')
     },
     {
+      title: 'Cuentas Bancarias Empresariales',
+      link: 'cuentas-bancarias',
+      icon: 'bi-bank',
+      can: store.can('puede.acceder.cuentas_bancarias')
+    },
+    {
       title: 'Roles y Permisos',
       icon: 'bi-person-gear',
       can: store.esAdministrador,

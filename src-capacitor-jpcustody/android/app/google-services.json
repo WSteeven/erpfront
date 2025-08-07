@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "611541688143",
+    "project_id": "firstred-jpcustody",
+    "storage_bucket": "firstred-jpcustody.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:611541688143:android:d6d4e5821071350307af3a",
+        "android_client_info": {
+          "package_name": "org.firstred.jpcustody.com"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBXeoMrzhLsfWp87s0Rfayuw-uLijkztTw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
