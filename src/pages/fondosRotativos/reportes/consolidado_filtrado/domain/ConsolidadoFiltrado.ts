@@ -9,6 +9,7 @@ export class ConsolidadoFiltrado extends EntidadAuditable {
   aut_especial: number | null
   tipo_saldo: string | null
   tipo_filtro: string | null
+  cliente_id: number | null
   fecha_inicio: string | null
   fecha_fin: string| null
   id_lugar:number | null
@@ -26,6 +27,7 @@ export class ConsolidadoFiltrado extends EntidadAuditable {
     this.aut_especial = null
     this.tipo_saldo = null
     this.tipo_filtro = null
+    this.cliente_id = null
     this.fecha_inicio = null
     this.fecha_fin = null
     this.id_lugar =null

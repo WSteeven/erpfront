@@ -37,9 +37,17 @@ import { Gasto } from '../domain/Gasto'
 import { GastoController } from '../infrestructure/GastoController'
 import { isAxiosError, notificarMensajesError } from 'shared/utils'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import NoOptionComponent from 'components/NoOptionComponent.vue';
+import ErrorComponent from 'components/ErrorComponent.vue';
 
 export default defineComponent({
-  components: { TabLayout, SelectorImagen, ButtonSubmits },
+  components: {
+    ErrorComponent,
+    NoOptionComponent,
+    TabLayout,
+    SelectorImagen,
+    ButtonSubmits
+  },
   emits: ['guardado', 'cerrar-modal'],
   setup(props, { emit }) {
     const authenticationStore = useAuthenticationStore()
@@ -82,6 +90,7 @@ export default defineComponent({
     const proyectos = ref([])
     const autorizaciones_especiales: Ref<Empleado[]> = ref([])
     const tareas = ref([])
+    const clientes = ref([])
     const vehiculos = ref([])
     const beneficiarios = ref([])
     const cargando = new StatusEssentialLoading()
@@ -119,16 +128,26 @@ export default defineComponent({
       }
     ]
     const cantidadPermitidaFactura = computed(() => {
-      const index = numFacturaObjeto.map(object => object.detalle).indexOf(parseInt(gasto.detalle !== null ? gasto.detalle : ''))
-      return numFacturaObjeto[index] !== undefined ? numFacturaObjeto[index].cantidad : 15
+      const index = numFacturaObjeto
+        .map(object => object.detalle)
+        .indexOf(parseInt(gasto.detalle !== null ? gasto.detalle : ''))
+      return numFacturaObjeto[index] !== undefined
+        ? numFacturaObjeto[index].cantidad
+        : 15
     })
     const mostarPlaca = computed(() => {
-      return parseInt(gasto.detalle !== null ? gasto.detalle : '') == 16 ||
-          parseInt(gasto.detalle !== null ? gasto.detalle : '') == 24
+      return (
+        parseInt(gasto.detalle !== null ? gasto.detalle : '') == 16 ||
+        parseInt(gasto.detalle !== null ? gasto.detalle : '') == 24
+      )
     })
     const mascaraFactura = computed(() => {
-      const index = numFacturaObjeto.map(object => object.detalle).indexOf(parseInt(gasto.detalle !== null ? gasto.detalle : ''))
-      return numFacturaObjeto[index] !== undefined? numFacturaObjeto[index].mascara: '###-###-#########'
+      const index = numFacturaObjeto
+        .map(object => object.detalle)
+        .indexOf(parseInt(gasto.detalle !== null ? gasto.detalle : ''))
+      return numFacturaObjeto[index] !== undefined
+        ? numFacturaObjeto[index].mascara
+        : '###-###-#########'
     })
 
     onConsultado(() => {
@@ -143,6 +162,7 @@ export default defineComponent({
       listadosAuxiliares.proyectos = proyectos.value
       listadosAuxiliares.proyectos.unshift({ id: 0, nombre: 'Sin Proyecto' })
       tareas.value = fondoRotativoStore.tareas
+      clientes.value = fondoRotativoStore.clientes
       listadosAuxiliares.tareas = tareas.value
       if (listadosAuxiliares.tareas !== undefined)
         listadosAuxiliares.tareas.unshift({
@@ -641,6 +661,7 @@ export default defineComponent({
       sub_detalles,
       proyectos,
       tareas,
+      clientes,
       beneficiarios,
       mostarPlaca,
       mascara_placa,

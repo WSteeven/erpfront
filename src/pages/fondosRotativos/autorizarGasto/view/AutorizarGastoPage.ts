@@ -26,6 +26,7 @@ import { VehiculoController } from 'pages/controlVehiculos/vehiculos/infraestruc
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { ProyectoController } from 'pages/gestionTrabajos/proyectos/infraestructure/ProyectoController'
 import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController'
+import {ClienteController} from 'sistema/clientes/infraestructure/ClienteController';
 
 export default defineComponent({
   name: 'AutorizarGastoPage',
@@ -55,6 +56,7 @@ export default defineComponent({
     const vehiculos = ref([])
     const empleados = ref([])
     const proyectos = ref([])
+    const clientes = ref([])
     const tareas = ref([])
     /***************
      * Botones tabla
@@ -98,6 +100,10 @@ export default defineComponent({
           formulario: true,
         })
       ).result
+
+        clientes.value = (
+            await new ClienteController().listar({estado:1, requiere_fr:1})
+        ).result
       cargando.desactivar()
     }
     filtrarAutorizacionesGasto(estadosGastos.PENDIENTE)
@@ -111,6 +117,7 @@ export default defineComponent({
       icono: 'bi-eye',
       color: 'indigo',
       accion: async ({ entidad }) => {
+        console.log('boton ',entidad)
         cargando.activar()
         fondoRotativoStore.gasto = entidad
         fondoRotativoStore.vehiculos = vehiculos.value
@@ -126,6 +133,7 @@ export default defineComponent({
         }
         fondoRotativoStore.proyectos = proyectos.value
         fondoRotativoStore.tareas = tareas.value
+        fondoRotativoStore.clientes = clientes.value
         modales.abrirModalEntidad('VisualizarGastoPage')
         cargando.desactivar()
       },

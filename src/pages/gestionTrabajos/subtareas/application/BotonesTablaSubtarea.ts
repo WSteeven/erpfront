@@ -269,10 +269,10 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: Compo
         })
       })
 
-      if (entidad.cliente_id === clientes.NEDETEL) {
+      if (entidad.cliente_id !== clientes.TELCONET) { // si el cliente no es Telconet, se solicita la causa de intervención y alimentación
         promptItems(config) // Solicitar causa de intervencion
       } else {
-        confirmarFinalizar({ entidad, posicion })
+        confirmarFinalizar({ entidad, posicion }) // finalizar sin alimentación
       }
     }
   }

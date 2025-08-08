@@ -70,6 +70,39 @@
             </q-select>
           </div>
 
+          <!-- Cliente -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">¿Para qué empresa es el gasto?</label>
+            <q-select
+                v-model="gasto.cliente"
+                :options="clientes"
+                transition-show="jump-up"
+                transition-hide="jump-down"
+                options-dense
+                dense
+                outlined
+                hint="Seleccione la empresa para la que hizo este gasto."
+                :disable="disabled"
+                :error="!!v$.cliente.$errors.length"
+                error-message="Debes seleccionar una empresa"
+                use-input
+                input-debounce="0"
+                @blur="v$.cliente.$touch"
+                @filter="filtrarClientes"
+                :option-value="v => v.id"
+                :option-label="v => v.razon_social"
+                emit-value
+                map-options
+            >
+              <template v-slot:error>
+                <error-component clave="cliente" :v$="v$" />
+              </template>
+              <template v-slot:no-option>
+                <no-option-component />
+              </template>
+            </q-select>
+          </div>
+
           <!-- Lugar -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Lugar</label>
