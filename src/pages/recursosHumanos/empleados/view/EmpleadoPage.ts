@@ -283,14 +283,14 @@ export default defineComponent({
     const reglas = {
       identificacion: {
         required,
-        minlength: minLength(8),
-        maxlength: maxLength(10)
+        minLength: minLength(8),
+        maxLength: maxLength(10)
       },
       telefono: {
         required,
         numeric,
-        minlength: minLength(9),
-        maxlength: maxLength(14)
+        minLength: minLength(9),
+        maxLength: maxLength(14)
       },
       direccion: { required },
       tipo_sangre: { required },

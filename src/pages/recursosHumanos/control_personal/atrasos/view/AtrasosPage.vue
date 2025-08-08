@@ -130,7 +130,7 @@
             <label class="q-mb-sm block">¿Justificar?</label>
             <option-group-component
               v-model="atraso.justificado"
-              :disable="disabled || !esJefeInmediato"
+              :disable="disabled || !puedeJustificar"
             />
           </div>
 
@@ -144,7 +144,7 @@
             class="col-6 col-md-3 col-sm-12"
             v-if="
               esEmpleadoAtrasado ||
-              esJefeInmediato ||
+              esJefeInmediato || esRecursosHumanos||
               atraso.imagen_evidencia != null
             "
           >
@@ -183,7 +183,7 @@
           <!-- Justificación -->
           <div
             class="col-12"
-            v-if="esJefeInmediato || atraso.justificacion?.length > 1"
+            v-if="esJefeInmediato ||esRecursosHumanos|| atraso.justificacion?.length > 1"
           >
             <label class="q-mb-sm block">Justificación del atraso</label>
             <essential-editor
