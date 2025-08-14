@@ -10,5 +10,6 @@ export const controlPersonal = {
   horarioLaboral: new Endpoint('control-personal/horarios-laborales'),
   horarioDeAlmuerzo: new Endpoint('control-personal/horario-almuerzo'),
   atrasos: new Endpoint('control-personal/atrasos'),
+  oficinas_biometricos: new Endpoint('control-personal/oficinas'),
   dashboard_control_personal: new Endpoint('control-personal/dashboard'),
 }

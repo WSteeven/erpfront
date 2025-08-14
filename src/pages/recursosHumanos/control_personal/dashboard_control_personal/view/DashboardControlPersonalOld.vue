@@ -3,109 +3,134 @@
     <q-card class="q-mb-md rounded no-border custom-shadow">
       <q-card-section>
         <div class="border-1 text-primary text-bold q-mb-lg">
-          <q-icon name="bi-people" class="q-mr-sm"></q-icon>
-          Dashboard de Control de Personal
+          <q-icon name="bi-graph-up-arrow" class="q-mr-sm"></q-icon>
+          Análisis de datos: Módulo de Control de Personal
         </div>
-
         <div class="row q-col-gutter-sm q-mb-md">
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Seleccione el tipo</label>
+            <label class="q-mb-sm block"> Tipo de filtro</label>
             <q-select
-              v-model="dashboard.tipo"
-              :options="opcionesTipos"
-              transition-show="scale"
-              transition-hide="scale"
-              options-dense
-              dense
-              outlined
-              @update:model-value="consultar()"
-              emit-value
-              map-options
+                v-model="dashboard.tipo"
+                :options="tiposFiltros"
+                dense
+                outlined
             />
           </div>
-
+          <!-- Tiempos -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Fecha de inicio</label>
-            <q-input v-model="dashboard.fecha_inicio" outlined dense>
+            <q-input
+                v-model="dashboard.fecha_inicio"
+                :error="!!v$.fecha_inicio.$errors.length"
+                @blur="v$.fecha_inicio.$touch"
+                outlined
+                dense
+            >
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
-                  <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                    <q-date v-model="dashboard.fecha_inicio" today-btn @update:model-value="consultar()" />
+                  <q-popup-proxy
+                      cover
+                      transition-show="scale"
+                      transition-hide="scale"
+                  >
+                    <q-date
+                        v-model="dashboard.fecha_inicio"
+                        :mask="maskFecha"
+                        @update:model-value="consultar()"
+                        today-btn
+                    >
+                      <div class="row items-center justify-end">
+                        <q-btn
+                            v-close-popup
+                            label="Cerrar"
+                            color="primary"
+                            flat
+                        />
+                      </div>
+                    </q-date>
                   </q-popup-proxy>
                 </q-icon>
+              </template>
+
+              <template v-slot:error>
+                <error-component clave="fecha_inicio" :v$="v$" />
               </template>
             </q-input>
           </div>
 
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Fecha de fin</label>
-            <q-input v-model="dashboard.fecha_fin" outlined dense>
+            <q-input
+                v-model="dashboard.fecha_fin"
+                :error="!!v$.fecha_fin.$errors.length"
+                @blur="v$.fecha_fin.$touch"
+                outlined
+                dense
+            >
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
-                  <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                    <q-date v-model="dashboard.fecha_fin" today-btn @update:model-value="consultar()" />
+                  <q-popup-proxy
+                      cover
+                      transition-show="scale"
+                      transition-hide="scale"
+                  >
+                    <q-date
+                        v-model="dashboard.fecha_fin"
+                        :mask="maskFecha"
+                        today-btn
+                        @update:model-value="consultar()"
+                    >
+                      <div class="row items-center justify-end">
+                        <q-btn
+                            v-close-popup
+                            label="Cerrar"
+                            color="primary"
+                            flat
+                        />
+                      </div>
+                    </q-date>
                   </q-popup-proxy>
                 </q-icon>
               </template>
+
+              <template v-slot:error>
+                <error-component clave="fecha_fin" :v$="v$" />
+              </template>
             </q-input>
           </div>
-        </div>
-      </q-card-section>
-    </q-card>
 
-    <q-card class="q-mb-md rounded no-border custom-shadow" v-if="dashboard.tipo == 'ASISTENCIAS'">
-      <q-card-section>
-        <div class="row text-bold text-primary q-pa-md rounded q-mb-md">Resumen de Asistencias</div>
-        <div class="row q-col-gutter-sm">
-          <div class="col-12 col-md-4">
-            <q-card class="rounded-card text-white no-border q-pa-md text-center bg-primary">
-              <div class="text-h3 q-mb-md">{{ totalAsistencias }}</div>
-              <div class="text-bold">Total de asistencias</div>
-            </q-card>
+          <div class="col-12" style="height: 400px">
+            <e-chart-componente
+                ref="chartRef"
+                :option="option"
+                @click="graficoClickeado"
+                @datazoom="graficoDataZoom"
+                @legendselectchanged="graficoCambioLeyenda"
+                @mouseover="(e)=>console.log('mouseover', e)"
+                @selectchanged="(e)=>console.log('selectchanged', e)"
+                @legendselected="(e)=>console.log('legendselected', e)"
+                @legendunselected="(e)=>console.log('legendunselected', e)"
+                @legendselectall="(e)=>console.log('legendselectall', e)"
+                @legendinverseselect="(e)=>console.log('legendinverseselect', e)"
+                @legendscroll="(e)=>console.log('legendscroll', e)"
+                @datarangeselected="(e)=>console.log('datarangeselected', e)"
+                @graphroam="(e)=>console.log('graphroam', e)"
+                @georoam="(e)=>console.log('georoam', e)"
+                @treeroam="(e)=>console.log('treeroam', e)"
+                @timelinechanged="(e)=>console.log('timelinechanged', e)"
+                @timelineplaychanged="(e)=>console.log('timelineplaychanged', e)"
+                @restore="(e)=>console.log('restore', e)"
+                @dataviewchanged="(e)=>console.log('dataviewchanged', e)"
+                @axisareaselected="(e)=>console.log('axisareaselected', e)"
+                @brush="(e)=>console.log('brush', e)"
+            />
+            <!--              @finished="graficoTerminado"-->
+            <!--              :labels="['Lun', 'Mar', 'Mié', 'Jue', 'Vie']"-->
           </div>
         </div>
-      </q-card-section>
-    </q-card>
-
-    <q-card class="q-mb-md rounded no-border custom-shadow" v-if="dashboard.tipo == 'ATRASOS'">
-      <q-card-section>
-        <div class="row text-bold text-primary q-pa-md rounded q-mb-md">Resumen de Atrasos</div>
-        <div class="row q-col-gutter-sm">
-          <div class="col-12 col-md-4">
-            <q-card class="rounded-card text-white no-border q-pa-md text-center bg-negative">
-              <div class="text-h3 q-mb-md">{{ totalAtrasos }}</div>
-              <div class="text-bold">Total de atrasos</div>
-            </q-card>
-          </div>
-        </div>
-      </q-card-section>
-    </q-card>
-
-    <q-card class="q-mb-md rounded no-border custom-shadow" v-if="dashboard.tipo">
-      <q-card-section>
-        <q-tab-panels v-model="tabs" animated transition-prev="scale" transition-next="scale" keep-alive>
-          <q-tab-panel :name="'graficos'">
-            <div class="q-mb-xl q-gutter-y-md column items-center">
-              <q-btn-group push>
-                <q-btn label="Una columna" icon="bi-list" no-caps @click="modoUnaColumna = true" />
-                <q-btn label="Dos columnas" icon="bi-grid" no-caps @click="modoUnaColumna = false" />
-              </q-btn-group>
-            </div>
-            <div :class="{ row: !modoUnaColumna, column: modoUnaColumna }">
-              <div class="col-12 col-md-6 text-center" v-for="grafico in graficos" :key="grafico.id">
-                <div class="text-subtitle2 q-mb-lg">{{ grafico.encabezado }}</div>
-                <grafico-generico v-if="grafico" :data="grafico" />
-              </div>
-            </div>
-          </q-tab-panel>
-          <q-tab-panel :name="'listado'">
-            <essential-table v-if="registros.length" :datos="registros" />
-          </q-tab-panel>
-        </q-tab-panels>
       </q-card-section>
     </q-card>
   </q-page>
 </template>
 
 <script src="./DashboardControlPersonal.ts" />
-
