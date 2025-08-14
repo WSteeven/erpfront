@@ -28,7 +28,7 @@ module.exports = configure(function (/* ctx */) {
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     // https://v2.quasar.dev/quasar-cli-vite/boot-files
-    boot: ['axios', 'global-variables', 'push'],
+    boot: ['axios', 'global-variables', 'push', 'echarts'],
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#css
     css: ['app.scss'],
@@ -64,12 +64,12 @@ module.exports = configure(function (/* ctx */) {
       },
 
       /* extendViteConf(viteConf, { isServer, isClient }) {
-        Object.assign(viteConf.resolve.alias, {
-          config: path.join(__dirname, './src/config'),
-          shared: path.join(__dirname, './src/shared'),
-          components: path.join(__dirname, './src/components'),
-        })
-      }, */
+              Object.assign(viteConf.resolve.alias, {
+                config: path.join(__dirname, './src/config'),
+                shared: path.join(__dirname, './src/shared'),
+                components: path.join(__dirname, './src/components'),
+              })
+            }, */
 
       vueRouterMode: 'history', // available values: 'hash', 'history'
       env: require('dotenv').config().parsed,
@@ -174,7 +174,10 @@ module.exports = configure(function (/* ctx */) {
           __dirname,
           './src/pages/comprasProveedores'
         ),
-        controlPersonal: path.join(__dirname, './src/pages/recursosHumanos/control_personal')
+        controlPersonal: path.join(
+          __dirname,
+          './src/pages/recursosHumanos/control_personal'
+        )
       }
     },
 
@@ -203,9 +206,10 @@ module.exports = configure(function (/* ctx */) {
       // Quasar plugins
       plugins: ['Notify', 'Dialog', 'Loading']
     },
-    htmlVariables:{
+    htmlVariables: {
       title: 'FIRSTRED - JPCONSTRUCRED',
-      description: 'Gestiona nómina, empleados, inventario, vehiculos, proyectos y tickets desde un solo lugar.',
+      description:
+        'Gestiona nómina, empleados, inventario, vehiculos, proyectos y tickets desde un solo lugar.'
     },
 
     // animations: 'all', // --- includes all animations

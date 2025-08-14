@@ -33,7 +33,7 @@
                 dense
                 outlined
                 hint="Empresa para la que hizo este gasto."
-                disable
+                :disable="disabled"
                 :option-value="v => v.id"
                 :option-label="v => v.razon_social"
                 emit-value
