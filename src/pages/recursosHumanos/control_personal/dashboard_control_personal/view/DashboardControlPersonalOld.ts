@@ -2,6 +2,7 @@ import { defineComponent, reactive, ref } from 'vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import GraficoGenerico from 'components/chartJS/GraficoGenerico.vue'
 import { useNotificaciones } from 'shared/notificaciones'
+import { useAuthenticationStore } from 'stores/authentication'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { required } from 'shared/i18n-validators'
 import useVuelidate from '@vuelidate/core'
@@ -23,7 +24,8 @@ export default defineComponent({
   },
   setup() {
     const dashboard = reactive({ tipo: '', fecha_inicio: '', fecha_fin: '' })
-    const { notificarError } = useNotificaciones()
+    const store = useAuthenticationStore()
+    const { notificarCorrecto, notificarError } = useNotificaciones()
     const cargando = new StatusEssentialLoading()
     const opcionesTipos = ref([
       { label: 'Asistencias', value: 'ASISTENCIAS' },
