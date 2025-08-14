@@ -304,7 +304,7 @@
                                   </q-avatar>
                                 </q-item-section>
                                 <q-item-section>
-                                  <q-item-label>
+                                  <q-item-label class="empleado-nombre">
                                     {{
                                       empleado.nombres +
                                       ' ' +
@@ -1024,6 +1024,12 @@ h5 {
   padding: 20px;
 }
 
+.empleado-nombre {
+  color: #00796b;
+  font-weight: bold;
+  font-size: 18px;
+}
+
 .column {
   flex: 1;
   overflow-y: auto;
@@ -1031,7 +1037,7 @@ h5 {
 
 .column h3 {
   margin-bottom: 10px;
-  color: #0066ff;
+
 }
 
 .column ul {

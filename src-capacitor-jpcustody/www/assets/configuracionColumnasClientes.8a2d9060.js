@@ -1,1 +1,0 @@
-const e=[{name:"razon_social",field:"razon_social",label:"Cliente",align:"left",sortable:!0},{name:"parroquia",field:"parroquia",label:"Parroquia",align:"left",sortable:!0},{name:"requiere_bodega",field:"requiere_bodega",label:"Requiere bodega",align:"left",sortable:!0},{name:"estado",field:"estado",label:"Activo",align:"left",sortable:!0}];export{e as c};

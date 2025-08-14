@@ -522,7 +522,7 @@
         />
         <span class="column">
           <b class="text-thin text-h5 elegant-blue-gradient-text">FIRSTRED</b>
-          <small class="text-color">System</small>
+          <small class="text-color">Enterprise Resource Planning</small>
         </span>
       </div>
 

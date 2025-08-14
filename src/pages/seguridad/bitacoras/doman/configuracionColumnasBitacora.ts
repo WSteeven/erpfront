@@ -81,10 +81,10 @@ export const configuracionColumnasBitacora: ColumnConfig<Bitacora>[] = [
     filtrar: true,
     sortable: true,
     options: [
-      { label: 'Sí', value: 1 },
-      { label: 'No', value: 0 }
+      { label: 'Revisado', value: 1 },
+      { label: 'No revisado', value: 0 }
     ],
-    formato: val => (val ? 'Sí' : 'No'),
+    formato: val => (val ? 'Revisado' : 'No revisado'),
     filtro: (val, update) => {
       // 👇 Extrae solo el value
       update(val?.value ?? null)
