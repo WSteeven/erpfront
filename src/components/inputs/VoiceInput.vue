@@ -1,32 +1,24 @@
 <template>
   <div class="row">
-    <!--  :error="
-            !!v$[keyError]?.$each?.$response.$errors[props.rowIndex][
-              props.col.name
-            ]?.length
-          " -->
-    <!--  {{ get(v$, keyError + '.$errors', []) }} -->
     <div class="col-12">
-      <!-- {{ v$.visitante?.nombre_completo.$errors }} -->
-      <label class="q-mb-sm block">{{ label }}</label>
+      <label class="q-mb-sm block">{{ etiqueta }}</label>
+
       <q-input
-        v-model="internalValue"
+        v-model="valorInterno"
         outlined
-        :disable="disable"
+        :disable="deshabilitado"
         dense
         clearable
         autogrow
-        :placeholder="placeholder"
-        :hint="grabando ? 'Escuchando...' : 'Presione el micrófono para grabar'"
-        :error="!!get(v$, keyError + '.$errors', []).length"
-        @blur="get(v$, keyError, {}).$touch"
-        :mask="mask"
+        :placeholder="marcador"
+        :hint="grabando ? 'Escuchando…' : 'Presione el micrófono para grabar'"
+        :error="!!get(v$, claveError + '.$errors', []).length"
+        @blur="get(v$, claveError, {}).$touch"
+        :mask="mascara"
       >
-        <!-- @blur="v$[keyError]?.$touch" -->
-        <!-- :error="!!v$[keyError]?.$errors.length" -->
-        <template v-slot:error>
+        <template #error>
           <div
-            v-for="error of get(v$, keyError + '.$errors', [])"
+            v-for="error of get(v$, claveError + '.$errors', [])"
             :key="error.$uid"
           >
             <div>{{ error.$message }}</div>
@@ -38,13 +30,13 @@
             :color="grabando ? 'positive' : 'primary'"
             no-wrap
             @click="escuchar()"
-            :disable="disable"
+            :disable="deshabilitado"
             dense
             push
             :loading="grabando"
           >
-            <q-icon name="bi-mic" size="xs"></q-icon>
-            <template v-slot:loading>
+            <q-icon name="bi-mic" size="xs" />
+            <template #loading>
               <q-spinner-bars class="q-mx-xs" />
             </template>
           </q-btn>
@@ -58,7 +50,7 @@
             dense
             push
           >
-            <q-icon name="bi-stop" size="xs"></q-icon>
+            <q-icon name="bi-stop" size="xs" />
           </q-btn>
         </template>
       </q-input>
@@ -67,50 +59,38 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue'
+import { computed, onBeforeUnmount, ref } from 'vue'
 import get from 'lodash.get'
 
-const emit = defineEmits(['update:modelValue'])
+// Capacitor + plugin nativo
+import { Capacitor } from '@capacitor/core'
+import { SpeechRecognition } from '@capacitor-community/speech-recognition'
+
+const emitir = defineEmits(['update:modelValue'])
 
 const props = defineProps({
-  modelValue: {
-    type: [String, null],
-    default: ''
-  },
-  disable: {
-    type: Boolean,
-    default: false
-  },
-  v$: {
-    type: Object,
-    default: () => ({})
-  },
-  keyError: {
-    type: String,
-    default: ''
-  },
-  label: {
-    type: String,
-    default: 'Fecha y hora'
-  },
-  placeholder: {
-    type: String,
-    default: ''
-  },
-  mask: {
-    type: String,
-    default: ''
-  }
+  modelValue: { type: [String, null], default: '' },
+  deshabilitado: { type: Boolean, default: false },
+  v$: { type: Object, default: () => ({}) },
+  claveError: { type: String, default: '' },
+  etiqueta: { type: String, default: 'Texto por voz' },
+  marcador: { type: String, default: '' },
+  mascara: { type: String, default: '' }
 })
 
 const grabando = ref(false)
-let recognition: any = null
+let reconocimientoWeb: any = null
 
-const internalValue = computed({
+// Funciones para quitar listeners nativos (si existen)
+let quitarParcial: (() => Promise<void>) | undefined
+let quitarEstado: (() => Promise<void>) | undefined
+
+// Idioma fijo en español (ajusta si quieres es-419 o es-ES)
+const IDIOMA = 'es-EC'
+
+const valorInterno = computed({
   get: () => props.modelValue,
-  set: newValue => {
-    emit('update:modelValue', newValue)
-  }
+  set: (nuevo) => emitir('update:modelValue', nuevo)
 })
 
 declare global {
@@ -120,38 +100,121 @@ declare global {
   }
 }
 
+function esPlataformaNativa() {
+  return Capacitor.isNativePlatform()
+}
+
+async function asegurarPermisos() {
+  const estado = await SpeechRecognition.checkPermissions()
+  if (estado.speechRecognition !== 'granted') {
+    const req = await SpeechRecognition.requestPermissions()
+    if (req.speechRecognition !== 'granted') {
+      throw new Error('Permiso de micrófono/reconocimiento no concedido')
+    }
+  }
+}
+
 async function escuchar() {
-  if (!('webkitSpeechRecognition' in window)) {
+  if (props.deshabilitado || grabando.value) return
+
+  if (esPlataformaNativa()) {
+    try {
+      const { available } = await SpeechRecognition.available()
+      if (!available) {
+        return escucharWeb()
+      }
+
+      await asegurarPermisos()
+      // Limpia posibles listeners anteriores
+      await SpeechRecognition.removeAllListeners().catch(console.error)
+
+      const hParcial = await SpeechRecognition.addListener('partialResults', (datos) => {
+        if (Array.isArray(datos?.matches) && datos.matches[0]) {
+          valorInterno.value = datos.matches[0]
+        }
+      })
+      quitarParcial = hParcial.remove
+
+      const hEstado = await SpeechRecognition.addListener('listeningState', ({ status }) => {
+        grabando.value = status === 'started'
+      })
+      quitarEstado = hEstado.remove
+
+      grabando.value = true
+      await SpeechRecognition.start({
+        language: IDIOMA,
+        maxResults: 1,
+        partialResults: true,
+        popup: false
+      })
+    } catch (err) {
+      grabando.value = false
+      console.error(err)
+      return escucharWeb()
+    }
+  } else {
+    return escucharWeb()
+  }
+}
+
+function escucharWeb() {
+  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
     alert('El reconocimiento de voz no es compatible con este navegador.')
     return
   }
 
   grabando.value = true
+  reconocimientoWeb = new (window.SpeechRecognition || window.webkitSpeechRecognition)()
+  reconocimientoWeb.lang = IDIOMA
+  reconocimientoWeb.continuous = false
+  reconocimientoWeb.interimResults = true
 
-  recognition = new (window.SpeechRecognition ||
-    window.webkitSpeechRecognition)()
-  recognition.lang = 'es-ES' // Ajustar el idioma si es necesario
-  recognition.continuous = false // No continuar grabando una vez que termine
-  recognition.interimResults = false // No mostrar resultados intermedios
-
-  recognition.onresult = (event: any) => {
-    const transcript = event.results[0][0].transcript
-    internalValue.value = transcript
-    grabando.value = false
+  reconocimientoWeb.onresult = (evento: any) => {
+    const indice = evento.resultIndex ?? evento.results.length - 1
+    const resultado = evento.results[indice]
+    const transcripcion = resultado[0]?.transcript ?? ''
+    valorInterno.value = transcripcion
+    if (resultado.isFinal) {
+      grabando.value = false
+    }
   }
 
-  recognition.onerror = () => {
+  reconocimientoWeb.onerror = () => {
     grabando.value = false
     alert('Hubo un error al intentar reconocer la voz.')
   }
 
-  recognition.start()
+  reconocimientoWeb.onend = () => {
+    grabando.value = false
+  }
+
+  reconocimientoWeb.start()
 }
 
-function detener() {
-  if (recognition) {
-    recognition.stop() // Detener la grabación manualmente
-    grabando.value = false // Cambiar el estado de grabación a falso
+async function detener() {
+  if (esPlataformaNativa()) {
+    try {
+      await SpeechRecognition.stop()
+    } catch (e) {
+      console.error(e)
+    }
+    grabando.value = false
+    // Quita listeners si existen (sin callbacks vacíos)
+    await quitarParcial?.().catch(console.error)
+    await quitarEstado?.().catch(console.error)
+    await SpeechRecognition.removeAllListeners().catch(console.error)
+  } else if (reconocimientoWeb) {
+    try {
+      reconocimientoWeb.stop()
+    } catch (e) {
+      console.error(e)
+    }
+    grabando.value = false
   }
 }
+
+onBeforeUnmount(async () => {
+  await detener()
+})
+
 </script>
