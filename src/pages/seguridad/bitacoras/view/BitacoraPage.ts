@@ -12,14 +12,19 @@ import { useNotificacionStore } from 'stores/notificacion'
 import { useNotificaciones } from 'shared/notificaciones'
 import { jornadas } from 'pages/seguridad/config/utils'
 import { acciones, accionesTabla } from 'config/utils'
-import { computed, defineComponent, nextTick, reactive, ref } from 'vue'
+import { computed, defineComponent, nextTick, onMounted, reactive, ref } from 'vue'
 import { required } from 'shared/i18n-validators'
 import useVuelidate from '@vuelidate/core'
 import { endpoints } from 'config/api'
 import { iconos } from 'config/iconos'
 import { useQuasar } from 'quasar'
 
+import { requiredIf } from '@vuelidate/validators'
+import { watch } from 'vue'
+
 // Componentes
+import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
+import TabLayoutFilterTabs from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs.vue'
 import MultiplePageLayout from 'shared/contenedor/modules/simple/view/MultiplePageLayout.vue'
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
 import FechaHoraAutomaticaInput from 'components/inputs/FechaHoraAutomaticaInput.vue'
@@ -44,6 +49,8 @@ import { TabOption } from 'components/tables/domain/TabOption'
 export default defineComponent({
   components: {
     MultiplePageLayout,
+    TabLayoutFilterTabs2,
+    TabLayoutFilterTabs,
     TabLayout,
     EssentialTable,
     FechaHoraAutomaticaInput,
@@ -115,6 +122,8 @@ export default defineComponent({
     /*************
      * Variables
      *************/
+    const usaProtector = ref(false)
+    const usaConductor = ref(false)
     const $q = useQuasar()
     const refActividades = ref()
     const mostrarSolicitarArchivoActividad = ref(false)
@@ -129,10 +138,27 @@ export default defineComponent({
           .replace(/\b\w/g, char => char.toUpperCase())
       }))
     )
+    const quitarProtector = () => {
+      usaProtector.value = false
+      bitacora.protector = null
+      criterioBusquedaProtector.value = ''
+    }
+    const quitarConductor = () => {
+      usaConductor.value = false
+      bitacora.conductor = null
+      criterioBusquedaConductor.value = ''
+    }
 
     const tabsOptions = [
       '1. Bitácora',
       '2. Actividades registradas en la bitácora'
+    ]
+
+    // Variables para los tabs
+    const tabDefecto = ref('0') // 0 = NO REVISADAS por defecto
+    const tabOptions = [
+      { label: 'NO REVISADAS', value: '0' },
+      { label: 'REVISADAS', value: '1' }
     ]
 
     /*************
@@ -166,6 +192,16 @@ export default defineComponent({
       bitacora.actividades.unshift(actividad)
     }
 
+    // Funciones para los tabs
+    async function filtrarListadoBitacoras(tab: string) {
+      tabDefecto.value = tab
+      const revisado = tab === '1' // '1' = REVISADAS, '0' = NO REVISADAS
+
+      if (listado.value.length > 0) {
+        await listar({ revisado_por_supervisor: revisado })
+      }
+    }
+
     /****************
      * Botones tabla
      ****************/
@@ -188,16 +224,26 @@ export default defineComponent({
       color: 'positive',
       visible: ({ entidad }) => !entidad.fecha_hora_fin_turno,
       accion: ({ entidad }) => {
-        if (!listadoActividadBitacora.value.length) {
+        const sinActividades = !listadoActividadBitacora.value.length
+
+        // 1) Guardia sin actividades -> bloquear
+        if (sinActividades && !esSupervisor.value) {
           notificarAdvertencia(
             'No puede finalizar la bitácora sin registrar ninguna actividad.'
           )
           return
         }
 
-        confirmar('¿Está seguro de finalizar la bitácora?', async () => {
+        // 2) Supervisor puede cerrar aunque no haya actividades
+        const mensajeConfirmacion = sinActividades
+          ? 'Esta bitácora no tiene actividades. ¿Desea finalizarla como SUPERVISOR para poder registrar la retroalimentación?'
+          : '¿Está seguro de finalizar la bitácora?'
+
+        confirmar(mensajeConfirmacion, async () => {
           const fecha_hora_fin_turno = (await obtenerTiempoActual()).fecha_hora
-          editarParcial(entidad.id, { fecha_hora_fin_turno })
+          // Nota: el backend ya permite que un SUPERVISOR cierre sin actividades
+          // según el ajuste que hicimos en el controlador.
+          await editarParcial(entidad.id, { fecha_hora_fin_turno })
         })
       }
     }
@@ -356,8 +402,10 @@ export default defineComponent({
       jornada: { required },
       // fecha_hora_inicio_turno: { required },
       agente_turno: { required },
-      protector: { required },
-      conductor: { required }
+
+      // Solo obligatorios si el toggle está encendido
+      protector: { required: requiredIf(() => usaProtector.value) },
+      conductor: { required: requiredIf(() => usaConductor.value) }
     }
 
     // Inicializamos Vuelidate
@@ -369,6 +417,9 @@ export default defineComponent({
      ********/
     onConsultado(() => {
       consultado()
+      // encender toggles si hay valor
+      usaProtector.value = !!bitacora.protector
+      usaConductor.value = !!bitacora.conductor
       tabsPage.value = '1'
       listarActividadBitacora({ bitacora_id: bitacora.id })
     })
@@ -412,6 +463,19 @@ export default defineComponent({
         listarActividadBitacora({ bitacora_id: bitacora.id })
       }
     }) */
+    watch(usaProtector, v => {
+      if (!v) {
+        bitacora.protector = null
+        criterioBusquedaProtector.value = ''
+      }
+    })
+    watch(usaConductor, v => {
+      if (!v) {
+        bitacora.conductor = null
+        criterioBusquedaConductor.value = ''
+      }
+    })
+
 
     /*******
      * Init
@@ -436,6 +500,8 @@ export default defineComponent({
       zonas,
       filtrarZonas,
       jornadas,
+      usaProtector,
+      usaConductor,
       btnAgregarActividad,
       btnEstablecerHoraFin,
       btnVerActividadBitacora,
@@ -452,6 +518,7 @@ export default defineComponent({
       recargarZonas,
       consultarPrendasPermitidas,
       guardarActividad,
+
       marcarRevisadoDesdeTabla,
       listadoActividadBitacora,
       btnRegistrarActividades,
@@ -481,7 +548,15 @@ export default defineComponent({
       criterioBusquedaConductor,
       listadoConductor,
       listarConductor,
-      seleccionarConductor
+      seleccionarConductor,
+
+      quitarProtector,
+      quitarConductor,
+
+      // NUEVOS: Sistema de tabs
+      tabDefecto,
+      tabOptions,
+      filtrarListadoBitacoras
     }
   }
 })

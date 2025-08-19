@@ -26,7 +26,7 @@
                     outlined
                     use-input
                     input-debounce="0"
-                    :option-label="item => item.nombres + ' ' + item.apellidos"
+                    :option-label="item => item.apellidos + ' ' + item.nombres"
                     :option-value="item => item.id"
                     emit-value
                     map-options

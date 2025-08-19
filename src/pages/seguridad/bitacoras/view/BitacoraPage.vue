@@ -2,12 +2,18 @@
   <tab-layout
     :mixin="mixin"
     :configuracion-columnas="configuracionColumnasBitacora"
+    titulo-pagina="Bitácoras"
+    :tab-options="tabOptions"
+    :tabDefecto="tabDefecto"
+    :filtrar="filtrarListadoBitacoras"
     :mostrar-button-submits="tabsPage == 1"
     :mostrarColumnasVisibles="!$q.screen.xs"
     :accion1="btnRegistrarActividades"
     :accion2="btnFinalizarBitacora"
     :permitir-editar="false"
     :puede-filtrar="true"
+    :forzarListar="true"
+    :puede-ordenar="true"
     paginate
     full
   >
@@ -148,90 +154,105 @@
                 </q-input>
               </div>
 
+              <!-- Protector -->
               <div class="col-12 col-md-3">
-                <label class="q-mb-sm block">Protector</label>
-                <q-input
-                  v-model="criterioBusquedaProtector"
-                  placeholder="Escriba y presione enter para buscar"
-                  hint="Puede buscar por nombre, apellido o identificación"
-                  :disable="disabled"
-                  @keydown.enter="listarProtector"
-                  :error="!!v$.protector.$errors.length"
-                  @blur="v$.protector.$touch"
-                  outlined
-                  dense
-                >
-                  <template v-slot:append>
-                    <q-icon
-                      :name="
-                        bitacora.protector
-                          ? 'bi-check-circle-fill'
-                          : 'bi-check-circle'
-                      "
-                      :color="bitacora.protector ? 'positive' : 'grey-6'"
-                      size="xs"
-                    ></q-icon>
-                  </template>
+                <!-- estado OFF: solo el toggle -->
+                <div v-if="!usaProtector" class="q-pt-sm">
+                  <q-toggle v-model="usaProtector" label="Agregar protector" />
+                </div>
 
-                  <template #after>
-                    <q-btn color="primary" @click="listarProtector" dense>
-                      <q-icon :name="iconos.buscar"></q-icon>
-                      <q-tooltip>Recargar protector</q-tooltip>
-                    </q-btn>
-                  </template>
+                <!-- estado ON: input + lupa (el toggle desaparece) -->
+                <div v-else>
+                  <div class="row items-center justify-between q-mb-xs">
+                    <label class="q-mb-none">Protector</label>
+                    <!-- opcional: botón para quitar -->
+                    <q-btn
+                      flat
+                      dense
+                      round
+                      icon="bi-x"
+                      @click="quitarProtector"
+                    />
+                  </div>
 
-                  <template v-slot:error>
-                    <div
-                      v-for="error of v$.protector.$errors"
-                      :key="error.$uid"
-                    >
-                      <div class="error-msg">{{ error.$message }}</div>
-                    </div>
-                  </template>
-                </q-input>
+                  <q-input
+                    v-model="criterioBusquedaProtector"
+                    placeholder="Escriba y presione enter para buscar"
+                    hint="Puede buscar por nombre, apellido o identificación"
+                    :disable="disabled"
+                    @keydown.enter="listarProtector"
+                    :error="!!v$.protector?.$errors.length"
+                    @blur="v$.protector?.$touch()"
+                    outlined
+                    dense
+                  >
+                    <template #after>
+                      <q-btn color="primary" @click="listarProtector" dense>
+                        <q-icon :name="iconos.buscar" />
+                        <q-tooltip>Buscar protector</q-tooltip>
+                      </q-btn>
+                    </template>
+
+                    <template v-slot:error>
+                      <div
+                        v-for="e in v$.protector?.$errors"
+                        :key="e.$uid"
+                        class="error-msg"
+                      >
+                        {{ e.$message }}
+                      </div>
+                    </template>
+                  </q-input>
+                </div>
               </div>
 
+              <!-- Conductor -->
               <div class="col-12 col-md-3">
-                <label class="q-mb-sm block">Conductor</label>
-                <q-input
-                  v-model="criterioBusquedaConductor"
-                  placeholder="Escriba y presione enter para buscar"
-                  hint="Puede buscar por nombre, apellido o identificación"
-                  :disable="disabled"
-                  @keydown.enter="listarConductor"
-                  :error="!!v$.conductor.$errors.length"
-                  @blur="v$.conductor.$touch"
-                  outlined
-                  dense
-                >
-                  <template v-slot:append>
-                    <q-icon
-                      :name="
-                        bitacora.conductor
-                          ? 'bi-check-circle-fill'
-                          : 'bi-check-circle'
-                      "
-                      :color="bitacora.conductor ? 'positive' : 'grey-6'"
-                      size="xs"
-                    ></q-icon>
-                  </template>
+                <div v-if="!usaConductor" class="q-pt-sm">
+                  <q-toggle v-model="usaConductor" label="Agregar conductor" />
+                </div>
 
-                  <template #after>
-                    <q-btn color="primary" @click="listarConductor" dense>
-                      <q-icon :name="iconos.buscar"></q-icon>
-                      <q-tooltip>Recargar protector</q-tooltip>
-                    </q-btn>
-                  </template>
+                <div v-else>
+                  <div class="row items-center justify-between q-mb-xs">
+                    <label class="q-mb-none">Conductor</label>
+                    <q-btn
+                      flat
+                      dense
+                      round
+                      icon="bi-x"
+                      @click="quitarConductor"
+                    />
+                  </div>
 
-                  <template v-slot:error>
-                    <div
-                      v-for="error of v$.conductor.$errors"
-                      :key="error.$uid"
-                    >
-                      <div class="error-msg">{{ error.$message }}</div>
-                    </div>
-                  </template>
-                </q-input>
+                  <q-input
+                    v-model="criterioBusquedaConductor"
+                    placeholder="Escriba y presione enter para buscar"
+                    hint="Puede buscar por nombre, apellido o identificación"
+                    :disable="disabled"
+                    @keydown.enter="listarConductor"
+                    :error="!!v$.conductor?.$errors.length"
+                    @blur="v$.conductor?.$touch()"
+                    outlined
+                    dense
+                  >
+                    <template #after>
+                      <q-btn color="primary" @click="listarConductor" dense>
+                        <q-icon :name="iconos.buscar" />
+                        <q-tooltip>Buscar conductor</q-tooltip>
+                      </q-btn>
+                    </template>
+
+                    <template v-slot:error>
+                      <div
+                        v-for="e in v$.conductor?.$errors"
+                        :key="e.$uid"
+                        class="error-msg"
+                      >
+                        {{ e.$message }}
+                      </div>
+                    </template>
+                  </q-input>
+                </div>
               </div>
             </div>
 
