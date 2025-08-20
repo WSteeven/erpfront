@@ -2,6 +2,7 @@ import { ActividadBitacora } from './../modules/actividadBitacora/domain/Activid
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 
 export class Bitacora extends EntidadAuditable {
+    
   zona: number | null = null
   jornada: number | null = null
   fecha_hora_inicio_turno: string | null = null

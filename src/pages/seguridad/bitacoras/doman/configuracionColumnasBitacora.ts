@@ -3,6 +3,16 @@ import { Bitacora } from './Bitacora'
 
 export const configuracionColumnasBitacora: ColumnConfig<Bitacora>[] = [
   {
+    name: 'id',
+    field: 'id',
+    label: 'N°',
+    align: 'left',
+    type: 'text',
+    operador: 'like',
+    sortable: true
+  },
+
+  {
     name: 'zona',
     field: 'zona',
     label: 'Zona',
