@@ -3,10 +3,25 @@
   <q-page class="gradiente-logind my-font">
     <div class="row justify-center q-pt-xl q-px-sm">
       <!-- Right side -->
-      <div
-        class="col-12 text-center q-mb-md"
-      >         <img :src="!$q.dark.isActive ? logoClaro : logoOscuro" alt="logo" width="100" /><br>
-        <span class="text-thin text-h5 elegant-blue-hard-gradient-text">FIRSTRED</span>
+      <div class="col-12 text-center q-mb-md">
+        <img
+          :src="!$q.dark.isActive ? logoClaro : logoOscuro"
+          alt="logo"
+          width="100"
+        /><br /><br>
+        <span
+          :class="[
+            'text-thin',
+            'text-h5',
+            nombreEmpresa === 'JP CUSTODY'
+              ? 'elegant-gold-gradient-text'
+              : 'elegant-blue-hard-gradient-text'
+          ]"
+        >
+          FIRSTRED
+        </span>
+        <br />
+        <span class="text-bold text-grey-13 text-center">Enterprise Resource Planning</span>
       </div>
 
       <div
@@ -14,8 +29,8 @@
       >
         <form @submit.prevent="login" class="full-width q-px-lg">
           <div class="q-mb-sm">
-<!--            <h4>Bienvenidos a {{ nombreEmpresa }}</h4>-->
-<!--            <span class="text-h6 text-bold text-center bg-red">Bienvenidos a {{ nombreEmpresa }}</span>-->
+            <!--            <h4>Bienvenidos a {{ nombreEmpresa }}</h4>-->
+            <!--            <span class="text-h6 text-bold text-center bg-red">Bienvenidos a {{ nombreEmpresa }}</span>-->
             <span class="text-h5 text-bold">Inicio de sesión externo</span>
           </div>
           <div class="col-12">
@@ -48,7 +63,7 @@
           <div class="col-12">
             <!-- Botones -->
             <q-btn
-              color="primary"
+              color="blue-8"
               label="Ingrese con Facebook"
               class="full-width q-mb-sm"
               no-caps
@@ -108,9 +123,9 @@
           </div>
 
           <!-- Recuerdame -->
-<!--          <div class="col-12 q-mb-sm">-->
-<!--            <q-toggle v-model="loginUser.remember_session" label="Recuérdame" />-->
-<!--          </div>-->
+          <!--          <div class="col-12 q-mb-sm">-->
+          <!--            <q-toggle v-model="loginUser.remember_session" label="Recuérdame" />-->
+          <!--          </div>-->
 
           <div class="col-12">
             <!-- Botones -->
@@ -138,8 +153,8 @@
             >
             </q-btn>
           </div>
-          <div class="q-pa-md row ">
-            <div class="col-6 q-my-sm text-right ">
+          <div class="q-pa-md row">
+            <div class="col-6 q-my-sm text-right">
               <small>¿Quieres ser parte de JP CONSTRUCRED?</small>
             </div>
             <div class="col-6">

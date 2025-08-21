@@ -22,9 +22,7 @@
             @blur="v$.titulo.$touch"
           >
             <template v-slot:error>
-              <div v-for="error of v$.titulo.$errors" :key="error.$uid">
-                <div>{{ error.$message }}</div>
-              </div>
+              <error-component clave="titulo" v$="v$"/>
             </template>
           </q-input>
         </div>
@@ -42,7 +40,7 @@
             titulo="Pagos"
             :configuracionColumnas="configuracionColumnasPagoAccion"
             :datos="generador.pagos"
-            ajustar-celdas
+            :ajustar-celdas="false"
             :disable="disabled"
             :grid="false"
             :alto-fijo="false"

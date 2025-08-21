@@ -1362,7 +1362,7 @@
     </template>
 
     <!-- esta pagado -->
-    <template #body-cell-pago_couta="props">
+    <template #body-cell-pago_cuota="props">
       <q-td :props="props">
         <q-icon
           v-if="props.value"

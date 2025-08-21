@@ -565,6 +565,12 @@ export const useMenuStore = defineStore('menu', () => {
               link: 'reporte-vacaciones',
               icon: 'bi-sunglasses',
               can: store.can('puede.acceder.reportes_rrhh') || true
+            },
+            {
+              title: 'Reporte de Préstamos Empresariales',
+              link: 'reporte-prestamos-empresariales',
+              icon: 'bi-file',
+              can: store.can('puede.acceder.reportes_rrhh')
             }
           ]
         }
@@ -1013,6 +1019,12 @@ export const useMenuStore = defineStore('menu', () => {
       link: 'clientes',
       icon: 'bi-people',
       can: store.can('puede.acceder.clientes')
+    },
+    {
+      title: 'Cuentas Bancarias Empresariales',
+      link: 'cuentas-bancarias',
+      icon: 'bi-bank',
+      can: store.can('puede.acceder.cuentas_bancarias')
     },
     {
       title: 'Roles y Permisos',

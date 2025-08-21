@@ -1,1 +1,0 @@
-import{a,Q as o}from"./QItemSection.3a5d4c83.js";import{d as s,v as n,P as r,F as e,z as p,D as m,K as c}from"./index.2ef7a81a.js";const i=s({__name:"NoOptionComponent",props:{message:{type:String,default:"No hay resultados"}},setup(t){return(l,d)=>(n(),r(o,null,{default:e(()=>[p(a,{class:"text-grey"},{default:e(()=>[m(c(t.message),1)]),_:1})]),_:1}))}});var f=i;export{f as N};

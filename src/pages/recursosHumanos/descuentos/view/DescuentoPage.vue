@@ -12,7 +12,7 @@
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-py-md">
           <!-- Empleados -->
-          <div class="col-12 col-md-4">
+          <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Empleado</label>
             <q-select
               v-model="descuento.empleado"
@@ -35,16 +35,10 @@
               map-options
             >
               <template v-slot:error>
-                <div v-for="error of v$.empleado.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="empleado" :v$="v$"/>
               </template>
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
+                <no-option-component/>
               </template>
             </q-select>
           </div>
@@ -69,11 +63,7 @@
               map-options
             >
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
+                <no-option-component/>
               </template>
             </q-select>
           </div>
@@ -98,16 +88,12 @@
               map-options
             >
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
+                <no-option-component/>
               </template>
             </q-select>
           </div>
           <!-- Fecha -->
-          <div class="col-12 col-md-4">
+          <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Fecha del descuento</label>
             <q-input
               v-model="descuento.fecha_descuento"
@@ -144,32 +130,7 @@
               </template>
 
               <template v-slot:error>
-                <div
-                  v-for="error of v$.fecha_descuento.$errors"
-                  :key="error.$uid"
-                >
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
-            </q-input>
-          </div>
-          <!-- Valor  -->
-          <div class="col-12 col-md-4">
-            <label class="q-mb-sm block">Valor </label>
-            <q-input
-              v-model="descuento.valor"
-              placeholder="Obligatorio"
-              type="number"
-              :disable="disabled"
-              :error="!!v$.valor.$errors.length"
-              @blur="v$.valor.$touch"
-              outlined
-              dense
-            >
-              <template v-slot:error>
-                <div v-for="error of v$.valor.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="fecha_descuento" :v$="v$"/>
               </template>
             </q-input>
           </div>
@@ -194,8 +155,28 @@
             </div>
           </div>
 
+          <!-- Valor  -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Valor </label>
+            <q-input
+              v-model="descuento.valor"
+              placeholder="Obligatorio"
+              type="number"
+              :disable="disabled"
+              :error="!!v$.valor.$errors.length"
+              @blur="v$.valor.$touch"
+              outlined
+              dense
+            >
+              <template v-slot:error>
+                <error-component clave="valor" :v$="v$"/>
+              </template>
+            </q-input>
+          </div>
+
+
           <!-- Mes que inicia el cobro -->
-          <div class="col-12 col-md-4">
+          <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Mes inicia cobro</label>
             <q-input
               v-model="descuento.mes_inicia_cobro"
@@ -238,18 +219,13 @@
               </template>
 
               <template v-slot:error>
-                <div
-                  v-for="error of v$.mes_inicia_cobro.$errors"
-                  :key="error.$uid"
-                >
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="mes_inicia_cobro" :v$="v$"/>
               </template>
             </q-input>
           </div>
 
           <!-- Cantidad de cuotas  -->
-          <div class="col-12 col-md-4">
+          <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Cantidad Cuotas </label>
             <q-input
               v-model="descuento.cantidad_cuotas"
@@ -263,18 +239,13 @@
               dense
             >
               <template v-slot:error>
-                <div
-                  v-for="error of v$.cantidad_cuotas.$errors"
-                  :key="error.$uid"
-                >
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="cantidad_cuotas" :v$="v$"/>
               </template>
             </q-input>
           </div>
 
           <!-- pagado -->
-          <div class="col-12 col-md-4 col-sm-3">
+          <div class="col-12 col-md-3 col-sm-3">
             <label class="q-mb-sm block">Pagado</label>
             <q-toggle
               :label="descuento.pagado ? 'SI' : 'NO'"
@@ -300,9 +271,8 @@
               "
               ajustar-celdas
               :desplegar-desde="3"
-              :accion1="btnPagarCuota"
-              :accion2="btnComentarioCuota"
-              :accion3="btnAplazarCuota"
+              :accion1="btnComentarioCuota"
+              :accion2="btnAplazarCuota"
               :altoFijo="false"
               :permitirConsultar="false"
               :permitirEditar="false"

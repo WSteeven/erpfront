@@ -44,7 +44,7 @@ export const useBotonesImpresionTablaRolPago = (rolPago: RolPagoMes) => {
       '/' +
       axios.getEndpoint(endpoints.imprimir_rol_pago) +
       valor.id
-    imprimirArchivo(url_pdf, 'GET', 'blob', 'pdf', filename, valor)
+    await imprimirArchivo(url_pdf, 'GET', 'blob', 'pdf', filename, valor)
   }
 
   async function generar_reporte_general(tipo: string): Promise<void> {
@@ -56,7 +56,7 @@ export const useBotonesImpresionTablaRolPago = (rolPago: RolPagoMes) => {
       axios.getEndpoint(endpoints.imprimir_rol_pago_general) +
       rolPago.id + '?tipo=' + tipo
 
-    imprimirArchivo(url_pdf, 'GET', 'blob', tipo, filename, null)
+    await imprimirArchivo(url_pdf, 'GET', 'blob', tipo, filename, null)
   }
   const btnGenerarReporte: CustomActionTable = {
     titulo: 'Generar Reporte',

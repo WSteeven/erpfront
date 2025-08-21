@@ -62,6 +62,7 @@ import { DepartamentoController } from 'recursosHumanos/departamentos/infraestru
 import { Departamento } from 'recursosHumanos/departamentos/domain/Departamento'
 import { Proyecto } from 'proyectos/domain/Proyecto'
 import { cargarDesdeLocalStorage } from '../../../../utils/storage'
+import {ClienteController} from 'sistema/clientes/infraestructure/ClienteController';
 
 export default defineComponent({
   components: {
@@ -116,7 +117,8 @@ export default defineComponent({
       detalles,
       filtrarDetalles,
       departamentos,
-      filtrarDepartamentos
+      filtrarDepartamentos,
+        clientes, filtrarClientes
     } = useFiltrosListadosSelects(listadosAuxiliares)
 
     const visualizarAutorizador = computed(() => {
@@ -248,6 +250,7 @@ export default defineComponent({
             [21, 22, 23, 24, 25].some(num => gasto.sub_detalle?.includes(num))
         )
       },
+      cliente:{ required },
       ruc: {
         minLength: minLength(11),
         maxLength: maxLength(13),
@@ -324,6 +327,10 @@ export default defineComponent({
             campos: 'id,placa'
           }
         },
+        clientes: {
+          controller: new ClienteController(),
+          params:{estado:1, requiere_fr:1}
+        },
         nodos: []
       })
       autorizaciones_especiales.value = await filtrarEmpleadosPorRoles(
@@ -342,6 +349,7 @@ export default defineComponent({
       tareas.value = listadosAuxiliares.tareas
       vehiculos.value = listadosAuxiliares.vehiculos
       nodos.value = listadosAuxiliares.nodos
+      clientes.value = listadosAuxiliares.clientes
       gasto.empleado_info = store.nombreUsuario
 
       if (store.can('puede.registrar.fondos_terceros')) {
@@ -716,6 +724,7 @@ export default defineComponent({
       filtrarVehiculos,
       cambiarDetalle,
       cambiarProyecto,
+      clientes, filtrarClientes,
       optionsFechaGasto: optionsFecha,
       recargar,
       editarGasto,

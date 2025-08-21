@@ -12,6 +12,7 @@
     :accion3="btnEnviarRolPago"
     :accion4="btnCashRolPago"
     :accion5="btnActivarRolPago"
+    :accion6="btnPagarPrestamosRolActual"
     :filtrar="filtrarRolPagoMes"
     :tabDefecto="tabActualRolPago"
     :ajustarCeldas="true"
@@ -82,9 +83,7 @@
                   </template>
 
                   <template v-slot:error>
-                    <div v-for="error of v$.mes.$errors" :key="error.$uid">
-                      <div class="error-msg">{{ error.$message }}</div>
-                    </div>
+                    <error-component clave="mes" :v$="v$" />
                   </template>
                 </q-input>
               </div>

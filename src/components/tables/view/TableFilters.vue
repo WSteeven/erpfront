@@ -3,10 +3,10 @@
     <small
       class="bg-solid justify-between row items-center q-mb-sm q-pb-xs q-px-md border-callout-info"
     >
-      <span
+      <span style="color: #000"
         ><q-icon
           name="bi-info-circle-fill"
-          color="info"
+          color="primary"
           size="sm"
           class="q-mr-sm"
         ></q-icon>
@@ -19,10 +19,10 @@
         no-caps
         dense
         color="primary"
-        @click="() => (verEjemploFiltrosAvanzados = true)" 
+        @click="() => (verEjemploFiltrosAvanzados = true)"
       >
         <q-icon name="bi-eye" class="q-mr-sm"></q-icon>
-        Ver ejemplo</q-btn 
+        Ver ejemplo</q-btn
       >
     </small>
 
@@ -234,27 +234,29 @@ export default defineComponent({
     }
 
     function obtenerUri(filtro: any) {
-      /*if (filtro.operador === 'like')
-        return `${filtro.field}[${filtro.operador}]=%${filtro.value}%`
-      else*/
       let valor = ''
 
-      if (filtro.type === 'datetime')
+      if (filtro.type === 'datetime') {
         valor = formatearFechaHora(filtro.value, filtro.value2)
-      else valor = filtro.value
+      } else {
+        valor =
+          filtro.type === 'select' && typeof filtro.value === 'object'
+            ? filtro.value.value
+            : filtro.value
+      }
 
       if (operadoresNumeradores.includes(filtro.operador)) {
         if (
           filtro.type === 'date' &&
           ['start', 'end'].includes(filtro.operador)
-        )
+        ) {
           return `${filtro.field}[${filtro.operador}]=${valor}`
-        else
+        } else {
           return `${filtro.field}[operator]=${filtro.operador}&${filtro.field}[value]=${valor}`
+        }
       } else {
-        console.log(`${filtro.field}=${valor}`)
         return filtro.operador === 'like'
-          ? `${filtro.field}[${filtro.operador}]=${valor}` // Se recomiendo no enviar el valor %7887% con porcentajes xq se llega asi �78% al backend
+          ? `${filtro.field}[${filtro.operador}]=${valor}`
           : `${filtro.field}=${valor}`
       }
     }

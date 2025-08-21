@@ -3,6 +3,12 @@ import { Atrasos } from './Atrasos';
 
 export const configuracionColumnasAtrasos: ColumnConfig<Atrasos>[] = [
   {
+    name: 'id',
+    field: 'id',
+    label: 'N°',
+    align: 'left',
+    sortable: true,
+  },{
     name: 'empleado',
     field: 'empleado',
     label: 'Empleado',
@@ -47,7 +53,7 @@ export const configuracionColumnasAtrasos: ColumnConfig<Atrasos>[] = [
   {
     name: 'justificacion',
     field: 'justificacion',
-    label: 'Justificación Atraso (J.I.)',
+    label: 'Justificación Atraso (J.I. o R.H.)',
     align: 'left',
     sortable: false,
   },

@@ -36,6 +36,7 @@ import { NodoController } from 'gestionTrabajos/nodos/infraestructure/NodoContro
 import ErrorComponent from 'components/ErrorComponent.vue'
 import { EmpleadoRoleController } from 'recursosHumanos/empleados/infraestructure/EmpleadoRolesController'
 import { GrupoController } from 'recursosHumanos/grupos/infraestructure/GrupoController'
+import { ClienteController } from 'sistema/clientes/infraestructure/ClienteController'
 
 export default defineComponent({
   components: { ErrorComponent, NoOptionComponent, TabLayout },
@@ -54,7 +55,7 @@ export default defineComponent({
       new ConsolidadoFiltradoController()
     )
     const {
-      entidad: consolidadofiltrado,
+      entidad: consolidadoFiltrado,
       disabled,
       listadosAuxiliares
     } = mixin.useReferencias()
@@ -69,9 +70,9 @@ export default defineComponent({
       },
       tipo_filtro: {
         requiredIfTipoFiltro: requiredIf(function () {
-          return consolidadofiltrado.tipo_saldo != null
-            ? consolidadofiltrado.tipo_saldo == tipo_saldo.GASTO ||
-                consolidadofiltrado.tipo_saldo == tipo_saldo.GASTOS_FOTOGRAFIA
+          return consolidadoFiltrado.tipo_saldo != null
+            ? consolidadoFiltrado.tipo_saldo == tipo_saldo.GASTO ||
+                consolidadoFiltrado.tipo_saldo == tipo_saldo.GASTOS_FOTOGRAFIA
             : false
         })
       },
@@ -83,46 +84,51 @@ export default defineComponent({
       },
       empleado: {
         requiredIfEmpleado: requiredIf(function () {
-          return consolidadofiltrado.tipo_saldo != null
-            ? consolidadofiltrado.tipo_saldo == tipo_saldo.CONSOLIDADO ||
-                consolidadofiltrado.tipo_saldo == tipo_saldo.ESTADO_CUENTA ||
-                consolidadofiltrado.tipo_saldo ==
+          return consolidadoFiltrado.tipo_saldo != null
+            ? consolidadoFiltrado.tipo_saldo == tipo_saldo.CONSOLIDADO ||
+                consolidadoFiltrado.tipo_saldo == tipo_saldo.ESTADO_CUENTA ||
+                consolidadoFiltrado.tipo_saldo ==
                   tipo_saldo.TRANSFERENCIA_SALDOS
             : false
         })
       },
+      cliente_id: {
+        required: requiredIf(
+          () => consolidadoFiltrado.tipo_filtro === tipo_filtro.CLIENTE
+        )
+      },
       detalle: {
         requiredIfDetalle: requiredIf(function () {
-          return consolidadofiltrado.tipo_filtro != null
-            ? consolidadofiltrado.tipo_filtro == tipo_filtro.DETALLE
+          return consolidadoFiltrado.tipo_filtro != null
+            ? consolidadoFiltrado.tipo_filtro == tipo_filtro.DETALLE
             : false
         })
       },
       subdetalle: {
         requiredIfSubdetalle: requiredIf(function () {
-          return consolidadofiltrado.tipo_filtro != null
-            ? consolidadofiltrado.tipo_filtro == tipo_filtro.SUBDETALLE
+          return consolidadoFiltrado.tipo_filtro != null
+            ? consolidadoFiltrado.tipo_filtro == tipo_filtro.SUBDETALLE
             : false
         })
       },
       id_proyecto: {
         requiredIfProyecto: requiredIf(function () {
-          return consolidadofiltrado.tipo_filtro != null
-            ? consolidadofiltrado.tipo_filtro == tipo_filtro.PROYECTO
+          return consolidadoFiltrado.tipo_filtro != null
+            ? consolidadoFiltrado.tipo_filtro == tipo_filtro.PROYECTO
             : false
         })
       },
       id_tarea: {
         requiredIfTarea: requiredIf(function () {
-          return consolidadofiltrado.tipo_filtro != null
-            ? consolidadofiltrado.tipo_filtro == tipo_filtro.TAREA
+          return consolidadoFiltrado.tipo_filtro != null
+            ? consolidadoFiltrado.tipo_filtro == tipo_filtro.TAREA
             : false
         })
       },
       aut_especial: {
         requiredIfAutorizador: requiredIf(function () {
-          return consolidadofiltrado.tipo_filtro != null
-            ? consolidadofiltrado.tipo_filtro == tipo_filtro.AUTORIZACIONES
+          return consolidadoFiltrado.tipo_filtro != null
+            ? consolidadoFiltrado.tipo_filtro == tipo_filtro.AUTORIZACIONES
             : false
         })
       },
@@ -131,14 +137,14 @@ export default defineComponent({
       },
       id_lugar: {
         requiredIfCiudad: requiredIf(function () {
-          return consolidadofiltrado.tipo_filtro != null
-            ? consolidadofiltrado.tipo_filtro == tipo_filtro.CIUDAD
+          return consolidadoFiltrado.tipo_filtro != null
+            ? consolidadoFiltrado.tipo_filtro == tipo_filtro.CIUDAD
             : false
         })
       },
       grupo: {
         required: requiredIf(
-          () => consolidadofiltrado.tipo_filtro === tipo_filtro.GRUPO
+          () => consolidadoFiltrado.tipo_filtro === tipo_filtro.GRUPO
         )
       }
     }
@@ -149,7 +155,7 @@ export default defineComponent({
     tipos_filtros_consolidado_filtro.value = tipos_filtros
     listadosAuxiliares.tipos_saldos = tipos_saldos
     listadosAuxiliares.tipos_filtro = tipos_filtros
-    const v$ = useVuelidate(reglas, consolidadofiltrado)
+    const v$ = useVuelidate(reglas, consolidadoFiltrado)
     const usuarios = ref([])
     const usuariosInactivos = ref()
     const tiposFondoRotativoFechas = ref([])
@@ -161,8 +167,14 @@ export default defineComponent({
     const cantones = ref([])
     const is_inactivo = ref(false)
     usuarios.value = listadosAuxiliares.usuarios
-    const { nodos, filtrarNodos, grupos, filtrarGrupos } =
-      useFiltrosListadosSelects(listadosAuxiliares)
+    const {
+      clientes,
+      filtrarClientes,
+      nodos,
+      filtrarNodos,
+      grupos,
+      filtrarGrupos
+    } = useFiltrosListadosSelects(listadosAuxiliares)
 
     cargarVista(async () => {
       await obtenerListados({
@@ -218,8 +230,8 @@ export default defineComponent({
       const ultimoDiaMesAnterior = addDay(primerDiaMes, -1)
       const primerDiaMesAnterior = monthStart(ultimoDiaMesAnterior)
 
-      consolidadofiltrado.fecha_inicio = format(primerDiaMesAnterior, maskFecha)
-      consolidadofiltrado.fecha_fin = format(ultimoDiaMesAnterior, maskFecha)
+      consolidadoFiltrado.fecha_inicio = format(primerDiaMesAnterior, maskFecha)
+      consolidadoFiltrado.fecha_fin = format(ultimoDiaMesAnterior, maskFecha)
     })
 
     /*********
@@ -335,28 +347,28 @@ export default defineComponent({
     }
 
     const listadoTareas = computed(() => {
-      if (consolidadofiltrado.proyecto) {
+      if (consolidadoFiltrado.proyecto) {
         return listadosAuxiliares.tareas.filter(
-          (tarea: Tarea) => tarea.proyecto_id === consolidadofiltrado.proyecto // || tarea.id == 0
+          (tarea: Tarea) => tarea.proyecto_id === consolidadoFiltrado.proyecto // || tarea.id == 0
         )
       } else return listadosAuxiliares.tareas
     })
 
     /* const listadoTareas = computed(() => {
-      if (consolidadofiltrado.proyecto == 0) {
-        return listadosAuxiliares.tareas.filter(
-          (tarea: Tarea) => tarea.proyecto_id === null || tarea.id == 0
-        )
-      }
-      return listadosAuxiliares.tareas.filter(
-        (tarea: Tarea) =>
-          tarea.proyecto_id === consolidadofiltrado.proyecto || tarea.id == 0
-      )
-    }) */
+          if (consolidadofiltrado.proyecto == 0) {
+            return listadosAuxiliares.tareas.filter(
+              (tarea: Tarea) => tarea.proyecto_id === null || tarea.id == 0
+            )
+          }
+          return listadosAuxiliares.tareas.filter(
+            (tarea: Tarea) =>
+              tarea.proyecto_id === consolidadofiltrado.proyecto || tarea.id == 0
+          )
+        }) */
 
     // - Filtro tipos Filtro
     function filtrarTiposFiltro(val, update) {
-      switch (consolidadofiltrado.tipo_saldo) {
+      switch (consolidadoFiltrado.tipo_saldo) {
         case '1':
           update(() => {
             tipos_filtros_consolidado_filtro.value =
@@ -399,14 +411,14 @@ export default defineComponent({
 
     const opcionesSubdetalles = computed(() => {
       if (
-        consolidadofiltrado.detalle == null ||
-        consolidadofiltrado.detalle == 0
+        consolidadoFiltrado.detalle == null ||
+        consolidadoFiltrado.detalle == 0
       ) {
         return listadosAuxiliares.sub_detalles
       }
       return listadosAuxiliares.sub_detalles.filter(
         subdetalle =>
-          subdetalle.id_detalle_viatico === consolidadofiltrado.detalle
+          subdetalle.id_detalle_viatico === consolidadoFiltrado.detalle
       )
     })
 
@@ -488,49 +500,67 @@ export default defineComponent({
       })
     }
 
-    function limpiar() {
-      consolidadofiltrado.empleado = null
-      consolidadofiltrado.proyecto = null
-      consolidadofiltrado.tarea = null
-      consolidadofiltrado.detalle = null
-      consolidadofiltrado.id_lugar = null
-      consolidadofiltrado.subdetalle = null
-      consolidadofiltrado.aut_especial = null
-      consolidadofiltrado.ruc = null
-      consolidadofiltrado.grupo = null
+    async function obtenerTareas() {
+      await cargarVista(async () => {
+        await obtenerListados({
+          tareas: {
+            controller: new TareaController(),
+            params: {
+              todas: 1,
+              campos: 'id,codigo_tarea,titulo,cliente_id,proyecto_id',
+              'f_params[orderBy][field]': 'id',
+              'f_params[orderBy][type]': 'DESC',
+              'f_params[limit]': 300
+            }
+          }
+        })
+        tareas.value = listadosAuxiliares.tareas
+      })
+    }
 
-      switch (consolidadofiltrado.tipo_filtro) {
-        case '0':
-        case '2':
-          // Todos o Tarea
-          cargarVista(async () => {
-            await obtenerListados({
-              tareas: {
-                controller: new TareaController(),
-                params: {
-                  todas:1,
-                  campos: 'id,codigo_tarea,titulo,cliente_id,proyecto_id',
-                  'f_params[orderBy][field]': 'id',
-                  'f_params[orderBy][type]': 'DESC',
-                  'f_params[limit]': 300
-                }
-              }
-            })
-            tareas.value = listadosAuxiliares.tareas
-          })
-          break
-        case '10':
-          cargarVista(async () => {
-            await obtenerListados({
-              grupos: {
-                controller: new GrupoController(),
-                params: { activo: 1 }
-              }
-            })
-            listadosAuxiliares.grupos.unshift({ id: 0, nombre: ' SIN GRUPO' })
-            grupos.value = listadosAuxiliares.grupos
-          })
-      }
+    async function obtenerGrupos() {
+      await cargarVista(async () => {
+        await obtenerListados({
+          grupos: {
+            controller: new GrupoController(),
+            params: { activo: 1 }
+          }
+        })
+        listadosAuxiliares.grupos.unshift({ id: 0, nombre: ' SIN GRUPO' })
+        grupos.value = listadosAuxiliares.grupos
+      })
+    }
+
+    async function obtenerClientes() {
+      await cargarVista(async () => {
+        await obtenerListados({
+          clientes: {
+            controller: new ClienteController(),
+            params: { estado: 1, requiere_fr: 1 }
+          }
+        })
+        clientes.value = listadosAuxiliares.clientes
+      })
+    }
+
+    async function limpiar() {
+      consolidadoFiltrado.empleado = null
+      consolidadoFiltrado.proyecto = null
+      consolidadoFiltrado.tarea = null
+      consolidadoFiltrado.detalle = null
+      consolidadoFiltrado.id_lugar = null
+      consolidadoFiltrado.subdetalle = null
+      consolidadoFiltrado.aut_especial = null
+      consolidadoFiltrado.ruc = null
+      consolidadoFiltrado.grupo = null
+
+      if (consolidadoFiltrado.tipo_filtro === '10') await obtenerGrupos()
+
+      if (['0', '11'].includes(consolidadoFiltrado.tipo_filtro))
+        await obtenerClientes()
+
+      if (['0', '2'].includes(consolidadoFiltrado.tipo_filtro))
+        await obtenerTareas()
     }
 
     // watch(grupos, ()=>{
@@ -539,10 +569,10 @@ export default defineComponent({
     // })
 
     function limpiarTipoSaldo() {
-      consolidadofiltrado.tipo_filtro = null
+      consolidadoFiltrado.tipo_filtro = null
       limpiar()
 
-      switch (consolidadofiltrado.tipo_saldo){
+      switch (consolidadoFiltrado.tipo_saldo) {
         case tipo_saldo.ACREDITACIONES:
           cargarVista(async () => {
             await obtenerListados({
@@ -552,15 +582,17 @@ export default defineComponent({
               }
             })
             listadosAuxiliares.grupos.unshift({ id: 0, nombre: ' SIN GRUPO' })
-            listadosAuxiliares.usuarios.unshift({ id: 0, nombres: ' TODOS', apellidos: ' ' })
+            listadosAuxiliares.usuarios.unshift({
+              id: 0,
+              nombres: ' TODOS',
+              apellidos: ' '
+            })
             grupos.value = listadosAuxiliares.grupos
-            consolidadofiltrado.empleado = 0
+            consolidadoFiltrado.empleado = 0
           })
           break
         default:
-
       }
-
     }
 
     function optionsFechaInicio(date) {
@@ -571,8 +603,8 @@ export default defineComponent({
     function optionsFechaFin(date) {
       const fecha_actual = format(new Date(), 'YYYY/MM/DD')
       const fecha_inicio = format(
-        consolidadofiltrado.fecha_inicio !== null
-          ? consolidadofiltrado.fecha_inicio
+        consolidadoFiltrado.fecha_inicio !== null
+          ? consolidadoFiltrado.fecha_inicio
           : new Date(),
         'YYYY/MM/DD'
       )
@@ -594,7 +626,7 @@ export default defineComponent({
     }
 
     return {
-      consolidadofiltrado,
+      consolidadoFiltrado,
       disabled,
       v$,
       usuarios,
@@ -633,7 +665,9 @@ export default defineComponent({
 
       // listados
       nodos,
-      filtrarNodos
+      filtrarNodos,
+      clientes,
+      filtrarClientes
     }
   }
 })

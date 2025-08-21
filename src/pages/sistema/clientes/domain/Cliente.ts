@@ -6,6 +6,7 @@ export class Cliente extends EntidadAuditable {
   canton: string | null
   parroquia: string | null
   requiere_bodega: boolean | null
+  requiere_fr: boolean | null
   estado: boolean
   logo_url: string|null
 
@@ -16,6 +17,7 @@ export class Cliente extends EntidadAuditable {
     this.canton = null
     this.parroquia = null
     this.requiere_bodega = false
+    this.requiere_fr = false
     this.estado = true
     this.logo_url=null
   }

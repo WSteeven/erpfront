@@ -15,7 +15,7 @@ import {
   autorizacionesId,
   autorizacionesTransacciones,
   maskFecha,
-  tabOptionsSolicitudPedido
+  tabOptionsSolicitudPrestamo
 } from 'config/utils'
 import { useRecursosHumanosStore } from 'stores/recursosHumanos'
 import { SolicitudPrestamo } from '../domain/SolicitudPrestamo'
@@ -28,6 +28,11 @@ import { PeriodoController } from 'pages/recursosHumanos/periodo/infraestructure
 import { AutorizacionController } from 'pages/administracion/autorizaciones/infraestructure/AutorizacionController'
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 import { Autorizacion } from 'pages/administracion/autorizaciones/domain/Autorizacion'
+import {CustomActionTable} from 'components/tables/domain/CustomActionTable';
+import {useRouter} from 'vue-router';
+import {useNotificacionStore} from 'stores/notificacion';
+import {useQuasar} from 'quasar';
+import {useCargandoStore} from 'stores/cargando';
 
 export default defineComponent({
   components: {
@@ -53,9 +58,13 @@ export default defineComponent({
     const puede_editar = ref(true)
 
     // Stores
+    useNotificacionStore().setQuasar(useQuasar())
+    useCargandoStore().setQuasar(useQuasar())
     const recursosHumanosStore = useRecursosHumanosStore()
     const store = useAuthenticationStore()
     const autorizaciones = ref()
+
+    const router = useRouter()
 
     const ver_boton_editar = computed(() => {
       let validar = false
@@ -199,6 +208,22 @@ export default defineComponent({
       tabSolicitudPrestamo.value = tabSeleccionado
     }
 
+    const btnGestionar: CustomActionTable<SolicitudPrestamo> = {
+      titulo: 'Gestionar',
+      color: 'primary',
+      icono: 'bi-pencil-square',
+      accion: ({ entidad }) => {
+        recursosHumanosStore.solicitudPrestamo = entidad
+        console.log(
+            'Solicitud de préstamo a gestionar es: ',
+            recursosHumanosStore.solicitudPrestamo
+        )
+        router.push('prestamo-empresarial')
+      },
+      visible: ({entidad}) => !entidad.gestionada && tabSolicitudPrestamo.value==2 && store.can('puede.gestionar.solicitud_prestamo_empresarial') // si no está gestionada y si esta en la pestaña de  aprobados y tiene el permiso
+    }
+
+
     return {
       mixin,
       solicitudPrestamo,
@@ -215,13 +240,15 @@ export default defineComponent({
       v$,
       disabled,
       recursosHumanosStore,
-      tabOptionsSolicitudPedido,
+      tabOptionsSolicitudPrestamo,
       accion,
       configuracionColumnas: configuracionColumnasSolicitudPrestamo,
       tabSolicitudPrestamo,
       ver_boton_editar,
       acciones,
-      restringirMotivo
+      restringirMotivo,
+
+      btnGestionar,
     }
   }
 })

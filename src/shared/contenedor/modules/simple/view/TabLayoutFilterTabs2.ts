@@ -179,7 +179,7 @@ export default defineComponent({
     /************
      * Variables
      ************/
-    const { guardar, editar, eliminar, consultar, reestablecer } = props.mixin.useComportamiento()
+    const { guardar, editar,filtrar, eliminar, consultar, reestablecer } = props.mixin.useComportamiento()
 
     const { entidad, listado, accion, filtros, tabs } = props.mixin.useReferencias()
 
@@ -270,6 +270,9 @@ export default defineComponent({
     const puedeEliminar = computed(() =>
       store.can(`puede.eliminar.${router.name?.toString()}`) && props.permitirEliminar
     )
+        function filtrarTodos(filtros) {
+      if (props.mostrarListado) filtrar(filtros)
+    }
 
     const esBodeguero = store.esBodeguero
     const esCoordinador = store.esCoordinador
@@ -292,6 +295,7 @@ export default defineComponent({
       editar,
       eliminar,
       forzarListar,
+      filtrarTodos,
       puedeVer,
       puedeCrear,
       puedeEditar,

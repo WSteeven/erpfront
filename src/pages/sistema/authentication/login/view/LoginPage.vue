@@ -7,8 +7,21 @@
           :src="!$q.dark.isActive ? logoClaro : logoOscuro"
           alt="logo"
           width="100"
-        /> <br>
-       <span class="text-thin text-h5 elegant-blue-hard-gradient-text">FIRSTRED</span>
+        />
+        <br /><br>
+        <span
+          :class="[
+            'text-thin',
+            'text-h5',
+            nombreEmpresa === 'JP CUSTODY'
+              ? 'elegant-gold-gradient-text'
+              : 'elegant-blue-hard-gradient-text'
+          ]"
+        >
+          FIRSTRED
+        </span>
+        <br>
+        <span class="text-bold text-grey-13 text-center">Enterprise Resource Planning</span>
       </div>
       <div
         class="col-12 col-md-3 column bordfe q-py-lg rounded-card shadow-chip bg-solid"
@@ -124,7 +137,7 @@ h2 {
     #24243e,
     #302b63,
     #0f0c29
-  ); 
+  );
   background: linear-gradient(
     to right,
     #24243e,

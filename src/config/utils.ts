@@ -21,7 +21,7 @@ export const acciones = {
   nuevo: 'NUEVO',
   eliminar: 'ELIMINAR',
   consultar: 'CONSULTAR',
-  editar: 'EDITAR',
+  editar: 'EDITAR'
 } as const
 
 export const tiposElementos = ['POSTE', 'POZO', 'AMERICANO', 'NODO']
@@ -29,7 +29,7 @@ export const tiposTension = [
   'BAJA TENSIÓN',
   'MEDIA TENSIÓN',
   'ALTA TENSIÓN',
-  'DATOS',
+  'DATOS'
 ]
 export const propietariosElementos = [
   'CNEL',
@@ -41,7 +41,7 @@ export const propietariosElementos = [
   'SETEL',
   'PRIVADO',
   'EERRS',
-  'CENTRO SUR',
+  'CENTRO SUR'
 ]
 
 export const estadoElementos = ['BUENO', 'MALO']
@@ -53,12 +53,12 @@ export const tiposInstalaciones = ['SUBTERRÁNEA', 'AEREA']
 export const tiposTareasTelconet = [
   {
     label: 'TENDIDO DE FIBRA',
-    value: 1,
+    value: 1
   },
   {
     label: 'COLOCACIÓN DE CAJAS',
-    value: 2,
-  },
+    value: 2
+  }
 ]
 
 export const tiposTareasNedetel = ['TENDIDO DE FIBRA', 'COLOCACIÓN DE CAJAS']
@@ -70,51 +70,51 @@ export const atenciones = ['URBANO', 'INTERURBANO']
 export const tabOptionsSolicitudesViaticos: TabOption[] = [
   { label: 'Pendientes', value: '1' }, //autorizacion PENDIENTE
   { label: 'Completadas', value: '2' }, //autorizacion APROBADO
-  { label: 'Anuladas', value: '4' },  //estado ANULADO
+  { label: 'Anuladas', value: '4' } //estado ANULADO
 ]
 
 export const tabOptionsTransaccionesIngresos: TabOption[] = [
   { label: 'Todo', value: 'TODO' },
   { label: 'Pendiente', value: 'PENDIENTE' },
   { label: 'Parcial', value: 'PARCIAL' },
-  { label: 'Completa', value: 'COMPLETA' },
+  { label: 'Completa', value: 'COMPLETA' }
 ]
 export const tabOptionsDevoluciones: TabOption[] = [
   { label: 'Por autorizar', value: 'PENDIENTE' },
   { label: 'Aprobados', value: 'APROBADO' },
   { label: 'Cancelados', value: 'CANCELADO' },
-  { label: 'Anuladas', value: 'ANULADA' },
+  { label: 'Anuladas', value: 'ANULADA' }
 ]
 export const tabOptionsTransferencias: TabOption[] = [
   { label: 'Pendientes', value: 'PENDIENTE' },
   { label: 'Tránsito', value: 'TRANSITO' },
   { label: 'Completadas', value: 'COMPLETADO' },
-  { label: 'Anuladas', value: 'ANULADO' },
+  { label: 'Anuladas', value: 'ANULADO' }
 ]
 export const tabOptionsPedidos: TabOption[] = [
   { label: 'Por autorizar', value: 'PENDIENTE' },
   { label: 'Aprobados Pendiente', value: 'APROBADO' },
   { label: 'Aprobados Parcial', value: 'PARCIAL' },
   { label: 'Cancelados', value: 'CANCELADO' },
-  { label: 'Completados', value: 'COMPLETA' },
+  { label: 'Completados', value: 'COMPLETA' }
 ]
 
-export const tabOptionsSolicitudPedido: TabOption[] = [
+export const tabOptionsSolicitudPrestamo: TabOption[] = [
   { label: 'Pendiente', value: '1' },
   { label: 'Validado', value: '4' },
   { label: 'Aprobados', value: '2' },
-  { label: 'Cancelados', value: '3' },
+  { label: 'Cancelados', value: '3' }
 ]
 export const tabOptionsLicencias: TabOption[] = [
   { label: 'Pendiente', value: '1' },
   { label: 'Aprobados', value: '2' },
-  { label: 'Cancelados', value: '3' },
+  { label: 'Cancelados', value: '3' }
 ]
 export const tabOptionsVacaciones: TabOption[] = [
   { label: 'Pendiente', value: '1' },
   { label: 'Aprobadas', value: '2' },
   { label: 'Canceladas', value: '3' },
-  { label: 'Anuladas', value: '5' },
+  { label: 'Anuladas', value: '5' }
 ]
 
 export const tabOptionsPermiso: TabOption[] = [
@@ -125,52 +125,52 @@ export const tabOptionsPermiso: TabOption[] = [
 ]
 export const tabOptionsTraspasos: TabOption[] = [
   { label: 'Pendientes', value: '0' },
-  { label: 'Devueltas', value: '1' },
+  { label: 'Devueltas', value: '1' }
 ]
 export const tabOptionsTransacciones: TabOption[] = [
   { label: 'Todo', value: 'TODO' },
   /* { label: 'En espera', value: 'ESPERA' }, */
   { label: 'Pendiente', value: 'PENDIENTE' },
   { label: 'Parcial', value: 'PARCIAL' },
-  { label: 'Completa', value: 'COMPLETA' },
+  { label: 'Completa', value: 'COMPLETA' }
 ]
 export const tabAutorizarGasto: TabOption[] = [
   { label: 'Aprobada', value: '1' },
   { label: 'Rechazada', value: '2' },
   { label: 'Pendiente', value: '3' },
-  { label: 'Anulado', value: '4' },
+  { label: 'Anulado', value: '4' }
 ]
 export const tabAcreditacion: TabOption[] = [
   { label: 'Aprobada', value: '1' },
-  { label: 'Anulado', value: '2' },
+  { label: 'Anulado', value: '2' }
 ]
 export const tabPrestamoEmpresarial: TabOption[] = [
   { label: 'ACTIVO', value: 'ACTIVO' },
   { label: 'FINALIZADO', value: 'FINALIZADO' },
-  { label: 'INACTIVO', value: 'INACTIVO' },
+  { label: 'INACTIVO', value: 'INACTIVO' }
 ]
 export const tabGestionarEgresos: TabOption[] = [
   { label: 'Aprobada', value: 'ACEPTADA' },
   { label: 'Parcial', value: 'PARCIAL' },
-  { label: 'Pendiente', value: 'PENDIENTE' },
+  { label: 'Pendiente', value: 'PENDIENTE' }
 ]
 export const tabAutorizarTransferenciaSaldo: TabOption[] = [
   { label: 'Aprobada', value: '1' },
   { label: 'Rechazada', value: '2' },
-  { label: 'Pendiente', value: '3' },
+  { label: 'Pendiente', value: '3' }
 ]
 
 export const accionesTabla = {
   name: 'acciones',
   field: 'acciones',
   label: 'Acciones',
-  align: 'center',
+  align: 'center'
   // style: 'width: 1000px'
 }
 
 export const tiposTrabajosEstaticos = {
   tendido: 'TENDIDO',
-  hincado: 'HINCADO',
+  hincado: 'HINCADO'
 }
 
 export const motivos = {
@@ -195,7 +195,7 @@ export const motivos = {
   mercaderiaClienteStock: 'MERCADERIA DE CLIENTE PARA STOCK',
   devolucionGarantia: 'DEVOLUCION POR GARANTIA',
   devolucionDanio: 'DEVOLUCION POR DAÑO',
-  despachoGarantia: 'DESPACHO POR GARANTIA',
+  despachoGarantia: 'DESPACHO POR GARANTIA'
 }
 
 export const motivosTransaccionesBodega = {
@@ -220,50 +220,50 @@ export const motivosTransaccionesBodega = {
   mercaderiaClienteStock: 'MERCADERIA DE CLIENTE PARA STOCK',
   devolucionGarantia: 'DEVOLUCION POR GARANTIA',
   devolucionDanio: 'DEVOLUCION POR DAÑO',
-  despachoGarantia: 'DESPACHO POR GARANTIA',
+  despachoGarantia: 'DESPACHO POR GARANTIA'
 }
 export const accionesActivos = {
   asignado: 'ASIGNACION',
-  devuelto: 'DEVOLUCION',
+  devuelto: 'DEVOLUCION'
 }
 
 export const autorizacionesTransacciones = {
   pendiente: 'PENDIENTE',
   aprobado: 'APROBADO',
-  cancelado: 'CANCELADO',
+  cancelado: 'CANCELADO'
 }
 
 export const estadosTransacciones = {
   pendiente: 'PENDIENTE',
   completa: 'COMPLETA',
   parcial: 'PARCIAL',
-  no_realizada: 'NO REALIZADA',
+  no_realizada: 'NO REALIZADA'
 }
 
 export const estadosControlStock = {
   suficiente: 'STOCK SUFICIENTE',
   reorden: 'PROXIMO A AGOTARSE',
-  minimo: 'DEBAJO DEL MINIMO',
+  minimo: 'DEBAJO DEL MINIMO'
 }
 
 export const estadosInventarios = {
   inventario: 'INVENTARIO',
   transito: 'TRANSITO',
-  sin_stock: 'SIN STOCK',
+  sin_stock: 'SIN STOCK'
 }
 export const estadosCondicionesId = {
   nuevo: '1',
   usado: '2',
   mal_estado: '3',
   danado: '4',
-  buen_estado: '5',
+  buen_estado: '5'
 }
 export const estadosCondicionesValue = {
   nuevo: 'NUEVO',
   usado: 'USADO',
   mal_estado: 'MAL ESTADO',
   danado: 'DAÑADO',
-  buen_estado: 'BUEN ESTADO',
+  buen_estado: 'BUEN ESTADO'
 }
 
 export const meses = [
@@ -278,7 +278,7 @@ export const meses = [
   'Septiembre',
   'Octubre',
   'Noviembre',
-  'Diciembre',
+  'Diciembre'
 ]
 
 export const sistemasCoordenadas = ['DMS', 'UTM']
@@ -287,7 +287,7 @@ export const bobinasSolicitadas = ['DS564', 'DSFDS564']
 
 export const estadosDevoluciones = {
   CREADA: 'CREADA',
-  ANULADA: 'ANULADA',
+  ANULADA: 'ANULADA'
 }
 export const estadosTrabajos = {
   CREADO: 'CREADO',
@@ -299,7 +299,7 @@ export const estadosTrabajos = {
   PENDIENTE: 'PENDIENTE',
   CANCELADO: 'CANCELADO',
   REALIZADO: 'REALIZADO',
-  FINALIZADO: 'FINALIZADO',
+  FINALIZADO: 'FINALIZADO'
   //REAGENDADO: 'REAGENDADO',
 } // as const
 
@@ -308,17 +308,17 @@ export const estadosRolPago = {
   EJECUTANDO: 'EJECUTANDO',
   CANCELADO: 'CANCELADO',
   REALIZADO: 'REALIZADO',
-  FINALIZADO: 'FINALIZADO',
+  FINALIZADO: 'FINALIZADO'
 }
 export const estadosGastos = {
   APROBADO: 1,
   RECHAZADO: 2,
   PENDIENTE: 3,
-  ANULADO: 4,
+  ANULADO: 4
 }
 export const tipoReportes = {
   PDF: 'pdf',
-  EXCEL: 'excel',
+  EXCEL: 'excel'
 }
 export const tipos_saldos = [
   { value: '1', label: 'Acreditacion' },
@@ -327,7 +327,7 @@ export const tipos_saldos = [
   { value: '4', label: 'Estado de Cuenta' },
   { value: '5', label: 'Transferencia de Saldos' },
   { value: '6', label: 'Gastos con Fotografia' },
-  { value: '7', label: 'Fotografias OYM' },
+  { value: '7', label: 'Fotografias OYM' }
 ]
 
 export const tipos_filtros = [
@@ -342,6 +342,7 @@ export const tipos_filtros = [
   { value: '8', name: 'SIN FACTURA' },
   { value: '9', name: 'CIUDAD' },
   { value: '10', name: 'GRUPO' },
+  { value: '11', name: 'EMPRESA O CLIENTE' }
 ]
 export const tipo_filtro = {
   TODOS: '0',
@@ -354,7 +355,8 @@ export const tipo_filtro = {
   RUC: '7',
   SIN_FACTURA: '8',
   CIUDAD: '9',
-  GRUPO: '10',
+  GRUPO: '10'
+  ,CLIENTE: '11'
 }
 export const tipo_saldo = {
   ACREDITACIONES: '1',
@@ -368,7 +370,7 @@ export const tipo_saldo = {
 export const estadosTransferencias = {
   APROBADO: 1,
   RECHAZADO: 2,
-  PENDIENTE: 3,
+  PENDIENTE: 3
 }
 
 export const estadosTrabajoArray = [
@@ -380,7 +382,7 @@ export const estadosTrabajoArray = [
   'SUSPENDIDO',
   'CANCELADO',
   'REALIZADO',
-  'FINALIZADO',
+  'FINALIZADO'
 ]
 
 export const rolesSistema = {
@@ -413,44 +415,44 @@ export const rolesSistema = {
   vendedor: 'VENDEDOR',
   financiero: 'FINANCIERO',
   esSupervisorTecnico: 'SUPERVISOR_TECNICO',
-  sso: 'SEGURIDAD Y SALUD OCUPACIONAL',
+  sso: 'SEGURIDAD Y SALUD OCUPACIONAL'
 }
 
 export const cargosSistema = {
   tecnico_lider: 'TECNICO LIDER DE GRUPO',
-  tecnico_secretario: 'TECNICO SECRETARIO',
+  tecnico_secretario: 'TECNICO SECRETARIO'
 }
 
 export const tiposJornadas = ['INICIO DE JORNADA', 'FIN DE JORNADA']
 
 export const tiposMovimientos = {
   ingreso: 'INGRESO',
-  egreso: 'EGRESO',
+  egreso: 'EGRESO'
 }
 
 export const opcionesTiposMovimientos = [
   { value: 'Ingreso', label: 'INGRESO' },
-  { value: 'Egreso', label: 'EGRESO' },
+  { value: 'Egreso', label: 'EGRESO' }
 ]
 
 export const opcionesEstadosTransferenciasBodega = [
   { value: 'PENDIENTE', label: 'PENDIENTE' },
   { value: 'TRANSITO', label: 'TRANSITO' },
-  { value: 'COMPLETADO', label: 'COMPLETADO' },
+  { value: 'COMPLETADO', label: 'COMPLETADO' }
 ]
 export const opcionesEstados = [
   { value: 1, label: 'ACTIVO' },
-  { value: 0, label: 'INACTIVO' },
+  { value: 0, label: 'INACTIVO' }
 ]
 export const tiposProductos = [
   { value: 'BIEN', label: 'BIEN' },
-  { value: 'SERVICIO', label: 'SERVICIO' },
+  { value: 'SERVICIO', label: 'SERVICIO' }
 ]
 
 export const opcionesTipoContribuyente = [
   { value: 'NATURAL', label: 'NATURAL' },
   { value: 'PRIVADA', label: 'PRIVADA' },
-  { value: 'PUBLICA', label: 'PUBLICA' },
+  { value: 'PUBLICA', label: 'PUBLICA' }
 ]
 
 export const opcionesReportesIngresos = [
@@ -460,7 +462,7 @@ export const opcionesReportesIngresos = [
   { value: 3, label: 'POR BODEGA' },
   { value: 4, label: 'POR DEVOLUCIÓN' },
   { value: 5, label: 'POR TAREA' },
-  { value: 6, label: 'POR TRANSFERENCIA' },
+  { value: 6, label: 'POR TRANSFERENCIA' }
 ]
 
 export const tiposReportesIngresos = {
@@ -470,7 +472,7 @@ export const tiposReportesIngresos = {
   sucursal: 3,
   devolucion: 4,
   tarea: 5,
-  transferencia: 6,
+  transferencia: 6
 }
 export const numDiaSemana = {
   domingo: 0,
@@ -492,7 +494,6 @@ export const optionsDias = [
   { label: 'Domingo', value: 'domingo' }
 ]
 
-
 export const opcionesReportesEgresos = [
   { value: 0, label: 'POR SOLICITANTE' },
   { value: 1, label: 'POR PERSONA QUE AUTORIZA' },
@@ -505,7 +506,7 @@ export const opcionesReportesEgresos = [
   { value: 8, label: 'POR CLIENTE' },
   { value: 9, label: 'POR TAREA' },
   { value: 10, label: 'POR TRANSFERENCIA' },
-  { value: 11, label: 'POR CATEGORIAS DE MATERIALES' },
+  { value: 11, label: 'POR CATEGORIAS DE MATERIALES' }
 ]
 
 export const tiposReportesEgresos = {
@@ -520,7 +521,7 @@ export const tiposReportesEgresos = {
   cliente: 8,
   tarea: 9,
   transferencia: 10,
-  categorias: 11,
+  categorias: 11
 }
 
 export const opcionesDepartamentos = {
@@ -536,7 +537,7 @@ export const opcionesDepartamentos = {
   bodega: 'BODEGA',
   sso: 'SSO',
   vehiculos: 'VEHICULOS',
-  comercial: 'COMERCIAL',
+  comercial: 'COMERCIAL'
 }
 export const opcionesUnidadesMedidas = [
   { value: 1, label: 'UNIDAD' },
@@ -546,7 +547,7 @@ export const opcionesUnidadesMedidas = [
   { value: 5, label: 'KILOMETRO' },
   { value: 6, label: 'KILOMETRO CUBICO' },
   { value: 7, label: 'LITRO' },
-  { value: 8, label: 'KIT' },
+  { value: 8, label: 'KIT' }
 ]
 export function convertir_fecha(fecha: Date) {
   const day = fecha.getDate() < 10 ? '0' + fecha.getDate() : fecha.getDate()
@@ -571,7 +572,7 @@ export function convertir_fecha_hora(fecha) {
 export const tiposDocumentosIdentificaciones = [
   { nombre: 'Cedula', value: 'CEDULA' },
   { nombre: 'R.U.C.', value: 'RUC' },
-  { nombre: 'Pasaporte', value: 'PASAPORTE' },
+  { nombre: 'Pasaporte', value: 'PASAPORTE' }
 ]
 
 export const niveles_academicos = [
@@ -579,7 +580,7 @@ export const niveles_academicos = [
   { nombre: 'BÁSICA' },
   { nombre: 'BACHILLER' },
   { nombre: 'TERCER NIVEL' },
-  { nombre: 'CUARTO NIVEL' },
+  { nombre: 'CUARTO NIVEL' }
 ]
 
 export const tipos_sangre = [
@@ -590,13 +591,13 @@ export const tipos_sangre = [
   { nombre: 'A -' },
   { nombre: 'B -' },
   { nombre: 'AB -' },
-  { nombre: 'O -' },
+  { nombre: 'O -' }
   // Puedes agregar aquí más tipos de sangre si es necesario
 ]
 export const tipos_vendedores = [
   { nombre: 'VENDEDOR', descripcion: 'VENDEDOR' },
   { nombre: 'SUPERVISOR_VENTAS', descripcion: 'SUPERVISOR DE VENTAS' },
-  { nombre: 'JEFE_VENTAS', descripcion: 'JEFE DE VENTAS' },
+  { nombre: 'JEFE_VENTAS', descripcion: 'JEFE DE VENTAS' }
   // Puedes agregar aquí más tipos de vendedor si es necesario
 ]
 export const talla_letras = [
@@ -605,30 +606,30 @@ export const talla_letras = [
   { nombre: 'L' },
   { nombre: 'XL' },
   { nombre: 'XXL' },
-  { nombre: 'XXXL' },
+  { nombre: 'XXXL' }
   // Puedes agregar aquí más tallas si es necesario
 ]
 
 export const tabOptionsPreingresoMateriales = [
   { label: 'Pendientes', value: '1' }, //autorizacion PENDIENTE
   { label: 'Autorizadas', value: '2' }, //autorizacion APROBADO
-  { label: 'Canceladas', value: '3' }, //autorizacion CANCELADO
+  { label: 'Canceladas', value: '3' } //autorizacion CANCELADO
 ]
 export const formas_pagos = [
   { label: 'EFECTIVO', value: 'EFECTIVO' },
   { label: 'TC', value: 'TARJETA DE CREDITO' },
-  { label: 'D. BANCARIO', value: 'DEBITO BANCARIO' },
+  { label: 'D. BANCARIO', value: 'DEBITO BANCARIO' }
 ]
 export const estados_activaciones = [
   // { label: 'PENDIENTE', value: 'PENDIENTE' },
   { label: 'APROBADO', value: 'APROBADO' },
-  { label: 'ACTIVADO', value: 'ACTIVADO' },
+  { label: 'ACTIVADO', value: 'ACTIVADO' }
   // { label: 'RECHAZADA', value: 'RECHAZADA' },
 ]
 export const estadosVentas = {
   APROBADO: 'APROBADO',
   RECHAZADO: 'RECHAZADO',
-  PENDIENTE: 'PENDIENTE', // Se usa en vez de ASIGNADO en el dashboard
+  PENDIENTE: 'PENDIENTE' // Se usa en vez de ASIGNADO en el dashboard
 }
 export const autorizacionesId = {
   PENDIENTE: 1,
@@ -639,48 +640,48 @@ export const autorizacionesId = {
 export const autorizaciones = [
   { nombre: 'Pendiente', id: 1 }, //autorizacion PENDIENTE
   { nombre: 'Aprobado', id: 2 }, //autorizacion APROBADO
-  { nombre: 'Cancelado', id: 3 }, //autorizacion CANCELADO
+  { nombre: 'Cancelado', id: 3 } //autorizacion CANCELADO
 ]
 export const estados = [
   { nombre: 'Pendiente', id: 1 }, //estado PENDIENTE
   { nombre: 'Completa', id: 2 }, //estado COMPLETA
   { nombre: 'Parcial', id: 3 }, //estado PARCIAL
-  { nombre: 'Anulado', id: 4 }, //estado ANULADO
+  { nombre: 'Anulado', id: 4 } //estado ANULADO
 ]
 
 export const tabOptionsTransaccionesEgresos: TabOption[] = [
   { label: 'Pendientes', value: 'PENDIENTE' },
   { label: 'Parciales', value: 'PARCIAL' },
   { label: 'Completas', value: 'COMPLETA' },
-  { label: 'Anuladas', value: 'ANULADA' },
+  { label: 'Anuladas', value: 'ANULADA' }
 ]
 
 export const tabOptionsEstadosEmpleados: TabOption[] = [
   { label: 'Activos', value: '1' },
-  { label: 'Inactivos', value: '0' },
+  { label: 'Inactivos', value: '0' }
 ]
 
 export const tabOptionsValoresAcreditar: TabOption[] = [
   // { label: 'Todo', value: '' },
   { label: 'Activas', value: '1' },
-  { label: 'Inactivas', value: '0' },
+  { label: 'Inactivas', value: '0' }
 ]
 
 // INTRANET
 
 //Noticias
 export const tabOptionsNoticias: TabOption[] = [
-  { label: 'Noticias Registradas', value: '1' },
+  { label: 'Noticias Registradas', value: '1' }
 ]
 
 //Organigrama
 export const tabOptionsOrganigrama: TabOption[] = [
-  { label: 'Organigrama Registrado', value: '1' },
+  { label: 'Organigrama Registrado', value: '1' }
 ]
 
 export const selectOptionsSiNo: SelectOption[] = [
   { label: 'Sí', value: true },
-  { label: 'No', value: false },
+  { label: 'No', value: false }
 ]
 
 export const opcionesGrafico = {
@@ -692,3 +693,6 @@ export const tipoAutenticacion = {
   empleado: 'private',
   usuario_externo: 'external'
 }
+
+/**JPCUSTODY */
+export const tipoJornadaBitacora = ['DIURNA', 'NOCTURNA']

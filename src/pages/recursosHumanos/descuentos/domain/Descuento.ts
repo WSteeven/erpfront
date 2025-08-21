@@ -6,6 +6,7 @@ export class Descuento extends EntidadAuditable {
   tipo_descuento: string | null
   multa: string | null
   descripcion: string | null
+  descripcion_corta: string | null
   valor: string | null
   cantidad_cuotas: string | null
   mes_inicia_cobro: string | null
@@ -20,6 +21,7 @@ export class Descuento extends EntidadAuditable {
     this.multa= null
     this.tipo_descuento = null
     this.descripcion = ''
+    this.descripcion_corta = ''
     this.valor = null
     this.cantidad_cuotas = null
     this.mes_inicia_cobro = null

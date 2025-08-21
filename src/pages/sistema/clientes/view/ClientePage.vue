@@ -125,6 +125,7 @@
               unchecked-icon="clear"
             />
           </div>
+
           <!-- Requiere bodega -->
           <div class="col-12 col-md-3">
             <label>Requiere bodega</label> <br />
@@ -137,6 +138,20 @@
               unchecked-icon="clear"
             />
           </div>
+
+          <!-- Requiere aparecer en Fondos Rotativos -->
+          <div class="col-12 col-md-3">
+            <label>Requiere Fondos Rotativos</label> <br />
+            <q-toggle
+              :label="cliente.requiere_fr ? 'SI' : 'NO'"
+              v-model="cliente.requiere_fr"
+              color="primary"
+              keep-color
+              icon="bi-check2-circle"
+              unchecked-icon="clear"
+            />
+          </div>
+
           <!-- Logo de la empresa -->
           <div class="col-12 col-md-3">
             <label for="q-mb-sm block">Logo de la empresa</label>

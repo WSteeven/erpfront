@@ -20,6 +20,12 @@ const rutasControlPersonal: RouteRecordRaw[] = [
     meta: { requiresAuth: true }
   },
   {
+    path: '/oficinas-biometricos',
+    name: 'oficinas_biometricos',
+    component: () => import('src/pages/recursosHumanos/control_personal/oficinaBiometrico/view/OficinaBiometricoPage.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
     path: '/horario-laboral',
     name: 'horario_laboral',
     component: () => import('src/pages/recursosHumanos/control_personal/horario_laboral/view/HorarioLaboralPage.vue'),

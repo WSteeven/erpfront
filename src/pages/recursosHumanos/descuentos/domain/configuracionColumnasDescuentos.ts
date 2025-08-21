@@ -10,6 +10,13 @@ export const configuracionColumnasDescuentos: ColumnConfig<Descuento>[]=[
     sortable: true
   },
   {
+    name: 'descripcion_corta',
+    field: 'descripcion_corta',
+    label: 'Descripción',
+    align: 'left',
+    sortable: true
+  },
+  {
     name: 'valor',
     field: 'valor',
     label: 'Monto',

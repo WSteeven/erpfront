@@ -132,6 +132,7 @@
           :mixin="mixin"
           :paginate="paginate"
           :permitirFiltrar="permitirFiltrar"
+          @filtrar="filtrarTodos"
         ></essential-table-tabs>
         <!-- :tab-defecto="tabDefecto" -->
       </q-tab-panel>

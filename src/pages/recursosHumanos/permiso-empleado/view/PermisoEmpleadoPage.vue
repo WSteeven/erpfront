@@ -481,7 +481,7 @@
               class="q-mt-lg q-pt-md"
               v-model="permiso.cargo_vacaciones"
               label="Cargo a Vacaciones"
-              :disable="!esNuevo"
+              :disable="disabled"
               outlined
               dense
             ></q-checkbox>

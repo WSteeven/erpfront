@@ -56,9 +56,13 @@ export default defineComponent({
     const modales = new ComportamientoModalesAtrasos()
     const store = useAuthenticationStore()
 
+    const esRecursosHumanos = computed(() => store.esRecursosHumanos)
     const esJefeInmediato = computed(() => store.user.id == atraso.jefe)
+    const puedeJustificar = computed(
+      () => esRecursosHumanos.value || esJefeInmediato.value
+    )
     const esEmpleadoAtrasado = computed(() => store.user.id == atraso.empleado)
-  const mostrarMarcacionPage = ref(false)
+    const mostrarMarcacionPage = ref(false)
     const { empleados, filtrarEmpleados } =
       useFiltrosListadosSelects(listadosAuxiliares)
     cargarVista(async () => {
@@ -89,10 +93,10 @@ export default defineComponent({
      * HOOKS
      */
     onBeforeConsultar(async () => {
-      mostrarMarcacionPage.value=false
+      mostrarMarcacionPage.value = false
     })
-    onConsultado(()=>{
-      mostrarMarcacionPage.value=true
+    onConsultado(() => {
+      mostrarMarcacionPage.value = true
     })
     onModificado((_, response_data) => {
       if (response_data.modelo.justificado) filtrarListadoAtrasos('1')
@@ -152,6 +156,8 @@ export default defineComponent({
       tabDefecto,
       tabOptions,
       maskFecha,
+      puedeJustificar,
+      esRecursosHumanos,
       esJefeInmediato,
       esEmpleadoAtrasado,
       modales,
