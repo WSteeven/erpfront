@@ -189,7 +189,11 @@
 
         <!--Mis Modulos-->
         <div id="#mis_modulos" class="col-12 col-md-9 q-mb-sm">
-          <div class="q-py-md text-h5 text-bold q-mb-sm">Mis módulos</div>
+          <div
+            class="q-py-xs text-h6 bg-grey-9 text-white text-bold q-mb-sm rounded-borders text-center"
+          >
+            MÓDULOS DISPONIBLES
+          </div>
 
           <div class="row q-col-gutter-sm q-mb-xl">
             <div
@@ -284,48 +288,66 @@
                             justify-items: center;
                           "
                         >
-                          <div class="q-pa-md">
-                            <q-list>
-                              <q-item
-                                v-for="empleado in empleados"
-                                :key="empleado.id"
-                                clickable
-                                v-ripple
-                                @click="showEmployeeDetails(empleado)"
-                              >
-                                <q-item-section avatar>
-                                  <q-avatar>
-                                    <img
-                                      :src="
-                                        empleado.foto_url ||
-                                        getAvatarUrl(empleado)
-                                      "
-                                    />
-                                  </q-avatar>
-                                </q-item-section>
-                                <q-item-section>
-                                  <q-item-label class="empleado-nombre">
-                                    {{
-                                      empleado.nombres +
-                                      ' ' +
-                                      empleado.apellidos
-                                    }}
-                                  </q-item-label>
-                                  <q-item-label caption>
-                                    {{ empleado.cargo }}
-                                  </q-item-label>
-                                </q-item-section>
-                                <q-item-section side>
-                                  <q-badge
-                                    style="color: white"
-                                    color="orangered"
-                                  >
-                                    {{ empleado.email }}
-                                  </q-badge>
-                                </q-item-section>
-                              </q-item>
-                            </q-list>
-                          </div>
+                          <q-card>
+                            <q-card-section>
+                              <div class="text-h6 q-mb-md text-bold"></div>
+                              <q-timeline>
+                                <q-timeline-entry
+                                  v-for="empleado in empleados"
+                                  :key="empleado.id"
+                                  :title="
+                                    empleado.nombres + ' ' + empleado.apellidos
+                                  "
+                                  :subtitle="empleado.cargo"
+                                  icon="person"
+                                  
+                                >
+                                  <div class="row items-center q-gutter-sm">
+                                    <q-avatar size="50px">
+                                      <img
+                                        :src="
+                                          empleado.foto_url ||
+                                          getAvatarUrl(empleado)
+                                        "
+                                      />
+                                    </q-avatar>
+                                    <div>
+                                      <div class="text-body2">
+                                        {{ empleado.email }}
+                                      </div>
+                                      <q-chip size="sm" color="accent">{{
+                                        empleado.departamento
+                                      }}</q-chip>
+                                    </div>
+                                    <q-space></q-space>
+                                    <q-btn
+                                      flat
+                                      round
+                                      color="primary"
+                                      icon="more_vert"
+                                    >
+                                      <q-menu>
+                                        <q-list>
+                                          <q-item
+                                            clickable
+                                            @click="
+                                              showEmployeeDetails(empleado)
+                                            "
+                                          >
+                                            <q-item-section
+                                              >Ver detalles</q-item-section
+                                            >
+                                          </q-item>
+                                        </q-list>
+                                      </q-menu>
+                                    </q-btn>
+                                  </div>
+                                </q-timeline-entry>
+                              </q-timeline>
+                            </q-card-section>
+                          </q-card>
+                          <!-- Alternativa 4: Q-Timeline -->
+                          <div class="demo-section"></div>
                         </q-scroll-area>
                       </q-card-section>
                     </q-tab-panel>
@@ -337,57 +359,64 @@
         </div>
 
         <!-- Seccion descargate la app movil  -->
-        <div class="col-12 col-md-9 q-pt-md">
-          <q-card
-            class="q-pa-md q-mx-auto q-my-lg shadow-2 rounded-borders bg-primary text-white"
-            style="max-width: 900px"
-          >
-            <div class="row items-center q-col-gutter-md">
-              <div class="col-auto">
-                <q-icon name="smartphone" size="64px" />
+        <q-card
+          class="q-pa-lg q-mx-auto q-my-xl app-download-card bg-primary"
+          flat
+        >
+          <div class="row items-center q-col-gutter-xl">
+            <!-- Icono grande -->
+            <div class="col-auto">
+              <q-avatar size="80px" class="app-download-avatar">
+                <q-icon name="las la-mobile" size="40px" />
+              </q-avatar>
+            </div>
+
+            <!-- Texto -->
+            <div class="col">
+              <div class="text-h5 text-weight-bold q-mb-sm">
+                ¡Descarga nuestra App Móvil!
               </div>
-
-              <div class="col">
-                <div class="text-h6 q-mb-xs">¡Descarga nuestra App Móvil!</div>
-                <div class="text-subtitle2">
-                  Lleva la intranet contigo a donde vayas.
-                </div>
+              <div class="text-subtitle2">
+                Lleva la intranet contigo a donde vayas.
               </div>
+            </div>
 
-              <q-card class="q-pa-md q-my-md bg-grey-2" flat bordered>
-                <div class="row items-center q-col-gutter-lg justify-center">
-                  <!-- Botón Android -->
-                  <div class="column items-center">
-                    <q-btn
-                      color="green"
-                      icon="android"
-                      label="Android"
-                      :href="link_app_movil??`${url_sistema}/firstred-app.apk`"
-                      target="_blank"
-                      unelevated
-                      rounded
-                    />
-                  </div>
+            <!-- Botones -->
+            <div class="col-12 col-sm-auto">
+              <q-card class="q-pa-md app-download-btns" flat bordered>
+                <div class="row items-center q-gutter-md no-wrap">
+                  <!-- Android -->
+                  <q-btn
+                    color="green-6"
+                    icon="android"
+                    label="Android"
+                    no-caps
+                    glossy
+                    unelevated
+                    rounded
+                    :href="link_app_movil ?? `${url_sistema}/firstred-app.apk`"
+                    target="_blank"
+                  />
 
-                  <!-- Botón iOS con texto arriba -->
+                  <!-- iOS -->
                   <div class="column items-center">
-                    <small class="text-grey-7">Próximamente...</small>
+                    <small class="text-grey-7">Próximamente…</small>
                     <q-btn
                       color="white"
                       text-color="black"
                       icon="apple"
                       label="iOS"
-                      target="_blank"
+                      no-caps
                       unelevated
-                      @click="notificarProximamente"
                       rounded
+                      @click="notificarProximamente"
                     />
                   </div>
                 </div>
               </q-card>
             </div>
-          </q-card>
-        </div>
+          </div>
+        </q-card>
       </div>
 
       <!--SECCION IZQUIERDA-->
@@ -396,32 +425,50 @@
         <q-card class="q-mb-sm custom-shadow no-border rounded">
           <div class="q-pa-md text-center">
             <div class="q-mt-md">
-              <p><strong>BIENVENIDO!</strong></p>
+              <p class="text-h5 text-weight-bold">
+                <strong>¡ BIENVENIDO !</strong>
+              </p>
               <div
-                class="q-mb-md"
+                class="q-mb-md text-subtitle text-primary q-pa-sm"
                 style="
                   font-family: Impact, sans-serif;
-                  font-size: 30px;
-                  color: midnightblue;
+                  font-size: 50px;
                   text-transform: uppercase;
                 "
               >
-                {{ store.nombreUsuario }}
+                {{ store.user?.nombres }} {{ store.user?.apellidos }}
               </div>
-
-              <div style="font-size: 16px; color: #555" class="q-mb-sm">
-                <q-icon name="las la-user-alt" size="sm" />
-                <small class="q-pa-sm">{{ store.user?.email }}</small>
+              <div>
+                <q-chip
+                  outline
+                  color="primary"
+                  text-color="white"
+                  icon="las la-envelope"
+                  class="q-ml-sm"
+                  dense
+                >
+                  <small class="q-pa-sm text-bold text-primary">{{
+                    store.user?.email
+                  }}</small>
+                </q-chip>
               </div>
-
-              <div style="font-size: 14px; color: #555">
-                <!-- <q-badge rounded color="white" label="🎓" /> -->
-                <q-icon name="las la-user-graduate" size="sm" />
-                <small class="q-pa-sm">{{ store.user?.cargo }}</small>
+              <div>
+                <q-chip
+                  outline
+                  color="primary"
+                  text-color="white"
+                  icon="las la-user-graduate"
+                  class="q-ml-sm"
+                  dense
+                >
+                  <small class="q-pa-sm text-bold text-primary">{{
+                    store.user?.cargo
+                  }}</small>
+                </q-chip>
               </div>
             </div>
 
-            <div class="column q-gutter-xs q-mt-md">
+            <div class="column q-gutter-xs q-mt-md q-mb-md q-mx-auto">
               <q-btn
                 href="https://drive.google.com/drive/folders/1Zv3eTjramxByFRht-L5Gz_nrulgFE32V?usp=sharing_eip_m&ts=64386770"
                 color="blue-14"
@@ -476,13 +523,19 @@
         </q-card>
 
         <!--Sección de Extensiones-->
-        <q-card flat bordered class="q-mb-sm">
+        <q-card flat class="q-mb-sm">
           <q-expansion-item
+            style="
+              background-color: darkslategrey;
+              color: white;
+              font-size: 13px;
+              font-weight: bold;
+              border-radius: 5px;
+            "
             label="EXTENSIONES TELEFÓNICAS"
             icon="bi-telephone-fill"
             header-class="text-white"
             default-opened
-            style="background: #ff9149"
           >
             <div
               v-if="empleadosConExtension.length > 0"
@@ -499,14 +552,15 @@
                 </div>
 
                 <!-- Información del empleado -->
-                <div class="extensiones-info">
-                  <div class="empleado-nombre">
+                <div class="extensiones-info text-left">
+                  <div class="text-primary">
                     {{ empleado.nombres }} {{ empleado.apellidos }}
                   </div>
-                  <div class="empleado-cargo">
+                  <div class="text-grey-10">
                     {{ empleado.cargo }}
                   </div>
-                  <div class="empleado-departamento">
+                  <div class="text-grey-5">
+                    DPTO.
                     {{ empleado.departamento }}
                   </div>
                 </div>
@@ -525,12 +579,12 @@
           flat
           bordered
           class="vacantes-card q-mb-sm"
-          style="border-radius: 15px; overflow: hidden"
+          style="border-radius: 10px; overflow: hidden"
         >
           <q-expansion-item
             style="
               text-align-last: center;
-              background-color: #0118d8;
+              background-color: gray;
               color: white;
               font-size: 13px;
               font-weight: bold;
@@ -600,10 +654,11 @@
         <!--Formulario de Solicitudes-->
         <q-expansion-item
           style="
-            background-color: #0118d8;
+            background-color: slategray;
             color: white;
             font-size: 12px;
             font-weight: bold;
+            text-align: center;
             border-radius: 10px;
           "
           icon="bi-bookmark-heart"
@@ -649,10 +704,11 @@
 
         <q-expansion-item
           style="
-            background-color: #ff9149;
+            background-color: #555;
             color: white;
             font-size: 12px;
             font-weight: bold;
+            text-align: center;
             border-radius: 10px;
           "
           icon="bi-calendar-event"
@@ -662,15 +718,7 @@
           <q-card-section
             style="margin: 0; background-color: #ffffff; color: black"
           >
-            <div
-              class="q-py-sm"
-              style="
-                text-align: center;
-                background-color: #ffecdb;
-                border-radius: 50px;
-                color: #ff9149;
-              "
-            >
+            <div class="q-py-sm bg-primary text-white text-bold text-center">
               <i class="bi bi-cake2" style="margin-right: 10px"></i>
               CUMPLEAÑEROS
             </div>
@@ -725,7 +773,10 @@
                             : empleado.foto_url
                         "
                       />
-                      <q-badge floating class="bottom-left" color="orange">
+                      <q-badge
+                        floating
+                        class="bottom-left bg-primary text-white"
+                      >
                         {{ new Date(empleado.fecha_nacimiento).getUTCDate() }}
                       </q-badge>
                       <q-tooltip anchor="bottom middle" self="bottom middle">
@@ -782,13 +833,6 @@
                   <div class="custom-email text-subtitle2 q-mb-xs">
                     <q-badge color="primary"
                       >{{ selectedEmpleado.email }}
-                    </q-badge>
-                  </div>
-
-                  <!-- Teléfono -->
-                  <div class="custom-phone text-subtitle2 q-mb-sm">
-                    <q-badge color="orange">
-                      {{ selectedEmpleado.telefono }}
                     </q-badge>
                   </div>
 
@@ -1037,7 +1081,6 @@ h5 {
 
 .column h3 {
   margin-bottom: 10px;
-
 }
 
 .column ul {
@@ -1414,25 +1457,30 @@ h5 {
 
 .close-button-container {
   position: absolute;
-  top: 10px; /* Ajusta el valor según necesites */
-  right: 10px; /* Ajusta el valor según necesites */
+  top: 10px;
+  /* Ajusta el valor según necesites */
+  right: 10px;
+  /* Ajusta el valor según necesites */
 }
 
 /**Estilos para las extensiones */
 .extensiones-card {
   border-radius: 12px;
   overflow: hidden;
-  background-color: #ffffff; /* Fondo del cuerpo blanco */
+  background-color: #ffffff;
+  /* Fondo del cuerpo blanco */
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   max-width: 350px;
 }
 
 .extensiones-card-header {
-  background-color: #00796b; /* Color del header */
+  background-color: #00796b;
+  /* Color del header */
   color: white;
   font-weight: bold;
   font-size: 13px;
-  border-radius: 12px 12px 0 0; /* Redondeo solo arriba si quieres */
+  border-radius: 12px 12px 0 0;
+  /* Redondeo solo arriba si quieres */
 }
 
 .extensiones-header {
@@ -1445,7 +1493,8 @@ h5 {
 }
 
 .extensiones-scroll {
-  max-height: 250px; /* Altura más pequeña */
+  max-height: 250px;
+  /* Altura más pequeña */
   overflow-y: auto;
   padding: 8px;
 }
@@ -1466,13 +1515,15 @@ h5 {
 
 .extensiones-item {
   display: flex;
-  align-items: center;
+
   background-color: #f9f9f9;
   border-radius: 8px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s;
-  padding: 8px; /* Más compacto */
-  margin-bottom: 8px; /* Menos espacio entre items */
+  padding: 8px;
+  /* Más compacto */
+  margin-bottom: 8px;
+  /* Menos espacio entre items */
 }
 
 .extensiones-item:hover {
@@ -1480,12 +1531,14 @@ h5 {
 }
 
 .extensiones-circle {
-  width: 60px; /* Más pequeño */
+  width: 60px;
+  /* Más pequeño */
   height: 60px;
   border-radius: 50%;
   border: 1px solid #ffffff;
   color: #000000;
-  font-size: 20px; /* Tamaño reducido */
+  font-size: 20px;
+  /* Tamaño reducido */
   font-weight: bold;
   display: flex;
   align-items: center;
@@ -1495,26 +1548,11 @@ h5 {
 }
 
 .extensiones-info {
-  margin-left: 12px; /* Más pegado al círculo */
+  margin-left: 12px;
+  /* Más pegado al círculo */
   display: flex;
   flex-direction: column;
   gap: 2px;
-}
-
-.empleado-nombre {
-  font-size: 10px; /* Más pequeño */
-  font-weight: 600;
-  color: #303d86;
-}
-
-.empleado-cargo {
-  font-size: 10px;
-  color: #ff5e00;
-}
-
-.empleado-departamento {
-  font-size: 12px;
-  color: #9a9a9a;
 }
 
 .sin-datos {
@@ -1522,6 +1560,34 @@ h5 {
   text-align: center;
   color: #666;
   font-size: 13px;
+}
+
+.app-download-card {
+  max-width: 900px;
+  border-radius: 18px;
+  color: #fff;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
+}
+
+.app-download-avatar {
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(6px);
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.35);
+}
+
+.app-download-btns {
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.1);
+}
+
+.app-download-btns .q-btn {
+  font-weight: 600;
+  padding: 10px 18px;
+  letter-spacing: 0.3px;
+  border-radius: 999px;
+  /* pill look */
 }
 </style>
 

@@ -8,7 +8,7 @@
           alt="logo"
           width="100"
         />
-        <br />
+        <br /><br>
         <span
           :class="[
             'text-thin',
@@ -20,6 +20,8 @@
         >
           FIRSTRED
         </span>
+        <br>
+        <span class="text-bold text-grey-13 text-center">Enterprise Resource Planning</span>
       </div>
       <div
         class="col-12 col-md-3 column bordfe q-py-lg rounded-card shadow-chip bg-solid"
