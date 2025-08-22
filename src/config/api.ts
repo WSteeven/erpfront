@@ -10,7 +10,8 @@ import { sso } from './endpoints/sso'
 import { seguridad } from './endpoints/seguridad'
 import { fondosRotativos } from 'config/endpoints/fondosRotativos'
 import { controlPersonal } from 'config/endpoints/rrhh/controlPersonal'
-import { appenate } from 'config/endpoints/appenate/telconet'
+import {ventasClaro} from 'config/endpoints/ventasClaro';
+import {appenate} from 'config/endpoints/appenate/telconet';
 
 export const apiConfig = {
   // URL_BASE: 'http://localhost:8000',
@@ -23,6 +24,8 @@ export const endpoints = {
   csrf_cookie: new Endpoint('api/csrf-cookie', false),
   usuarios: new Endpoint('usuarios'),
   configuracion: new Endpoint('configuracion'),
+  plantillas_base: new Endpoint('plantillas-base'),
+  obtener_plantilla_base_por_nombre: new Endpoint('obtener-plantilla-base-por-nombre'),
   auditorias: new Endpoint('auditorias'),
   adm_cuentas_bancarias: new Endpoint('cuentas-bancarias'),
   login: new Endpoint('usuarios/login'),
@@ -69,7 +72,7 @@ export const endpoints = {
   forma_pago: new Endpoint('forma_pago'),
 
   /******************************
-   * Modulo de Vehiculos
+   * Modulo de Control de Personal
    ******************************/
   ...controlPersonal,
 
@@ -98,9 +101,7 @@ export const endpoints = {
   empleados_roles: new Endpoint('empleados-roles'), //con esta ruta se obtienen los empleados por el/los roles especificados
   empleados_permisos: new Endpoint('empleados-permisos'), //con esta ruta se obtienen los empleados por el/los permisos especificados
   control_stocks: new Endpoint('control-stocks'),
-  items_control_stocks_consolidados: new Endpoint(
-    'control-stocks/items-consolidados'
-  ),
+  items_control_stocks_consolidados: new Endpoint('control-stocks/items-consolidados'),
   codigos_clientes: new Endpoint('codigos-clientes'),
   detalles_materiales: new Endpoint('detalles-materiales'),
   detalles: new Endpoint('detalles'),
@@ -183,38 +184,7 @@ export const endpoints = {
   /********************
    * Modulo de Ventas de Claro
    *********************/
-  bonos: new Endpoint('ventas-claro/bonos'),
-  bonos_porcentuales: new Endpoint('ventas-claro/bono-porcentual'),
-  comisiones: new Endpoint('ventas-claro/comisiones'),
-  modalidad: new Endpoint('ventas-claro/modalidad'),
-  planes: new Endpoint('ventas-claro/planes'),
-  productos_ventas: new Endpoint('ventas-claro/productos-ventas'),
-  vendedores_claro: new Endpoint('ventas-claro/vendedores'),
-  ventas: new Endpoint('ventas-claro/ventas'),
-  actualizar_comisiones_ventas: new Endpoint(
-    'ventas-claro/actualizar-comisiones-ventas'
-  ),
-  obtener_comision: new Endpoint('ventas-claro/obtener-comision'),
-  tipo_chargebacks: new Endpoint('ventas-claro/tipo-chargeback'),
-  chargebacks: new Endpoint('ventas-claro/chargebacks'),
-  cortes_pagos_comisiones: new Endpoint('ventas-claro/cortes-pagos-comisiones'),
-  retenciones_chargebacks: new Endpoint('ventas-claro/retenciones-chargebacks'),
-  pago_comision: new Endpoint('ventas-claro/pagos-comisiones'),
-  bono_mensual_cumplimiento: new Endpoint(
-    'ventas-claro/bonos-mensuales-cumplimientos'
-  ),
-  bono_trimestral_cumplimiento: new Endpoint(
-    'ventas-claro/bono-trimestral-cumplimiento'
-  ),
-  cobrojp: new Endpoint('ventas-claro/cobrojp'),
-  pago: new Endpoint('ventas-claro/pago'),
-  reporte_ventas: new Endpoint('ventas-claro/reporte-ventas'),
-  dashboard_ventas_claro: new Endpoint('ventas-claro/dashboard'),
-  umbral_ventas: new Endpoint('ventas-claro/umbral-ventas'),
-  esquema_comision: new Endpoint('ventas-claro/esquema-comision'),
-  clientes_claro: new Endpoint('ventas-claro/clientes-claro'),
-  escenario_venta_jp: new Endpoint('ventas-claro/escenario-venta-jp'),
-  novedades_ventas: new Endpoint('ventas-claro/novedades-ventas'),
+  ...ventasClaro,
 
   //intranet
   //Modulo de Intranet

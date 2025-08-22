@@ -10,6 +10,19 @@
         <!-- Tiempos -->
         <div class="row q-col-gutter-sm q-mb-md">
           <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Tipo de reporte</label>
+            <div class="q-mb-sm q-mt-md block">
+              <q-option-group
+                v-model="group"
+                :options="options"
+                @update:model-value="(val) => (filtro.tipo = val)"
+                color="primary"
+                inline
+                dense
+              />
+            </div>
+          </div>
+          <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Fecha de inicio</label>
             <q-input
               v-model="filtro.fecha_inicio"
@@ -20,15 +33,24 @@
             >
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
-                  <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                  <q-popup-proxy
+                    cover
+                    transition-show="scale"
+                    transition-hide="scale"
+                  >
                     <q-date
                       v-model="filtro.fecha_inicio"
-                      mask="DD-MM-YYYY"
+                      :mask="maskFecha"
                       @update:model-value="consultar()"
                       today-btn
                     >
                       <div class="row items-center justify-end">
-                        <q-btn v-close-popup label="Cerrar" color="primary" flat />
+                        <q-btn
+                          v-close-popup
+                          label="Cerrar"
+                          color="primary"
+                          flat
+                        />
                       </div>
                     </q-date>
                   </q-popup-proxy>
@@ -54,15 +76,24 @@
             >
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
-                  <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                  <q-popup-proxy
+                    cover
+                    transition-show="scale"
+                    transition-hide="scale"
+                  >
                     <q-date
                       v-model="filtro.fecha_fin"
-                      mask="DD-MM-YYYY"
+                      :mask="maskFecha"
                       today-btn
                       @update:model-value="consultar()"
                     >
                       <div class="row items-center justify-end">
-                        <q-btn v-close-popup label="Cerrar" color="primary" flat />
+                        <q-btn
+                          v-close-popup
+                          label="Cerrar"
+                          color="primary"
+                          flat
+                        />
                       </div>
                     </q-date>
                   </q-popup-proxy>
@@ -77,8 +108,10 @@
             </q-input>
           </div>
 
-          <div class="col-12 col-md-6">
-            <label class="q-mb-sm block">Seleccione el vendedor a consultar</label>
+          <div class="col-12 col-md-6" v-if="group != 'general'">
+            <label class="q-mb-sm block"
+              >Seleccione el vendedor a consultar</label
+            >
             <q-select
               v-model="filtro.vendedor"
               :options="vendedores"
@@ -101,7 +134,9 @@
             >
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
                 </q-item>
               </template>
 
@@ -116,7 +151,10 @@
       </q-card-section>
     </q-card>
 
-    <q-card v-if="mostrarTitulosSeccion" class="q-mb-md rounded no-border custom-shadow">
+    <q-card
+      v-if="mostrarTitulosSeccion"
+      class="q-mb-md rounded no-border custom-shadow"
+    >
       <div
         class="row bg-body text-bold text-primary q-pa-md rounded justify-center q-mb-lg"
       >
@@ -172,7 +210,10 @@
       </q-card-section>
     </q-card>
 
-    <q-card v-if="mostrarTitulosSeccion" class="q-mb-md rounded no-border custom-shadow">
+    <q-card
+      v-if="mostrarTitulosSeccion"
+      class="q-mb-md rounded no-border custom-shadow"
+    >
       <div
         class="row bg-body text-bold q-pa-md rounded text-primary justify-center q-mb-lg"
       >
@@ -192,7 +233,9 @@
             class="row q-col-gutter-y-xl q-col-gutter-x-xs q-mb-xl"
           >
             <div class="col-12 col-md-6 text-center">
-              <div class="text-subtitle2 q-mb-lg">Estado actual de las ventas</div>
+              <div class="text-subtitle2 q-mb-lg">
+                Estado actual de las ventas
+              </div>
               <div>
                 <grafico-generico
                   v-if="ventasPorEstado.length"
@@ -246,7 +289,10 @@
               <essential-table
                 v-if="ventasPorEstadoListado.length"
                 titulo="Ventas"
-                :configuracionColumnas="[...configuracionColumnasVentas, accionesTabla]"
+                :configuracionColumnas="[
+                  ...configuracionColumnasVentas,
+                  accionesTabla,
+                ]"
                 :datos="ventasPorEstadoListado"
                 :permitirConsultar="false"
                 :permitirEliminar="false"
@@ -269,28 +315,31 @@
         transition-next="scale"
         keep-alive
       >
-      <q-tab-panel :name="opcionesVendedorLineaTiempo.vendedorLineaTiempo">
-        <div class="row q-pa-md q-col-gutter-x-sm">
-          <div class="col-12 text-center">
-            <div class="text-subtitle2 q-mb-lg">Gráfico de ventas por mes</div>
-            <div>
-              <grafico-generico
-                :data="ventasTiemposLine"
-                :options="optionsLine"
-                tipo="line"
-                @click="(data) => clickGraficoVentasMes(data)"
-              />
+        <q-tab-panel :name="opcionesVendedorLineaTiempo.vendedorLineaTiempo">
+          <div class="row q-pa-md q-col-gutter-x-sm">
+            <div class="col-12 text-center">
+              <div class="text-subtitle2 q-mb-lg">
+                Gráfico de ventas por mes
+              </div>
+              <div>
+                <grafico-generico
+                  :data="ventasTiemposLine"
+                  :options="optionsLine"
+                  tipo="line"
+                  @click="(data) => clickGraficoVentasMes(data)"
+                />
+              </div>
             </div>
           </div>
-        </div>
         </q-tab-panel>
-
-
 
         <q-tab-panel :name="opcionesVendedorLineaTiempo.vendedorListadoMes">
           <q-btn
             color="white"
-            @click="tabsVendedorLinea = opcionesVendedorLineaTiempo.vendedorLineaTiempo"
+            @click="
+              tabsVendedorLinea =
+                opcionesVendedorLineaTiempo.vendedorLineaTiempo
+            "
             no-caps
             rounded
             outline
@@ -306,7 +355,10 @@
               <essential-table
                 v-if="ventasPorMesListado.length"
                 titulo="Ventas"
-                :configuracionColumnas="[...configuracionColumnasVentas, accionesTabla]"
+                :configuracionColumnas="[
+                  ...configuracionColumnasVentas,
+                  accionesTabla,
+                ]"
                 :datos="ventasPorMesListado"
                 :permitirConsultar="false"
                 :permitirEliminar="false"

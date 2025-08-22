@@ -1,9 +1,8 @@
-import { computed, defineComponent, ref } from 'vue'
+import { defineComponent, ref } from 'vue'
 import { Vendedor } from '../domain/Vendedor'
 import { configuracionColumnasVendedores } from '../domain/configuracionColumnasVendedores'
 
 import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
-
 
 import { useNotificacionStore } from 'stores/notificacion'
 import { useQuasar } from 'quasar'
@@ -12,7 +11,7 @@ import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/applicat
 import { VendedorController } from '../infrestructure/VendedorController'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { ModalidadController } from 'pages/ventas-claro/modalidad/infrestructure/ModalidadController'
-import { acciones, tipos_vendedores } from 'config/utils'
+import { tipos_vendedores } from 'config/utils'
 import { required } from 'shared/i18n-validators'
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
@@ -23,10 +22,13 @@ import { CambiarEstadoVendedor } from '../application/CambiarEstadoVendedor'
 import { useAuthenticationStore } from 'stores/authentication'
 import { tabOptionsProductos } from 'config/ventas.utils'
 import { ordenarLista } from 'shared/utils'
+import NoOptionComponent from 'components/NoOptionComponent.vue'
+import ErrorComponent from 'components/ErrorComponent.vue'
+import {Empleado} from 'recursosHumanos/empleados/domain/Empleado';
 
 export default defineComponent({
-  components: { TabLayoutFilterTabs2 },
-  setup(props, {emit}) {
+  components: { ErrorComponent, NoOptionComponent, TabLayoutFilterTabs2 },
+  setup(props, { emit }) {
     /*********
      * Stores
      *********/
@@ -37,27 +39,39 @@ export default defineComponent({
      * Mixin
      ************/
     const mixin = new ContenedorSimpleMixin(Vendedor, new VendedorController())
-    const { entidad: vendedor, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
-    const { setValidador, obtenerListados, cargarVista, listar } = mixin.useComportamiento()
+    const {
+      entidad: vendedor,
+      disabled,
+      accion,
+      listadosAuxiliares,
+      listado
+    } = mixin.useReferencias()
+    const { setValidador, obtenerListados, cargarVista, listar } =
+      mixin.useComportamiento()
     const { onGuardado, onModificado, onReestablecer } = mixin.useHooks()
-    const { confirmar, notificarCorrecto, prompt, notificarError } = useNotificaciones()
+    const { confirmar, notificarCorrecto, prompt, notificarError } =
+      useNotificaciones()
 
     /*************
      * Hooks
      **************/
-    onReestablecer(() => vendedor.jefe_inmediato = store.user.id)
+    onReestablecer(() => {
+      establecerJefeInmediato()
+    })
     onGuardado((id, response) => {
       emit('cerrar-modal', false)
-      emit('guardado', { formulario: 'VendedorPage', id: id, modelo: response.modelo })
+      emit('guardado', {
+        formulario: 'VendedorPage',
+        id: id,
+        modelo: response.modelo
+      })
     })
-    onModificado(() => vendedor.jefe_inmediato = store.user.id)
-
+    onModificado(() => establecerJefeInmediato())
 
     const tabDefecto = ref('1')
-        
 
-
-    const { empleados, filtrarEmpleados, modalidades, filtrarModalidades } = useFiltrosListadosSelects(listadosAuxiliares)
+    const { empleados, filtrarEmpleados, modalidades, filtrarModalidades } =
+      useFiltrosListadosSelects(listadosAuxiliares)
 
     cargarVista(async () => {
       await obtenerListados({
@@ -65,22 +79,21 @@ export default defineComponent({
           controller: new EmpleadoController(),
           params: {
             // campos: 'id,nombres,apellidos',
-            'departamento_id': 9,
-            'or[departamento_id]': 13,
-            estado: 1,
-          },
+            comercial: 1,
+            estado: 1
+          }
         },
         modalidades: {
           controller: new ModalidadController(),
-          params: { campos: 'id,nombre' },
-        },
+          params: { campos: 'id,nombre' }
+        }
       })
-      //Datos por defecto
-      vendedor.jefe_inmediato = store.user.id
 
       empleados.value = listadosAuxiliares.empleados
       modalidades.value = listadosAuxiliares.modalidades
 
+      //Datos por defecto
+      establecerJefeInmediato()
     })
     /*************
      * Validaciones
@@ -89,17 +102,25 @@ export default defineComponent({
       empleado: { required },
       modalidad: { required },
       tipo_vendedor: { required },
-      jefe_inmediato: { required },
+      jefe_inmediato: { required }
     }
     const v$ = useVuelidate(reglas, vendedor)
     setValidador(v$.value)
 
     /***********************
-    * Funciones
-    ***********************/
+     * Funciones
+     ***********************/
     function filtrarVendedores(tab: string) {
       tabDefecto.value = tab
       listar({ activo: tab })
+    }
+
+    /**
+     * Establece el jefe de ventas por defecto como Jefe Inmediato
+     * y en caso de no encontrarlo, coloca el usuario con la sesión actual
+     */
+    function establecerJefeInmediato (){
+      vendedor.jefe_inmediato = empleados.value.filter((empleado:Empleado)=>empleado.nombre_cargo=='JEFE DE VENTAS')[0]?.id || store.user.id
     }
 
     /***********************
@@ -114,11 +135,14 @@ export default defineComponent({
         confirmar('¿Está seguro de desactivar el vendedor?', () => {
           const data: CustomActionPrompt = {
             titulo: 'Causa de desactivación',
-            mensaje: 'Ingresa el motivo por el que quieres desactivar este vendedor?',
-            accion: async (data) => {
+            mensaje:
+              'Ingresa el motivo por el que quieres desactivar este vendedor?',
+            accion: async data => {
               try {
                 cargando.activar()
-                await new CambiarEstadoVendedor().anular(entidad.id, { causa_desactivacion: data })
+                await new CambiarEstadoVendedor().anular(entidad.id, {
+                  causa_desactivacion: data
+                })
                 listado.value.splice(posicion, 1)
                 notificarCorrecto('Desactivado correctamente')
               } catch (error: any) {
@@ -130,7 +154,25 @@ export default defineComponent({
           }
           prompt(data)
         })
-      }, visible: ({ entidad }) => entidad.activo && store.can('puede.desactivar.vendedores_claro')
+      },
+      visible: ({ entidad }) =>
+        entidad.activo && store.can('puede.desactivar.vendedores_claro')
+    }
+    const btnDesactivarMasivo: CustomActionTable = {
+      titulo: 'Actualizar vendedores',
+      icono: 'bi-arrow-clockwise',
+      color: 'positive',
+      accion: async () => {
+        try {
+          const { response, message } =
+            await new CambiarEstadoVendedor().desactivarMasivo()
+          if (response.status == 200) notificarCorrecto(message)
+          filtrarVendedores(tabDefecto.value)
+        } catch (e) {
+          console.error(e)
+          notificarError('Error: '+e)
+        }
+      }, visible:()=> store.esAdministrador
     }
     const btnActivar: CustomActionTable = {
       titulo: 'Activar',
@@ -138,18 +180,21 @@ export default defineComponent({
       color: 'positive',
       tooltip: 'Activar Vendedor',
       accion: ({ entidad, posicion }) => {
-        confirmar('¿Está seguro de activar el proveedor?', () => {
+        confirmar('¿Está seguro de activar el vendedor?', () => {
           const data: CustomActionPrompt = {
             titulo: 'Causa de activación',
-            mensaje: 'Ingresa el motivo por el que quieres activar este proveedor?',
-            accion: async (data) => {
+            mensaje:
+              'Ingresa el motivo por el que quieres activar este proveedor?',
+            accion: async data => {
               try {
                 cargando.activar()
-                await new CambiarEstadoVendedor().anular(entidad.id, { causa_desactivacion: data })
+                await new CambiarEstadoVendedor().anular(entidad.id, {
+                  causa_desactivacion: data
+                })
                 listado.value.splice(posicion, 1)
                 notificarCorrecto('Activado correctamente')
               } catch (error: any) {
-                notificarError('No se pudo activar el vendedor!')
+                notificarError(error?.response.data.message)
               } finally {
                 cargando.desactivar()
               }
@@ -157,7 +202,9 @@ export default defineComponent({
           }
           prompt(data)
         })
-      }, visible: ({ entidad }) => !entidad.activo && store.can('puede.activar.vendedores_claro')
+      },
+      visible: ({ entidad }) =>
+        !entidad.activo && store.can('puede.activar.vendedores_claro')
     }
 
     return {
@@ -170,7 +217,6 @@ export default defineComponent({
       tabOptionsVendedores: tabOptionsProductos,
       tabDefecto,
 
-
       empleados,
       modalidades,
       tipos_vendedores,
@@ -180,8 +226,9 @@ export default defineComponent({
       filtrarVendedores,
 
       //botones de tabla
+      btnDesactivarMasivo,
       btnActivar,
-      btnDesactivar,
+      btnDesactivar
     }
-  },
+  }
 })

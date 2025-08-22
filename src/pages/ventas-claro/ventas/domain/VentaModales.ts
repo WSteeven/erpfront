@@ -21,7 +21,5 @@ export class VentaModales {
     this.VendedorPage = markRaw(new ComponenteModal('Vendedores', VendedorPage))
     this.SeguimientoVentaPage = markRaw(new ComponenteModal('Novedades de la venta', SeguimientoVentaPage))
     this.DetalleCompletoVentas = markRaw(new ComponenteModal('Detalles de ventas', DetalleCompletoVentas))
-
-
   }
 }

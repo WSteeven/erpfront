@@ -13,7 +13,7 @@
   >
     <template #formulario>
       <q-form @submit.prevent>
-        <div class="row q-col-gutter-sm q-mb-md" >
+        <div class="row q-col-gutter-sm q-mb-md">
           <div class="col-12 col-md-4">
             <label class="q-mb-sm block">Modo de carga</label>
             <option-group-component
@@ -22,7 +22,7 @@
               :options="options"
             />
           </div>
-          </div>
+        </div>
         <div class="row q-col-gutter-sm q-mb-md" v-if="modoIndividual">
           <!-- fecha de acreditacion -->
           <div class="col-12 col-md-3">
@@ -183,7 +183,7 @@
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Referencia:</label>
             <q-input
-            autogrow
+              autogrow
               v-model="acreditacion.id_saldo"
               placeholder="Obligatorio"
               :disable="disabled"
@@ -271,9 +271,11 @@
           <!-- Documento -->
           <div class="col-12 col-md-12" v-if="accion == acciones.nuevo">
             <label class="q-mb-sm block"
-            >Reporte de Produbanco <i class="bi bi-info-circle"></i>
-              <q-tooltip class="bg-light-blue-7">Suba el reporte emitido por PRODUBANCO</q-tooltip></label
-            >
+              >Reporte de Produbanco <i class="bi bi-info-circle"></i>
+              <q-tooltip class="bg-light-blue-7"
+                >Suba el reporte emitido por PRODUBANCO</q-tooltip
+              >
+            </label>
             <gestor-documentos
               ref="refArchivo"
               :mixin="mixin2"
@@ -294,12 +296,11 @@
                   @click="subirArchivos()"
                 >
                   <q-icon name="bi-upload" class="q-mr-sm" size="xs"></q-icon>
-                  Subir archivos seleccionados</q-btn
-                >
+                  Subir archivos seleccionados
+                </q-btn>
               </template>
             </gestor-documentos>
           </div>
-
         </div>
       </q-form>
       <div
@@ -309,9 +310,9 @@
         "
       >
         <q-btn color="negative" @click="anularAcreditacion(acreditacion)">
-          <q-icon class="q-pr-sm" name="bi-x-circle" size="xs"></q-icon
-          >Anular</q-btn
-        >
+          <q-icon class="q-pr-sm" name="bi-x-circle" size="xs"></q-icon>
+          Anular
+        </q-btn>
       </div>
     </template>
   </tab-layout-filter-tabs2>

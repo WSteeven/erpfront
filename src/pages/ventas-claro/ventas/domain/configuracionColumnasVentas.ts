@@ -59,9 +59,9 @@ export const configuracionColumnasVentas: ColumnConfig<Venta>[] = [
     sortable: true
   },
   {
-    name: 'estado_activacion',
-    field: 'estado_activacion',
-    label: 'Estado',
+    name: 'estado_id',
+    field: 'estado_id',
+    label: 'Estado de Venta',
     align: 'left',
     sortable: true
   },

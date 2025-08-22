@@ -15,6 +15,20 @@
     <template #formulario>
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-mb-md">
+          <!-- Orden -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">#Orden</label>
+            <q-input
+              v-model="venta.orden_id"
+              placeholder="Opcional"
+              type="textarea"
+              :disable="disabled"
+              autogrow
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
           <!-- Vendeedor -->
           <div class="col-12 col-md-3">
             <label-abrir-modal
@@ -38,8 +52,8 @@
               use-input
               input-debounce="0"
               @filter="filtrarVendedores"
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.empleado_info"
+              :option-value="v => v.id"
+              :option-label="v => v.empleado_info"
               emit-value
               map-options
             >
@@ -49,15 +63,13 @@
                     <q-item-label>{{ scope.opt.empleado_info }}</q-item-label>
                     <q-item-label caption
                       >{{ scope.opt.tipo_vendedor }}:
-                      {{ scope.opt.modalidad_info }}</q-item-label
-                    >
+                      {{ scope.opt.modalidad_info }}
+                    </q-item-label>
                   </q-item-section>
                 </q-item>
               </template>
               <template v-slot:error>
-                <div v-for="error of v$.vendedor.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="vendedor" :v$="v$" />
               </template>
               <template v-slot:after>
                 <q-btn color="positive" @click="recargarVendedores">
@@ -65,11 +77,7 @@
                 </q-btn>
               </template>
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
+                <no-option-component />
               </template>
             </q-select>
           </div>
@@ -97,8 +105,8 @@
               use-input
               input-debounce="0"
               @filter="filtrarClientes"
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.cliente_info"
+              :option-value="v => v.id"
+              :option-label="v => v.cliente_info"
               emit-value
               map-options
             >
@@ -107,16 +115,13 @@
                   <q-item-section>
                     <q-item-label>{{ scope.opt.cliente_info }}</q-item-label>
                     <q-item-label caption
-                      >identificacion:
-                      {{ scope.opt.identificacion }}</q-item-label
-                    >
+                      >{{ scope.opt.identificacion }} - {{ scope.opt.estado }}
+                    </q-item-label>
                   </q-item-section>
                 </q-item>
               </template>
               <template v-slot:error>
-                <div v-for="error of v$.vendedor.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="cliente" :v$="v$" />
               </template>
               <template v-slot:after>
                 <q-btn color="positive" @click="recargarClientes">
@@ -124,50 +129,23 @@
                 </q-btn>
               </template>
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
+                <no-option-component />
               </template>
             </q-select>
           </div>
-          <!-- Orden -->
+
+          <!-- Fecha Ingreso -->
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">#Orden</label>
+            <label class="q-mb-sm block">Fecha de Ingreso</label>
             <q-input
-              v-model="venta.orden_id"
-              placeholder="Obligatorio"
-              type="textarea"
-              :disable="disabled"
-              :error="!!v$.orden_id.$errors.length"
-              autogrow
-              @blur="v$.orden_id.$touch"
-              outlined
-              dense
-            >
-              <template v-slot:error>
-                <div v-for="error of v$.orden_id.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
-            </q-input>
-          </div>
-          <!-- Orden Interna -->
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Regularización</label>
-            <q-input
-              v-model="venta.orden_interna"
+              v-model="venta.fecha_ingreso"
               placeholder="Opcional"
-              type="date"
               :disable="disabled"
-              :error="!!v$.orden_interna.$errors.length"
-              autogrow
-              @blur="v$.orden_interna.$touch"
+              readonly
               outlined
               dense
             >
-            <template v-slot:append>
+              <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
                   <q-popup-proxy
                     cover
@@ -175,7 +153,7 @@
                     transition-hide="scale"
                   >
                     <q-date
-                      v-model="venta.orden_interna"
+                      v-model="venta.fecha_ingreso"
                       :mask="maskFecha"
                       today-btn
                     >
@@ -192,15 +170,52 @@
                 </q-icon>
               </template>
               <template v-slot:error>
-                <div
-                  v-for="error of v$.orden_interna.$errors"
-                  :key="error.$uid"
-                >
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="fecha_ingreso" :v$="v$" />
               </template>
             </q-input>
           </div>
+          <!-- Fecha Agendamiento -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Fecha de Agendamiento</label>
+            <q-input
+              v-model="venta.fecha_agendamiento"
+              placeholder="Obligatorio"
+              :disable="disabled"
+              :error="!!v$.fecha_agendamiento.$errors.length"
+              readonly
+              outlined
+              dense
+            >
+              <template v-slot:append>
+                <q-icon name="event" class="cursor-pointer">
+                  <q-popup-proxy
+                    cover
+                    transition-show="scale"
+                    transition-hide="scale"
+                  >
+                    <q-date
+                      v-model="venta.fecha_agendamiento"
+                      :mask="maskFecha"
+                      today-btn
+                    >
+                      <div class="row items-center justify-end">
+                        <q-btn
+                          v-close-popup
+                          label="Cerrar"
+                          color="primary"
+                          flat
+                        />
+                      </div>
+                    </q-date>
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
+              <template v-slot:error>
+                <error-component clave="fecha_agendamiento" :v$="v$" />
+              </template>
+            </q-input>
+          </div>
+
           <!-- Forma de Pago -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Forma de Pago</label>
@@ -213,29 +228,110 @@
               dense
               outlined
               :disable="disabled"
-              :error="!!v$.forma_pago.$errors.length"
-              @blur="v$.forma_pago.$touch"
+              :error="!!v$.forma_pago?.$errors.length"
+              @blur="v$.forma_pago?.$touch"
               error-message="Debes seleccionar una forma de pago"
               @update:model-value="obtenerComisionVenta"
-              :option-value="(v) => v.label"
-              :option-label="(v) => v.value"
+              :option-value="v => v.label"
+              :option-label="v => v.value"
               emit-value
               map-options
             >
               <template v-slot:error>
-                <div v-for="error of v$.forma_pago.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="forma_pago" :v$="v$" />
               </template>
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
+                <no-option-component />
               </template>
             </q-select>
           </div>
+
+          <!-- Campos adicionales si el pago es con TARJETA -->
+          <div
+            v-if="['TC', 'TD'].includes(venta.forma_pago)"
+            class="col-12 row q-col-gutter-md q-mt"
+          >
+            <!-- Separador con título -->
+            <div class="col-12">
+              <div class="text-subtitle1 text-primary q-mb-sm">
+                Detalles de Tarjeta
+              </div>
+              <q-separator />
+            </div>
+            <!--Banco -->
+            <!-- Banco -->
+            <div class="col-12 col-md-4">
+              <label class="q-mb-sm block">Banco</label>
+              <q-select
+                v-model="venta.banco"
+                :options="bancos"
+                transition-show="jump-up"
+                transition-hide="jump-down"
+                :disable="disabled"
+                options-dense
+                dense
+                outlined
+                use-input
+                input-debounce="0"
+                @filter="filtrarBancos"
+                :error="!!v$.banco.$errors.length"
+                :option-value="v => v.id"
+                :option-label="v => v.nombre"
+                emit-value
+                map-options
+              >
+                <!-- Botón al final del input -->
+                <template v-slot:after>
+                  <q-btn color="positive" @click="recargarBancos">
+                  <q-icon size="xs" class="q-mr-sm" name="bi-arrow-clockwise" />
+                </q-btn>
+                </template>
+
+                <!-- Mensajes de error -->
+                <template v-slot:error>
+                  <div v-for="error of v$.banco.$errors" :key="error.$uid">
+                    <div class="error-msg">{{ error.$message }}</div>
+                  </div>
+                </template>
+
+                <!-- Mensaje si no hay opciones -->
+                <template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="text-grey">
+                      No hay resultados
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </q-select>
+            </div>
+
+            <div class="col-12 col-md-4">
+              <label class="q-mb-sm block">N° Tarjeta</label>
+              <q-input
+                v-model="venta.numero_tarjeta"
+                outlined
+                placeholder="Obligatorio"
+                :disable="disabled"
+                dense
+              />
+            </div>
+            <div class="col-12 col-md-4">
+              <label class="q-mb-sm block">Tipo de Cuenta</label>
+              <q-select
+                v-model="venta.tipo_cuenta"
+                :options="['Ahorros', 'Corriente']"
+                outlined
+                dense
+                emit-value
+                map-options
+              />
+            </div>
+            <div class="col-12">
+              <br />
+              <q-separator />
+            </div>
+          </div>
+
           <!-- {{ productos }} -->
           <!-- Producto -->
           <div class="col-12 col-md-3">
@@ -256,36 +352,29 @@
               use-input
               input-debounce="0"
               @update:model-value="obtenerPrecioProductoSeleccionado"
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.plan_info + ' - ' + v.bundle"
+              :option-value="v => v.id"
+              :option-label="v => v.plan_info + ' - ' + v.bundle"
               emit-value
               map-options
             >
               <template v-slot:option="scope">
                 <q-item v-bind="scope.itemProps">
                   <q-item-section>
-                    <q-item-label
-                      >{{ scope.opt.plan_info }} -
-                      {{ scope.opt.bundle }}</q-item-label
-                    >
+                    <q-item-label>
+                        {{ scope.opt.plan_info }} - {{ scope.opt.bundle }}
+                    </q-item-label>
                     <q-item-label caption
                       >{{ scope.opt.nombre }}-
-                      {{ scope.opt.precio }}</q-item-label
-                    >
+                      {{ scope.opt.precio }}
+                    </q-item-label>
                   </q-item-section>
                 </q-item>
               </template>
               <template v-slot:error>
-                <div v-for="error of v$.producto.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="producto" :v$="v$" />
               </template>
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
+                <no-option-component />
               </template>
             </q-select>
           </div>
@@ -307,43 +396,33 @@
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Estado Activacion</label>
             <q-select
-              v-model="venta.estado_activacion"
-              :options="estados_activaciones"
+              v-model="venta.estado"
+              :options="estados"
               transition-show="jump-up"
               transition-hide="jump-down"
+              :disable="disabled"
               options-dense
               dense
               outlined
-              :disable="disabled"
-              :error="!!v$.estado_activacion.$errors.length"
-              @blur="v$.estado_activacion.$touch"
-              @filter="filtrarProductos"
+              :error="!!v$.estado.$errors.length"
               error-message="Debes seleccionar un estado"
-              :option-value="(v) => v.label"
-              :option-label="(v) => v.value"
+              :option-value="v => v.id"
+              :option-label="v => v.nombre + ' (' + v.abreviatura + ')'"
               emit-value
               map-options
             >
               <template v-slot:error>
-                <div
-                  v-for="error of v$.estado_activacion.$errors"
-                  :key="error.$uid"
-                >
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="estado" :v$="v$" />
               </template>
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
+                <no-option-component />
               </template>
             </q-select>
           </div>
+
           <!-- Fecha -->
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Fecha de Activacion</label>
+            <label class="q-mb-sm block">Fecha de Activación</label>
             <q-input
               v-model="venta.fecha_activacion"
               placeholder="Opcional"
@@ -378,12 +457,7 @@
                 </q-icon>
               </template>
               <template v-slot:error>
-                <div
-                  v-for="error of v$.fecha_activacion.$errors"
-                  :key="error.$uid"
-                >
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="fecha_activacion" :v$="v$" />
               </template>
             </q-input>
           </div>
@@ -401,6 +475,21 @@
             >
             </q-input>
           </div>
+
+          <!-- adicionales -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Adicionales</label>
+            <q-input
+                v-model="venta.adicionales"
+                placeholder="Opcional"
+                hint="Coloca aqui todos los adicionales que requiere el cliente"
+                :disable="disabled"
+                outlined
+                dense
+            />
+          </div>
+
+
           <!-- Estado -->
           <div class="col-12 col-md-3" v-if="accion !== acciones.nuevo">
             <br />
@@ -443,7 +532,7 @@
   <modales-entidad
     :comportamiento="modales"
     :persistente="false"
-    @guardado="(data) => guardado(data)"
+    @guardado="data => guardado(data)"
   ></modales-entidad>
   <solicitar-fecha
     :mostrar="mostrarSolicitarFecha"

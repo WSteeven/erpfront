@@ -76,6 +76,32 @@ export function descargarArchivoUrl(url: string): void {
   link.remove()
 }
 
+/**
+ * Metodo generico para descargar una plantilla base(tabla:conf_plantillas) con solo el nombre que se desea obtener.
+ * Debe proporcionar el nombre completo, tal como está registrado en la plantilla, caso contrario le dará un error que no existe el archivo.
+ * @param {string} nombre nombre a buscar
+ */
+export async function descargarPlantillaBasePorNombre(nombre: string) {
+  const { notificarCorrecto, notificarAdvertencia, notificarError } =
+    useNotificaciones()
+  try {
+    const axios = AxiosHttpRepository.getInstance()
+    const url =
+      apiConfig.URL_BASE +
+      '/' +
+      axios.getEndpoint(endpoints.obtener_plantilla_base_por_nombre)
+    const response: AxiosResponse = await axios.post(url, { nombre })
+    console.log(response)
+    if (response.status === 200) {
+      notificarCorrecto(response.data.mensaje)
+      descargarArchivoUrl(response.data.modelo.url)
+    } else notificarAdvertencia(response.data.mensaje)
+  } catch (error) {
+    console.log(error)
+    notificarError(error.response.data.message)
+  }
+}
+
 export function agregarCerosIzquierda(
   num: string | number,
   size: number
@@ -374,8 +400,8 @@ export async function obtenerTiempoActual() {
       axios.getEndpoint(endpoints.fecha)
     )
     /* const hora: AxiosResponse = await axios.get(
-          axios.getEndpoint(endpoints.hora)
-        ) */
+                  axios.getEndpoint(endpoints.hora)
+                ) */
 
     return {
       fecha: fechaHora.data.split(' ')[0],
@@ -474,6 +500,54 @@ export async function imprimirArchivo(
   const axiosHttpRepository = AxiosHttpRepository.getInstance()
 
   statusLoading.activar()
+  const axiosHttpRepository = AxiosHttpRepository.getInstance()
+  axios({
+    url: ruta,
+    method: metodo,
+    data: data,
+    responseType: responseType,
+    headers: {
+      Authorization: axiosHttpRepository.getOptions().headers.Authorization
+    }
+  })
+    .then(response => {
+      if (response.status === 200) {
+        if (
+          response.data.size < 100 ||
+          response.data.type == 'application/json'
+        )
+          throw 'No se obtuvieron resultados para generar el reporte'
+        else {
+          const fileURL = URL.createObjectURL(
+            new Blob([response.data], { type: `appication/${formato}` })
+          )
+          const link = document.createElement('a')
+          link.href = fileURL
+          link.target = '_blank'
+          link.setAttribute('download', `${titulo}.${formato}`)
+          document.body.appendChild(link)
+          link.click()
+          link.remove()
+        }
+        // } else if (response.status === 500) {
+        //   console.log(response)
+      } else {
+        notificarError('Se produjo un error inesperado')
+      }
+    })
+    .catch(async error => {
+      const blob = error.response?.data
+      if (blob instanceof Blob && blob.type === 'application/json') {
+        const text = await blob.text()
+        const json = JSON.parse(text)
+        Object.values(json.errors).forEach((error: string) => {
+          notificarError(error)
+        })
+      } else {
+        notificarError(error)
+      }
+    })
+    .finally(() => statusLoading.desactivar())
 
   try {
     const response = await axios({

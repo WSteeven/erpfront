@@ -1,24 +1,21 @@
 // Dependencias
 import { configuracionColumnasConfiguracionCuestionarioEmpleado } from '../domain/configuracionColumnasConfiguracionCuestionarioEmpleado'
 import { useVuelidate } from '@vuelidate/core'
-import { computed, defineComponent, reactive, ref, watchEffect } from 'vue'
+import { defineComponent, reactive } from 'vue'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
-import SelectorImagen from 'components/SelectorImagen.vue'
 
 //Logica y controladores
-import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { ConfiguracionCuestionarioEmpleado } from '../domain/ConfiguracionCuestionarioEmpleado'
-import { isAxiosError, notificarMensajesError, removeAccents } from 'shared/utils'
+import {
+  isAxiosError,
+  notificarMensajesError,
+  removeAccents
+} from 'shared/utils'
 import { maskFecha } from 'config/utils'
 import { required } from 'shared/i18n-validators'
-import { endpoints } from 'config/api'
-import { Archivo } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/domain/Archivo'
-import { useAuthenticationStore } from 'stores/authentication'
-import GestorDocumentos from 'components/documentos/view/GestorDocumentos.vue'
 import { useNotificaciones } from 'shared/notificaciones'
-import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { ConfiguracionCuestionarioEmpleadoController } from '../infraestructure/ConfiguracionCuestionarioEmpleadoController'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 

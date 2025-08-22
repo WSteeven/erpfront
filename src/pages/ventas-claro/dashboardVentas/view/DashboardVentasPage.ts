@@ -2,9 +2,9 @@
 import { configuracionColumnasSubtareasRealizadasPorRegion } from '../domain/configuracionColumnasSubtareasRealizadasPorRegion'
 import { configuracionColumnasSubtareasRealizadasPorGrupo } from '../domain/configuracionColumnasSubtareasRealizadasPorGrupo'
 import { configuracionColumnasSubtareasRealizadasPorGrupoTiposTrabajosEmergencia } from '../domain/configuracionColumnasSubtareasRealizadasPorGrupoTiposTrabajosEmergencia'
-import { accionesTabla, tiposJornadas } from 'config/utils'
+import { accionesTabla, maskFecha, tiposJornadas } from 'config/utils'
 import { computed, defineComponent, reactive, ref } from 'vue'
-import { required } from 'shared/i18n-validators'
+import { required, requiredIf } from 'shared/i18n-validators'
 import { useVuelidate } from '@vuelidate/core'
 
 // Componentes
@@ -36,6 +36,7 @@ import { ComportamientoModalesVentasClaro } from 'pages/ventas-claro/ventas/appl
 import { optionsLine, optionsPie } from 'config/graficoGenerico'
 import { configuracionColumnasVentas } from 'pages/ventas-claro/ventas/domain/configuracionColumnasVentas'
 import { useVentaStore } from 'stores/ventasClaro/venta'
+import { VendedorVentasController } from 'pages/ventas-claro/vendedores/infrestructure/VendedorVentasController'
 
 export default defineComponent({
   components: {
@@ -62,18 +63,17 @@ export default defineComponent({
     const { listadosAuxiliares, listado } = mixin.useReferencias()
     const { cargarVista, obtenerListados, listar } = mixin.useComportamiento()
 
-    cargarVista(async () => {
-      await obtenerListados({
-        vendedores: {
-          controller: new VendedorController(),
-          params: {
-            campos: 'empleado_id',
-          },
-        },
-      })
-      vendedores.value = listadosAuxiliares.vendedores
-    })
-
+    const group = ref('general')
+    const options = [
+      {
+        label: 'General',
+        value: 'general'
+      },
+      {
+        label: 'Por Empleado',
+        value: 'empleado'
+      },
+    ]
     const filtro = reactive(new FiltroDashboardVentas())
     const dashboardVentasController = new DashboardVentasController()
     const cargando = new StatusEssentialLoading()
@@ -115,14 +115,26 @@ export default defineComponent({
     )
 
     /*******
-     * Init
-     *******/
+   * Init
+    *******/
+    cargarVista(async () => {
+      await obtenerListados({
+        vendedores: {
+          controller: new VendedorVentasController(),
+          params: {
+            // campos: 'empleado_id',
+          },
+        },
+      })
+      vendedores.value = listadosAuxiliares.vendedores
+      filtro.tipo = group.value
+    })
 
     // Reglas de validacion
     const reglas = {
       fecha_inicio: { required },
       fecha_fin: { required },
-      vendedor: { required },
+      vendedor: { requiredIf: requiredIf(group.value == 'empleado') },
     }
 
     const v$ = useVuelidate(reglas, filtro)
@@ -156,17 +168,19 @@ export default defineComponent({
       })
     }
 
-    filtro.fecha_fin = obtenerFechaActual()
+    filtro.fecha_fin = obtenerFechaActual('YYYY-MM-DD')
 
     async function consultar() {
       if (await v$.value.$validate()) {
         try {
           cargando.activar()
-          const { result } = await dashboardVentasController.listar({
-            fecha_inicio: filtro.fecha_inicio,
-            fecha_fin: filtro.fecha_fin,
-            vendedor_id: filtro.vendedor,
-          })
+          const { result } = await dashboardVentasController.listar(filtro
+            // {
+            //   fecha_inicio: filtro.fecha_inicio,
+            //   fecha_fin: filtro.fecha_fin,
+            //   vendedor_id: filtro.vendedor,
+            // }
+            )
           // await obtenerResponsables()
           // creados.value = result.creados
           cantVentasCreados.value = result.cantidad_ventas
@@ -247,6 +261,7 @@ export default defineComponent({
       cantVentasInstaladas,
       cantVentasPendientes,
       cantVentasRechazadas,
+      maskFecha,
       v$,
       mixin,
       listar,
@@ -273,6 +288,9 @@ export default defineComponent({
       // botones
       ventasPorEstadoListado,
       ventasPorMesListado,
+      group,
+      options,
+
     }
   },
 })

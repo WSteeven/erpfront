@@ -37,9 +37,16 @@ export class AxiosHttpRepository implements HttpRepository {
   }
 
   post<HttpResponse>(url: string, data?: any, options?: AxiosRequestConfig): Promise<HttpResponse> {
-    // console.log(url)
-    // console.log(data)
-    return AxiosHttpRepository.axiosInst.post(url, data, { ...this.getOptions(), ...options })
+    const baseOptions = this.getOptions()
+    const finalOptions = {
+      ...baseOptions,
+      ...options,
+      headers: {
+        ...baseOptions.headers,
+        ...options?.headers
+      }
+    }
+    return AxiosHttpRepository.axiosInst.post(url, data, finalOptions)
   }
 
   get<HttpResponse>(
@@ -50,7 +57,7 @@ export class AxiosHttpRepository implements HttpRepository {
   }
 
   put<HttpResponse>(url: string, data: any, options?: AxiosRequestConfig): Promise<HttpResponse> {
-    return AxiosHttpRepository.axiosInst.put(url, data, { ...this.getOptions(), ...options })
+    return AxiosHttpRepository.axiosInst.put(url, data,  { ...this.getOptions(), ...options })
   }
 
   delete<HttpResponse>(url: string, options?: AxiosRequestConfig): Promise<HttpResponse> {

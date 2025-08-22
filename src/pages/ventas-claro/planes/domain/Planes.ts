@@ -1,6 +1,6 @@
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 export class Planes extends EntidadAuditable {
-  nombre: number | null
+  nombre: string | null
   constructor() {
     super()
     this.nombre = null

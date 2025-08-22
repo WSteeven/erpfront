@@ -5,20 +5,23 @@
  *
  */
 // Dependencias
-import { configuracionColumnasArchivoSubtarea } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/domain/configuracionColumnasArchivoSubtarea'
-import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { descargarArchivoUrl } from 'shared/utils'
-import { useNotificaciones } from 'shared/notificaciones'
-import { AxiosError, AxiosResponse } from 'axios'
-import { accionesTabla } from 'config/utils'
-import { defineComponent, onMounted, ref } from 'vue'
+import {
+  configuracionColumnasArchivoSubtarea
+} from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/domain/configuracionColumnasArchivoSubtarea'
+import {CustomActionTable} from 'components/tables/domain/CustomActionTable'
+import {descargarArchivoUrl} from 'shared/utils'
+import {useNotificaciones} from 'shared/notificaciones'
+import {AxiosError, AxiosResponse} from 'axios'
+import {accionesTabla} from 'config/utils'
+import {defineComponent, onMounted, ref} from 'vue'
 
 // Componentes
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
 // Logica y controladores
-import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { ParamsType } from 'config/types'
+import {ContenedorSimpleMixin} from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import {ParamsType} from 'config/types'
+import {useRejectedFiles} from '../../composables/useRejectedFiles';
 
 export default defineComponent({
   components: {
@@ -145,12 +148,12 @@ export default defineComponent({
       } catch (error: unknown) {
         // console.log('err',error)
         const axiosError = error as AxiosError
-        notificarError(axiosError.response?.data.mensaje)
+        notificarError(axiosError.response?.data?.message??'error')
       }
     }
 
     async function subir(params: ParamsType) {
-      console.log('sueiendo...')
+      console.log('subiendo...')
       paramsForm = params
       if (refGestor.value) {
         await refGestor.value.upload()
@@ -160,27 +163,28 @@ export default defineComponent({
       }
     }
 
-    function onRejected(rejectedEntries) {
-      rejectedEntries.forEach(element => {
-        switch (element.failedPropValidation) {
-          case 'accept':
-            notificarError(`El archivo ${element.file.name}  debe ser de un formato válido.`)
-            notificarInformacion(`Formato/s aceptado/s ${props.formato}`)
-            break
-          case 'duplicate':
-            notificarError(`El archivo ${element.file.name} ya está adjuntado.`)
-            break
-          case 'max-files':
-            notificarError(`No se pudo agregar el archivo ${element.file.name} porque solo se permite un máximo de ${props.maxFiles} archivo/s.`);
-            break
-          case 'max-total-size':
-            notificarError(`El archivo ${element.file.name} excede el tamaño máximo permitido.`)
-            break
-          default:
-            notificarAdvertencia('El tamaño total de los archivos no debe exceder los 10mb.')
-        }
-      });
-    }
+    const {onRejected} = useRejectedFiles(props)
+    // function onRejected(rejectedEntries) {
+    //   rejectedEntries.forEach(element => {
+    //     switch (element.failedPropValidation) {
+    //       case 'accept':
+    //         notificarError(`El archivo ${element.file.name}  debe ser de un formato válido.`)
+    //         notificarInformacion(`Formato/s aceptado/s ${props.formato}`)
+    //         break
+    //       case 'duplicate':
+    //         notificarError(`El archivo ${element.file.name} ya está adjuntado.`)
+    //         break
+    //       case 'max-files':
+    //         notificarError(`No se pudo agregar el archivo ${element.file.name} porque solo se permite un máximo de ${props.maxFiles} archivo/s.`);
+    //         break
+    //       case 'max-total-size':
+    //         notificarError(`El archivo ${element.file.name} excede el tamaño máximo permitido.`)
+    //         break
+    //       default:
+    //         notificarAdvertencia('El tamaño total de los archivos no debe exceder los 10mb.')
+    //     }
+    //   });
+    // }
 
 
     function limpiarListado() {
@@ -202,8 +206,7 @@ export default defineComponent({
       entidad.isComponentFilesModified=true
     }
     function obtenerSumatoriaTamanio(files) {
-      const sumatoria = files.reduce((total, file) => total + file.size, 0)
-      return sumatoria
+      return files.reduce((total, file) => total + file.size, 0)
     }
 
     function bytesToMB(bytes) {

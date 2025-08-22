@@ -42,7 +42,6 @@ import { apiConfig, endpoints } from 'config/api'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
-import GestorDocumentos from 'components/documentos/view/GestorDocumentos.vue'
 import { useNotificacionStore } from 'stores/notificacion'
 import ErrorComponent from 'components/ErrorComponent.vue'
 import { CuentaBancaria } from 'pages/administracion/cuentasBancarias/domain/CuentaBancaria'
@@ -57,7 +56,6 @@ export default defineComponent({
     SelectorImagen,
     EssentialTable,
     EssentialTableTabs,
-    GestorDocumentos
   },
   setup() {
     const mixin = new ContenedorSimpleMixin(

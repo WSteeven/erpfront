@@ -160,6 +160,8 @@ export const tabAutorizarTransferenciaSaldo: TabOption[] = [
   { label: 'Pendiente', value: '3' }
 ]
 
+
+
 export const accionesTabla = {
   name: 'acciones',
   field: 'acciones',
@@ -549,6 +551,7 @@ export const opcionesUnidadesMedidas = [
   { value: 7, label: 'LITRO' },
   { value: 8, label: 'KIT' }
 ]
+
 export function convertir_fecha(fecha: Date) {
   const day = fecha.getDate() < 10 ? '0' + fecha.getDate() : fecha.getDate()
   const month =
@@ -558,6 +561,7 @@ export function convertir_fecha(fecha: Date) {
   const year = fecha.getFullYear()
   return year + '/' + month + '/' + day
 }
+
 export function convertir_fecha_hora(fecha) {
   const dateParts = fecha.split('-') // Dividir el string en partes usando el guión como separador
   let tiempo = dateParts[2]
@@ -569,6 +573,7 @@ export function convertir_fecha_hora(fecha) {
   const fecha_convert = new Date(anio, mes, dia, tiempo[0], tiempo[1], 0)
   return fecha_convert
 }
+
 export const tiposDocumentosIdentificaciones = [
   { nombre: 'Cedula', value: 'CEDULA' },
   { nombre: 'R.U.C.', value: 'RUC' },
@@ -597,7 +602,8 @@ export const tipos_sangre = [
 export const tipos_vendedores = [
   { nombre: 'VENDEDOR', descripcion: 'VENDEDOR' },
   { nombre: 'SUPERVISOR_VENTAS', descripcion: 'SUPERVISOR DE VENTAS' },
-  { nombre: 'JEFE_VENTAS', descripcion: 'JEFE DE VENTAS' }
+  { nombre: 'JEFE_VENTAS', descripcion: 'JEFE DE VENTAS' },
+  { nombre: 'DIGITADOR', descripcion: 'DIGITADOR' }
   // Puedes agregar aquí más tipos de vendedor si es necesario
 ]
 export const talla_letras = [
@@ -618,13 +624,13 @@ export const tabOptionsPreingresoMateriales = [
 export const formas_pagos = [
   { label: 'EFECTIVO', value: 'EFECTIVO' },
   { label: 'TC', value: 'TARJETA DE CREDITO' },
+  { label: 'TD', value: 'TARJETA DE DEBITO' },
   { label: 'D. BANCARIO', value: 'DEBITO BANCARIO' }
 ]
 export const estados_activaciones = [
-  // { label: 'PENDIENTE', value: 'PENDIENTE' },
-  { label: 'APROBADO', value: 'APROBADO' },
-  { label: 'ACTIVADO', value: 'ACTIVADO' }
-  // { label: 'RECHAZADA', value: 'RECHAZADA' },
+  { id: 1, nombre: 'Aprobado', abreviatura: 'APR' },
+  { id: 2, nombre: 'Activado', abreviatura: 'ACT' },
+  { id: 3, nombre: 'Rechazada', abreviatura: 'RECH' }
 ]
 export const estadosVentas = {
   APROBADO: 'APROBADO',

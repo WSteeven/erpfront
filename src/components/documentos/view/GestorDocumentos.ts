@@ -17,64 +17,67 @@ import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import { Endpoint } from 'shared/http/domain/Endpoint'
 import { ParamsType } from 'config/types'
 import { configuracionColumnasDocumento } from '../domain/configuracionColumnasDocumento'
+import {useRejectedFiles} from '../../../composables/useRejectedFiles';
 
 export default defineComponent({
   components: {
-    EssentialTable,
+    EssentialTable
   },
   props: {
     mixin: {
       type: Object as () => ContenedorSimpleMixin<any>,
-      required: true,
+      required: true
     },
     endpoint: {
       type: Object as () => Endpoint,
-      required: true,
+      required: true
     },
     entidad: Object as () => EntidadAuditable,
     disable: {
       type: Boolean,
-      default: false,
+      default: false
     },
     permitirEliminar: {
       type: Boolean,
-      default: true,
+      default: true
     },
     listarAlGuardar: {
       type: Boolean,
-      default: true,
+      default: true
     },
     permitirSubir: {
       type: Boolean,
-      default: true,
+      default: true
+    },
+    formato: {
+      type: String,
+      default: '*'
     },
     esObligatorio: {
       type: Boolean,
-      default: true,
+      default: true
     },
     esMultiple: {
       type: Boolean,
-      default: true,
+      default: true
     },
     mostrarListado: {
       type: Boolean,
-      default: true,
-    },
+      default: true
+    }
   },
   setup(props) {
     /********
      * Mixin
      *********/
-    const { listado } = props.mixin.useReferencias()
+    const { listado, entidad } = props.mixin.useReferencias()
     const { eliminar, listar } = props.mixin.useComportamiento()
 
     const {
       notificarCorrecto,
       notificarError,
-      notificarAdvertencia,
-      confirmar,
+      confirmar
     } = useNotificaciones()
-    const notificaciones = useNotificaciones()
     function listarArchivos(params: ParamsType) {
       listar(params)
     }
@@ -94,14 +97,15 @@ export default defineComponent({
           'Esta operación es irreversible. El archivo se eliminará de forma instantánea.',
           () => eliminar(entidad)
         )
-      },
+        entidad.isComponentFilesModified = true
+      }
     }
 
     const btnDescargar: CustomActionTable = {
       titulo: 'Descargar',
       icono: 'bi-download',
       color: 'secondary',
-      accion: ({ entidad }) => descargarArchivoUrl(entidad.ruta),
+      accion: ({ entidad }) => descargarArchivoUrl(entidad.ruta)
     }
 
     const refGestor = ref()
@@ -130,12 +134,12 @@ export default defineComponent({
         notificarCorrecto(response.data.mensaje)
 
         // Restablecer el componente q-uploader para mostrar el botón de "añadir archivos" nuevamente
-        quiero_subir_archivos.value = props.esObligatorio;
+        quiero_subir_archivos.value = props.esObligatorio
       } catch (error: unknown) {
         console.log('error en el catch', error)
         const axiosError = error as AxiosError
         console.log(axiosError)
-        notificarError(axiosError.response?.data.message)
+        notificarError(axiosError.response?.data?.message??'error')
       }
     }
     async function subir(params: ParamsType) {
@@ -147,23 +151,54 @@ export default defineComponent({
           refGestor.value.removeUploadedFiles()
           refGestor.value.removeQueuedFiles()
         }
-      } catch (error) {console.log(error)}
+      } catch (error) {
+        console.log(error)
+      }
     }
 
-    function onRejected(rejectedEntries) {
-      notificarAdvertencia(
-        'El tamaño total de los archivos no deben exceder los 10mb.'
-      )
-    }
+    const {onRejected} = useRejectedFiles(props)
+
+    // function onRejected(rejectedEntries) {
+    //   rejectedEntries.forEach(element => {
+    //     switch (element.failedPropValidation) {
+    //       case 'accept':
+    //         notificarError(
+    //           `El archivo ${element.file.name}  debe ser de un formato válido.`
+    //         )
+    //         notificarInformacion(`Formato/s aceptado/s ${props.formato}`)
+    //         break
+    //       case 'duplicate':
+    //         notificarError(`El archivo ${element.file.name} ya está adjuntado.`)
+    //         break
+    //       case 'max-files':
+    //         notificarError(
+    //           `No se pudo agregar el archivo ${element.file.name} porque solo se permite un máximo de ${props.maxFiles} archivo/s.`
+    //         )
+    //         break
+    //       case 'max-total-size':
+    //         notificarError(
+    //           `El archivo ${element.file.name} excede el tamaño máximo permitido.`
+    //         )
+    //         break
+    //       default:
+    //         notificarAdvertencia(
+    //           'El tamaño total de los archivos no debe exceder los 10mb.'
+    //         )
+    //     }
+    //   })
+    // }
     function onFileAdded(file) {
       tamanioListado.value += obtenerSumatoriaTamanio(file)
+
+      entidad.isComponentFilesModified = true
     }
     function onFileRemoved(file) {
       tamanioListado.value -= obtenerSumatoriaTamanio(file)
+
+      entidad.isComponentFilesModified = true
     }
     function obtenerSumatoriaTamanio(files) {
-      const sumatoria = files.reduce((total, file) => total + file.size, 0)
-      return sumatoria
+      return files.reduce((total, file) => total + file.size, 0)
     }
     function limpiarListado() {
       listado.value = []
@@ -186,7 +221,7 @@ export default defineComponent({
       subir,
       listarArchivos,
       limpiarListado,
-      tamanioListado,
+      tamanioListado
     }
-  },
+  }
 })
