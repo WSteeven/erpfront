@@ -92,6 +92,10 @@ export const iconos = {
     label: 'DIAS DE DESCANSO',
     icono: 'bi-house-heart',
   },
+  citasMedicas: {
+    label: 'CITA MEDICA',
+    icono: 'bi-calendar-check',
+  },
   transferencia_saldo: {
     label: 'TRANSFERENCIA DE SALDO',
     icono: 'bi-cash',

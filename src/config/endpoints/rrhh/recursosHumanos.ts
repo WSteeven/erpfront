@@ -4,6 +4,7 @@ import { trabajoSocial } from 'config/endpoints/rrhh/trabajoSocial'
 
 export const recursosHumanos = {
   empleados: new Endpoint('empleados'),
+  obtener_empleados_prestamos_empresariales: new Endpoint('obtener-empleados-prestamos-empresariales'),
   empleados_delegados: new Endpoint('recursos-humanos/empleados-delegados'),
   departamentos: new Endpoint('recursos-humanos/departamentos'),
   motivo_permiso_empleado: new Endpoint('recursos-humanos/motivo_permiso_empleado'),
@@ -16,6 +17,7 @@ export const recursosHumanos = {
   permiso_empleado: new Endpoint('recursos-humanos/permiso_empleado'),
   licencia_empleado: new Endpoint('recursos-humanos/licencia_empleado'),
   prestamo_empresarial: new Endpoint('recursos-humanos/prestamo_empresarial'),
+  reporte_prestamos_empresariales: new Endpoint('recursos-humanos/reporte-prestamos-empresariales'),
   solicitud_prestamo_empresarial: new Endpoint('recursos-humanos/solicitud-prestamo-empresarial'),
   periodo: new Endpoint('recursos-humanos/periodo'),
   anticipo: new Endpoint('recursos-humanos/anticipo'),
@@ -49,13 +51,6 @@ export const recursosHumanos = {
   datos_empleado: new Endpoint('recursos-humanos/datos_empleado/'),
   sueldo_basico: new Endpoint('recursos-humanos/sueldo_basico'),
   nivel_endeudamiento: new Endpoint('recursos-humanos/nivel_endeudamiento'),
-  aprobar_prestamo_empresarial: new Endpoint(
-    'recursos-humanos/aprobar_prestamo_empresarial'
-  ),
-  rechazar_prestamo_empresarial: new Endpoint(
-    'recursos-humanos/rechazar_prestamo_empresarial'
-  ),
-
 
   archivo_permiso_empleado: new Endpoint(
     'recursos-humanos/archivo_permiso_empleado'
@@ -70,8 +65,8 @@ export const recursosHumanos = {
     'recursos-humanos/archivo_prestamo_quirorafario'
   ),
   archivo_rol_pago: new Endpoint('recursos-humanos/archivo_rol_pago'),
-  archivo_extencion_conyugal: new Endpoint(
-    'recursos-humanos/archivo_extencion_conyugal'
+  archivo_extension_conyugal: new Endpoint(
+    'recursos-humanos/archivo_extension_conyugal'
   ),
 
   descuentos_permiso: new Endpoint('recursos-humanos/descuentos_permiso'),
@@ -109,6 +104,13 @@ export const recursosHumanos = {
   generar_username: new Endpoint('recursos-humanos/generar-username'),
 
 
+  pagar_prestamos_rol_actual: new Endpoint('recursos-humanos/pagar-prestamos-rol-actual/'),
+  calcular_cuotas_descuento: new Endpoint('recursos-humanos/calcular-cuotas-descuento'),
+  calcular_cuotas_prestamo_empresarial: new Endpoint('recursos-humanos/calcular-cuotas-prestamo-empresarial'),
+  pagar_cuota_prestamo: new Endpoint('recursos-humanos/pagar-cuota-prestamo/'),
+  aplazar_cuota_prestamo_empresarial: new Endpoint('recursos-humanos/aplazar-cuota-prestamo/'),
+  recalcular_cuotas_prestamo_empresarial: new Endpoint('recursos-humanos/recalcular-cuotas-prestamo-empresarial'),
+  aplazar_cuota_descuento: new Endpoint('recursos-humanos/aplazar-cuota-descuento/'),
   actualizar_rol_pago: new Endpoint('recursos-humanos/actualizar-rol-pago/'),
   agregar_nuevos_empleados: new Endpoint('recursos-humanos/agregar-nuevos-empleados/'),
   valores_cargados_roles: new Endpoint('recursos-humanos/valores-cargados-roles'),
@@ -127,6 +129,7 @@ export const recursosHumanos = {
   rubros: new Endpoint('recursos-humanos/rubros'),
   tipos_discapacidades: new Endpoint('recursos-humanos/tipos-discapacidades'),
   anular_prestamo_empresarial: new Endpoint('recursos-humanos/anular-prestamo-empresarial'),
+  actualizar_prestamo_empresarial: new Endpoint('recursos-humanos/actualizar-prestamo-empresarial'),
   asignar_alimentacion: new Endpoint('recursos-humanos/asignar-alimentacion'),
   alimentacion: new Endpoint('recursos-humanos/alimentacion'),
   detalle_alimentacion: new Endpoint('recursos-humanos/detalle-alimentacion'),

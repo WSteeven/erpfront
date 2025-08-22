@@ -17,6 +17,6 @@ export const configuracionColumnasMedicacionHabitual: ColumnConfig<MedicacionHab
     align: 'left',
     sortable: true,
     editable: true,
-    type: 'number',
+    type: 'text',
   },
 ]

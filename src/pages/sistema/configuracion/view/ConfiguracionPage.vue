@@ -236,6 +236,33 @@
               </q-input>
             </div>
 
+            <!-- sitio web ERP -->
+            <div class="col-12 col-md-4">
+              <label class="q-mb-sm block">Sitio web ERP</label>
+              <q-input
+                v-model="configuracion.sitio_web_erp"
+                autogrow
+                type="url"
+                placeholder="Opcional"
+                outlined
+                dense
+              />
+            </div>
+
+            <!-- link aplicación móvil -->
+            <div class="col-12 col-md-4">
+              <label class="q-mb-sm block">Link de app móvil</label>
+              <q-input
+                  v-model="configuracion.link_app_movil"
+                  autogrow
+                  type="url"
+                  hint="Ingresa un link que empiece con https://"
+                  placeholder="Opcional"
+                  outlined
+                  dense
+              />
+            </div>
+
             <!-- correo principal -->
             <div class="col-12 col-md-4">
               <label class="q-mb-sm block">Correo principal</label>

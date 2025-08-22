@@ -12,6 +12,7 @@
     :accion4="btnDesactivarTarea"
     :filtrar="filtrarTarea"
     tabDefecto="0"
+    ajustar-celdas
     paginate
     permitir-filtrar
   >
@@ -774,6 +775,7 @@
             :permitirEditar="false"
             :permitirEliminar="false"
             :mostrar-botones="false"
+            ajustar-celdas
             mostrar-footer
             :permitirFiltrar="false"
             @tab-seleccionado="filtrarSubtareas"

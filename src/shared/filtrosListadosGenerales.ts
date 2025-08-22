@@ -10,8 +10,11 @@ import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { CentroCosto } from 'pages/gestionTrabajos/centroCostos/domain/CentroCostos'
 import { SeguroVehicular } from 'pages/controlVehiculos/seguros/domain/SeguroVehicular'
 import { ref } from 'vue'
+import {useAuthenticationStore} from 'stores/authentication';
+import {Sucursal} from 'pages/administracion/sucursales/domain/Sucursal';
 
 export const useFiltrosListadosSelects = (listadosAuxiliares) => {
+  const store = useAuthenticationStore()
   /************
    * Variables
    ************/
@@ -52,7 +55,12 @@ export const useFiltrosListadosSelects = (listadosAuxiliares) => {
   const tareas = ref(listadosAuxiliares.tareas)
   const tareasDestino = ref(listadosAuxiliares.tareasDestino)
   const centros_costos = ref([])
+
+  ////////////////////////
+  // FONDOS ROTATIVOS
+  ////////////////////////
   const nodos = ref(listadosAuxiliares.nodos)
+  const detalles = ref(listadosAuxiliares.detalles)
 
   // Modulo medico
   const laboratoriosClinicos = ref(listadosAuxiliares.laboratoriosClinicos)
@@ -389,6 +397,7 @@ export const useFiltrosListadosSelects = (listadosAuxiliares) => {
       bancos.value = listadosAuxiliares.bancos.filter((v: Banco) => v.nombre!.toLowerCase().indexOf(needle) > -1)
     })
   }
+  const filtrarCategorias = (val:string, update: ()=>void)=> filtrarLista(val, update, categorias,'nombre', listadosAuxiliares.categorias)
 
   function filtrarCategoriasProveedor(val, update) {
     if (val === '') {
@@ -450,7 +459,23 @@ export const useFiltrosListadosSelects = (listadosAuxiliares) => {
   function filtrarSucursales(val, update) {
     return filtrarLista(val, update, sucursales, 'lugar', listadosAuxiliares.sucursales)
   }
+  function filtrarSucursalesPorBodeguero(val, update) {
+    const sucursalesTelconet = listadosAuxiliares.sucursales.filter((v:Sucursal)=>v.cliente_id==2)//2 es el ID del Telconet
+    if(store.esBodegueroTelconet){
+      if (val === '') {
+        sucursalesTelconet.value = listadosAuxiliares.sucursales.filter((v:Sucursal)=>v.cliente_id==2)
+        update(() => sucursales.value = sucursalesTelconet)
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        sucursales.value = sucursalesTelconet.filter(
+            (v: Sucursal) => v.lugar!.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }else
+    return filtrarLista(val, update, sucursales, 'lugar', listadosAuxiliares.sucursales)
 
+  }
   function filtrarProyectos(val, update) {
     return filtrarLista(val, update, proyectos, 'codigo_proyecto', listadosAuxiliares.proyectos)
   }
@@ -514,6 +539,11 @@ export const useFiltrosListadosSelects = (listadosAuxiliares) => {
   const filtrarEstadosCiviles = (val, update) => filtrarLista(val, update, estadosCiviles, 'nombre', listadosAuxiliares.estados_civiles)
   const filtrarSubdetalles = (val, update) => filtrarLista(val, update, subdetalles, 'descripcion', listadosAuxiliares.subdetalles)
 
+  /**************************
+   * Modulo Fondos Rotativos
+   *************************/
+  const filtrarDetalles = (val ,update) => filtrarLista(val, update, detalles, 'descripcion', listadosAuxiliares.detalles)
+
   /****************
    * Modulo medico
    ****************/
@@ -571,14 +601,14 @@ export const useFiltrosListadosSelects = (listadosAuxiliares) => {
     proveedores, filtrarProveedores,
     empleados, filtrarEmpleados, ordenarEmpleados,
     bancos, filtrarBancos,
-    categorias, filtrarCategoriasProveedor, ordenarCategorias,
+    categorias, filtrarCategorias,filtrarCategoriasProveedor, ordenarCategorias,
     productos, filtrarProductos,
     vehiculos, filtrarVehiculos,
     servicios, filtrarServicios,
     clientes, filtrarClientes, ordenarClientes,
     empleadosOrigen, filtrarEmpleadosOrigen, ordenarEmpleadosOrigen,
     motivos, filtrarMotivos,
-    sucursales, filtrarSucursales,
+    sucursales, filtrarSucursales,filtrarSucursalesPorBodeguero,
     filtrarEstadosCiviles, estadosCiviles,
     cargos, filtrarCargos,
     roles, filtrarRoles,
@@ -586,6 +616,7 @@ export const useFiltrosListadosSelects = (listadosAuxiliares) => {
     grupos, filtrarGrupos,
     areas, filtrarAreas,
     tiposContratos,
+    detalles, filtrarDetalles,
     subdetalles, filtrarSubdetalles,
     nodos, filtrarNodos,
     tickets, filtrarTickets,

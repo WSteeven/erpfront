@@ -1,4 +1,10 @@
 // Custom scrollbar
+//#q-app {
+//  box-sizing: border-box;
+//  padding: env(safe-area-inset-top, 24px) env(safe-area-inset-right, 0px) env(safe-area-inset-bottom, 24px) env(safe-area-inset-left, 0px);
+  //height: 100%;
+//}
+
 body {
   // background-color: $grey-5;
   /* Versión con rgba para mayor control de opacidad si se necesita */
@@ -8,6 +14,9 @@ body {
     rgba(30, 58, 138, 1) 100%
   ); */
   //background: linear-gradient(to bottom right, #a9abbe, #e2e4ec);
+
+  //padding-top: env(safe-area-inset-top);
+  //padding-bottom: env(safe-area-inset-bottom);
 
   &::-webkit-scrollbar {
     width: 10px;
@@ -350,19 +359,42 @@ input[type='time']::-webkit-calendar-picker-indicator {
 }
 
 .elegant-blue-hard-gradient-text {
-  background: #126bc5;
-  // background: linear-gradient(135deg, #51547a, #8b90d2, #51547a);
-  // background: linear-gradient(135deg, #210463, #4361ee, #021a36);
+ // background: #126bc5;
+   background: linear-gradient(135deg, #51547a, #8b90d2, #51547a);
+   background: linear-gradient(135deg, #210463, #4361ee, #021a36);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 
   font-family: 'Poppins', sans-serif;
   font-weight: 600;
-  font-size: 2rem;
+  font-size: 3rem;
   letter-spacing: 0.4px;
   margin: 0;
 }
+
+.elegant-gold-gradient-text {
+  // Gradiente dorado con “brillos” en el centro
+  background: linear-gradient(
+    135deg,
+    #8a6b18 0%,
+    #ffcf5f 22%,
+    #756011 45%,
+    #8f7740 68%,
+    #bd9e4a 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent; // fallback para navegadores no-WebKit
+
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 3rem;
+  letter-spacing: 0.4px;
+  margin: 0;
+}
+
 
 .elegant-blue-gradient-text {
   background: #42435e;

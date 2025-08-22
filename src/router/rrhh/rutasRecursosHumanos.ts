@@ -174,6 +174,15 @@ const rutasRecursosHumanos: RouteRecordRaw[] = [
     meta: { requiresAuth: false }
   },
   {
+    path: '/reporte-prestamos-empresariales',
+    name: 'reporte_prestamos_empresariales',
+    component: () =>
+      import(
+          'pages/recursosHumanos/reportes/nomina/rptPrestamosEmpresariales/view/ReportePrestamosEmpresarialesPage.vue',
+      ),
+    meta: { requiresAuth: false }
+  },
+  {
     path: '/solicitudes-vacaciones',
     name: 'solicitudes_vacaciones',
     component: () =>

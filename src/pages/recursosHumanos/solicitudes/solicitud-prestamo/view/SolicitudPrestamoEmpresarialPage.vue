@@ -2,11 +2,13 @@
   <tab-layout-filter-tabs2
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
-    :tabOptions="tabOptionsSolicitudPedido"
+    :tabOptions="tabOptionsSolicitudPrestamo"
     :permitirEditar="(esValidador || esAutorizador)&& ver_boton_editar"
     :permitirEliminar="false"
     :filtrar="filtrarSolicitudPrestamo"
     :tabDefecto="tabSolicitudPrestamo"
+    :accion1="btnGestionar"
+    ajustar-celdas
   >
     <template #formulario>
       <q-form @submit.prevent>

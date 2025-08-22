@@ -11,12 +11,14 @@ export const useFondoRotativoStore = defineStore('fondo_rotativo', () => {
   const empleados = ref([])
   const proyectos = ref([])
   const tareas = ref([])
+  const clientes = ref([])
 
   return {
     gasto,
     vehiculos,
     proyectos,
     tareas,
+    clientes,
     empleados,
     accion_form,
     habilitar_observacion_autorizador,

@@ -9,8 +9,10 @@ import { useNotificaciones } from 'shared/notificaciones'
 import { isAxiosError, notificarMensajesError } from 'shared/utils'
 import { useRouter } from 'vue-router';
 import { useConfiguracionGeneralStore } from 'stores/configuracion_general'
-import { useCargandoStore } from 'stores/cargando'
+/* import { useCargandoStore } from 'stores/cargando' */
 import { useQuasar } from 'quasar'
+import {useNotificacionStore} from 'stores/notificacion';
+import {useCargandoStore} from 'stores/cargando';
 
 
 export default defineComponent({
@@ -24,7 +26,8 @@ export default defineComponent({
     const loginUser = reactive(new UserLogin())
 
     const loginController = new LoginController()
-
+    useNotificacionStore().setQuasar(useQuasar())
+    useCargandoStore().setQuasar(useQuasar())
     const notificaciones = useNotificaciones()
     const cargando = new StatusEssentialLoading()
     const Router = useRouter()

@@ -40,9 +40,13 @@ import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { FiltroDashboardTicket } from '../domain/FiltroReporteMaterial'
 import { OptionGroup } from 'components/optionGroup/domain/OptionGroup'
+import ErrorComponent from 'components/ErrorComponent.vue';
+import NoOptionComponent from 'components/NoOptionComponent.vue';
 
 export default defineComponent({
   components: {
+    NoOptionComponent,
+    ErrorComponent,
     TabLayout,
     EssentialTable,
     SelectorImagen,
@@ -95,8 +99,8 @@ export default defineComponent({
         }
       })
     })
-      const SISTEMA = 'SISTEMA'
-      const APPENATE = 'APPENATE'
+    const SISTEMA = 'SISTEMA'
+    const APPENATE = 'ESTADISTICAS'
 
     const tiposDashboard: OptionGroup[] = [
       { label: SISTEMA, value: SISTEMA },
@@ -428,7 +432,9 @@ export default defineComponent({
       mostrarPowerBI,
       checkmostrarPowerBI,
       tipoDashboard,
-      tiposDashboard,SISTEMA, APPENATE,
+      tiposDashboard,
+      SISTEMA,
+      APPENATE
     }
   }
 })

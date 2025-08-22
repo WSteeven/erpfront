@@ -42,9 +42,7 @@
                 dense
               >
                 <template v-slot:error>
-                  <div v-for="error of v$.usuario.$errors" :key="error.$uid">
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
+                  <error-component clave="usuario" :v$="v$" />
                 </template>
               </q-input>
             </div>
@@ -68,9 +66,7 @@
                 dense
               >
                 <template v-slot:error>
-                  <div v-for="error of v$.email.$errors" :key="error.$uid">
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
+                  <error-component clave="email" :v$="v$" />
                 </template>
               </q-input>
             </div>
@@ -149,12 +145,7 @@
                 dense
               >
                 <template v-slot:error>
-                  <div
-                    v-for="error of v$.identificacion.$errors"
-                    :key="error.$uid"
-                  >
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
+                  <error-component clave="identificacion" :v$="v$" />
                 </template>
               </q-input>
             </div>
@@ -167,14 +158,12 @@
                 :disable="disabled"
                 :error="!!v$.nombres.$errors.length"
                 @blur="v$.nombres.$touch && obtenerUsername()"
-                @update:model-value="(v) => (empleado.nombres = removeTildes(v))"
+                @update:model-value="v => (empleado.nombres = removeTildes(v))"
                 outlined
                 dense
               >
                 <template v-slot:error>
-                  <div v-for="error of v$.nombres.$errors" :key="error.$uid">
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
+                  <error-component clave="nombres" :v$="v$" />
                 </template>
               </q-input>
             </div>
@@ -187,15 +176,15 @@
                 placeholder="Obligatorio"
                 :disable="disabled"
                 :error="!!v$.apellidos.$errors.length"
-                @update:model-value="(v) => (empleado.apellidos = removeTildes(v))"
+                @update:model-value="
+                  v => (empleado.apellidos = removeTildes(v))
+                "
                 @blur="v$.apellidos.$touch && obtenerUsername()"
                 outlined
                 dense
               >
                 <template v-slot:error>
-                  <div v-for="error of v$.apellidos.$errors" :key="error.$uid">
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
+                  <error-component clave="apellidos" :v$="v$" />
                 </template>
               </q-input>
             </div>
@@ -213,9 +202,7 @@
                 dense
               >
                 <template v-slot:error>
-                  <div v-for="error of v$.telefono.$errors" :key="error.$uid">
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
+                  <error-component clave="telefono" :v$="v$" />
                 </template>
               </q-input>
             </div>
@@ -236,12 +223,7 @@
                 dense
               >
                 <template v-slot:error>
-                  <div
-                    v-for="error of v$.correo_personal.$errors"
-                    :key="error.$uid"
-                  >
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
+                  <error-component clave="correo_personal" :v$="v$" />
                 </template>
               </q-input>
             </div>
@@ -268,20 +250,11 @@
                 map-options
               >
                 <template v-slot:error>
-                  <div
-                    v-for="error of v$.tipo_sangre.$errors"
-                    :key="error.$uid"
-                  >
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
+                  <error-component clave="tipo_sangre" :v$="v$" />
                 </template>
 
                 <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">
-                      No hay resultados
-                    </q-item-section>
-                  </q-item>
+                  <no-option-component />
                 </template>
               </q-select>
             </div>
@@ -307,20 +280,11 @@
                 map-options
               >
                 <template v-slot:error>
-                  <div
-                    v-for="error of v$.estado_civil.$errors"
-                    :key="error.$uid"
-                  >
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
+                  <error-component clave="estado_civil" :v$="v$" />
                 </template>
 
                 <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">
-                      No hay resultados
-                    </q-item-section>
-                  </q-item>
+                  <no-option-component />
                 </template>
               </q-select>
             </div>
@@ -567,13 +531,7 @@
                 </template>
 
                 <template v-slot:error>
-                  <div
-                    style="clear: inherit"
-                    v-for="error of v$.fecha_nacimiento.$errors"
-                    :key="error.$uid"
-                  >
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
+                  <error-component clave="fecha_nacimiento" :v$="v$" />
                 </template>
               </q-input>
             </div>
@@ -590,9 +548,7 @@
                 dense
               >
                 <template v-slot:error>
-                  <div v-for="error of v$.num_cuenta.$errors" :key="error.$uid">
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
+                  <error-component clave="num_cuenta" :v$="v$" />
                 </template>
               </q-input>
             </div>
@@ -620,17 +576,11 @@
                 map-options
               >
                 <template v-slot:error>
-                  <div v-for="error of v$.banco.$errors" :key="error.$uid">
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
+                  <error-component clave="banco" :v$="v$" />
                 </template>
 
                 <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">
-                      No hay resultados
-                    </q-item-section>
-                  </q-item>
+                  <no-option-component />
                 </template>
               </q-select>
             </div>
@@ -656,17 +606,11 @@
                 map-options
               >
                 <template v-slot:error>
-                  <div v-for="error of v$.canton.$errors" :key="error.$uid">
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
+                  <error-component clave="canton" :v$="v$" />
                 </template>
 
                 <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">
-                      No hay resultados
-                    </q-item-section>
-                  </q-item>
+                  <no-option-component />
                 </template>
               </q-select>
             </div>
@@ -686,9 +630,7 @@
                 dense
               >
                 <template v-slot:error>
-                  <div v-for="error of v$.direccion.$errors" :key="error.$uid">
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
+                  <error-component clave="direccion" :v$="v$" />
                 </template>
               </q-input>
             </div>
@@ -787,12 +729,7 @@
                     dense
                   >
                     <template v-slot:error>
-                      <div
-                        v-for="error of v$.coordenadas.$errors"
-                        :key="error.$uid"
-                      >
-                        <div class="error-msg">{{ error.$message }}</div>
-                      </div>
+                      <error-component clave="coordenadas" :v$="v$" />
                     </template>
                   </q-input>
                 </div>
@@ -812,13 +749,7 @@
                     dense
                   >
                     <template v-slot:error>
-                      <div
-                        style="clear: inherit"
-                        v-for="error of v$.talla_zapato.$errors"
-                        :key="error.$uid"
-                      >
-                        <div class="error-msg">{{ error.$message }}</div>
-                      </div>
+                      <error-component clave="talla_zapato" :v$="v$" />
                     </template>
                   </q-input>
                 </div>
@@ -845,20 +776,11 @@
                     map-options
                   >
                     <template v-slot:error>
-                      <div
-                        v-for="error of v$.talla_camisa.$errors"
-                        :key="error.$uid"
-                      >
-                        <div class="error-msg">{{ error.$message }}</div>
-                      </div>
+                      <error-component clave="talla_camisa" :v$="v$" />
                     </template>
 
                     <template v-slot:no-option>
-                      <q-item>
-                        <q-item-section class="text-grey">
-                          No hay resultados
-                        </q-item-section>
-                      </q-item>
+                      <no-option-component />
                     </template>
                   </q-select>
                 </div>
@@ -881,13 +803,7 @@
                     dense
                   >
                     <template v-slot:error>
-                      <div
-                        style="clear: inherit"
-                        v-for="error of v$.talla_guantes.$errors"
-                        :key="error.$uid"
-                      >
-                        <div class="error-msg">{{ error.$message }}</div>
-                      </div>
+                      <error-component clave="talla_guantes" :v$="v$" />
                     </template>
                   </q-input>
                 </div>
@@ -907,13 +823,7 @@
                     dense
                   >
                     <template v-slot:error>
-                      <div
-                        style="clear: inherit"
-                        v-for="error of v$.talla_pantalon.$errors"
-                        :key="error.$uid"
-                      >
-                        <div class="error-msg">{{ error.$message }}</div>
-                      </div>
+                      <error-component clave="talla_pantalon" :v$="v$" />
                     </template>
                   </q-input>
                 </div>
@@ -925,8 +835,8 @@
                     color="primary"
                     @click="agregarDiscapacidad()"
                     class="col-12 col-md-3 full-width"
-                    >Agregar discapacidad</q-btn
-                  >
+                    >Agregar discapacidad
+                  </q-btn>
                   <essential-table
                     :configuracionColumnas="[
                       ...configuracionColumnasTipoDiscapacidadPorcentajeReactive,
@@ -982,17 +892,11 @@
                 map-options
               >
                 <template v-slot:error>
-                  <div v-for="error of v$.jefe.$errors" :key="error.$uid">
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
+                  <error-component clave="jefe" :v$="v$" />
                 </template>
 
                 <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">
-                      No hay resultados
-                    </q-item-section>
-                  </q-item>
+                  <no-option-component />
                 </template>
               </q-select>
             </div>
@@ -1061,17 +965,11 @@
                 map-options
               >
                 <template v-slot:error>
-                  <div v-for="error of v$.area.$errors" :key="error.$uid">
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
+                  <error-component clave="area" :v$="v$" />
                 </template>
 
                 <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">
-                      No hay resultados
-                    </q-item-section>
-                  </q-item>
+                  <no-option-component />
                 </template>
               </q-select>
             </div>
@@ -1100,20 +998,11 @@
                 map-options
               >
                 <template v-slot:error>
-                  <div
-                    v-for="error of v$.departamento.$errors"
-                    :key="error.$uid"
-                  >
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
+                  <error-component clave="departamento" :v$="v$" />
                 </template>
 
                 <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">
-                      No hay resultados
-                    </q-item-section>
-                  </q-item>
+                  <no-option-component />
                 </template>
               </q-select>
             </div>
@@ -1143,17 +1032,11 @@
                 map-options
               >
                 <template v-slot:error>
-                  <div v-for="error of v$.cargo.$errors" :key="error.$uid">
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
+                  <error-component clave="cargo" :v$="v$" />
                 </template>
 
                 <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">
-                      No hay resultados
-                    </q-item-section>
-                  </q-item>
+                  <no-option-component />
                 </template>
               </q-select>
             </div>
@@ -1203,17 +1086,11 @@
                 </template>
 
                 <template v-slot:error>
-                  <div v-for="error of v$.roles.$errors" :key="error.$uid">
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
+                  <error-component clave="roles" :v$="v$" />
                 </template>
 
                 <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">
-                      No hay resultados
-                    </q-item-section>
-                  </q-item>
+                  <no-option-component />
                 </template>
               </q-select>
             </div>
@@ -1240,20 +1117,11 @@
                 map-options
               >
                 <template v-slot:error>
-                  <div
-                    v-for="error of v$.tipo_contrato.$errors"
-                    :key="error.$uid"
-                  >
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
+                  <error-component clave="tipo_contrato" :v$="v$" />
                 </template>
 
                 <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">
-                      No hay resultados
-                    </q-item-section>
-                  </q-item>
+                  <no-option-component />
                 </template>
               </q-select>
             </div>
@@ -1279,20 +1147,11 @@
                 map-options
               >
                 <template v-slot:error>
-                  <div
-                    v-for="error of v$.nivel_academico.$errors"
-                    :key="error.$uid"
-                  >
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
+                  <error-component clave="nivel_academico" :v$="v$" />
                 </template>
 
                 <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">
-                      No hay resultados
-                    </q-item-section>
-                  </q-item>
+                  <no-option-component />
                 </template>
               </q-select>
             </div>
@@ -1310,9 +1169,7 @@
                 dense
               >
                 <template v-slot:error>
-                  <div v-for="error of v$.titulo.$errors" :key="error.$uid">
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
+                  <error-component clave="titulo" :v$="v$" />
                 </template>
               </q-input>
             </div>
@@ -1357,13 +1214,7 @@
                 </template>
 
                 <template v-slot:error>
-                  <div
-                    style="clear: inherit"
-                    v-for="error of v$.fecha_ingreso.$errors"
-                    :key="error.$uid"
-                  >
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
+                  <error-component clave="fecha_ingreso" :v$="v$" />
                 </template>
               </q-input>
             </div>
@@ -1507,17 +1358,11 @@
                 map-options
               >
                 <template v-slot:error>
-                  <div v-for="error of v$.grupo.$errors" :key="error.$uid">
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
+                  <error-component clave="grupo" :v$="v$" />
                 </template>
 
                 <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">
-                      No hay resultados
-                    </q-item-section>
-                  </q-item>
+                  <no-option-component />
                 </template>
               </q-select>
             </div>
@@ -1536,9 +1381,7 @@
                 dense
               >
                 <template v-slot:error>
-                  <div v-for="error of v$.salario.$errors" :key="error.$uid">
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
+                  <error-component clave="salario" :v$="v$" />
                 </template>
               </q-input>
             </div>
@@ -1635,8 +1478,8 @@
                 @click="subirArchivos()"
               >
                 <q-icon name="bi-upload" class="q-mr-sm" size="xs"></q-icon>
-                Subir archivos seleccionados</q-btn
-              >
+                Subir archivos seleccionados
+              </q-btn>
             </template>
           </gestor-archivos>
         </div>
@@ -1676,8 +1519,8 @@
               <span>Agregar Familiares</span>
               <q-tooltip class="bg-dark"
                 >Puede modificar o eliminar un familiar desde el panel
-                familiares de empleados</q-tooltip
-              >
+                familiares de empleados
+              </q-tooltip>
             </q-btn>
 
             <div class="col-12 col-md-12">
@@ -1707,10 +1550,10 @@
       </q-form>
     </template>
   </tab-layout-filter-tabs2>
-    <modales-entidad
-      :comportamiento="modales"
-      :persistente="false"
-    ></modales-entidad>
+  <modales-entidad
+    :comportamiento="modales"
+    :persistente="false"
+  ></modales-entidad>
 </template>
 
 <script src="./EmpleadoPage.ts" />

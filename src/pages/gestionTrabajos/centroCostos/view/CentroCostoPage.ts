@@ -16,36 +16,46 @@ import { useNotificaciones } from 'shared/notificaciones'
 import { CambiarEstadoCentroCosto } from '../application/CambiarEstadoCentroCosto'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { useAuthenticationStore } from 'stores/authentication'
+import ErrorComponent from 'components/ErrorComponent.vue';
 
 //Logica y controladores
 
 
 export default defineComponent({
-  components: { TabLayout },
+  components: { ErrorComponent, TabLayout },
   setup() {
-    const mixin = new ContenedorSimpleMixin(CentroCosto, new CentroCostoController())
-    const { entidad: centro, disabled, listadosAuxiliares, listado } = mixin.useReferencias()
-    const { setValidador, cargarVista, obtenerListados } = mixin.useComportamiento()
+    const mixin = new ContenedorSimpleMixin(
+      CentroCosto,
+      new CentroCostoController()
+    )
+    const {
+      entidad: centro,
+      disabled,
+      listadosAuxiliares,
+      listado
+    } = mixin.useReferencias()
+    const { setValidador, cargarVista, obtenerListados } =
+      mixin.useComportamiento()
     const { confirmar, notificarCorrecto, notificarError } = useNotificaciones()
 
     const cargando = new StatusEssentialLoading()
     const store = useAuthenticationStore()
 
-    const { clientes, filtrarClientes } = useFiltrosListadosSelects(listadosAuxiliares)
+    const { clientes, filtrarClientes } =
+      useFiltrosListadosSelects(listadosAuxiliares)
 
     cargarVista(async () => {
       await obtenerListados({
         clientes: {
           controller: new ClienteController(),
-          params: { campos: 'id,empresa_id', estado: 1 }
+          params: { campos: 'id,empresa_id,razon_social', estado: 1 }
         }
       })
       clientes.value = listadosAuxiliares.clientes
     })
 
-
     const reglas = {
-      nombre: { required },
+      nombre: { required }
     }
 
     const v$ = useVuelidate(reglas, centro)
@@ -57,19 +67,25 @@ export default defineComponent({
       color: 'negative',
       tooltip: 'Desactivar',
       accion: ({ entidad, posicion }) => {
-        confirmar('¿Está seguro de desactivar este centro de costos?', async () => {
-          try {
-            cargando.activar()
-            const { result, response } = await new CambiarEstadoCentroCosto().anular(entidad.id)
-            listado.value.splice(posicion, 1, response.data.modelo)
-            notificarCorrecto('Desactivado correctamente')
-          } catch (error: any) {
-            notificarError('No se pudo desactivar el centro de costo!')
-          } finally {
-            cargando.desactivar()
+        confirmar(
+          '¿Está seguro de desactivar este centro de costos?',
+          async () => {
+            try {
+              cargando.activar()
+              const { result, response } =
+                await new CambiarEstadoCentroCosto().anular(entidad.id)
+              listado.value.splice(posicion, 1, response.data.modelo)
+              notificarCorrecto('Desactivado correctamente')
+            } catch (error: any) {
+              notificarError('No se pudo desactivar el centro de costo!')
+            } finally {
+              cargando.desactivar()
+            }
           }
-        })
-      }, visible: ({ entidad }) => entidad.activo && store.can('puede.desactivar.centros_costos')
+        )
+      },
+      visible: ({ entidad }) =>
+        entidad.activo && store.can('puede.desactivar.centros_costos')
     }
 
     const btnActivarCentroCosto: CustomActionTable = {
@@ -78,30 +94,38 @@ export default defineComponent({
       color: 'positive',
       tooltip: 'Desactivar',
       accion: ({ entidad, posicion }) => {
-        confirmar('¿Está seguro de desactivar este centro de costos?', async () => {
-          try {
-            cargando.activar()
-            const { result, response } = await new CambiarEstadoCentroCosto().anular(entidad.id)
-            listado.value.splice(posicion, 1, response.data.modelo)
-            notificarCorrecto('Desactivado correctamente')
-          } catch (error: any) {
-            notificarError('No se pudo desactivar el centro de costo!')
-          } finally {
-            cargando.desactivar()
+        confirmar(
+          '¿Está seguro de desactivar este centro de costos?',
+          async () => {
+            try {
+              cargando.activar()
+              const { result, response } =
+                await new CambiarEstadoCentroCosto().anular(entidad.id)
+              listado.value.splice(posicion, 1, response.data.modelo)
+              notificarCorrecto('Desactivado correctamente')
+            } catch (error: any) {
+              notificarError('No se pudo desactivar el centro de costo!')
+            } finally {
+              cargando.desactivar()
+            }
           }
-        })
-      }, visible: ({ entidad }) => !entidad.activo && store.can('puede.activar.centros_costos')
+        )
+      },
+      visible: ({ entidad }) =>
+        !entidad.activo && store.can('puede.activar.centros_costos')
     }
 
     return {
-      v$, mixin, centro, disabled,
+      v$,
+      mixin,
+      centro,
+      disabled,
       configuracionColumnas: configuracionColumnasCentroCostos,
 
-      clientes, filtrarClientes,
+      clientes,
+      filtrarClientes,
       btnDesactivarCentroCosto,
-      btnActivarCentroCosto,
-
+      btnActivarCentroCosto
     }
-
   }
 })

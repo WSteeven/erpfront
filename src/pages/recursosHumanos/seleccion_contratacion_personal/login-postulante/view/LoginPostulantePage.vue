@@ -1,36 +1,42 @@
 <template>
   <div id="fb-root"></div>
-  <q-page>
-    <div class="row items-center">
-      <!-- Left side -->
-      <div
-        v-if="!$q.screen.xs && !$q.screen.sm"
-        class="col-12 col-md-8 justify-center q-pa-lg items-center row window-height"
-        :class="{ 'bg-grey-2': !$q.dark.isActive }"
-      >
-        <div class="imagen d-flex align-items-center justify-content-center">
-          <q-avatar square size="400px">
-            <img :src="!$q.dark.isActive ? logoClaro : logoOscuro" />
-          </q-avatar>
-        </div>
+  <q-page class="gradiente-logind my-font">
+    <div class="row justify-center q-pt-xl q-px-sm">
+      <!-- Right side -->
+      <div class="col-12 text-center q-mb-md">
+        <img
+          :src="!$q.dark.isActive ? logoClaro : logoOscuro"
+          alt="logo"
+          width="100"
+        /><br /><br>
+        <span
+          :class="[
+            'text-thin',
+            'text-h5',
+            nombreEmpresa === 'JP CUSTODY'
+              ? 'elegant-gold-gradient-text'
+              : 'elegant-blue-hard-gradient-text'
+          ]"
+        >
+          FIRSTRED
+        </span>
+        <br />
+        <span class="text-bold text-grey-13 text-center">Enterprise Resource Planning</span>
       </div>
 
-      <!-- Right side -->
       <div
-        class="col-12 col-md-4 column items-center bgd-body-table justify-center window-height"
+        class="col-12 col-md-3 column bordfe q-py-lg rounded-card shadow-chip bg-solid"
       >
-        <q-avatar v-if="$q.screen.xs" square size="120px" class="q-mx-auto block q-mb-md">
-          <img :src="!$q.dark.isActive ? logoClaro : logoOscuro" />
-        </q-avatar>
-
         <form @submit.prevent="login" class="full-width q-px-lg">
           <div class="q-mb-sm">
-            <h2>Bienvenidos a {{ nombreEmpresa }}</h2>
-            <span>COMPROMETIDOS A BRINDAR UN SERVICIO DE EXCELENCIA!</span>
+            <!--            <h4>Bienvenidos a {{ nombreEmpresa }}</h4>-->
+            <!--            <span class="text-h6 text-bold text-center bg-red">Bienvenidos a {{ nombreEmpresa }}</span>-->
+            <span class="text-h5 text-bold">Inicio de sesión externo</span>
           </div>
           <div class="col-12">
             <!-- Botones -->
             <q-btn
+              v-if="false"
               color="primary"
               label="Ingrese con Linkedin"
               class="full-width q-mb-sm"
@@ -57,7 +63,7 @@
           <div class="col-12">
             <!-- Botones -->
             <q-btn
-              color="primary"
+              color="blue-8"
               label="Ingrese con Facebook"
               class="full-width q-mb-sm"
               no-caps
@@ -68,7 +74,15 @@
             </q-btn>
           </div>
           <div class="col-12">
-            <div class="fb-login-button" data-width="" data-size="" data-button-type="" data-layout="" data-auto-logout-link="false" data-use-continue-as="true"></div>
+            <div
+              class="fb-login-button"
+              data-width=""
+              data-size=""
+              data-button-type=""
+              data-layout=""
+              data-auto-logout-link="false"
+              data-use-continue-as="true"
+            ></div>
           </div>
           <div class="container q-my-md">
             <q-separator class="separator"></q-separator>
@@ -109,9 +123,9 @@
           </div>
 
           <!-- Recuerdame -->
-          <div class="col-12 q-mb-sm">
-            <q-toggle v-model="loginUser.remember_session" label="Recuérdame" />
-          </div>
+          <!--          <div class="col-12 q-mb-sm">-->
+          <!--            <q-toggle v-model="loginUser.remember_session" label="Recuérdame" />-->
+          <!--          </div>-->
 
           <div class="col-12">
             <!-- Botones -->
@@ -139,21 +153,20 @@
             >
             </q-btn>
           </div>
-          <div class="q-pa-md row justify-center">
-            <div class="col-6 q-my-sm">
-              <p>¿Quieres ser parte de JP CONSTRUCRED?</p>
+          <div class="q-pa-md row">
+            <div class="col-6 q-my-sm text-right">
+              <small>¿Quieres ser parte de JP CONSTRUCRED?</small>
             </div>
-            <div class="col-2">
+            <div class="col-6">
               <!-- Botones -->
               <q-btn
                 flat
                 color="primary"
                 label="Regístrate"
-                class="full-width q-mb-sm"
+                class="full-width q-mt-sm"
                 no-caps
                 unelevated
                 @click="registro()"
-
               >
               </q-btn>
             </div>
@@ -165,7 +178,6 @@
               class="full-width q-mb-sm"
               no-caps
               unelevated
-
               outline
               to="/login"
             />
@@ -177,33 +189,54 @@
 </template>
 <script src="./LoginPostulantePage.ts"></script>
 <style>
-    h2 {
-      line-height: 1.2;
-      font-size: 1.714rem;
-    }
+h2 {
+  line-height: 1.2;
+  font-size: 1.714rem;
+}
 
-    .empresa {
-      position: fixed;
-      top: 16px;
-      left: 16px;
-    }
-    .container {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .separator {
-      flex: 0 0 auto;
-      width: 30%;
-      height: 1px;
-      background-color: #ddd;
-    }
-    .fondo {
-      background: rgb(94, 88, 252);
-      background: linear-gradient(
-        90deg,
-        rgba(94, 88, 252, 1) 0%,
-        rgba(110, 143, 255, 1) 100%
-      );
-    }
+.empresa {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+}
+
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.separator {
+  flex: 0 0 auto;
+  width: 30%;
+  height: 1px;
+  background-color: #ddd;
+}
+
+.fondo {
+  background: rgb(94, 88, 252);
+  background: linear-gradient(
+    90deg,
+    rgba(94, 88, 252, 1) 0%,
+    rgba(110, 143, 255, 1) 100%
+  );
+}
+
+.gradiente-login {
+  background: #667db6; /* fallback for old browsers */
+  background: -webkit-linear-gradient(
+    to right,
+    #667db6,
+    #0082c8,
+    #0082c8,
+    #667db6
+  ); /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(
+    to right,
+    #667db6,
+    #0082c8,
+    #0082c8,
+    #667db6
+  ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
 </style>

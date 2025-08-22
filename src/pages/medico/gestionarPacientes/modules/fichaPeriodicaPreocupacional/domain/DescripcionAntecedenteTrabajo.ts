@@ -10,7 +10,7 @@ export class DescripcionAntecedenteTrabajo extends EntidadAuditable {
 
   constructor() {
     super()
-    this.calificado_iss = true
+    this.calificado_iss = false
     this.instituto_seguridad_social = null
     this.fecha = null
     this.observacion = null

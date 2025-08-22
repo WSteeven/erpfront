@@ -12,20 +12,22 @@
     :forzarListar="true"
     :accion1="editarGasto"
     :puede-exportar="true"
-    ajustar-celdas paginate
+    ajustar-celdas
+    paginate
   >
-<!--    puede.registrar.fondos_terceros -->
-<!--    puede.delegar.registro_fondos -->
+    <!--    puede.registrar.fondos_terceros -->
+    <!--    puede.delegar.registro_fondos -->
     <template #formulario>
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-mb-md q-mt-md q-mx-md q-py-sm">
           <!-- Empleado Solicitante -->
-          <div class="col-12 col-md-3" v-if="accion===acciones.consultar">
+          <div class="col-12 col-md-3" v-if="accion === acciones.consultar">
             <label class="q-mb-sm block">Empleado Solicitante</label>
             <q-input
               v-model="gasto.empleado_info"
               placeholder="Obligatorio"
-              disable autogrow
+              disable
+              autogrow
               outlined
               dense
             >
@@ -33,7 +35,10 @@
           </div>
 
           <!-- Usuario del gasto -->
-          <div class="col-12 col-md-3 q-mb-md col-sm-3" v-if="store.can('puede.registrar.fondos_terceros')">
+          <div
+            class="col-12 col-md-3 q-mb-md col-sm-3"
+            v-if="store.can('puede.registrar.fondos_terceros')"
+          >
             <label class="q-mb-sm block">Empleado Solicitante</label>
             <q-select
               v-model="gasto.id_usuario"
@@ -60,11 +65,43 @@
               </template>
 
               <template v-slot:no-option>
-                <no-option-component/>
+                <no-option-component />
               </template>
             </q-select>
           </div>
 
+          <!-- Cliente -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">¿Para qué empresa es el gasto?</label>
+            <q-select
+                v-model="gasto.cliente"
+                :options="clientes"
+                transition-show="jump-up"
+                transition-hide="jump-down"
+                options-dense
+                dense
+                outlined
+                hint="Seleccione la empresa para la que hizo este gasto."
+                :disable="disabled"
+                :error="!!v$.cliente.$errors.length"
+                error-message="Debes seleccionar una empresa"
+                use-input
+                input-debounce="0"
+                @blur="v$.cliente.$touch"
+                @filter="filtrarClientes"
+                :option-value="v => v.id"
+                :option-label="v => v.razon_social"
+                emit-value
+                map-options
+            >
+              <template v-slot:error>
+                <error-component clave="cliente" :v$="v$" />
+              </template>
+              <template v-slot:no-option>
+                <no-option-component />
+              </template>
+            </q-select>
+          </div>
 
           <!-- Lugar -->
           <div class="col-12 col-md-3">
@@ -85,8 +122,8 @@
               input-debounce="0"
               @blur="v$.lugar.$touch"
               @filter="filtrarCantones"
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.canton"
+              :option-value="v => v.id"
+              :option-label="v => v.canton"
               emit-value
               map-options
             >
@@ -94,7 +131,7 @@
                 <error-component clave="lugar" :v$="v$" />
               </template>
               <template v-slot:no-option>
-                <no-option-component/>
+                <no-option-component />
               </template>
               <template v-slot:after>
                 <q-btn color="positive" @click="recargar('canton')">
@@ -119,7 +156,11 @@
             >
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
-                  <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                  <q-popup-proxy
+                    cover
+                    transition-show="scale"
+                    transition-hide="scale"
+                  >
                     <q-date
                       v-model="gasto.fecha_viat"
                       :mask="maskFecha"
@@ -127,7 +168,12 @@
                       today-btn
                     >
                       <div class="row items-center justify-end">
-                        <q-btn v-close-popup label="Cerrar" color="primary" flat />
+                        <q-btn
+                          v-close-popup
+                          label="Cerrar"
+                          color="primary"
+                          flat
+                        />
                       </div>
                     </q-date>
                   </q-popup-proxy>
@@ -160,8 +206,8 @@
               @blur="v$.proyecto.$touch"
               @filter="filtrarProyectos"
               @update:model-value="cambiarProyecto()"
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.nombre"
+              :option-value="v => v.id"
+              :option-label="v => v.nombre"
               emit-value
               map-options
             >
@@ -171,15 +217,15 @@
               <template v-slot:option="scope">
                 <q-item v-bind="scope.itemProps" class="q-my-sm">
                   <q-item-section>
-                    <q-item-label class="text-bold text-primary">{{
-                      scope.opt.codigo_proyecto
-                    }}</q-item-label>
-                    <q-item-label caption>{{ scope.opt.nombre }} </q-item-label>
+                    <q-item-label class="text-bold text-primary"
+                      >{{ scope.opt.codigo_proyecto }}
+                    </q-item-label>
+                    <q-item-label caption>{{ scope.opt.nombre }}</q-item-label>
                   </q-item-section>
                 </q-item>
               </template>
               <template v-slot:no-option>
-                <no-option-component/>
+                <no-option-component />
               </template>
             </q-select>
           </div>
@@ -203,8 +249,8 @@
               error-message="Debes seleccionar una Tarea"
               use-input
               input-debounce="0"
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.titulo"
+              :option-value="v => v.id"
+              :option-label="v => v.titulo"
               emit-value
               map-options
             >
@@ -214,15 +260,15 @@
               <template v-slot:option="scope">
                 <q-item v-bind="scope.itemProps" class="q-my-sm">
                   <q-item-section>
-                    <q-item-label class="text-bold text-primary">{{
-                      scope.opt.codigo_tarea
-                    }}</q-item-label>
-                    <q-item-label caption>{{ scope.opt.titulo }} </q-item-label>
+                    <q-item-label class="text-bold text-primary"
+                      >{{ scope.opt.codigo_tarea }}
+                    </q-item-label>
+                    <q-item-label caption>{{ scope.opt.titulo }}</q-item-label>
                   </q-item-section>
                 </q-item>
               </template>
               <template v-slot:no-option>
-                <no-option-component/>
+                <no-option-component />
               </template>
             </q-select>
           </div>
@@ -258,8 +304,8 @@
               @blur="v$.detalle.$touch"
               @update:model-value="cambiarDetalle()"
               @filter="filtrarDetalles"
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.descripcion"
+              :option-value="v => v.id"
+              :option-label="v => v.descripcion"
               emit-value
               map-options
             >
@@ -267,7 +313,7 @@
                 <error-component clave="detalle" :v$="v$" />
               </template>
               <template v-slot:no-option>
-                <no-option-component/>
+                <no-option-component />
               </template>
               <template v-slot:after>
                 <q-btn color="positive" @click="recargar('detalle')">
@@ -298,12 +344,14 @@
               @update:model-value="tieneFacturaSubDetalle()"
               :error="!!v$.sub_detalle.$errors.length"
               error-message="Debes seleccionar uno o varios sub_detalle"
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.descripcion"
+              :option-value="v => v.id"
+              :option-label="v => v.descripcion"
               emit-value
               map-options
             >
-              <template v-slot:option="{ itemProps, opt, selected, toggleOption }">
+              <template
+                v-slot:option="{ itemProps, opt, selected, toggleOption }"
+              >
                 <q-item v-bind="itemProps">
                   <q-item-section>
                     {{ opt.descripcion }}
@@ -321,7 +369,13 @@
                 <error-component clave="sub_detalle" :v$="v$" />
               </template>
               <template v-slot:no-option>
-                <no-option-component :message="gasto.detalle ? 'No hay resultados' : 'Primero selecciona un detalle'"/>
+                <no-option-component
+                  :message="
+                    gasto.detalle
+                      ? 'No hay resultados'
+                      : 'Primero selecciona un detalle'
+                  "
+                />
               </template>
               <template v-slot:after>
                 <q-btn color="positive" @click="recargar('sub_detalle')">
@@ -330,9 +384,9 @@
               </template>
             </q-select>
           </div>
-<!--          {{sub_detalles}}-->
-<!--          {{gasto.sub_detalle}}-->
-          <div class="col-12 col-md-3" v-if="gasto.detalle==6">
+          <!--          {{sub_detalles}}-->
+          <!--          {{gasto.sub_detalle}}-->
+          <div class="col-12 col-md-3" v-if="gasto.detalle == 6">
             <label class="q-mb-sm block">Nodo</label>
             <q-select
               v-model="gasto.nodo"
@@ -362,7 +416,10 @@
             </q-select>
           </div>
           <!-- Factura -->
-          <div class="col-12 col-md-3" v-if="esFactura && gasto.detalle != null">
+          <div
+            class="col-12 col-md-3"
+            v-if="esFactura && gasto.detalle != null"
+          >
             <label class="q-mb-sm block">#Factura</label>
             <q-input
               v-model="gasto.factura"
@@ -400,7 +457,10 @@
             </q-input>
           </div>
           <!-- RUC -->
-          <div class="col-12 col-md-3" v-if="esFactura && gasto.detalle != null">
+          <div
+            class="col-12 col-md-3"
+            v-if="esFactura && gasto.detalle != null"
+          >
             <label class="q-mb-sm block">RUC</label>
             <q-input
               v-model="gasto.ruc"
@@ -491,15 +551,17 @@
               input-debounce="0"
               @filter="filtrarBeneficiarios"
               @popup-show="ordenarLista(beneficiarios, 'nombres')"
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.nombres + ' ' + v.apellidos"
+              :option-value="v => v.id"
+              :option-label="v => v.nombres + ' ' + v.apellidos"
               emit-value
               map-options
             >
-              <template v-slot:option="{ itemProps, opt, selected, toggleOption }">
+              <template
+                v-slot:option="{ itemProps, opt, selected, toggleOption }"
+              >
                 <q-item v-bind="itemProps">
                   <q-item-section>
-                    {{ opt.apellidos + " " + opt.nombres }}
+                    {{ opt.apellidos + ' ' + opt.nombres }}
                     <q-item-label v-bind:inner-h-t-m-l="opt.nombres" />
                   </q-item-section>
                   <q-item-section side>
@@ -511,7 +573,7 @@
                 </q-item>
               </template>
               <template v-slot:no-option>
-               <no-option-component/>
+                <no-option-component />
               </template>
             </q-select>
           </div>
@@ -535,8 +597,8 @@
               @blur="v$.aut_especial.$touch"
               @filter="filtrarAutorizacionesEspeciales"
               @popup-show="ordenarLista(autorizaciones_especiales, 'nombres')"
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.nombres + ' ' + v.apellidos"
+              :option-value="v => v.id"
+              :option-label="v => v.nombres + ' ' + v.apellidos"
               emit-value
               map-options
             >
@@ -544,7 +606,7 @@
                 <error-component clave="aut_especial" :v$="v$" />
               </template>
               <template v-slot:no-option>
-                <no-option-component/>
+                <no-option-component />
               </template>
             </q-select>
           </div>
@@ -567,7 +629,10 @@
             </q-input>
           </div>
           <!--es vehiculo alquilado-->
-          <div class="col-12 col-md-3 q-mb-xl" v-if="esCombustibleEmpresa || mostarPlaca">
+          <div
+            class="col-12 col-md-3 q-mb-xl"
+            v-if="esCombustibleEmpresa || mostarPlaca"
+          >
             <q-checkbox
               class="q-mb-lg"
               v-model="gasto.es_vehiculo_alquilado"
@@ -619,8 +684,8 @@
               error-message="Debes seleccionar un numero de placa"
               use-input
               input-debounce="0"
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.placa"
+              :option-value="v => v.id"
+              :option-label="v => v.placa"
               emit-value
               map-options
             >
@@ -630,14 +695,14 @@
               <template v-slot:option="scope">
                 <q-item v-bind="scope.itemProps" class="q-my-sm">
                   <q-item-section>
-                    <q-item-label class="text-bold text-primary">{{
-                      scope.opt.placa
-                    }}</q-item-label>
+                    <q-item-label class="text-bold text-primary"
+                      >{{ scope.opt.placa }}
+                    </q-item-label>
                   </q-item-section>
                 </q-item>
               </template>
               <template v-slot:no-option>
-                <no-option-component/>
+                <no-option-component />
               </template>
             </q-select>
           </div>
@@ -648,7 +713,7 @@
             <selector-imagen
               :imagen="gasto.comprobante1"
               file_extensiones=".jpg, image/*"
-              @update:modelValue="(data) => (gasto.comprobante1 = data)"
+              @update:modelValue="data => (gasto.comprobante1 = data)"
               :error="!!v$.comprobante1.$errors.length"
             ></selector-imagen>
           </div>
@@ -658,7 +723,7 @@
             <selector-imagen
               :imagen="gasto.comprobante2"
               file_extensiones=".jpg, image/*"
-              @update:modelValue="(data) => (gasto.comprobante2 = data)"
+              @update:modelValue="data => (gasto.comprobante2 = data)"
               :error="!!v$.comprobante2.$errors.length"
             ></selector-imagen>
           </div>
@@ -666,10 +731,10 @@
           <div class="col-12 col-md-3" v-if="requiere4Imagenes">
             <label class="q-mb-sm block">Comprobante 3</label>
             <selector-imagen
-                :imagen="gasto.comprobante3"
-                file_extensiones=".jpg, image/*"
-                @update:modelValue="(data) => (gasto.comprobante3 = data)"
-                :error="!!v$.comprobante3.$errors.length"
+              :imagen="gasto.comprobante3"
+              file_extensiones=".jpg, image/*"
+              @update:modelValue="data => (gasto.comprobante3 = data)"
+              :error="!!v$.comprobante3.$errors.length"
             ></selector-imagen>
           </div>
 
@@ -677,10 +742,10 @@
           <div class="col-12 col-md-3" v-if="requiere4Imagenes">
             <label class="q-mb-sm block">Comprobante 4</label>
             <selector-imagen
-                :imagen="gasto.comprobante4"
-                file_extensiones=".jpg, image/*"
-                @update:modelValue="(data) => (gasto.comprobante4 = data)"
-                :error="!!v$.comprobante4.$errors.length"
+              :imagen="gasto.comprobante4"
+              file_extensiones=".jpg, image/*"
+              @update:modelValue="data => (gasto.comprobante4 = data)"
+              :error="!!v$.comprobante4.$errors.length"
             ></selector-imagen>
           </div>
 
@@ -704,7 +769,10 @@
             </q-input>
           </div>
           <!-- Observacion de Anulacion -->
-          <div class="col-12 col-md-3" v-if="gasto.estado === estadosGastos.ANULADO">
+          <div
+            class="col-12 col-md-3"
+            v-if="gasto.estado === estadosGastos.ANULADO"
+          >
             <label class="q-mb-sm block">Observacion de Anulación</label>
             <q-input
               v-model="gasto.observacion_anulacion"
@@ -718,7 +786,7 @@
             </q-input>
           </div>
           <!-- Centro de Costo -->
-          <div class="col-12 col-md-3" v-if="accion===acciones.consultar">
+          <div class="col-12 col-md-3" v-if="accion === acciones.consultar">
             <label class="q-mb-sm block">Centro de Costo</label>
             <q-input
               v-model="gasto.centro_costo"
@@ -730,7 +798,7 @@
             </q-input>
           </div>
           <!-- Sub Centro de Costo -->
-          <div class="col-12 col-md-3" v-if="accion===acciones.consultar">
+          <div class="col-12 col-md-3" v-if="accion === acciones.consultar">
             <label class="q-mb-sm block">Sub Centro de Costo</label>
             <q-input
               v-model="gasto.subcentro_costo"
@@ -744,8 +812,62 @@
           <!-- Estado -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Estado</label>
-            <q-input v-model="gasto.estado_info" placeholder="" disable outlined dense>
+            <q-input
+              v-model="gasto.estado_info"
+              placeholder=""
+              disable
+              outlined
+              dense
+            >
             </q-input>
+          </div>
+        </div>
+        <!--        {{gasto.registros_valijas}}-->
+        <div v-if="mostrarComponenteValija">
+          <q-separator color="primary"></q-separator>
+          <div
+            id="step2"
+            class="col-12 text-primary bg-blue-1 q-px-md q-py-sm text-bold"
+          >
+            <q-icon name="bi-repeat" class="q-mr-sm"></q-icon>
+            Registro de envío de valija
+          </div>
+          <q-separator color="primary"></q-separator>
+          <div class="row q-pa-md">
+            <div class="col-12 col-md-3">
+              <q-toggle
+                v-model="gasto.se_envia_valija"
+                label="¿Va a registrar envío de valija?"
+                :disable="disabled"
+                @update:model-value="checkSeEnviaValija"
+              />
+            </div>
+
+            <!-- Aqui va el componente de valija -->
+            <div class="col-12">
+              <essential-table
+                v-if="gasto.se_envia_valija"
+                :datos="gasto.registros_valijas"
+                :configuracion-columnas="
+                  [acciones.nuevo, acciones.editar].includes(accion)
+                    ? [...configuracionColumnasValijas, accionesTabla]
+                    : configuracionColumnasValijas
+                "
+                ajustar-celdas
+                :v$="v$"
+                key-error="registros_valijas"
+                :disable="disabled"
+                :permitirConsultar="false"
+                :permitirEditarCeldas="true"
+                :permitirEditar="true"
+                permitirEditarModal
+                :permitirEliminar="false"
+                :altoFijo="false"
+                :accion1Header="btnAgregarRegistroValija"
+                :accion1="btnEliminarDefault(gasto.registros_valijas)"
+                :mostrarFooter="false"
+              />
+            </div>
           </div>
         </div>
       </q-form>

@@ -44,9 +44,11 @@ import { VisibleModal } from '../application/VisibleModal'
 import CampoBoleano from './partials/CampoBoleano.vue'
 import EstadosPostulaciones from './EstadosPostulaciones.vue'
 import ErrorComponent from 'components/ErrorComponent.vue'
+import SelectorImagen from 'components/SelectorImagen.vue';
 
 export default defineComponent({
   components: {
+    SelectorImagen,
     ErrorComponent,
     PrevisualizarTablaPdf,
     EditarTablaModal,
@@ -116,7 +118,7 @@ export default defineComponent({
     },
     ajustarCeldas: {
       type: Boolean,
-      default: false
+      default: true
     },
     accion1: {
       type: Object as () => CustomActionTable,
@@ -275,7 +277,7 @@ export default defineComponent({
     'update:selected',
     'fila-modificada',
     'cancelar-editar',
-    'cancelar-consultar',
+    'cancelar-consultar'
   ],
   setup(props, { emit }) {
     /************
@@ -403,9 +405,13 @@ export default defineComponent({
       fila.value = null
     }
 
-    const getIndex = (data) => {
-      if (data.table_index) return listado.value.findIndex((fila: any) => fila.table_index === data.table_index)
-      else if (data.id) return props.datos.findIndex((fila: any) => fila.id === data.id)
+    const getIndex = data => {
+      if (data.table_index)
+        return listado.value.findIndex(
+          (fila: any) => fila.table_index === data.table_index
+        )
+      else if (data.id)
+        return props.datos.findIndex((fila: any) => fila.id === data.id)
       else return posicionFilaEditada.value
     }
 
@@ -422,7 +428,7 @@ export default defineComponent({
       console.log(posicionFilaEditada.value)
 
       const dataAnterior = listado.value[posicion]
-      const dataNueva = {...dataAnterior, ...data}
+      const dataNueva = { ...dataAnterior, ...data }
 
       console.log(dataNueva)
       if (props.editarFilaLocal) listado.value[posicion] = dataNueva
@@ -478,9 +484,9 @@ export default defineComponent({
     function extraerIcono(accion: CustomActionTable, propsTable: any) {
       return typeof accion?.icono === 'function'
         ? accion.icono({
-          entidad: propsTable.row,
-          posicion: propsTable.rowIndex
-        })
+            entidad: propsTable.row,
+            posicion: propsTable.rowIndex
+          })
         : accion?.icono
     }
 
@@ -594,9 +600,9 @@ export default defineComponent({
     function extraerColor(accion: CustomActionTable, propsTable: any) {
       return typeof accion?.color === 'function'
         ? accion.color({
-          entidad: propsTable.row,
-          posicion: propsTable.rowIndex
-        })
+            entidad: propsTable.row,
+            posicion: propsTable.rowIndex
+          })
         : accion?.color
     }
 
@@ -662,11 +668,12 @@ export default defineComponent({
       verVisorArchivos,
       archivos,
       visibleModalVisorArchivos,
-      emitirFila: (accion, rowIndex: number) => accion(listado.value[rowIndex], rowIndex),
+      emitirFila: (accion, rowIndex: number) =>
+        accion(listado.value[rowIndex], rowIndex),
       cancelar,
       abrirModalNuevoRegistro,
       accion,
-      extraerDisable,
+      extraerDisable
     }
   }
 })

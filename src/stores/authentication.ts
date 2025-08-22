@@ -12,12 +12,14 @@ import { ResetPassword } from 'sistema/authentication/resetPassword/domain/Reset
 import { UltimoSaldoController } from 'pages/fondosRotativos/reportes/reporteSaldoActual/infrestucture/UltimoSaldoController'
 import { UserLogin } from 'sistema/authentication/login/domain/UserLogin'
 import { useListadosSistemaStore } from './listadosSistema'
+import { useNotificaciones } from 'shared/notificaciones'
 
 export const useAuthenticationStore = defineStore('authentication', () => {
   // Variables locales
   const axios = AxiosHttpRepository.getInstance()
   let usuarioFueConsultado = false
   const listadosSistemaStore = useListadosSistemaStore()
+  const { notificarError } = useNotificaciones()
 
   // State
   const auth = ref(false)
@@ -136,8 +138,8 @@ export const useAuthenticationStore = defineStore('authentication', () => {
   const login = async (credentiales: UserLogin): Promise<Empleado> => {
     try {
       /*const csrf_cookie = axios.getEndpoint(endpoints.csrf_cookie)
-      console.log('authentication...')
-      await axios.get(csrf_cookie) */
+            console.log('authentication...')
+            await axios.get(csrf_cookie) */
 
       const login = axios.getEndpoint(endpoints.login)
       const response: AxiosResponse = await axios.post(login, credentiales)
@@ -148,12 +150,14 @@ export const useAuthenticationStore = defineStore('authentication', () => {
       roles.value = response.data.modelo.roles
       permisos.value = response.data.modelo.permisos
 
-      listadosSistemaStore.cargarDatosLS()
+      await listadosSistemaStore.cargarDatosLS()
 
       return response.data.modelo
-    } catch (error: unknown) {
-      console.log(error)
-
+    } catch (error: any) {
+      // console.log(error)
+      notificarError(
+        error.response.statusText + ': ' + error.response.data.mensaje
+      )
       const axiosError = error as AxiosError
       throw new ApiError(axiosError)
     }
@@ -163,8 +167,8 @@ export const useAuthenticationStore = defineStore('authentication', () => {
   //  const loginPostulante = async (credentiales: UserLoginPostulante): Promise<Empleado> => {
   //   try {
   /*const csrf_cookie = axios.getEndpoint(endpoints.csrf_cookie)
-      console.log('authentication...')
-      await axios.get(csrf_cookie) */
+        console.log('authentication...')
+        await axios.get(csrf_cookie) */
 
   //     const login = axios.getEndpoint(endpoints.login)
   //     const response: AxiosResponse = await axios.post(login, credentiales)
@@ -292,6 +296,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
       throw new ApiError(axiosError)
     }
   }
+
   // console.log(user);
 
   return {

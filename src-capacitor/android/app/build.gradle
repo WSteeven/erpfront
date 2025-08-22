@@ -1,14 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
-    namespace "org.firstred.jpconstrucred.com"
+    namespace "org.firstred.jpcustody.com"
     compileSdk rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "org.firstred.jpconstrucred.com"
+        applicationId "org.firstred.jpcustody.com"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.0.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
@@ -40,6 +40,8 @@ dependencies {
     androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
     implementation project(':capacitor-cordova-android-plugins')
+//    implementation 'com.google.android.material:material:1.12.0'
+
 }
 
 apply from: 'capacitor.build.gradle'

@@ -14,12 +14,15 @@ import { AptitudMedica } from '../../seccionesFichas/aptitudMedicaTrabajo/domain
 export class FichaPeriodicaPreocupacional extends FichaMedica {
   numero_archivo: number | null
   registro_empleado_examen: number | null
+  empleado: string | null
   religion: number | null
   orientacion_sexual: number | null
   cargo: number | null
   identidad_genero: number | null
   lateralidad: string | null
   motivo_consulta: string | null
+  grupo_sanguineo: string | null
+  antecedente_clinico_quirurgico: string | null
   antecedentes_gineco_obstetricos: AntecedenteGinecoObstetrico
   antecedente_personal: AntecedentePersonal
   habitos_toxicos: ResultadoHabitoToxico[]
@@ -47,6 +50,7 @@ export class FichaPeriodicaPreocupacional extends FichaMedica {
     this.cargo = null
     this.lateralidad = null
     this.motivo_consulta = null
+    this.antecedente_clinico_quirurgico= null
     this.antecedentes_gineco_obstetricos = new AntecedenteGinecoObstetrico()
     this.antecedente_personal = new AntecedentePersonal()
     this.habitos_toxicos = []

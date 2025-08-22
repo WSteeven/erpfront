@@ -26,8 +26,6 @@ import {
   estadosGastos,
   maskFecha
 } from 'config/utils'
-import { VisualizarGasto } from '../domain/VisualizarGasto'
-import { VisualizarGastoController } from '../infrestructure/VisualizarGastoController'
 import { useCargandoStore } from 'stores/cargando'
 import SelectorImagen from 'components/SelectorImagen.vue'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
@@ -39,9 +37,17 @@ import { Gasto } from '../domain/Gasto'
 import { GastoController } from '../infrestructure/GastoController'
 import { isAxiosError, notificarMensajesError } from 'shared/utils'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import NoOptionComponent from 'components/NoOptionComponent.vue';
+import ErrorComponent from 'components/ErrorComponent.vue';
 
 export default defineComponent({
-  components: { TabLayout, SelectorImagen, ButtonSubmits },
+  components: {
+    ErrorComponent,
+    NoOptionComponent,
+    TabLayout,
+    SelectorImagen,
+    ButtonSubmits
+  },
   emits: ['guardado', 'cerrar-modal'],
   setup(props, { emit }) {
     const authenticationStore = useAuthenticationStore()
@@ -54,21 +60,15 @@ export default defineComponent({
     /***********
      * Mixin
      ************/
-    const mixin = new ContenedorSimpleMixin(
-      VisualizarGasto,
-      new VisualizarGastoController()
-    )
-    const mixin_gastos = new ContenedorSimpleMixin(Gasto, new GastoController())
+    const mixin = new ContenedorSimpleMixin(Gasto, new GastoController())
     const {
-      entidad: visualizar_gasto,
+      entidad: gasto,
       disabled,
       accion,
-      listadosAuxiliares,
+      listadosAuxiliares
     } = mixin.useReferencias()
-    const { setValidador, cargarVista } =
-      mixin.useComportamiento()
+    const { setValidador, cargarVista } = mixin.useComportamiento()
     const { onConsultado } = mixin.useHooks()
-    const { entidad: gasto } = mixin_gastos.useReferencias()
     const issubmit = ref(true)
     const { confirmar, notificarCorrecto, notificarAdvertencia } =
       useNotificaciones()
@@ -90,6 +90,7 @@ export default defineComponent({
     const proyectos = ref([])
     const autorizaciones_especiales: Ref<Empleado[]> = ref([])
     const tareas = ref([])
+    const clientes = ref([])
     const vehiculos = ref([])
     const beneficiarios = ref([])
     const cargando = new StatusEssentialLoading()
@@ -101,16 +102,14 @@ export default defineComponent({
       if (gasto.sub_detalle == null) {
         return false
       }
-      if (parseInt(gasto.detalle !== null ? gasto.detalle : '') === 24) {
+      if (Number(gasto.detalle) === 24) {
         return true
       }
-      if (parseInt(gasto.detalle !== null ? gasto.detalle : '') === 6) {
+      if (Number(gasto.detalle) === 6) {
         return (
-          gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 96) >
-          -1 ||
-          gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 97) >
-          -1 ||
-          gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 24) > -1
+          gasto.sub_detalle!.findIndex(subdetalle => subdetalle === 96) > -1 ||
+          gasto.sub_detalle!.findIndex(subdetalle => subdetalle === 97) > -1 ||
+          gasto.sub_detalle!.findIndex(subdetalle => subdetalle === 24) > -1
         )
       } else {
         return false
@@ -120,49 +119,41 @@ export default defineComponent({
       {
         detalle: 16,
         cantidad: 22,
-        mascara: '###-###-##############',
+        mascara: '###-###-##############'
       },
       {
         detalle: 10,
         cantidad: 17,
-        mascara: '###-###-#########',
-      },
+        mascara: '###-###-#########'
+      }
     ]
     const cantidadPermitidaFactura = computed(() => {
-      let cantidad = 17
-
-      if (esFactura.value === false) {
-        cantidad = 0
-      }
       const index = numFacturaObjeto
-        .map((object) => object.detalle)
+        .map(object => object.detalle)
         .indexOf(parseInt(gasto.detalle !== null ? gasto.detalle : ''))
-      cantidad =
-        numFacturaObjeto[index] !== undefined
-          ? numFacturaObjeto[index].cantidad
-          : 15
-      return cantidad
+      return numFacturaObjeto[index] !== undefined
+        ? numFacturaObjeto[index].cantidad
+        : 15
     })
     const mostarPlaca = computed(() => {
-      return parseInt(gasto.detalle !== null ? gasto.detalle : '') == 16 ||
+      return (
+        parseInt(gasto.detalle !== null ? gasto.detalle : '') == 16 ||
         parseInt(gasto.detalle !== null ? gasto.detalle : '') == 24
-        ? true
-        : false
+      )
     })
     const mascaraFactura = computed(() => {
-      let mascara = '###-###-#############'
       const index = numFacturaObjeto
-        .map((object) => object.detalle)
+        .map(object => object.detalle)
         .indexOf(parseInt(gasto.detalle !== null ? gasto.detalle : ''))
-      mascara =
-        numFacturaObjeto[index] !== undefined
-          ? numFacturaObjeto[index].mascara
-          : '###-###-#########'
-      return mascara
+      return numFacturaObjeto[index] !== undefined
+        ? numFacturaObjeto[index].mascara
+        : '###-###-#########'
     })
+
     onConsultado(() => {
       esFactura.value = !!gasto.factura
     })
+
     //Obtener el listado de las cantones
     cargarVista(async () => {
       beneficiarios.value = fondoRotativoStore.empleados
@@ -171,12 +162,14 @@ export default defineComponent({
       listadosAuxiliares.proyectos = proyectos.value
       listadosAuxiliares.proyectos.unshift({ id: 0, nombre: 'Sin Proyecto' })
       tareas.value = fondoRotativoStore.tareas
+      clientes.value = fondoRotativoStore.clientes
       listadosAuxiliares.tareas = tareas.value
-      if (listadosAuxiliares.tareas !== undefined) listadosAuxiliares.tareas.unshift({
-        id: 0,
-        titulo: 'Sin Tarea',
-        codigo_tarea: ' ',
-      })
+      if (listadosAuxiliares.tareas !== undefined)
+        listadosAuxiliares.tareas.unshift({
+          id: 0,
+          titulo: 'Sin Tarea',
+          codigo_tarea: ' '
+        })
       vehiculos.value = fondoRotativoStore.vehiculos
       listadosAuxiliares.vehiculos = vehiculos.value
       cantones.value =
@@ -199,9 +192,11 @@ export default defineComponent({
         mostrarListado.value = false
         mostrarAprobacion.value = true
         esFactura.value = !!gasto.factura
-        permitirAnular.value = fondoRotativoStore.habilitar_observacion_autorizador
+        permitirAnular.value =
+          fondoRotativoStore.habilitar_observacion_autorizador
         accion.value = fondoRotativoStore.accion_form
-        isConsultar.value = fondoRotativoStore.accion_form === acciones.consultar
+        isConsultar.value =
+          fondoRotativoStore.accion_form === acciones.consultar
       }
     })
 
@@ -210,86 +205,87 @@ export default defineComponent({
      **************/
     const reglas = {
       fecha_viat: {
-        required,
+        required
       },
       lugar: {
-        required,
+        required
       },
       num_tarea: {
-        required,
+        required
       },
       proyecto: {
-        required,
+        required
       },
       ruc: {
         minLength: minLength(13),
         maxLength: maxLength(13),
-        required: requiredIf(() => esFactura.value),
+        required: requiredIf(() => esFactura.value)
       },
       factura: {
         minLength: minLength(cantidadPermitidaFactura),
-        required: requiredIf(() => esFactura.value),
+        required: requiredIf(() => esFactura.value)
       },
       /*beneficiarios: {
-        required: required
-      },*/
+              required: required
+            },*/
       aut_especial: {
-        required: required,
+        required: required
       },
       empleado_info: {
-        required,
+        required
       },
       num_comprobante: {
-        maxLength: maxLength(17),
+        maxLength: maxLength(17)
       },
       detalle: {
-        required,
+        required
       },
       sub_detalle: {
-        required,
+        required
       },
       cantidad: {
         maxValue: maxValue(9999),
-        required,
+        required
       },
       valor_u: {
         maxValue: maxValue(9999),
-        required,
+        required
       },
       total: {
-        required,
+        required
       },
       comprobante1: {
-        required: requiredIf(() => gasto.comprobante1 !== gasto.comprobante2),
+        required: requiredIf(() => gasto.comprobante1 !== gasto.comprobante2)
       },
       comprobante2: {
-        required: requiredIf(() => gasto.comprobante2 !== gasto.comprobante1),
+        required: requiredIf(() => gasto.comprobante2 !== gasto.comprobante1)
       },
       kilometraje: {
-        required: requiredIf(() => esCombustibleEmpresa.value),
+        required: requiredIf(() => esCombustibleEmpresa.value)
       },
       vehiculo: {
         required: requiredIf(
           () => esCombustibleEmpresa.value && !gasto.es_vehiculo_alquilado
-        ),
+        )
       },
       observacion: {
-        required,
+        required
       },
       placa: {
-        required: requiredIf(() => gasto.es_vehiculo_alquilado),
+        required: requiredIf(() => gasto.es_vehiculo_alquilado)
       },
       detalle_estado: {
-        required,
+        required
       },
       observacion_anulacion: {
-        required: requiredIf(() => gasto.estado === estadosGastos.APROBADO),
+        required: requiredIf(() => gasto.estado === estadosGastos.APROBADO)
       }
     }
     const v$ = useVuelidate(reglas, gasto)
     const mascara_placa = 'AAA-####'
 
     setValidador(v$.value)
+
     /*********
      * Filtros
      **********/
@@ -306,19 +302,20 @@ export default defineComponent({
       update(() => {
         const needle = val.toLowerCase()
         console.log(
-          listadosAuxiliares.autorizaciones_especiales.filter((v) => {
+          listadosAuxiliares.autorizaciones_especiales.filter(v => {
             v.nombres.toLowerCase().indexOf(needle) > -1
           })
         )
 
         autorizaciones_especiales.value =
           listadosAuxiliares.autorizaciones_especiales.filter(
-            (v) =>
+            v =>
               v.nombres.toLowerCase().indexOf(needle) > -1 ||
               v.apellidos.toLowerCase().indexOf(needle) > -1
           )
       })
     }
+
     //filtro beneficiarios
     function filtrarBeneficiarios(val, update) {
       if (val === '') {
@@ -330,7 +327,7 @@ export default defineComponent({
       update(() => {
         const needle = val.toLowerCase()
         beneficiarios.value = listadosAuxiliares.beneficiarios.filter(
-          (v) =>
+          v =>
             v.nombres.toLowerCase().indexOf(needle) > -1 ||
             v.apellidos.toLowerCase().indexOf(needle) > -1
         )
@@ -349,10 +346,11 @@ export default defineComponent({
       update(() => {
         const needle = val.toLowerCase()
         detalles.value = listadosAuxiliares.detalles.filter(
-          (v) => v.descripcion.toLowerCase().indexOf(needle) > -1
+          v => v.descripcion.toLowerCase().indexOf(needle) > -1
         )
       })
     }
+
     function optionsFechaGasto(date) {
       const today = new Date()
 
@@ -373,6 +371,7 @@ export default defineComponent({
       console.log(sabadoAnterior + ' al ' + sabadoSiguiente)
       return date >= sabadoAnterior && date <= sabadoSiguiente
     }
+
     function siguienteSabado() {
       const fecha = new Date() // Obtenemos la fecha actual
       const diaSemana = fecha.getDay() // Obtenemos el día de la semana (0-6, siendo 0 domingo)
@@ -396,10 +395,11 @@ export default defineComponent({
       update(() => {
         const needle = val.toLowerCase()
         cantones.value = listadosAuxiliares.cantones.filter(
-          (v) => v.canton.toLowerCase().indexOf(needle) > -1
+          v => v.canton.toLowerCase().indexOf(needle) > -1
         )
       })
     }
+
     /**Filtro de Sub detalles */
     function filtarSubdetalles(val, update) {
       if (val === '') {
@@ -410,11 +410,12 @@ export default defineComponent({
       }
       update(() => {
         const needle = val.toLowerCase()
-        sub_detalles.value = listadoSubdetalles.value.filter((v) => {
+        sub_detalles.value = listadoSubdetalles.value.filter(v => {
           v.descripcion.toLowerCase().indexOf(needle) > -1
         })
       })
     }
+
     /**Filtro de proyectos */
     function filtrarProyectos(val, update) {
       if (val === '') {
@@ -426,12 +427,13 @@ export default defineComponent({
       update(() => {
         const needle = val.toLowerCase()
         proyectos.value = listadosAuxiliares.proyectos.filter(
-          (v) =>
+          v =>
             v.codigo_proyecto.toLowerCase().indexOf(needle) > -1 ||
             v.nombre.toLowerCase().indexOf(needle) > -1
         )
       })
     }
+
     /**Filtrar Vehiculos */
     function filtrarVehiculos(val, update) {
       if (val === '') {
@@ -443,10 +445,11 @@ export default defineComponent({
       update(() => {
         const needle = val.toLowerCase()
         vehiculos.value = listadosAuxiliares.vehiculos.filter(
-          (v) => v.placa.toLowerCase().indexOf(needle) > -1
+          v => v.placa.toLowerCase().indexOf(needle) > -1
         )
       })
     }
+
     /**Filtro de Tareas */
     function filtrarTareas(val, update) {
       if (val === '') {
@@ -458,7 +461,7 @@ export default defineComponent({
       update(() => {
         const needle = val.toLowerCase()
         tareas.value = listadoTareas.value.filter(
-          (v) =>
+          v =>
             v.codigo_tarea.toLowerCase().indexOf(needle) > -1 ||
             v.titulo.toLowerCase().indexOf(needle) > -1
         )
@@ -485,9 +488,11 @@ export default defineComponent({
           subdetalle.id_detalle_viatico === gasto.detalle
       )
     })
+
     function cambiar_proyecto() {
       gasto.num_tarea = null
     }
+
     function cambiar_detalle() {
       gasto.sub_detalle = []
     }
@@ -497,7 +502,7 @@ export default defineComponent({
       for (let index = 0; index < gasto.sub_detalle!.length; index++) {
         const id_subdetalle = gasto.sub_detalle![index]
         const subdetalleEncontrado = listadoSubdetalles.value.find(
-          (v) => v.id === id_subdetalle
+          v => v.id === id_subdetalle
         )
         gasto.num_comprobante = null
         if (!subdetalleEncontrado.tiene_factura) {
@@ -508,12 +513,13 @@ export default defineComponent({
       }
       esFactura.value = tieneFactura
     }
+
     async function recargar_detalle(tipo: string) {
       switch (tipo) {
         case 'detalle':
           const detalles = (
             await new DetalleFondoController().listar({
-              campos: 'id,descripcion',
+              campos: 'id,descripcion'
             })
           ).result
           LocalStorage.set('detalles', JSON.stringify(detalles))
@@ -533,7 +539,7 @@ export default defineComponent({
         case 'sub_detalle':
           const sub_detalles = (
             await new SubDetalleFondoController().listar({
-              campos: 'id,descripcion',
+              campos: 'id,descripcion'
             })
           ).result
           LocalStorage.set('sub_detalles', JSON.stringify(sub_detalles))
@@ -544,8 +550,8 @@ export default defineComponent({
                   LocalStorage.getItem('sub_detalles') == null
                     ? []
                     : JSON.parse(
-                      LocalStorage.getItem('sub_detalles')!.toString()
-                    )
+                        LocalStorage.getItem('sub_detalles')!.toString()
+                      )
                 listadosAuxiliares.sub_detalles = sub_detalles.value
               }, 100),
             250
@@ -554,9 +560,11 @@ export default defineComponent({
           break
       }
     }
+
     function existeComprobante() {
       gasto.factura = null
     }
+
     async function aprobar_gasto(entidad, tipo_aprobacion: string) {
       switch (tipo_aprobacion) {
         case 'aprobar':
@@ -624,6 +632,7 @@ export default defineComponent({
           break
       }
     }
+
     watchEffect(() => {
       gasto.total = gasto.cantidad! * gasto.valor_u!
     })
@@ -652,6 +661,7 @@ export default defineComponent({
       sub_detalles,
       proyectos,
       tareas,
+      clientes,
       beneficiarios,
       mostarPlaca,
       mascara_placa,
@@ -660,6 +670,7 @@ export default defineComponent({
       watchEffect,
       existeComprobante,
       aprobar_gasto,
+      filtrarAutorizacionesEspeciales,
       tiene_factura_subdetalle,
       filtrarCantones,
       filtrarDetalles,
@@ -673,7 +684,7 @@ export default defineComponent({
       optionsFechaGasto,
       recargar_detalle,
       isConsultar,
-      estadosGastos,
+      estadosGastos
     }
-  },
+  }
 })

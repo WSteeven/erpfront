@@ -14,8 +14,12 @@ import SelectorImagen from 'components/SelectorImagen.vue'
 
 //Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { encontrarUltimoIdListado, obtenerFechaActual, removeAccents } from 'shared/utils'
-import { acciones, accionesTabla, maskFecha, } from 'config/utils'
+import {
+  encontrarUltimoIdListado,
+  obtenerFechaActual,
+  removeAccents
+} from 'shared/utils'
+import { acciones, accionesTabla, maskFecha } from 'config/utils'
 import { AutorizacionController } from 'pages/administracion/autorizaciones/infraestructure/AutorizacionController'
 import { AreaConocimientoController } from '../../areasConocimiento/infraestructure/AreaConocimientoController'
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
@@ -24,7 +28,11 @@ import { VacanteController } from '../infraestructure/VacanteController'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { useSeleccionContratacionStore } from 'stores/recursosHumanos/seleccionContratacion/seleccionContratacion'
 import { SolicitudPuestoEmpleoController } from '../../solicitudPuestoTrabajo/infraestructure/SolicitudPuestoEmpleoController'
-import { aniosExperiencia, opcionesTablaVacantes, tabOptionsVacantes } from 'config/seleccionContratacionPersonal.utils'
+import {
+  aniosExperiencia,
+  opcionesTablaVacantes,
+  tabOptionsVacantes
+} from 'config/seleccionContratacionPersonal.utils'
 import { TipoPuestoController } from '../../tiposPuestos/infraestructure/TipoPuestoController'
 import { required, requiredIf } from 'shared/i18n-validators'
 import { tipo_puesto } from 'config/recursosHumanos.utils'
@@ -33,6 +41,7 @@ import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { FormacionAcademica } from '../../solicitudPuestoTrabajo/domain/FormacionAcademica'
 import { useNotificaciones } from 'shared/notificaciones'
 import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller'
+import { useRouter } from 'vue-router'
 
 export default defineComponent({
   name: 'VacantePage',
@@ -52,6 +61,7 @@ export default defineComponent({
     // const store = useAuthenticationStore()
     const cargando = new StatusEssentialLoading()
     const solicitudStore = useSeleccionContratacionStore()
+    const router = useRouter()
 
     /***************************************************************************
      * variables
@@ -149,15 +159,15 @@ export default defineComponent({
       tabActual.value = tab
       switch (tab) {
         case opcionesTablaVacantes.inactivas:
-          listar({ activo: 0 })
+          await listar({activo: 0})
 
           break;
         case opcionesTablaVacantes.publicadas:
-          listar({ activo: 1 })
+          await listar({activo: 1})
 
           break;
         case opcionesTablaVacantes.vigentes:
-          listar({
+          await listar({
             'fecha_caducidad[operator]': '>=',
             'fecha_caducidad[value]': obtenerFechaActual(maskFecha),
 
@@ -165,7 +175,7 @@ export default defineComponent({
 
           break;
         case opcionesTablaVacantes.expiradas:
-          listar({
+          await listar({
             'fecha_caducidad[operator]': '<',
             'fecha_caducidad[value]': obtenerFechaActual(maskFecha),
           })
@@ -259,6 +269,7 @@ export default defineComponent({
     const btnCompartirVacante: CustomActionTable = {
       titulo: '',
       icono: 'bi-share',
+      tooltip: 'Copiar enlace para compartir',
       accion: ({ entidad }) => {
         const baseUrl = window.location.origin;
         const url = `${baseUrl}/puestos-disponibles?id=${entidad.id}&showModal=1`;
@@ -271,6 +282,16 @@ export default defineComponent({
         });
       },
       visible: ({ entidad }) => entidad.activo
+    }
+    const btnVerPostulantes: CustomActionTable = {
+      titulo: '',
+      color:'green',
+      icono: 'fa-solid fa-user-group',
+      tooltip: 'Ver postulantes',
+      accion: ()=>{
+        router.push('postulaciones')
+      },
+      visible: ({entidad})=> entidad.numero_postulantes>0
     }
 
 
@@ -308,7 +329,7 @@ export default defineComponent({
 
       //botones de tabla
       btnEliminarFormacionAcademica,
-      btnCompartirVacante,
+      btnCompartirVacante, btnVerPostulantes,
     }
   },
 })

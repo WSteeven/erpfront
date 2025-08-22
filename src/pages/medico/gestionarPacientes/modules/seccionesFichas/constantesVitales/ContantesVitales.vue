@@ -5,7 +5,6 @@
       <q-input
         v-model="entidad.presion_arterial"
         placeholder="Opcional"
-        type="number"
         :disable="disable"
         outlined
         dense
@@ -103,7 +102,6 @@
       <q-input
         v-model="entidad.frecuencia_respiratoria"
         placeholder="Opcional"
-        type="number"
         :disable="disable"
         outlined
         dense

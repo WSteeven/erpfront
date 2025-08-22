@@ -8,6 +8,7 @@
     :customPanel2="!enRutaAccidentes ? accidenteTrabajoTabPanel : null"
     @tab-seleccionado="tab => (tabLayout = tab)"
     :permitir-cancelar="!enRutaAccidentes"
+    ajustar-celdas
   >
     <template #formulario>
       <div class="row q-col-gutter-x-sm q-ma-md q-mb-md">
@@ -344,7 +345,7 @@
             v-model="citaMedica.hora_cita_medica"
             type="time"
             :disable="disabled"
-            step="1"
+
             stack-label
             outlined
             dense

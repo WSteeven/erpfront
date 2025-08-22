@@ -12,14 +12,19 @@ import { useNotificacionStore } from 'stores/notificacion'
 import { useNotificaciones } from 'shared/notificaciones'
 import { jornadas } from 'pages/seguridad/config/utils'
 import { acciones, accionesTabla } from 'config/utils'
-import { computed, defineComponent, nextTick, reactive, ref } from 'vue'
+import { computed, defineComponent, nextTick, onMounted, reactive, ref } from 'vue'
 import { required } from 'shared/i18n-validators'
 import useVuelidate from '@vuelidate/core'
 import { endpoints } from 'config/api'
 import { iconos } from 'config/iconos'
 import { useQuasar } from 'quasar'
 
+import { requiredIf } from '@vuelidate/validators'
+import { watch } from 'vue'
+
 // Componentes
+import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
+import TabLayoutFilterTabs from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs.vue'
 import MultiplePageLayout from 'shared/contenedor/modules/simple/view/MultiplePageLayout.vue'
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
 import FechaHoraAutomaticaInput from 'components/inputs/FechaHoraAutomaticaInput.vue'
@@ -42,7 +47,19 @@ import { Bitacora } from '../doman/Bitacora'
 import { TabOption } from 'components/tables/domain/TabOption'
 
 export default defineComponent({
-  components: { MultiplePageLayout, TabLayout, EssentialTable, FechaHoraAutomaticaInput, EssentialSelectableTable, VoiceInput, Callout, SolicitarArchivo, ModalesEntidad },
+  components: {
+    MultiplePageLayout,
+    TabLayoutFilterTabs2,
+    TabLayoutFilterTabs,
+    TabLayout,
+    EssentialTable,
+    FechaHoraAutomaticaInput,
+    EssentialSelectableTable,
+    VoiceInput,
+    Callout,
+    SolicitarArchivo,
+    ModalesEntidad
+  },
   setup() {
     /**********
      * Stores
@@ -56,66 +73,133 @@ export default defineComponent({
      ********/
     const bitacoraController = new BitacoraController()
     const mixin = new ContenedorSimpleMixin(Bitacora, bitacoraController)
-    const { entidad: bitacora, disabled, listadosAuxiliares, tabsPage, tabs, accion } = mixin.useReferencias()
-    const { setValidador, cargarVista, obtenerListados, consultar, editarParcial } = mixin.useComportamiento()
+    const {
+      entidad: bitacora,
+      disabled,
+      listadosAuxiliares,
+      tabsPage,
+      tabs,
+      accion
+    } = mixin.useReferencias()
+    const {
+      setValidador,
+      cargarVista,
+      obtenerListados,
+      consultar,
+      editarParcial,
+      filtrar
+    } = mixin.useComportamiento()
     const { onConsultado, onReestablecer, onGuardado } = mixin.useHooks()
 
-    const mixinActividadBitacora = new ContenedorSimpleMixin(ActividadBitacora, new ActividadBitacoraController())
-    const { entidad: actividadBitacora, listado: listadoActividadBitacora, accion: accionActividadBitacora } = mixinActividadBitacora.useReferencias()
-    const { listar: listarActividadBitacora, reestablecer: reestablecerActividadBitacora, editarParcial: editarParcialActividadBitacora } = mixinActividadBitacora.useComportamiento()
+    const mixinActividadBitacora = new ContenedorSimpleMixin(
+      ActividadBitacora,
+      new ActividadBitacoraController()
+    )
+    const {
+      entidad: actividadBitacora,
+      listado: listadoActividadBitacora,
+      accion: accionActividadBitacora
+    } = mixinActividadBitacora.useReferencias()
+    const {
+      listar: listarActividadBitacora,
+      reestablecer: reestablecerActividadBitacora,
+      editarParcial: editarParcialActividadBitacora
+    } = mixinActividadBitacora.useComportamiento()
 
     cargarVista(async () => {
       await obtenerListados({
         zonas: {
           controller: new ZonaController(),
-          params: { activo: 1, '': filterWhereIn('id', authenticationStore.user.zonas_ids) },
+          params: {
+            activo: 1,
+            '': filterWhereIn('id', authenticationStore.user.zonas_ids)
+          }
         },
-        prendas: [],
+        prendas: []
       })
     })
 
     /*************
      * Variables
      *************/
+    const usaProtector = ref(false)
+    const usaConductor = ref(false)
+    const $q = useQuasar()
     const refActividades = ref()
     const mostrarSolicitarArchivoActividad = ref(false)
     const modales = new ComportamientoModalesBitacora()
     const { confirmar, promptItems, notificarAdvertencia } = useNotificaciones()
     // const prendas = computed(() => listadosAuxiliares.prendas)
     const prendas = computed(() =>
-      listadosAuxiliares.prendas.map((prenda) => ({
+      listadosAuxiliares.prendas.map(prenda => ({
         ...prenda,
         descripcion: prenda.descripcion
           .toLowerCase()
-          .replace(/\b\w/g, (char) => char.toUpperCase()),
+          .replace(/\b\w/g, char => char.toUpperCase())
       }))
     )
+    const quitarProtector = () => {
+      usaProtector.value = false
+      bitacora.protector = null
+      criterioBusquedaProtector.value = ''
+    }
+    const quitarConductor = () => {
+      usaConductor.value = false
+      bitacora.conductor = null
+      criterioBusquedaConductor.value = ''
+    }
 
-    const tabsOptions = ['1. Bitácora', '2. Actividades registradas en la bitácora']
+    const tabsOptions = [
+      '1. Bitácora',
+      '2. Actividades registradas en la bitácora'
+    ]
+
+    // Variables para los tabs
+    const tabDefecto = ref('0') // 0 = NO REVISADAS por defecto
+    const tabOptions = [
+      { label: 'NO REVISADAS', value: '0' },
+      { label: 'REVISADAS', value: '1' }
+    ]
 
     /*************
      * Funciones
      *************/
-    const { zonas, filtrarZonas } = useFiltrosListadosSelects(listadosAuxiliares)
+    const { zonas, filtrarZonas } =
+      useFiltrosListadosSelects(listadosAuxiliares)
     const recargarZonas = async () => {
       cargarVista(async () => {
         await obtenerListados({
           zonas: {
             controller: new ZonaController(),
-            params: { activo: 1 },
-          },
+            params: { activo: 1 }
+          }
         })
       })
     }
 
     const consultarPrendasPermitidas = async () => {
       const axios = AxiosHttpRepository.getInstance()
-      const response: any = await axios.get(axios.getEndpoint(endpoints.prendas_zonas_permitidas, { zona_id: bitacora.zona, empleado_id: bitacora.agente_turno }))
+      const response: any = await axios.get(
+        axios.getEndpoint(endpoints.prendas_zonas_permitidas, {
+          zona_id: bitacora.zona,
+          empleado_id: bitacora.agente_turno
+        })
+      )
       listadosAuxiliares.prendas = response.data.results
     }
 
     const guardarActividad = (actividad: ActividadBitacora) => {
       bitacora.actividades.unshift(actividad)
+    }
+
+    // Funciones para los tabs
+    async function filtrarListadoBitacoras(tab: string) {
+      tabDefecto.value = tab
+      const revisado = tab === '1' // '1' = REVISADAS, '0' = NO REVISADAS
+
+      if (listado.value.length > 0) {
+        await listar({ revisado_por_supervisor: revisado })
+      }
     }
 
     /****************
@@ -140,9 +224,26 @@ export default defineComponent({
       color: 'positive',
       visible: ({ entidad }) => !entidad.fecha_hora_fin_turno,
       accion: ({ entidad }) => {
-        confirmar('¿Está seguro de finalizar la bitácora?', async () => {
+        const sinActividades = !listadoActividadBitacora.value.length
+
+        // 1) Guardia sin actividades -> bloquear
+        if (sinActividades && !esSupervisor.value) {
+          notificarAdvertencia(
+            'No puede finalizar la bitácora sin registrar ninguna actividad.'
+          )
+          return
+        }
+
+        // 2) Supervisor puede cerrar aunque no haya actividades
+        const mensajeConfirmacion = sinActividades
+          ? 'Esta bitácora no tiene actividades. ¿Desea finalizarla como SUPERVISOR para poder registrar la retroalimentación?'
+          : '¿Está seguro de finalizar la bitácora?'
+
+        confirmar(mensajeConfirmacion, async () => {
           const fecha_hora_fin_turno = (await obtenerTiempoActual()).fecha_hora
-          editarParcial(entidad.id, { fecha_hora_fin_turno })
+          // Nota: el backend ya permite que un SUPERVISOR cierre sin actividades
+          // según el ajuste que hicimos en el controlador.
+          await editarParcial(entidad.id, { fecha_hora_fin_turno })
         })
       }
     }
@@ -150,11 +251,18 @@ export default defineComponent({
     const btnAgregarActividad: CustomActionTable<ActividadBitacora> = {
       titulo: 'Agregar actividad',
       icono: 'bi-plus',
-      accion: () => cargarVista(async () => {
-        if (!!bitacora.fecha_hora_fin_turno) return notificarAdvertencia('Ya no tiene permitido registrar actividades debido a que la bitácora ha sido finalizada.')
-        reestablecerActividadBitacora()
-        modales.abrirModalEntidad('ActividadBitacoraPage', { bitacora_id: bitacora.id, mixin: mixinActividadBitacora })
-      })
+      accion: () =>
+        cargarVista(async () => {
+          if (!!bitacora.fecha_hora_fin_turno)
+            return notificarAdvertencia(
+              'Ya no tiene permitido registrar actividades debido a que la bitácora ha sido finalizada.'
+            )
+          reestablecerActividadBitacora()
+          modales.abrirModalEntidad('ActividadBitacoraPage', {
+            bitacora_id: bitacora.id,
+            mixin: mixinActividadBitacora
+          })
+        })
     }
 
     const btnEstablecerHoraFin: CustomActionTable<ActividadBitacora> = {
@@ -174,35 +282,38 @@ export default defineComponent({
       titulo: 'Confirmar que se notificó',
       icono: 'bi-clock-history',
       color: 'teal',
-      visible: ({ entidad }) => entidad.notificacion_inmediata && !entidad.medio_notificacion,
+      visible: ({ entidad }) =>
+        entidad.notificacion_inmediata && !entidad.medio_notificacion,
       accion: ({ entidad }) => {
         const config: CustomActionPrompt = reactive({
           mensaje: 'Seleccione el medio por el cuál realizó la notificación',
-          accion: async (opcion) => {
-            editarParcialActividadBitacora(entidad.id, { medio_notificacion: opcion })
+          accion: async opcion => {
+            editarParcialActividadBitacora(entidad.id, {
+              medio_notificacion: opcion
+            })
           },
           tipo: 'radio',
           items: [
             {
               label: 'Llamada',
-              value: 'LLAMADA',
+              value: 'LLAMADA'
             },
             {
               label: 'Correo electrónico',
-              value: 'CORREO ELECTRONICO',
+              value: 'CORREO ELECTRONICO'
             },
             {
               label: 'Mensajería instantánea (Whatsapp, telegram, etc)',
-              value: 'MENSAJERIA INSTANTANEA',
+              value: 'MENSAJERIA INSTANTANEA'
             },
             {
               label: 'SMS',
-              value: 'SMS',
+              value: 'SMS'
             },
             {
               label: 'Radio análoga o digital ',
-              value: 'RADIO ANALOGA O DIGITAL',
-            },
+              value: 'RADIO ANALOGA O DIGITAL'
+            }
           ]
         })
 
@@ -219,9 +330,42 @@ export default defineComponent({
         console.log(entidad)
         actividadBitacora.hydrate(entidad)
         accionActividadBitacora.value = acciones.consultar
-        modales.abrirModalEntidad('ActividadBitacoraPage', { bitacora_id: bitacora.id, mixin: mixinActividadBitacora }) //refActividades.value.consultarEnModal({ entidad })
+        modales.abrirModalEntidad('ActividadBitacoraPage', {
+          bitacora_id: bitacora.id,
+          mixin: mixinActividadBitacora
+        }) //refActividades.value.consultarEnModal({ entidad })
       }
     }
+
+    const marcarRevisadoDesdeTabla = () => {
+      $q.dialog({
+        title: 'Revisión de bitácora',
+        message: 'Ingrese la retroalimentación del supervisor:',
+        prompt: {
+          model: '',
+          type: 'textarea'
+        },
+        cancel: true,
+        persistent: true
+      }).onOk(async retro => {
+        if (!retro?.trim()) {
+          notificarAdvertencia('Debe ingresar una retroalimentación.')
+          return
+        }
+
+        await editarParcial(bitacora.id!, {
+          revisado_por_supervisor: true,
+          retroalimentacion_supervisor: retro
+        })
+
+        bitacora.revisado_por_supervisor = true
+        bitacora.retroalimentacion_supervisor = retro?.trim()
+      })
+    }
+
+    const esSupervisor = computed(() =>
+      authenticationStore.user.roles.includes('SUPERVISOR DE GUARDIAS')
+    )
 
     /***************
      * Orquestador
@@ -231,7 +375,7 @@ export default defineComponent({
       criterioBusqueda,
       listado,
       listar,
-      seleccionar,
+      seleccionar
     } = useOrquestadorSelectorEmpleados(bitacora, 'empleados', 'agente_turno')
 
     const {
@@ -239,7 +383,7 @@ export default defineComponent({
       criterioBusqueda: criterioBusquedaProtector,
       listado: listadoProtector,
       listar: listarProtector,
-      seleccionar: seleccionarProtector,
+      seleccionar: seleccionarProtector
     } = useOrquestadorSelectorEmpleados(bitacora, 'empleados', 'protector')
 
     const {
@@ -247,7 +391,7 @@ export default defineComponent({
       criterioBusqueda: criterioBusquedaConductor,
       listado: listadoConductor,
       listar: listarConductor,
-      seleccionar: seleccionarConductor,
+      seleccionar: seleccionarConductor
     } = useOrquestadorSelectorEmpleados(bitacora, 'empleados', 'conductor')
 
     /*********
@@ -258,8 +402,10 @@ export default defineComponent({
       jornada: { required },
       // fecha_hora_inicio_turno: { required },
       agente_turno: { required },
-      protector: { required },
-      conductor: { required },
+
+      // Solo obligatorios si el toggle está encendido
+      protector: { required: requiredIf(() => usaProtector.value) },
+      conductor: { required: requiredIf(() => usaConductor.value) }
     }
 
     // Inicializamos Vuelidate
@@ -271,19 +417,25 @@ export default defineComponent({
      ********/
     onConsultado(() => {
       consultado()
+      // encender toggles si hay valor
+      usaProtector.value = !!bitacora.protector
+      usaConductor.value = !!bitacora.conductor
       tabsPage.value = '1'
       listarActividadBitacora({ bitacora_id: bitacora.id })
     })
 
     onReestablecer(() => {
-      criterioBusqueda.value = authenticationStore.user.apellidos + ' ' + authenticationStore.user.nombres
+      criterioBusqueda.value =
+        authenticationStore.user.apellidos +
+        ' ' +
+        authenticationStore.user.nombres
       bitacora.agente_turno = authenticationStore.user.id
       criterioBusquedaProtector.value = null
       criterioBusquedaConductor.value = null
       listadosAuxiliares.prendas = []
     })
 
-    onGuardado((id) => {
+    onGuardado(id => {
       tabsPage.value = '2'
       nextTick(async () => {
         if (id) {
@@ -302,16 +454,36 @@ export default defineComponent({
       consultarPrendasPermitidas()
     }
 
+    function aplicarFiltro(uri) {
+      filtrar(uri)
+    }
+
     /* watch(tabsPage, () => {
       if (tabsPage.value === '2') {
         listarActividadBitacora({ bitacora_id: bitacora.id })
       }
     }) */
+    watch(usaProtector, v => {
+      if (!v) {
+        bitacora.protector = null
+        criterioBusquedaProtector.value = ''
+      }
+    })
+    watch(usaConductor, v => {
+      if (!v) {
+        bitacora.conductor = null
+        criterioBusquedaConductor.value = ''
+      }
+    })
+
 
     /*******
      * Init
      *******/
-    criterioBusqueda.value = authenticationStore.user.apellidos + ' ' + authenticationStore.user.nombres
+    criterioBusqueda.value =
+      authenticationStore.user.apellidos +
+      ' ' +
+      authenticationStore.user.nombres
     bitacora.agente_turno = authenticationStore.user.id
 
     return {
@@ -328,11 +500,16 @@ export default defineComponent({
       zonas,
       filtrarZonas,
       jornadas,
+      usaProtector,
+      usaConductor,
       btnAgregarActividad,
       btnEstablecerHoraFin,
       btnVerActividadBitacora,
       btnConfirmarNotificado,
-      ccActividadBitacora: [...configuracionColumnasActividadBitacora, accionesTabla],
+      ccActividadBitacora: [
+        ...configuracionColumnasActividadBitacora,
+        accionesTabla
+      ],
       tabsPage,
       mostrarSolicitarArchivoActividad,
       modales,
@@ -341,6 +518,8 @@ export default defineComponent({
       recargarZonas,
       consultarPrendasPermitidas,
       guardarActividad,
+
+      marcarRevisadoDesdeTabla,
       listadoActividadBitacora,
       btnRegistrarActividades,
       btnFinalizarBitacora,
@@ -353,7 +532,10 @@ export default defineComponent({
       refListadoSeleccionable,
       criterioBusqueda,
       listado,
+      esSupervisor,
       listar,
+      filtrar,
+      aplicarFiltro,
       seleccionar,
       // orquestador protector
       refListadoSeleccionableProtector,
@@ -367,6 +549,14 @@ export default defineComponent({
       listadoConductor,
       listarConductor,
       seleccionarConductor,
+
+      quitarProtector,
+      quitarConductor,
+
+      // NUEVOS: Sistema de tabs
+      tabDefecto,
+      tabOptions,
+      filtrarListadoBitacoras
     }
   }
 })

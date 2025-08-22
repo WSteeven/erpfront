@@ -9,12 +9,13 @@ import { vehiculos } from 'config/endpoints/vehiculos'
 import { sso } from './endpoints/sso'
 import { seguridad } from './endpoints/seguridad'
 import { fondosRotativos } from 'config/endpoints/fondosRotativos'
+import { controlPersonal } from 'config/endpoints/rrhh/controlPersonal'
 import {ventasClaro} from 'config/endpoints/ventasClaro';
 import {appenate} from 'config/endpoints/appenate/telconet';
 
 export const apiConfig = {
   // URL_BASE: 'http://localhost:8000',
-  URL_BASE: process.env.API_URL,
+  URL_BASE: process.env.API_URL
 }
 
 export const endpoints = {
@@ -26,6 +27,7 @@ export const endpoints = {
   plantillas_base: new Endpoint('plantillas-base'),
   obtener_plantilla_base_por_nombre: new Endpoint('obtener-plantilla-base-por-nombre'),
   auditorias: new Endpoint('auditorias'),
+  adm_cuentas_bancarias: new Endpoint('cuentas-bancarias'),
   login: new Endpoint('usuarios/login'),
   login_externos: new Endpoint('usuarios-externos/login'),
   // login_terceros: new Endpoint('login-social-network/'),
@@ -61,14 +63,18 @@ export const endpoints = {
   cantones: new Endpoint('cantones'),
   parroquias: new Endpoint('parroquias'),
 
-
   /********************
-  * Modulo de  RR HH
-  *********************/
+   * Modulo de  RR HH
+   *********************/
   ...recursosHumanos,
   cargos: new Endpoint('cargos'),
   allroles: new Endpoint('roles'),
   forma_pago: new Endpoint('forma_pago'),
+
+  /******************************
+   * Modulo de Control de Personal
+   ******************************/
+  ...controlPersonal,
 
   /******************************
    * Modulo de Vehiculos
@@ -84,7 +90,6 @@ export const endpoints = {
   ...comprasProveedores,
   empresas: new Endpoint('empresas'),
   proveedores: new Endpoint('proveedores'),
-
 
   // Modulo de Bodega
   autorizaciones: new Endpoint('autorizaciones'),
@@ -119,7 +124,6 @@ export const endpoints = {
   pedidos: new Endpoint('pedidos'),
   preingresos: new Endpoint('preingresos'),
   procesadores: new Endpoint('procesadores'),
-  prestamos: new Endpoint('prestamos'),
   productos: new Endpoint('productos'),
   productos_perchas: new Endpoint('productos-perchas'),
   sucursales: new Endpoint('sucursales'),
@@ -129,8 +133,10 @@ export const endpoints = {
   tipos_transacciones: new Endpoint('tipos-transacciones'),
   transacciones: new Endpoint('transacciones'),
   transacciones_egresos: new Endpoint('transacciones-egresos'),
+  reporte_vida_util_epps: new Endpoint('transacciones/reporte-vida-util-epps'),
   transacciones_ingresos: new Endpoint('transacciones-ingresos'),
   modificar_item_egreso: new Endpoint('modificar-item-egreso'),
+  quitar_item_ingreso: new Endpoint('quitar-item-ingreso'),
   gestionar_egresos: new Endpoint('gestionar-egresos'),
   transferencias: new Endpoint('transferencias'),
   traspasos: new Endpoint('traspasos'),
@@ -151,18 +157,18 @@ export const endpoints = {
   ...tareas,
 
   /***************
-  * Modulo medico
-  ****************/
+   * Modulo medico
+   ****************/
   ...medico,
 
   /********************
-  * Modulo de tickets
-  *********************/
+   * Modulo de tickets
+   *********************/
   ...tickets,
 
   /**************************
-  * Modulo de activos fijos
-  ***************************/
+   * Modulo de activos fijos
+   ***************************/
   ...activosFijos,
   ...sso,
   ...seguridad,
@@ -174,7 +180,6 @@ export const endpoints = {
 
   usuarios_autorizadores: new Endpoint('usuarios-autorizadores'),
   lista_usuarios: new Endpoint('lista-usuarios'),
-
 
   /********************
    * Modulo de Ventas de Claro
@@ -189,5 +194,5 @@ export const endpoints = {
   categorias_noticias: new Endpoint('intranet/categorias'),
   tipos_eventos: new Endpoint('intranet/tipos-eventos'),
   organigrama: new Endpoint('intranet/organigrama'),
-  organigrama_datos: new Endpoint('intranet/organigrama/datos'),
+  organigrama_datos: new Endpoint('intranet/organigrama/datos')
 }

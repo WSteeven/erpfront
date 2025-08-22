@@ -59,9 +59,7 @@
               </template>
 
               <template v-slot:error>
-                <div v-for="error of v$.fecha_inicio.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="fecha_inicio" :v$="v$"/>
               </template>
             </q-input>
           </div>
@@ -102,9 +100,7 @@
               </template>
 
               <template v-slot:error>
-                <div v-for="error of v$.fecha_fin.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="fecha_fin" :v$="v$"/>
               </template>
             </q-input>
           </div>
@@ -158,17 +154,11 @@
               map-options
             >
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
+                <no-option-component/>
               </template>
 
               <template v-slot:error>
-                <div v-for="error of v$.empleado.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="empleado" :v$="v$"/>
               </template>
             </q-select>
           </div>
@@ -209,17 +199,11 @@
               @blur="v$.grupo.$touch"
             >
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
+                <no-option-component/>
               </template>
 
               <template v-slot:error>
-                <div v-for="error of v$.grupo.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="grupo" :v$="v$"/>
               </template>
             </q-select>
           </div>
@@ -228,7 +212,7 @@
         <q-card-section v-if="tipoDashboard===APPENATE">
             <div class="border-1 text-primary text-bold q-mb-lg">
                 <q-icon name="bi-graph-up-arrow" class="q-mr-sm"></q-icon>
-                Análisis de datos: Módulo de tareas del APPENATE
+                Análisis de datos: Módulo de tareas 
             </div>
             <!-- Tiempos -->
             <div class="row q-col-gutter-sm">

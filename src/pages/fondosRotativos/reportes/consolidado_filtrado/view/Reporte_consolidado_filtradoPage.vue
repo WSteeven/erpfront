@@ -15,7 +15,7 @@
           <div class="col-6 col-md-6">
             <label class="q-mb-sm block">Fecha Inicio</label>
             <q-input
-              v-model="consolidadofiltrado.fecha_inicio"
+              v-model="consolidadoFiltrado.fecha_inicio"
               placeholder="Obligatorio"
               :error="!!v$.fecha_inicio.$errors.length"
               :disable="disabled"
@@ -30,7 +30,7 @@
                     transition-hide="scale"
                   >
                     <q-date
-                      v-model="consolidadofiltrado.fecha_inicio"
+                      v-model="consolidadoFiltrado.fecha_inicio"
                       :mask="maskFecha"
                       :options="optionsFechaInicio"
                       today-btn
@@ -49,9 +49,7 @@
               </template>
 
               <template v-slot:error>
-                <div v-for="error of v$.fecha_inicio.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="fecha_inicio" :v$="v$" />
               </template>
             </q-input>
           </div>
@@ -59,7 +57,7 @@
           <div class="col-6 col-md-6">
             <label class="q-mb-sm block">Fecha Fin</label>
             <q-input
-              v-model="consolidadofiltrado.fecha_fin"
+              v-model="consolidadoFiltrado.fecha_fin"
               placeholder="Obligatorio"
               :error="!!v$.fecha_fin.$errors.length"
               :disable="disabled"
@@ -74,7 +72,7 @@
                     transition-hide="scale"
                   >
                     <q-date
-                      v-model="consolidadofiltrado.fecha_fin"
+                      v-model="consolidadoFiltrado.fecha_fin"
                       :mask="maskFecha"
                       :options="optionsFechaFin"
                       today-btn
@@ -93,9 +91,7 @@
               </template>
 
               <template v-slot:error>
-                <div v-for="error of v$.fecha_fin.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="fecha_fin" :v$="v$" />
               </template>
             </q-input>
           </div>
@@ -103,7 +99,7 @@
           <div class="col-12 col-md-12">
             <label class="q-mb-sm block">Tipo Saldo</label>
             <q-select
-              v-model="consolidadofiltrado.tipo_saldo"
+              v-model="consolidadoFiltrado.tipo_saldo"
               :options="tipos_saldos_consolidado_filtro"
               transition-show="jump-up"
               transition-hide="jump-down"
@@ -111,7 +107,6 @@
               dense
               outlined
               :disable="disabled"
-              :readonly="disabled"
               :error="!!v$.tipo_saldo.$errors.length"
               error-message="Debes seleccionar un tipo de saldo"
               use-input
@@ -125,16 +120,10 @@
               map-options
             >
               <template v-slot:error>
-                <div v-for="error of v$.tipo_saldo.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="tipo_saldo" :v$="v$" />
               </template>
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
+                <no-option-component />
               </template>
             </q-select>
           </div>
@@ -146,12 +135,12 @@
                 tipo_saldo.GASTO,
                 tipo_saldo.GASTOS_FOTOGRAFIA,
                 tipo_saldo.FOTOGRAFIAS_OYM
-              ].includes(consolidadofiltrado.tipo_saldo)
+              ].includes(consolidadoFiltrado.tipo_saldo)
             "
           >
             <label class="q-mb-sm block">Tipo Filtro</label>
             <q-select
-              v-model="consolidadofiltrado.tipo_filtro"
+              v-model="consolidadoFiltrado.tipo_filtro"
               :options="tipos_filtros"
               transition-show="jump-up"
               transition-hide="jump-down"
@@ -159,7 +148,6 @@
               dense
               outlined
               :disable="disabled"
-              :readonly="disabled"
               :error="!!v$.tipo_filtro.$errors.length"
               error-message="Debes seleccionar un tipo de saldo"
               use-input
@@ -173,16 +161,10 @@
               map-options
             >
               <template v-slot:error>
-                <div v-for="error of v$.tipo_filtro.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="tipo_filtro" :v$="v$" />
               </template>
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
+                <no-option-component />
               </template>
             </q-select>
           </div>
@@ -190,14 +172,14 @@
           <!-- Grupo -->
           <div
             v-if="
-              consolidadofiltrado.tipo_filtro === tipo_filtro.GRUPO ||
-              consolidadofiltrado.tipo_saldo === tipo_saldo.ACREDITACIONES
+              consolidadoFiltrado.tipo_filtro === tipo_filtro.GRUPO ||
+              consolidadoFiltrado.tipo_saldo === tipo_saldo.ACREDITACIONES
             "
             class="col-12 col-md-6"
           >
             <label class="q-mb-sm block">Grupo</label>
             <q-select
-              v-model="consolidadofiltrado.grupo"
+              v-model="consolidadoFiltrado.grupo"
               :options="grupos"
               transition-show="jump-up"
               transition-hide="jump-down"
@@ -231,26 +213,26 @@
           <div
             class="col-12 col-md-6"
             v-if="
-              (consolidadofiltrado.tipo_filtro == tipo_filtro.EMPLEADO ||
-                consolidadofiltrado.tipo_filtro == tipo_filtro.TODOS ||
-                consolidadofiltrado.tipo_saldo == tipo_saldo.ACREDITACIONES ||
-                consolidadofiltrado.tipo_saldo == tipo_saldo.CONSOLIDADO ||
-                consolidadofiltrado.tipo_saldo == tipo_saldo.ESTADO_CUENTA ||
-                consolidadofiltrado.tipo_saldo ==
+              (consolidadoFiltrado.tipo_filtro == tipo_filtro.EMPLEADO ||
+                consolidadoFiltrado.tipo_filtro == tipo_filtro.TODOS ||
+                consolidadoFiltrado.tipo_saldo == tipo_saldo.ACREDITACIONES ||
+                consolidadoFiltrado.tipo_saldo == tipo_saldo.CONSOLIDADO ||
+                consolidadoFiltrado.tipo_saldo == tipo_saldo.ESTADO_CUENTA ||
+                consolidadoFiltrado.tipo_saldo ==
                   tipo_saldo.TRANSFERENCIA_SALDOS) &&
               !is_inactivo
             "
           >
             <label class="q-mb-sm block">Empleado</label>
             <q-select
-              v-model="consolidadofiltrado.empleado"
+              v-model="consolidadoFiltrado.empleado"
               :options="usuarios"
               transition-show="jump-up"
               transition-hide="jump-down"
               options-dense
               dense
               outlined
-              :disable="consolidadofiltrado.grupo!==null"
+              :disable="consolidadoFiltrado.grupo !== null"
               use-input
               input-debounce="0"
               :error="!!v$.empleado.$errors.length"
@@ -274,19 +256,19 @@
           <div
             class="col-12 col-md-6"
             v-if="
-              (consolidadofiltrado.tipo_filtro == tipo_filtro.EMPLEADO ||
-                consolidadofiltrado.tipo_filtro == tipo_filtro.TODOS ||
-                consolidadofiltrado.tipo_saldo == tipo_saldo.ACREDITACIONES ||
-                consolidadofiltrado.tipo_saldo == tipo_saldo.CONSOLIDADO ||
-                consolidadofiltrado.tipo_saldo == tipo_saldo.ESTADO_CUENTA ||
-                consolidadofiltrado.tipo_saldo ==
+              (consolidadoFiltrado.tipo_filtro == tipo_filtro.EMPLEADO ||
+                consolidadoFiltrado.tipo_filtro == tipo_filtro.TODOS ||
+                consolidadoFiltrado.tipo_saldo == tipo_saldo.ACREDITACIONES ||
+                consolidadoFiltrado.tipo_saldo == tipo_saldo.CONSOLIDADO ||
+                consolidadoFiltrado.tipo_saldo == tipo_saldo.ESTADO_CUENTA ||
+                consolidadoFiltrado.tipo_saldo ==
                   tipo_saldo.TRANSFERENCIA_SALDOS) &&
               is_inactivo
             "
           >
             <label class="q-mb-sm block">Empleado</label>
             <q-select
-              v-model="consolidadofiltrado.empleado"
+              v-model="consolidadoFiltrado.empleado"
               :options="usuariosInactivos"
               transition-show="jump-up"
               transition-hide="jump-down"
@@ -294,7 +276,6 @@
               dense
               outlined
               :disable="disabled"
-              :readonly="disabled"
               use-input
               input-debounce="0"
               :error="!!v$.empleado.$errors.length"
@@ -319,22 +300,68 @@
               </template>
             </q-select>
           </div>
-          <!-- Proyectos -->
+
+          <!-- Cliente -->
           <div
             class="col-12 col-md-6 q-mb-md"
             v-if="
-              (consolidadofiltrado.tipo_filtro == tipo_filtro.PROYECTO ||
-                consolidadofiltrado.tipo_filtro == tipo_filtro.TODOS) &&
+              [tipo_filtro.TODOS, tipo_filtro.CLIENTE].includes(
+                consolidadoFiltrado.tipo_filtro
+              ) &&
               [
                 tipo_saldo.GASTO,
                 tipo_saldo.GASTOS_FOTOGRAFIA,
                 tipo_saldo.FOTOGRAFIAS_OYM
-              ].includes(consolidadofiltrado.tipo_saldo)
+              ].includes(consolidadoFiltrado.tipo_saldo)
+            "
+          >
+            <label class="q-mb-sm block">Empresa para la que se realizaron los gastos</label>
+            <q-select
+              v-model="consolidadoFiltrado.cliente_id"
+              :options="clientes"
+              transition-show="jump-up"
+              transition-hide="jump-down"
+              options-dense
+              dense
+              outlined
+              hint="Seleccione la empresa para la que hizo el gasto."
+              :disable="disabled"
+              :error="!!v$.cliente_id.$errors.length"
+              error-message="Debes seleccionar una empresa"
+              use-input
+              input-debounce="0"
+              @blur="v$.cliente_id.$touch"
+              @filter="filtrarClientes"
+              :option-value="v => v.id"
+              :option-label="v => v.razon_social"
+              emit-value
+              map-options
+            >
+              <template v-slot:error>
+                <error-component clave="cliente_id" :v$="v$" />
+              </template>
+              <template v-slot:no-option>
+                <no-option-component />
+              </template>
+            </q-select>
+          </div>
+
+          <!-- Proyectos -->
+          <div
+            class="col-12 col-md-6 q-mb-md"
+            v-if="
+              (consolidadoFiltrado.tipo_filtro == tipo_filtro.PROYECTO ||
+                consolidadoFiltrado.tipo_filtro == tipo_filtro.TODOS) &&
+              [
+                tipo_saldo.GASTO,
+                tipo_saldo.GASTOS_FOTOGRAFIA,
+                tipo_saldo.FOTOGRAFIAS_OYM
+              ].includes(consolidadoFiltrado.tipo_saldo)
             "
           >
             <label class="q-mb-sm block">Proyectos</label>
             <q-select
-              v-model="consolidadofiltrado.id_proyecto"
+              v-model="consolidadoFiltrado.id_proyecto"
               :options="proyectos"
               transition-show="jump-up"
               transition-hide="jump-down"
@@ -342,7 +369,6 @@
               dense
               outlined
               :disable="disabled"
-              :readonly="disabled"
               use-input
               input-debounce="0"
               :error="!!v$.id_proyecto.$errors.length"
@@ -376,19 +402,19 @@
           <div
             class="col-12 col-md-6 q-mb-md"
             v-if="
-              (consolidadofiltrado.tipo_filtro == tipo_filtro.TAREA ||
-                consolidadofiltrado.tipo_filtro == tipo_filtro.TODOS) &&
-              consolidadofiltrado.proyecto >= 0 &&
+              (consolidadoFiltrado.tipo_filtro == tipo_filtro.TAREA ||
+                consolidadoFiltrado.tipo_filtro == tipo_filtro.TODOS) &&
+              consolidadoFiltrado.proyecto >= 0 &&
               [
                 tipo_saldo.GASTO,
                 tipo_saldo.GASTOS_FOTOGRAFIA,
                 tipo_saldo.FOTOGRAFIAS_OYM
-              ].includes(consolidadofiltrado.tipo_saldo)
+              ].includes(consolidadoFiltrado.tipo_saldo)
             "
           >
             <label class="q-mb-sm block">Tareas</label>
             <q-select
-              v-model="consolidadofiltrado.id_tarea"
+              v-model="consolidadoFiltrado.id_tarea"
               :options="tareas"
               transition-show="jump-up"
               transition-hide="jump-down"
@@ -396,7 +422,6 @@
               dense
               outlined
               :disable="disabled"
-              :readonly="disabled"
               use-input
               input-debounce="0"
               :error="!!v$.id_tarea.$errors.length"
@@ -430,18 +455,18 @@
           <div
             class="col-12 col-md-6 q-mb-md"
             v-if="
-              (consolidadofiltrado.tipo_filtro == tipo_filtro.DETALLE ||
-                consolidadofiltrado.tipo_filtro == tipo_filtro.TODOS) &&
+              (consolidadoFiltrado.tipo_filtro == tipo_filtro.DETALLE ||
+                consolidadoFiltrado.tipo_filtro == tipo_filtro.TODOS) &&
               [
                 tipo_saldo.GASTO,
                 tipo_saldo.GASTOS_FOTOGRAFIA,
                 tipo_saldo.FOTOGRAFIAS_OYM
-              ].includes(consolidadofiltrado.tipo_saldo)
+              ].includes(consolidadoFiltrado.tipo_saldo)
             "
           >
             <label class="q-mb-sm block">Detalle</label>
             <q-select
-              v-model="consolidadofiltrado.detalle"
+              v-model="consolidadoFiltrado.detalle"
               :options="detalles"
               transition-show="jump-up"
               transition-hide="jump-down"
@@ -449,7 +474,6 @@
               dense
               outlined
               :disable="disabled"
-              :readonly="disabled"
               use-input
               input-debounce="0"
               :error="!!v$.detalle.$errors.length"
@@ -473,18 +497,18 @@
           <div
             class="col-12 col-md-6"
             v-if="
-              (consolidadofiltrado.tipo_filtro == tipo_filtro.CIUDAD ||
-                consolidadofiltrado.tipo_filtro == tipo_filtro.TODOS) &&
+              (consolidadoFiltrado.tipo_filtro == tipo_filtro.CIUDAD ||
+                consolidadoFiltrado.tipo_filtro == tipo_filtro.TODOS) &&
               [
                 tipo_saldo.GASTO,
                 tipo_saldo.GASTOS_FOTOGRAFIA,
                 tipo_saldo.FOTOGRAFIAS_OYM
-              ].includes(consolidadofiltrado.tipo_saldo)
+              ].includes(consolidadoFiltrado.tipo_saldo)
             "
           >
             <label class="q-mb-sm block">Ciudad</label>
             <q-select
-              v-model="consolidadofiltrado.id_lugar"
+              v-model="consolidadoFiltrado.id_lugar"
               :options="cantones"
               transition-show="jump-up"
               transition-hide="jump-down"
@@ -492,7 +516,6 @@
               dense
               outlined
               :disable="disabled"
-              :readonly="disabled"
               use-input
               input-debounce="0"
               :error="!!v$.id_lugar.$errors.length"
@@ -516,18 +539,18 @@
           <div
             class="col-12 col-md-6 q-mb-md"
             v-if="
-              (consolidadofiltrado.tipo_filtro == tipo_filtro.SUBDETALLE ||
-                consolidadofiltrado.tipo_filtro == tipo_filtro.TODOS) &&
+              (consolidadoFiltrado.tipo_filtro == tipo_filtro.SUBDETALLE ||
+                consolidadoFiltrado.tipo_filtro == tipo_filtro.TODOS) &&
               [
                 tipo_saldo.GASTO,
                 tipo_saldo.GASTOS_FOTOGRAFIA,
                 tipo_saldo.FOTOGRAFIAS_OYM
-              ].includes(consolidadofiltrado.tipo_saldo)
+              ].includes(consolidadoFiltrado.tipo_saldo)
             "
           >
             <label class="q-mb-sm block">SubDetalle</label>
             <q-select
-              v-model="consolidadofiltrado.subdetalle"
+              v-model="consolidadoFiltrado.subdetalle"
               :options="sub_detalles"
               transition-show="jump-up"
               transition-hide="jump-down"
@@ -548,16 +571,10 @@
               map-options
             >
               <template v-slot:error>
-                <div v-for="error of v$.subdetalle.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="subdetalle" :v$="v$" />
               </template>
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
+                <no-option-component />
               </template>
             </q-select>
           </div>
@@ -565,18 +582,18 @@
           <div
             class="col-12 col-md-6"
             v-if="
-              (consolidadofiltrado.tipo_filtro == tipo_filtro.AUTORIZACIONES ||
-                consolidadofiltrado.tipo_filtro == tipo_filtro.TODOS) &&
+              (consolidadoFiltrado.tipo_filtro == tipo_filtro.AUTORIZACIONES ||
+                consolidadoFiltrado.tipo_filtro == tipo_filtro.TODOS) &&
               [
                 tipo_saldo.GASTO,
                 tipo_saldo.GASTOS_FOTOGRAFIA,
                 tipo_saldo.FOTOGRAFIAS_OYM
-              ].includes(consolidadofiltrado.tipo_saldo)
+              ].includes(consolidadoFiltrado.tipo_saldo)
             "
           >
             <label class="q-mb-sm block">Autorización Especial</label>
             <q-select
-              v-model="consolidadofiltrado.aut_especial"
+              v-model="consolidadoFiltrado.aut_especial"
               :options="autorizacionesEspeciales"
               transition-show="jump-up"
               transition-hide="jump-down"
@@ -584,7 +601,6 @@
               dense
               outlined
               :disable="disabled"
-              :readonly="disabled"
               use-input
               input-debounce="0"
               :error="!!v$.aut_especial.$errors.length"
@@ -608,18 +624,18 @@
           <div
             class="col-12 col-md-6"
             v-if="
-              (consolidadofiltrado.tipo_filtro == tipo_filtro.RUC ||
-                consolidadofiltrado.tipo_filtro == tipo_filtro.TODOS) &&
+              (consolidadoFiltrado.tipo_filtro == tipo_filtro.RUC ||
+                consolidadoFiltrado.tipo_filtro == tipo_filtro.TODOS) &&
               [
                 tipo_saldo.GASTO,
                 tipo_saldo.GASTOS_FOTOGRAFIA,
                 tipo_saldo.FOTOGRAFIAS_OYM
-              ].includes(consolidadofiltrado.tipo_saldo)
+              ].includes(consolidadoFiltrado.tipo_saldo)
             "
           >
             <label class="q-mb-sm block">RUC</label>
             <q-input
-              v-model="consolidadofiltrado.ruc"
+              v-model="consolidadoFiltrado.ruc"
               placeholder=""
               mask="#############"
               maxlength="13"
@@ -635,13 +651,13 @@
           <div
             class="col-12 col-md-6 q-mb-md"
             v-if="
-              consolidadofiltrado.tipo_filtro == tipo_filtro.TODOS &&
-              tipo_saldo.FOTOGRAFIAS_OYM == consolidadofiltrado.tipo_saldo
+              consolidadoFiltrado.tipo_filtro == tipo_filtro.TODOS &&
+              tipo_saldo.FOTOGRAFIAS_OYM == consolidadoFiltrado.tipo_saldo
             "
           >
             <label class="q-mb-sm block">Nodo/s</label>
             <q-select
-              v-model="consolidadofiltrado.nodos"
+              v-model="consolidadoFiltrado.nodos"
               :options="nodos"
               options-dense
               dense
@@ -664,13 +680,13 @@
           <div
             class="col-12 col-md-6 q-mt-lg"
             v-if="
-              consolidadofiltrado.tipo_saldo == tipo_saldo.ACREDITACIONES ||
-              consolidadofiltrado.tipo_saldo == tipo_saldo.CONSOLIDADO ||
-              consolidadofiltrado.tipo_saldo == tipo_saldo.ESTADO_CUENTA ||
-              consolidadofiltrado.tipo_saldo ==
+              consolidadoFiltrado.tipo_saldo == tipo_saldo.ACREDITACIONES ||
+              consolidadoFiltrado.tipo_saldo == tipo_saldo.CONSOLIDADO ||
+              consolidadoFiltrado.tipo_saldo == tipo_saldo.ESTADO_CUENTA ||
+              consolidadoFiltrado.tipo_saldo ==
                 tipo_saldo.TRANSFERENCIA_SALDOS ||
-              consolidadofiltrado.tipo_filtro == tipo_filtro.EMPLEADO ||
-              consolidadofiltrado.tipo_filtro == tipo_filtro.TODOS
+              consolidadoFiltrado.tipo_filtro == tipo_filtro.EMPLEADO ||
+              consolidadoFiltrado.tipo_filtro == tipo_filtro.TODOS
             "
           >
             <q-checkbox
@@ -691,7 +707,7 @@
             unelevated
             square
             class="full-width"
-            @click="generar_reporte(consolidadofiltrado, 'excel')"
+            @click="generar_reporte(consolidadoFiltrado, 'excel')"
           >
             <q-icon
               name="bi-file-earmark-excel-fill"
@@ -707,7 +723,7 @@
             class="full-width"
             unelevated
             square
-            @click="generar_reporte(consolidadofiltrado, 'pdf')"
+            @click="generar_reporte(consolidadoFiltrado, 'pdf')"
           >
             <q-icon
               name="bi-file-earmark-pdf-fill"

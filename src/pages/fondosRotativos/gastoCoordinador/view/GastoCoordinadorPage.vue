@@ -210,13 +210,13 @@
           </div>
 
           <!-- Observacion -->
-          <div class="col-12 col-md-6" v-if="esContabilidad">
+          <div class="col-12 col-md-6" v-if="esContabilidad || gasto.observacion_contabilidad!=null">
             <label class="q-mb-sm block">Observación contabilidad</label>
             <q-input
               v-model="gasto.observacion_contabilidad"
               placeholder="Obligatorio"
               autogrow
-              :disable="disabled"
+              :disable="disabled||!esContabilidad"
               :error="!!v$.observacion_contabilidad.$errors.length"
               hint="Escriba su observación al marcar como completada o anulada la solicitud"
               @blur="v$.observacion_contabilidad.$touch"

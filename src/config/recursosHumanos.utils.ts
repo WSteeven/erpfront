@@ -33,6 +33,12 @@ export const tabOptionsVacaciones: TabOption[] = [
   { label: 'Realizadas', value: 'REALIZADAS' }
 ]
 
+export const opcionesEstadosPrestamosEmpresariales: SelectOption[] = [
+  { value: 'ACTIVO', label: 'Activo' },
+  { value: 'INACTIVO', label: 'Inactivo' },
+  { value: 'FINALIZADO', label: 'Finalizado' }
+]
+
 export const opcionesReporteVacaciones: SelectOption[] = [
   { value: 'PLAN_VACACIONES', label: 'Plan de Vacaciones' },
   { value: 'VACACIONES_PENDIENTES', label: 'Vacaciones pendientes' },

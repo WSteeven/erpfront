@@ -43,10 +43,14 @@ import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpReposi
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { useNotificacionStore } from 'stores/notificacion'
+import ErrorComponent from 'components/ErrorComponent.vue'
+import { CuentaBancaria } from 'pages/administracion/cuentasBancarias/domain/CuentaBancaria'
+import { CuentaBancariaController } from 'pages/administracion/cuentasBancarias/infraestructure/CuentaBancariaController'
 
 export default defineComponent({
   name: 'RolPagoMes',
   components: {
+    ErrorComponent,
     TabLayoutFilterTabs2,
     ModalesEntidad,
     SelectorImagen,
@@ -61,8 +65,7 @@ export default defineComponent({
     const {
       entidad: rolpago,
       accion,
-      disabled,
-      listadosAuxiliares
+      disabled
     } = mixin.useReferencias()
     const { setValidador, listar } = mixin.useComportamiento()
     const mixinRolEmpleado = new ContenedorSimpleMixin(
@@ -73,7 +76,7 @@ export default defineComponent({
     const { listado: roles_empleados } = mixinRolEmpleado.useReferencias()
     const { listar: listarRolEmpleado, eliminar } =
       mixinRolEmpleado.useComportamiento()
-    const authenticationStore = useAuthenticationStore()
+    const store = useAuthenticationStore()
 
     const cargando = new StatusEssentialLoading()
     const refArchivoRolPago = ref()
@@ -87,20 +90,25 @@ export default defineComponent({
     const { onConsultado } = mixin.useHooks()
     useCargandoStore().setQuasar(useQuasar())
     useNotificacionStore().setQuasar(useQuasar())
-    const { notificarAdvertencia, notificarCorrecto, notificarError, confirmar, promptItems } =
-      useNotificaciones()
+    const {
+      notificarAdvertencia,
+      notificarCorrecto,
+      notificarError,
+      confirmar,
+      promptItems
+    } = useNotificaciones()
 
     const { btnFinalizarRolPago, btnActivarRolPago } =
       useBotonesTablaRolPagoMes(mixin)
-    const { btnIniciar, btnFinalizar } = useBotonesTablaRolPago(
-      roles_empleados,
-      modalesRolPago,
-      listadosAuxiliares
-    )
+    const { btnIniciar, btnFinalizar } = useBotonesTablaRolPago()
+    // roles_empleados,
+    // modalesRolPago,
+    // listadosAuxiliares
     const { btnImprimir, btnGenerarReporte } =
       useBotonesImpresionTablaRolPago(rolpago)
     const rolPagoStore = useRolPagoStore()
     const tabActual = ref()
+    const cuentas_bancarias = ref([])
     const lista_tipo_reporte = [
       { id: 'pdf', name: 'PDF' },
       { id: 'xlsx', name: 'EXCEL' }
@@ -113,7 +121,7 @@ export default defineComponent({
       accion: () => {
         agregarNuevosEmpleadosRol(rolpago.id!)
       },
-      visible: () => authenticationStore.can('puede.ver.btn.agregar_empleados')
+      visible: () => store.can('puede.ver.btn.agregar_empleados')
     }
     const btnAgregarRolPagoEmpleado: CustomActionTable = {
       titulo: 'Agregar empleado al rol',
@@ -133,8 +141,7 @@ export default defineComponent({
         rolPagoStore.idRolPagoSeleccionada = null
         modalesRolPago.abrirModalEntidad('RolPagoPage')
       },
-      visible: () =>
-        authenticationStore.can('puede.ver.btn.agregar_empleado_rol')
+      visible: () => store.can('puede.ver.btn.agregar_empleado_rol')
     }
     const btnEjecutarMasivo: CustomActionTable = {
       titulo: 'Ejecutar Rol de Pago',
@@ -152,15 +159,14 @@ export default defineComponent({
           await filtrarRolPagoEmpleado(estadosRolPagoEmpleado.ejecutando)
         })
       },
-      visible: () => authenticationStore.can('puede.ver.btn.ejecutar_rol_pago')
+      visible: () => store.can('puede.ver.btn.ejecutar_rol_pago')
     }
     const btnFinalizarMasivo: CustomActionTable = {
       titulo: 'Finalizar Rol de Pago',
       icono: 'bi-check',
       color: 'positive',
       visible: () =>
-        !rolpago.finalizado &&
-        authenticationStore.can('puede.ver.btn.finalizar_rol_pago'),
+        !rolpago.finalizado && store.can('puede.ver.btn.finalizar_rol_pago'),
       accion: () => {
         if (!rolpago.id)
           return notificarAdvertencia('Primero debe seleccionar una rol.')
@@ -192,7 +198,7 @@ export default defineComponent({
       visible: ({ entidad }) => {
         return (
           entidad.estado === estadosRolPago.EJECUTANDO &&
-          authenticationStore.can('puede.editar.rol_pago')
+          store.can('puede.editar.rol_pago')
         )
       },
       accion: ({ entidad }) => {
@@ -256,14 +262,12 @@ export default defineComponent({
     const v$ = useVuelidate(reglas, rolpago)
     setValidador(v$.value)
 
-    async function guardado(data) {
-      console.log(data)
+    async function guardado() {
       await filtrarRolPagoEmpleado(estadosRolPagoEmpleado.ejecutando)
     }
 
     /**Verifica si es un mes */
-    function checkValue(val, reason, details) {
-      console.log(val, reason, details)
+    function checkValue(val, reason) {
       is_month.value = reason !== 'month'
       obtenerNombreMes()
     }
@@ -273,7 +277,7 @@ export default defineComponent({
     //   icono: 'bi-pencil-square',
     //   color: 'secondary',
     //   visible: ({ entidad }) =>
-    //     authenticationStore.can('puede.editar.rol_pago') && !entidad.finalizado,
+    //     store.can('puede.editar.rol_pago') && !entidad.finalizado,
     //   accion: ({ entidad }) => {
     //     accion.value = 'EDITAR'
     //     consultar(entidad)
@@ -284,19 +288,17 @@ export default defineComponent({
       icono: 'bi-envelope-fill',
       color: 'secondary',
       accion: async ({ entidad }) => {
-        await enviar_rol_pago_empleado(entidad)
+        await enviarRolPagoEmpleado(entidad)
       },
       visible: ({ entidad }) =>
-        authenticationStore.can('puede.ver.campo.enviar_rol_pago') &&
-        !entidad.es_quincena
+        store.can('puede.ver.campo.enviar_rol_pago') && !entidad.es_quincena
     }
     const btnEliminarRolPago: CustomActionTable = {
       titulo: 'Eliminar',
       icono: 'bi-trash',
       color: 'secondary',
       visible: ({ entidad }) =>
-        authenticationStore.can('puede.eliminar.rol_pago') &&
-        !entidad.finalizado,
+        store.can('puede.eliminar.rol_pago') && !entidad.finalizado,
       accion: ({ entidad }) => {
         accion.value = 'ELIMINAR'
         eliminar(entidad)
@@ -307,14 +309,12 @@ export default defineComponent({
       icono: 'bi-printer',
       color: 'primary',
       visible: ({ entidad }) =>
-        authenticationStore.can('puede.ver.rol_pago') && !entidad.es_quincena,
+        store.can('puede.ver.rol_pago') && !entidad.es_quincena,
       accion: ({ entidad }) => {
-        // generar_reporte_general_mes(entidad.id,'pdf')
-
         const config: CustomActionPrompt = reactive({
           mensaje: 'Confirme el tipo de reporte',
           accion: tipo => {
-            generar_reporte_general_mes(entidad.id, tipo)
+            generarReporteGeneralMes(entidad.id, tipo)
           },
           requerido: false,
           defecto: 'EXCEL',
@@ -335,8 +335,7 @@ export default defineComponent({
       icono: 'bi-envelope-fill',
       color: 'primary',
       visible: ({ entidad }) =>
-        authenticationStore.can('puede.ver.campo.enviar_rol_pago') &&
-        !entidad.es_quincena,
+        store.can('puede.ver.campo.enviar_rol_pago') && !entidad.es_quincena,
       accion: async ({ entidad }) => {
         await enviar_rol_pago(entidad)
       }
@@ -345,9 +344,25 @@ export default defineComponent({
       titulo: 'Cash Rol de Pagos',
       icono: 'bi-cash-stack',
       color: 'primary',
-      visible: () => authenticationStore.can('puede.ver.campo.cash'),
-      accion: ({ entidad }) => {
-        cash_rol_pago(entidad)
+      visible: () => store.can('puede.ver.campo.cash'),
+      accion: async ({ entidad }) => {
+        await obtenerCuentasBancariasEmpresariales()
+        const config: CustomActionPrompt = reactive({
+          mensaje:
+            'Selecciona la cuenta bancaria con la que se generará el cash',
+          accion: async cuenta => {
+            await cashRolPago(entidad, cuenta)
+          },
+          requerido: true,
+          tipo: 'radio',
+          items: cuentas_bancarias.value.map((cuenta: CuentaBancaria) => {
+            return {
+              value: cuenta.id,
+              label: cuenta.tipo_cuenta + ': ' + cuenta.numero_cuenta
+            }
+          })
+        })
+        promptItems(config)
       }
     }
 
@@ -355,7 +370,7 @@ export default defineComponent({
      * Enviar rol de pago individual a un empleado
      * @param entidad
      */
-    async function enviar_rol_pago_empleado(entidad): Promise<void> {
+    async function enviarRolPagoEmpleado(entidad): Promise<void> {
       try {
         cargando.activar()
         const axios = AxiosHttpRepository.getInstance()
@@ -365,11 +380,37 @@ export default defineComponent({
           axios.getEndpoint(endpoints.enviar_rol_pago_empleado) +
           entidad.id
         const response: AxiosResponse = await axios.get(url_pdf)
-        console.log(response)
+        // console.log(response)
         if (response.status === 200) notificarCorrecto(response.data.mensaje)
         else notificarAdvertencia(response.data.mensaje)
       } catch (e: any) {
-        notificarError(e.response.data.message||'Ha ocurrido un error al enviar el mail')
+        notificarError(
+          e.response.data.message || 'Ha ocurrido un error al enviar el mail'
+        )
+      } finally {
+        cargando.desactivar()
+      }
+    }
+
+    /**
+     * Obtiene la lista de cuentas bancarias empresariales y la asigna
+     * a la variable reactiva `cuentas_bancarias`.
+     *
+     * Activa el estado de carga, consulta las cuentas bancarias usando el controlador,
+     * y actualiza los datos en el componente. Muestra una notificación de error si falla.
+     *
+     * @async
+     * @function
+     * @returns {Promise<void>} No retorna valor, pero actualiza variables reactivas.
+     */
+    async function obtenerCuentasBancariasEmpresariales(): Promise<void> {
+      try {
+        cargando.activar()
+        const { result } = await new CuentaBancariaController().listar()
+        cuentas_bancarias.value = result
+      } catch (e) {
+        console.error(e)
+        notificarError('Error al obtener cuentas bancarias ' + e)
       } finally {
         cargando.desactivar()
       }
@@ -402,18 +443,20 @@ export default defineComponent({
       }
     }
 
-    async function cash_rol_pago(entidad): Promise<void> {
-      const filename = 'cash_rol_pago'
-      const axios_repository = AxiosHttpRepository.getInstance()
-      const url_pdf =
+    async function cashRolPago(entidad, cuenta): Promise<void> {
+      const filename = entidad.nombre
+      const axios = AxiosHttpRepository.getInstance()
+      const url =
         apiConfig.URL_BASE +
         '/' +
-        axios_repository.getEndpoint(endpoints.crear_cash_roles_pago) +
+        axios.getEndpoint(endpoints.crear_cash_roles_pago) +
         entidad.id
-      await imprimirArchivo(url_pdf, 'GET', 'blob', 'xlsx', filename, null)
+      await imprimirArchivo(url, 'POST', 'blob', 'xlsx', filename, {
+        cuenta_id: cuenta
+      })
     }
 
-    async function generar_reporte_general_mes(
+    async function generarReporteGeneralMes(
       id: number,
       tipo: string
     ): Promise<void> {
@@ -438,8 +481,35 @@ export default defineComponent({
         const id = rolpago.id != null ? rolpago.id : 0
         await actualizarRolPago(id)
       },
-      visible: () =>
-        authenticationStore.can('puede.ver.btn.actualizar_rol_pago')
+      visible: () => store.can('puede.ver.btn.actualizar_rol_pago')
+    }
+    const btnPagarPrestamosRolActual: CustomActionTable<RolPagoMes> = {
+      titulo: 'Pagar préstamos',
+      icono: 'bi-cash',
+      color: 'primary',
+      tooltip: 'Pagar las cuotas de préstamos en el rol actual',
+      accion: async ({ entidad }) => {
+        await pagarCoutaPrestamoRolActual(entidad.id)
+      },
+      visible: ({ entidad }) =>
+        store.can('puede.editar.rol_pago') && !entidad.es_quincena
+    }
+
+    async function pagarCoutaPrestamoRolActual(rol_id: number) {
+      try {
+        cargando.activar()
+        const axios = AxiosHttpRepository.getInstance()
+        const ruta =
+          axios.getEndpoint(endpoints.pagar_prestamos_rol_actual) + rol_id
+        const response: AxiosResponse = await axios.post(ruta)
+        if (response.status) {
+          notificarCorrecto('Prestamos pagados con éxito')
+        }
+      } catch (error) {
+        notificarAdvertencia('error: ' + error)
+      } finally {
+        cargando.desactivar()
+      }
     }
 
     async function actualizarRolPago(idRolPago: number) {
@@ -518,6 +588,7 @@ export default defineComponent({
       btnActivarRolPago,
       btnFinalizarMasivo,
       btnFinalizar,
+      btnPagarPrestamosRolActual,
       btnEliminarRolPago,
       btnEditarRolPagoEmpleado,
       btnImprimirRolPago,

@@ -521,8 +521,8 @@
           style="border-radius: 8px"
         />
         <span class="column">
-          <b class="text-thin text-h5 elegant-blue-gradient-text"></b>
-          <small class="text-color">System</small>
+          <b class="text-thin text-h5 elegant-blue-gradient-text">FIRSTRED</b>
+          <small class="text-color">Enterprise Resource Planning</small>
         </span>
       </div>
 
@@ -554,24 +554,24 @@
       </q-scroll-area>
 
       <q-btn
-          color="primary"
-          no-caps
-          class="full-width q-mb-md"
-          label="Cerrar sesión"
-          icon="bi-x"
-          target="_blank"
-          @click="logout()"
+        color="primary"
+        no-caps
+        class="full-width q-mb-md"
+        label="Cerrar sesión"
+        icon="bi-x"
+        target="_blank"
+        @click="logout()"
       />
-<!--      <q-btn-->
-<!--        color="blue-14"-->
-<!--        no-caps-->
-<!--        class="full-width q-mb-md"-->
-<!--        label="Descarga la app móvil"-->
-<!--        icon="bi-google-play"-->
-<!--        target="_blank"-->
-<!--        @click="logout()"-->
-<!--      >-->
-<!--      </q-btn>-->
+      <!--      <q-btn-->
+      <!--        color="blue-14"-->
+      <!--        no-caps-->
+      <!--        class="full-width q-mb-md"-->
+      <!--        label="Descarga la app móvil"-->
+      <!--        icon="bi-google-play"-->
+      <!--        target="_blank"-->
+      <!--        @click="logout()"-->
+      <!--      >-->
+      <!--      </q-btn>-->
     </q-drawer>
 
     <modales-entidad :comportamiento="modales" @guardado="guardado" />
@@ -586,12 +586,10 @@
         <!-- <transition name="scale" mode="out-in">
           <essential-loading></essential-loading>
         </transition> -->
-        <div class="text-right absolute-bottom">
-          <footer-component></footer-component>
-        </div>
         <!-- Aplica keep-alive aquí -->
         <keep-alive
           :exclude="[
+            'PrestamoEmpresarial',
             'PrefacturaPage',
             'intranet_page',
             'transacciones_ingresos',
@@ -611,6 +609,9 @@
         >
           <component :is="Component" />
         </keep-alive>
+
+        <!-- Footer siempre visible, pero se adapta según plataforma -->
+        <footer-component/>
       </router-view>
     </q-page-container>
   </q-layout>

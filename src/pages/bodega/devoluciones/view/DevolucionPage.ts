@@ -350,7 +350,7 @@ export default defineComponent({
       await refArchivo.value.subir()
     }
 
-    function eliminar({ posicion }) {
+    function eliminar(posicion:number) {
       confirmar('¿Está seguro de continuar?', () =>
         devolucion.listadoProductos.splice(posicion, 1)
       )
@@ -373,7 +373,7 @@ export default defineComponent({
 
     async function recargarSucursales() {
       const sucursales = (
-        await new SucursalController().listar({ campos: 'id,lugar' })
+        await new SucursalController().listar({ campos: 'id,lugar', activo:1 })
       ).result
       LocalStorage.set('sucursales', JSON.stringify(sucursales))
       listadosAuxiliares.sucursales = sucursales
@@ -433,7 +433,7 @@ export default defineComponent({
     async function refrescarListados(nombreListado: listados) {
       switch (nombreListado) {
         case 'incidentes':
-          cargarVista(async () => {
+          await cargarVista(async () => {
             await obtenerListados({
               incidentes: {
                 controller: new IncidenteController(),
@@ -456,8 +456,8 @@ export default defineComponent({
       titulo: 'Quitar',
       color: 'negative',
       icono: 'bi-x',
-      accion: ({ entidad, posicion }) => {
-        eliminar({ entidad, posicion })
+      accion: ({ posicion }) => {
+        eliminar( posicion)
       },
       visible: () => {
         return accion.value != acciones.consultar

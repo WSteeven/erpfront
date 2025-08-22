@@ -1,6 +1,5 @@
 // Dependencias
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { useNotificaciones } from 'shared/notificaciones'
 import { computed, defineComponent, ref } from 'vue'
 
 // Componentes
@@ -57,7 +56,8 @@ export default defineComponent({
 
     const { componente, titulo, abierto, propsData } = props.comportamiento.useModal()
     // const { confirmar } = useNotificaciones()
-    function cerrarModalEntidad(confirmarCerrar = props.confirmarCerrar) {
+    function cerrarModalEntidad() {
+    // function cerrarModalEntidad(confirmarCerrar = props.confirmarCerrar) {
       /* if (confirmarCerrar) {
         confirmar('¿Está seguro de que desea cerrar?', () => {
           abierto.value = false

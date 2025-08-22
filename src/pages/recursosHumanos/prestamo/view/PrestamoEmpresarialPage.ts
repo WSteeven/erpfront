@@ -1,26 +1,28 @@
 // Dependencias
 import { configuracionColumnasPrestamo } from '../domain/configuracionColumnasPrestamo'
 import { configuracionColumnasPlazoPrestamo } from '../domain/configuracionColumnasPlazoPrestamo'
-import {
-  requiredIf,
-  required,
-} from 'shared/i18n-validators'
+import { required, requiredIf } from 'shared/i18n-validators'
 import { maxValue, minValue } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
-import { defineComponent, ref, computed, watchEffect } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
 
 // Componentes
 import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
+import EssentialTable from 'components/tables/view/EssentialTable.vue'
+import NoOptionComponent from 'components/NoOptionComponent.vue'
+import ErrorComponent from 'components/ErrorComponent.vue'
 import SelectorImagen from 'components/SelectorImagen.vue'
 
 //Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { PrestamoController } from '../infraestructure/PrestamoController'
 import { Prestamo } from '../domain/Prestamo'
-import { removeAccents } from 'shared/utils'
-import { acciones, accionesTabla, maskFecha, tabPrestamoEmpresarial } from 'config/utils'
-import { MotivoPermisoEmpleadoController } from 'pages/recursosHumanos/motivo/infraestructure/MotivoPermisoEmpleadoController'
-import EssentialTable from 'components/tables/view/EssentialTable.vue'
+import {
+  acciones,
+  accionesTabla,
+  maskFecha,
+  tabPrestamoEmpresarial
+} from 'config/utils'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { useNotificaciones } from 'shared/notificaciones'
@@ -29,11 +31,30 @@ import { useRecursosHumanosStore } from 'stores/recursosHumanos'
 import { PeriodoController } from 'pages/recursosHumanos/periodo/infraestructure/PeriodoController'
 import { PrestamoCustomController } from '../infraestructure/PrestamoCustomController'
 import { useAuthenticationStore } from 'stores/authentication'
-import { format, parse } from '@formkit/tempo'
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
+import { endpoints } from 'config/api'
+import { AxiosError, AxiosResponse } from 'axios'
+import {
+  isAxiosError,
+  notificarMensajesError,
+  obtenerFechaActual
+} from 'shared/utils'
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { PlazoPrestamo } from 'recursosHumanos/prestamo/domain/PlazoPrestamo'
+import { useNotificacionStore } from 'stores/notificacion'
+import { useQuasar } from 'quasar'
+import { useCargandoStore } from 'stores/cargando'
 
 export default defineComponent({
-  components: { TabLayoutFilterTabs2, SelectorImagen, EssentialTable },
+  name: 'PrestamoEmpresarial',
+  components: {
+    NoOptionComponent,
+    ErrorComponent,
+    TabLayoutFilterTabs2,
+    SelectorImagen,
+    EssentialTable
+  },
   setup() {
     const mixin = new ContenedorSimpleMixin(Prestamo, new PrestamoController())
     const {
@@ -45,59 +66,90 @@ export default defineComponent({
     } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista, listar } =
       mixin.useComportamiento()
-    const { onBeforeModificar } =
-      mixin.useHooks()
+    const {
+      onGuardado,
+      onReestablecer,
+      onBeforeModificar,
+      onBeforeConsultar,
+      onConsultado
+    } = mixin.useHooks()
 
     const {
       confirmar,
       prompt,
       notificarCorrecto,
       notificarAdvertencia,
-      notificarError,
+      notificarError
     } = useNotificaciones()
-    const key_enter = ref(0)
-    const motivos = ref([])
 
-    const tipos = ref([
-      { id: 1, nombre: 'Prestamo Descuento' },
-      { id: 2, nombre: 'Anticipo' },
-    ])
-    const esConsultado = ref(false)
-    onBeforeModificar(() => (esConsultado.value = true))
-    const maximoAPrestar = ref()
-    const esMayorPrestamo = ref(false)
-    const { empleados, filtrarEmpleados } = useFiltrosListadosSelects(listadosAuxiliares)
-    const periodos = ref()
+    // stores
+    useNotificacionStore().setQuasar(useQuasar())
+    useCargandoStore().setQuasar(useQuasar())
     const recursosHumanosStore = useRecursosHumanosStore()
     const authenticationStore = useAuthenticationStore()
 
+    const cargando = new StatusEssentialLoading()
+    const esConsultado = ref(false)
+    const is_month = ref(false)
     const sueldo_basico = computed(() => {
       recursosHumanosStore.obtenerSueldoBasico()
       return recursosHumanosStore.sueldo_basico
     })
     const prestamoEmpresarialCustomController = new PrestamoCustomController()
-
     const esNuevo = computed(() => {
-      return accion.value === 'NUEVO'
+      return accion.value === acciones.nuevo
     })
+    const fecha_vencimiento = computed(() => {
+      if (accion.value == acciones.nuevo) {
+        return prestamo.plazos != null
+          ? prestamo.plazos[prestamo.plazo - 1].fecha_vencimiento
+          : null
+      }
+      return obtenerFechaActual(maskFecha)
+    })
+    let tabActualPrestamoEmpresarial = 'ACTIVO'
+
+    /*************************************************************************
+     * HOOKS
+     *************************************************************************/
+    onGuardado(() => {
+      recursosHumanosStore.resetearSolicitudPrestamo()
+    })
+    onReestablecer(() => {
+      recursosHumanosStore.resetearSolicitudPrestamo()
+    })
+    onBeforeConsultar(async () => {
+      await consultarEmpleados()
+    })
+    onConsultado(() => (prestamo.vencimiento = fecha_vencimiento.value))
+    onBeforeModificar(() => (esConsultado.value = true))
+
+    const { periodos, filtrarPeriodos, empleados, filtrarEmpleados } =
+      useFiltrosListadosSelects(listadosAuxiliares)
     cargarVista(async () => {
       await obtenerListados({
-        motivos: new MotivoPermisoEmpleadoController(),
         empleados: {
           controller: new EmpleadoController(),
-          params: { campos: 'id,nombres,apellidos', estado: 1 },
+          params: { campos: 'id,nombres,apellidos', estado: 1 }
         },
         periodos: {
           controller: new PeriodoController(),
-          params: { campos: 'id,nombre', activo: 1 },
-        },
+          params: { campos: 'id,nombre', activo: 1 }
+        }
       })
       empleados.value = listadosAuxiliares.empleados
       periodos.value = listadosAuxiliares.periodos
-      motivos.value = listadosAuxiliares.motivos
+
+      // Datos default
+      prestamo.estado = 'ACTIVO'
+      if (recursosHumanosStore.solicitudPrestamo.id) {
+        await cargarDatosSolicitudPrestamo()
+      }
     })
 
-    maximoAPrestar.value = parseInt(sueldo_basico.value) * 2
+    /*************************************************************************
+     * Reglas de validación y validaciones
+     *************************************************************************/
     //Reglas de validacion
     const reglas = computed(() => ({
       solicitante: { required },
@@ -107,410 +159,457 @@ export default defineComponent({
       valor_utilidad: { requiredIf: requiredIf(prestamo.periodo != null) },
       plazo: { required, minValue: minValue(1), maxValue: maxValue(12) },
       plazos: { required },
+      fecha_inicio_cobro: { required }
     }))
-    prestamo.plazos = []
-    const plazo_pago = ref({ id: 0, vencimiento: '', plazo: 0 })
-    function tabla_plazos() {
-      key_enter.value++
-      if (key_enter.value >= 1) {
-        prestamo.plazos = []
-      }
-      const valor_cuota = prestamo.monto !== null ? prestamo.monto : 0
-      const plazo_prestamo = prestamo.plazo != null ? prestamo.plazo : 0
-      const valor_pago = valor_cuota / plazo_prestamo
-      if (valor_pago <= 200) {
-        for (let index = 1; index <= prestamo.plazo; index++) {
-          const plazo = {
-            id:index-1,
-            num_cuota: index,
-            fecha_vencimiento: calcular_fechas(index, 'meses'),
-            valor_couta: (valor_cuota / plazo_prestamo).toFixed(2),
-            pago_couta: false,
-          }
-          prestamo.plazos!.push(plazo)
-        }
-      }
-    }
-    function calcular_fechas(cuota: number, plazo: string) {
-      const day = 1000 * 60 * 60 * 24
-      const week = 7 * day
-      const month = 4 * week
-      const year = 12 * month
-      const fechaPrestamo = parse(prestamo.fecha !== null ? prestamo.fecha : new Date().toString(), 'YYYY-MM-DD')
-      switch (plazo) {
-        case 'dias':
-          fechaPrestamo.setDate(fechaPrestamo.getDate() + cuota)
-          break
-        case 'semanas':
-          fechaPrestamo.setDate(fechaPrestamo.getTime() + week * cuota)
-          break
-        case 'meses':
-          fechaPrestamo.setDate(30) // Establecer el día 30
-          // Incrementar los meses en index-1 para asegurarse de que la fecha sea el último día del mes
-          fechaPrestamo.setMonth(fechaPrestamo.getMonth() + cuota - 1)
-          break
-        case 'anios':
-          fechaPrestamo.setDate(fechaPrestamo.getTime() + year * cuota)
-          break
-      }
-      // Formatear la fecha en formato 'YYYY-MM-DD'
-      return format(fechaPrestamo, 'YYYY-MM-DD')
-    }
+
     const v$ = useVuelidate(reglas, prestamo)
     setValidador(v$.value)
 
-    watchEffect(() => {
+    /*************************************************************************
+     * Funciones
+     *************************************************************************/
+    async function cargarDatosSolicitudPrestamo() {
+      // Copiamos los valores de la solicitud en el préstamo
+      prestamo.solicitante = recursosHumanosStore.solicitudPrestamo.solicitante
+      prestamo.solicitante_info =
+        recursosHumanosStore.solicitudPrestamo.solicitante_info
+      prestamo.fecha = recursosHumanosStore.solicitudPrestamo.fecha
+      prestamo.fecha_inicio_cobro = recursosHumanosStore.solicitudPrestamo.fecha
+      prestamo.monto = recursosHumanosStore.solicitudPrestamo.monto
+      prestamo.plazo = Number.parseInt(
+        recursosHumanosStore.solicitudPrestamo.plazo
+      )
+      prestamo.estado = 'ACTIVO'
+      prestamo.periodo = recursosHumanosStore.solicitudPrestamo.periodo
+      prestamo.valor_utilidad =
+        recursosHumanosStore.solicitudPrestamo.valor_utilidad
+      prestamo.id_solicitud_prestamo_empresarial =
+        recursosHumanosStore.solicitudPrestamo.id
+      await calcularCantidadCuotas()
+    }
+
+    /**
+     * Calcula la cantidad y valores de las cuotas para el préstamo empresarial.
+     * Envía los datos actuales del préstamo al endpoint correspondiente y actualiza
+     * la propiedad `plazos` del préstamo con la respuesta recibida.
+     * También actualiza la fecha de vencimiento y gestiona el estado de carga y notificaciones.
+     *
+     * @async
+     * @returns {Promise<void>} No retorna ningún valor, pero actualiza el estado del préstamo.
+     *
+     * @throws Muestra notificaciones de error si la petición falla o si hay errores de validación.
+     */
+    async function calcularCantidadCuotas() {
       try {
-        if (accion.value == acciones.nuevo ? true : false) {
-          if (prestamo.plazo != null) {
-            const valor_cuota = prestamo.monto !== null ? prestamo.monto : 0
-            const plazo_prestamo = prestamo.plazo != null ? prestamo.plazo : 0
-            const valor_pago = valor_cuota / plazo_prestamo
-            if (
-              valor_pago <= 200 &&
-              prestamo.plazo > 0 &&
-              prestamo.plazo <= 12
-            ) {
-              tabla_plazos()
-              prestamo.vencimiento =
-                prestamo.plazos != null
-                  ? prestamo.plazos[prestamo.plazo - 1].fecha_vencimiento
-                  : null
-              if (prestamo.valor_utilidad != null) {
-                recargar_tabla()
-              }
-            } else {
-              if (prestamo.plazo > 0) {
+        cargando.activar()
+        if (prestamo.plazo != null && prestamo.monto != null) {
+          const axios = AxiosHttpRepository.getInstance()
+          const ruta = axios.getEndpoint(
+            endpoints.calcular_cuotas_prestamo_empresarial
+          )
+          const response: AxiosResponse = await axios.post(ruta, prestamo)
+
+          if (response.status == 200) notificarCorrecto('Cuotas calculadas')
+          prestamo.plazos = response.data.cuotas
+
+          // se actualiza la variable de fecha de vencimiento
+          prestamo.vencimiento = fecha_vencimiento.value
+        }
+      } catch (e) {
+        const axiosError = e as AxiosError
+        if (isAxiosError(axiosError)) {
+          const mensajes: string[] = error.erroresValidacion
+          await notificarMensajesError(mensajes, this.notificaciones)
+        }
+      } finally {
+        cargando.desactivar()
+      }
+    }
+
+    async function consultarEmpleados() {
+      const { result } = await new EmpleadoController().listar({
+        campos: 'id,nombres,apellidos'
+      })
+      empleados.value = result
+      listadosAuxiliares.empleados = result
+    }
+
+    /**
+     * Aplaza una cuota de préstamo empresarial.
+     * Envía una solicitud al backend con el motivo del aplazamiento y actualiza la cuota correspondiente.
+     * Muestra notificaciones según el resultado y gestiona el estado de carga.
+     *
+     * @param {number} id - Identificador de la cuota a aplazar.
+     * @param {number} posicion - Posición de la cuota en el arreglo de plazos.
+     * @param {string} comentario - Motivo o comentario del aplazamiento.
+     * @async
+     * @returns {Promise<void>} No retorna ningún valor, pero actualiza la cuota en el estado local.
+     * @throws Muestra notificaciones de error si la petición falla o hay errores de validación.
+     */
+    async function aplazarCuota(
+      id: number,
+      posicion: number,
+      comentario: string
+    ) {
+      try {
+        cargando.activar()
+        const axios = AxiosHttpRepository.getInstance()
+        const ruta =
+          axios.getEndpoint(endpoints.aplazar_cuota_prestamo_empresarial) + id
+        const response: AxiosResponse = await axios.post(ruta, {
+          comentario: comentario
+        })
+
+        if (response.status == 200) {
+          notificarCorrecto(response.data.mensaje)
+          prestamo.plazos[posicion] = response.data.cuota
+        }
+      } catch (e) {
+        const axiosError = e as AxiosError
+        if (isAxiosError(axiosError)) {
+          const mensajes: string[] = error.erroresValidacion
+          await notificarMensajesError(mensajes, this.notificaciones)
+        }
+      } finally {
+        cargando.desactivar()
+      }
+    }
+
+    function modificarCuota(entidad: PlazoPrestamo, posicion) {
+      confirmar(
+        '¿Está seguro de modificar la cuota N' + entidad.num_cuota + '?',
+        () => {
+          const data: CustomActionPrompt = {
+            titulo: 'Modificar cuota',
+            mensaje: 'Ingrese nuevo valor de la cuota',
+            defecto: entidad.valor_cuota,
+            accion: async data => {
+              try {
+                prestamo.plazos[posicion].valor_cuota = data
+
+                if (verificarCuotasVSMonto('valor_cuota') !== prestamo.monto)
+                  notificarAdvertencia(
+                    'La suma de todas las cuotas debe ser igual al valor del prestamo, por favor reajusta'
+                  )
+              } catch (e: any) {
                 notificarError(
-                  'Las Coutas no deben exeder al 40% del sueldo del empleado'
+                  'modificarCuota: No se pudo modificar, debes ingresar monto'
                 )
               }
             }
           }
-        } else {
-          prestamo.vencimiento =
-            prestamo.plazos != null
-              ? prestamo.plazos[prestamo.plazo - 1].fecha_vencimiento
-              : null
+          prompt(data)
         }
-      } catch (error) { }
-    })
+      )
+    }
 
-    function recargar_tabla() {
-      const valor_utilidad =
-        prestamo.valor_utilidad == null ? 0 : prestamo.valor_utilidad
-      const valor_prestamo = prestamo.monto == null ? 0 : prestamo.monto
+    /**
+     * Suma los valores de una propiedad específica de todas las cuotas del préstamo.
+     *
+     * @param {string} clave - Nombre de la propiedad a sumar (por ejemplo, 'valor_cuota').
+     * @returns {number} Total sumado de la propiedad indicada en todas las cuotas.
+     */
+    function verificarCuotasVSMonto(clave: string): number {
+      return prestamo.plazos?.reduce((acc, plazo: PlazoPrestamo) => {
+        return acc + parseFloat(plazo[clave])
+      }, 0)
+    }
 
-      if (valor_utilidad > 0) {
-        const indice_couta = prestamo.plazos!.findIndex(
-          (couta) => couta.num_cuota === prestamo.plazo + 1
-        )
-        if (indice_couta == -1) {
-          const periodo_seleccionado = periodos.value.find((periodo) => periodo.id === prestamo.periodo);
-
-          const nuevaCuota = {
-            num_cuota: prestamo.plazos!.length + 1,
-            fecha_vencimiento: periodo_seleccionado.nombre.split('-')[0] + '-04-15',
-            valor_couta: prestamo.valor_utilidad,
-            pago_couta: false,
+    /**
+     * Modifica el comentario de una cuota específica del préstamo.
+     * Muestra un cuadro de diálogo para ingresar o editar el comentario y actualiza el valor en el arreglo de cuotas.
+     * Si ocurre un error, muestra una notificación.
+     *
+     * @param {number} posicion - Índice de la cuota a modificar en el arreglo de plazos.
+     */
+    function modificarComentario(posicion) {
+      const data: CustomActionPrompt = {
+        titulo: 'Modificar comentario',
+        mensaje: 'Ingrese o modifique el comentario de esta cuota',
+        defecto: prestamo.plazos[posicion].comentario,
+        accion: async data => {
+          try {
+            prestamo.plazos[posicion].comentario = data
+          } catch (e: any) {
+            notificarError('No se pudo modificar, debes ingresar un comentario')
           }
-          prestamo.plazos!.push(nuevaCuota)
-        } else {
-          //   prestamo.plazos![indice_couta].fecha_pago ='15-04-' + prestamo.utilidad
-          prestamo.plazos![indice_couta].valor_couta = prestamo.valor_utilidad
         }
-        const valorAnterior = valor_prestamo / prestamo.plazo
-        calcular_valores_prestamo(valor_utilidad, valor_prestamo, valorAnterior)
+      }
+      prompt(data)
+    }
+
+    /**
+     * Modifica el valor total a pagar de una cuota específica del préstamo.
+     * Solicita el nuevo valor mediante un cuadro de diálogo y actualiza el monto en el arreglo de cuotas.
+     * Verifica que la suma total de las cuotas coincida con el monto del préstamo y muestra advertencias si es necesario.
+     * Si ocurre un error, muestra una notificación.
+     *
+     * @param {number} posicion - Índice de la cuota a modificar en el arreglo de plazos.
+     */
+    function modificarTotalCuota(posicion) {
+      confirmar('¿Está seguro de modificar la cuota?', () => {
+        const data: CustomActionPrompt = {
+          titulo: 'Modificar cuota',
+          mensaje: 'Ingrese nuevo valor total de la cuota',
+          accion: async data => {
+            try {
+              prestamo.plazos[posicion].valor_a_pagar = data
+              if (verificarCuotasVSMonto('valor_a_pagar') !== Number.parseFloat(prestamo.monto))
+                notificarAdvertencia(
+                  'La suma de todas las cuotas debe ser igual al valor del prestamo, por favor reajusta las otras cuotas'
+                )
+            } catch (e: any) {
+              console.error('error', e)
+              notificarError('modificarTotalCuota: No se pudo modificar, debes ingresar monto')
+            }
+          }
+        }
+        prompt(data)
+      })
+    }
+
+    async function pagar(entidad:PlazoPrestamo, posicion:number) {
+      confirmar('¡Esta acción es irreversible! ¿Está seguro de pagar la cuota N' + entidad.num_cuota + '?', () => {
+        const data: CustomActionPrompt = {
+          titulo: 'Pagar cuota',
+          mensaje: 'Ingrese valor de la cuota a pagar',
+          accion: async data => {
+            try {
+              if (data > parseFloat(prestamo.plazos[posicion].valor_a_pagar)) {
+                notificarError('No se pudo pagar, debes ingresar monto menor o igual a '
+                    +prestamo.plazos[posicion].valor_a_pagar)
+                return
+              }
+
+              //Aqui se llamar a pagar
+              await pagarCuotaPrestamoEmpresarial(entidad.id, data, posicion)
+
+            } catch (e: any) {
+              notificarError('No se pudo pagar, a ocurido un error: ' + e)
+            }
+          }
+        }
+        prompt(data)
+      })
+    }
+
+    async function pagarCuotaPrestamoEmpresarial(id:number, valorAPagar:number, posicion:number) {
+        try {
+            cargando.activar()
+            const axios = AxiosHttpRepository.getInstance()
+            const ruta =
+            axios.getEndpoint(endpoints.pagar_cuota_prestamo) + id
+            const response: AxiosResponse = await axios.post(ruta, {monto:valorAPagar})
+
+            if (response.status == 200) notificarCorrecto('Cuota pagada')
+            prestamo.plazos[posicion] = response.data.cuota
+
+        } catch (e) {
+            const axiosError = e as AxiosError
+            if (isAxiosError(axiosError)) {
+            const mensajes: string[] = error.erroresValidacion
+            await notificarMensajesError(mensajes, this.notificaciones)
+            }
+        } finally {
+            cargando.desactivar()
+        }
+    }
+
+    /**
+     * Actualiza la información de un préstamo empresarial.
+     * Utiliza el controlador personalizado para realizar la actualización y muestra notificaciones según el resultado.
+     * Refresca la lista de préstamos empresariales filtrados tras la actualización.
+     *
+     * @param {number} id - Identificador del préstamo empresarial a actualizar.
+     * @async
+     * @returns {Promise<void>} No retorna ningún valor, pero actualiza el estado y la vista de los préstamos.
+     * @throws Muestra notificación de error si la actualización falla.
+     */
+    async function actualizarPrestamoEmpresarial(id: number) {
+      try {
+        await prestamoEmpresarialCustomController.actualizarPrestamoEmpresarial(id)
+        notificarCorrecto('Se ha actualizado  el PrestamoEmpresarial')
+        await filtrarPrestamoEmpresarial(tabActualPrestamoEmpresarial)
+      } catch (e: any) {
+        notificarError('No se pudo actualizar, ocurrio un error')
       }
     }
 
-    const btnModificarCouta: CustomActionTable = {
-      titulo: 'editar',
+    /**
+     * Anula (elimina) un préstamo empresarial.
+     * Solicita al usuario un motivo de anulación mediante un cuadro de diálogo.
+     * Actualiza el estado y motivo del préstamo, realiza la anulación usando el controlador
+     * y elimina el préstamo de la lista local. Muestra notificaciones según el resultado.
+     *
+     * @param entidad
+     * @param posicion
+     * @async
+     * @returns {Promise<void>} No retorna ningún valor, pero actualiza la lista de préstamos.
+     * @throws Muestra notificación de error si la anulación falla o no se ingresa un motivo.
+     */
+    async function anularPrestamoEmpresarial(entidad, posicion) {
+      try {
+        const data: CustomActionPrompt = {
+          titulo: 'Eliminar PrestamoEmpresarial',
+          mensaje: 'Ingrese motivo de eliminacion',
+          accion: async data => {
+            entidad.estado = false
+            entidad.motivo = data
+            entidad.descripcion_prestamoempresarial = data
+            await prestamoEmpresarialCustomController.anularPrestamoEmpresarial(
+              entidad
+            )
+            notificarCorrecto('Se ha eliminado PrestamoEmpresarial')
+            listado.value.splice(posicion, 1)
+          }
+        }
+        prompt(data)
+      } catch (e: any) {
+        notificarError(
+          'No se pudo anular, debes ingresar un motivo para la anulacion: '+e
+        )
+      }
+    }
+
+
+
+    async function filtrarPrestamoEmpresarial(tabSeleccionado: string) {
+      await listar({ estado: tabSeleccionado }, false)
+      tabActualPrestamoEmpresarial = tabSeleccionado
+    }
+
+    /**Verifica si es un mes */
+    function checkMes(_, reason) {
+      is_month.value = reason !== 'month'
+      if (!is_month.value) calcularCantidadCuotas()
+    }
+
+    /*************************************************************************
+     * Botones de tabla
+     *************************************************************************/
+
+    /**
+     * TODO: Esta función solo se usa cuando es nuevo
+     */
+    const btnModificarCuota: CustomActionTable<PlazoPrestamo> = {
+      titulo: 'Modificar Cuota',
       icono: 'bi-pencil-square',
       color: 'secondary',
-      accion: ({ posicion }) => {
-        console.log(posicion)
-        modificarCouta(posicion)
+      tooltip: 'Modificar el valor de la cuota',
+      accion: ({ entidad, posicion }) => {
+        modificarCuota(entidad, posicion)
       },
-      visible: () => (accion.value == 'NUEVO' ? true : false),
+      visible: () => accion.value == acciones.nuevo
     }
-    const btnPagarCouta: CustomActionTable = {
+
+    /**
+     * TODO: Esta función falta de probar su funcionalidad
+     */
+    const btnPagarCuota: CustomActionTable<PlazoPrestamo> = {
       titulo: 'pagar',
       icono: 'bi-cash',
       color: 'primary',
-      accion: ({ posicion }) => {
-        pagar(posicion)
+      accion: async ({ entidad, posicion }) => {
+
+        await pagar(entidad, posicion)
       },
-      visible: () => (accion.value == 'EDITAR' ? true : false),
+      visible: ({entidad}) => accion.value == acciones.editar && !entidad.pago_cuota
     }
-    const btnAplazarCouta: CustomActionTable = {
+
+    const btnAplazarCuota: CustomActionTable<PlazoPrestamo> = {
       titulo: 'Aplazar',
-      icono: 'bi-cash-stack',
+      icono: 'bi-caret-down-fill',
       color: 'warning',
-      accion: ({ posicion }) => {
-        aplazar(posicion)
+      accion: ({ entidad, posicion }) => {
+        confirmar(
+          'Se modificará el mes de vencimiento hasta el mes siguiente de la ultima cuota. ¡Esta acción es irreversible! ¿Está seguro de continuar?',
+          async () => {
+            const data: CustomActionPrompt = {
+              titulo: 'Comentario',
+              mensaje: 'Escribe el motivo por el que vas a aplazar la cuota',
+              accion: async data => {
+                await aplazarCuota(entidad.id, posicion, data)
+              }
+            }
+            prompt(data)
+          }
+        )
       },
-      visible: () => (accion.value == 'EDITAR' ? true : false),
+      visible: () => accion.value == acciones.editar
     }
-    const btnEditarTotalCouta: CustomActionTable = {
+    const btnEditarTotalCuota: CustomActionTable<PlazoPrestamo> = {
       titulo: 'Editar Valor a Pagar',
       icono: 'bi-pencil-square',
       color: 'warning',
       accion: ({ posicion }) => {
-        modificar_total_couta(posicion)
+        modificarTotalCuota(posicion)
       },
-      visible: () => (accion.value == 'EDITAR' ? true : false),
-    }
-    function aplazar(indice_couta) {
-      const fechaActual = prestamo.plazos![prestamo.plazo - 1].fecha_vencimiento
-      const [anio, mes, dia] = fechaActual.split('-')
-      // Crear un objeto de fecha con el formato yyyy-mm-dd
-      const fechaObj = new Date(anio, mes - 1, dia)
-      // Aumentar un mes a la fecha de vencimiento
-      fechaObj.setMonth(fechaObj.getMonth() + 1)
-      // Obtener los componentes de la nueva fecha
-      const nuevaFecha = fechaObj.getDate()
-      const nuevoMes = fechaObj.getMonth() + 1 // Sumamos 1 ya que los meses van de 0 a 11
-      const nuevoAnio = fechaObj.getFullYear()
-      // Formatear la nueva fecha a dd-mm-yyyy
-      const nuevaFechaStr = `${nuevoAnio}-${nuevoMes.toString().padStart(2, '0')}-${nuevaFecha
-        .toString()
-        .padStart(2, '0')}`
-      prestamo.plazos![indice_couta].fecha_vencimiento = nuevaFechaStr
-    }
-    function modificarCouta(indice_couta) {
-      confirmar('¿Está seguro de modificar la couta N'+(indice_couta+1)+'?', () => {
-        const data: CustomActionPrompt = {
-          titulo: 'Modificar couta',
-          mensaje: 'Ingrese nuevo valor de la couta',
-          accion: async (data) => {
-            try {
-              const valor_prestamo = prestamo.monto ?? 0 // == null ? 0 : prestamo.monto
-              if (data > valor_prestamo) {
-                esMayorPrestamo.value = true
-                notificarAdvertencia('La suma de todas las coutas no debe superar al valor del prestamo')
-              }
-              prestamo.plazos![indice_couta].valor_couta = data
-              calcular_valores_prestamo_indice(indice_couta, valor_prestamo)
-            } catch (e: any) {
-              notificarError('No se pudo modificar, debes ingresar monto')
-            }
-          },
-        }
-        prompt(data)
-      })
-    }
-    function modificar_total_couta(indice_couta) {
-      confirmar('¿Está seguro de modificar la couta?', () => {
-        const data: CustomActionPrompt = {
-          titulo: 'Modificar couta',
-          mensaje: 'Ingrese nuevo valor total de la couta',
-          accion: async (data) => {
-            try {
-              prestamo.plazos![indice_couta].valor_a_pagar = data
-            } catch (e: any) {
-              notificarError('No se pudo modificar, debes ingresar monto')
-            }
-          },
-        }
-        prompt(data)
-      })
-    }
-    function calcular_valores_prestamo_indice(indiceExcluido, valor_prestamo) {
-      const numero_couta = prestamo.plazos![indiceExcluido].num_cuota
-      prestamo.plazos!.map((cuotaAnterior) => {
-        if (cuotaAnterior.num_cuota !== numero_couta) {
-          cuotaAnterior.valor_couta = (
-            (parseFloat(valor_prestamo.toString()) -
-              prestamo.plazos![indiceExcluido].valor_couta) /
-            (prestamo.plazo - 1)
-          ).toFixed(2)
-          return cuotaAnterior
-        }
-        return cuotaAnterior
-      })
+      visible: ({ entidad }) =>
+        accion.value == acciones.editar && !entidad.pago_cuota
     }
 
-    function calcular_valores_prestamo(
-      valor_utilidad,
-      valor_prestamo,
-      valorAnterior
-    ) {
-      if (valor_utilidad > 0) {
-        let porcentaje_resta
-        if (valor_utilidad !== 0) {
-          porcentaje_resta =
-            parseFloat(valor_utilidad.toString()) /
-            parseFloat(valor_prestamo.toString())
-        } else {
-          // Manejar el caso cuando valor_utilidad es cero
-          porcentaje_resta = 0 // Asignar un valor predeterminado o manejarlo de otra forma apropiada
-        }
-        prestamo.plazos!.slice(0, -1).map((cuotaAnterior) => {
-          cuotaAnterior.valor_couta = (
-            valorAnterior -
-            valorAnterior * porcentaje_resta
-          ).toFixed(2)
-          return cuotaAnterior
-        })
+    const btnComentario: CustomActionTable = {
+      titulo: 'Editar Comentario',
+      icono: 'bi-pencil-square',
+      color: 'positive',
+      accion: ({ posicion }) => {
+        modificarComentario(posicion)
+      },
+      visible: () => accion.value == acciones.editar
+    }
+
+    const btnActualizarPrestamoEmpresarial: CustomActionTable = {
+      titulo: 'Actualizar préstamo',
+      icono: 'bi-arrow-clockwise',
+      color: 'warning',
+      tooltip: 'Actualizar el estado del préstamo',
+      visible: () =>
+        authenticationStore.can('puede.editar.prestamo_empresarial') &&
+        tabActualPrestamoEmpresarial == 'ACTIVO',
+      accion: ({ entidad }) => {
+        actualizarPrestamoEmpresarial(entidad.id)
       }
-    }
-    function pagar(indice_couta) {
-      confirmar('¿Está seguro de pagar la couta?', () => {
-        const data: CustomActionPrompt = {
-          titulo: 'Pagar couta',
-          mensaje: 'Ingrese valor de la couta a pagar',
-          accion: async (data) => {
-            try {
-              if (
-                data > parseFloat(prestamo.plazos![indice_couta].valor_couta)
-              ) {
-                notificarError(
-                  'No se pudo pagar, debes ingresar monto menor o igual a ' +
-                  prestamo.plazos![indice_couta].valor_couta
-                )
-                return
-              }
-              const fecha_actual = new Date()
-              if (
-                data == parseFloat(prestamo.plazos![indice_couta].valor_couta)
-              ) {
-                prestamo.plazos![indice_couta].pago_couta = true
-                prestamo.plazos![indice_couta].fecha_pago = fecha_actual
-                  .toISOString()
-                  .slice(0, 10)
-                actualizar_fecha_plazos(indice_couta + 1)
-              }
-              prestamo.plazos![indice_couta].fecha_pago = fecha_actual
-                .toISOString()
-                .slice(0, 10)
-              prestamo.plazos![indice_couta].valor_pagado = parseFloat(data)
-              prestamo.plazos![indice_couta].valor_a_pagar = (
-                prestamo.plazos![indice_couta].valor_couta - data
-              ).toFixed(2)
-            } catch (e: any) {
-              notificarError('No se pudo pagar, a ocurido un error: ' + e)
-            }
-          },
-        }
-        prompt(data)
-      })
-    }
-    function actualizar_fecha_plazos(indice_couta) {
-      prestamo.plazos!.slice(indice_couta).forEach((element) => {
-        const fecha = new Date(element.fecha_vencimiento)
-        fecha.setMonth(fecha.getMonth() - 1)
-        element.fecha_vencimiento = fecha.toISOString().slice(0, 10)
-      })
-    }
-    /**
-     * La función `filtrarPeriodo` filtra una lista de períodos en función de un valor dado y actualiza la
-     * lista filtrada.
-     * @param val - El parámetro `val` es un valor de cadena que representa el valor de entrada para
-     * filtrar los períodos. Se utiliza para buscar períodos que tienen un nombre que contiene el valor de
-     * entrada.
-     * @param update - El parámetro `update` es una función que se utiliza para actualizar el valor de
-     * `periodos`. Es una función de devolución de llamada que toma otra función como argumento. La función
-     * interna es responsable de actualizar el valor de `periodos` en función del parámetro `val` dado.
-     * @returns nada (indefinido).
-     */
-    function filtrarPeriodo(val, update) {
-      if (val === '') {
-        update(() => {
-          periodos.value = listadosAuxiliares.periodos
-        })
-        return
-      }
-      update(() => {
-        const needle = val.toLowerCase()
-        periodos.value = listadosAuxiliares.periodos.filter(
-          (v) => v.nombre.toLowerCase().indexOf(needle) > -1
-        )
-      })
     }
     const btnEliminarPrestamoEmpresarial: CustomActionTable = {
       titulo: '',
       icono: 'bi-trash',
       color: 'negative',
       visible: () =>
-        authenticationStore.can('puede.eliminar.prestamo_empresarial') && tabActualPrestamoEmpresarial == 'ACTIVO',
+        authenticationStore.can('puede.eliminar.prestamo_empresarial') &&
+        tabActualPrestamoEmpresarial == 'ACTIVO',
       accion: ({ entidad, posicion }) => {
-        accion.value = 'ELIMINAR'
-        eliminar_prestamoempresarial({ entidad, posicion })
-
-      },
-    }
-    async function eliminar_prestamoempresarial({ entidad, posicion }) {
-      try {
-
-        const data: CustomActionPrompt = {
-          titulo: 'Eliminar PrestamoEmpresarial',
-          mensaje: 'Ingrese motivo de eliminacion',
-          accion: async (data) => {
-            entidad.estado = false
-            entidad.motivo = data
-            entidad.descripcion_prestamoempresarial = data
-            await prestamoEmpresarialCustomController.anularPrestamoEmpresarial(entidad)
-            notificarCorrecto('Se ha eliminado PrestamoEmpresarial')
-            listado.value.splice(posicion, 1);
-          },
-        }
-        prompt(data)
-      } catch (e: any) {
-        notificarError(
-          'No se pudo anular, debes ingresar un motivo para la anulacion'
-        )
+        accion.value = acciones.eliminar
+        anularPrestamoEmpresarial( entidad, posicion)
       }
     }
-    let tabActualPrestamoEmpresarial = 'ACTIVO'
-
-    function filtrarPrestamoEmpresarial(tabSeleccionado: string) {
-      listar({ estado: tabSeleccionado }, false)
-      tabActualPrestamoEmpresarial = tabSeleccionado
-    }
-
-
-
-
 
     return {
-      removeAccents,
       mixin,
       prestamo,
       empleados,
       sueldo_basico,
       periodos,
-      watchEffect,
       filtrarEmpleados,
-      filtrarPeriodo,
+      filtrarPeriodos,
       filtrarPrestamoEmpresarial,
-      recargar_tabla,
-      esMayorPrestamo,
-      maximoValorPrestamo: [
-        (val) =>
-          (val && val <= parseInt(sueldo_basico.value) * 2) ||
-          'Solo se permite prestamo menor o igual a 2 SBU (' +
-          parseInt(sueldo_basico.value) * 2 +
-          ')',
-      ],
-      btnModificarCouta,
-      btnPagarCouta,
-      btnEditarTotalCouta,
-      btnAplazarCouta,
+      calcularCantidadCuotas,
+      checkMes,
+      btnModificarCuota,
+      btnPagarCuota,
+      btnEditarTotalCuota,
+      btnComentario,
+      btnAplazarCuota,
       btnEliminarPrestamoEmpresarial,
+      btnActualizarPrestamoEmpresarial,
       esNuevo,
       configuracionColumnasPlazoPrestamo,
-      esConsultado,
-      plazo_pago,
-      motivos,
-      tipos,
       maskFecha,
+      is_month,
       v$,
       disabled,
       tabPrestamoEmpresarial,
       configuracionColumnas: configuracionColumnasPrestamo,
-      accion,
-      accionesTabla,
+      accionesTabla
     }
-  },
+  }
 })

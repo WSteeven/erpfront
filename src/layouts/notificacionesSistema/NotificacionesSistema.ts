@@ -34,6 +34,10 @@ import { TransferenciaProductoRealizadaPusherEvent } from 'src/pusherEvents/tare
 import { TransferenciaProductoSolicitadaPusherEvent } from 'src/pusherEvents/tareas/TransferenciaProductosSolicitadaPusherEvent'
 import { NotificarEntregaActivoFijoPusherEvent } from 'src/pusherEvents/activosFijos/NotificarEntregaActivoFijoPusherEvent'
 import { PostulacionPusherEvent } from 'src/pusherEvents/recursosHumanos/seleccionContratacionPersonal/PostulacionPusherEvent'
+import {
+  NotificarAtrasoJefeInmediatoPusherEvent
+} from '../../pusherEvents/ControlPersonal/NotificarAtrasoJefeInmediatoPusherEvent'
+import {CitaMedicaPusherEvent} from '../../pusherEvents/medico/CitaMedicaPusherEvent';
 
 
 
@@ -178,6 +182,9 @@ export class NotificacionesSistema {
     const diasDescansoPusherEvent = new DiasDescansoPusherEvent()
     diasDescansoPusherEvent.start()
 
+    const citaMedicaPusherEvent = new CitaMedicaPusherEvent()
+    citaMedicaPusherEvent.start()
+
     /*******************
     * MODULO SELECCION Y CONTRATACION DE PERSONAL
     ********************/
@@ -193,5 +200,11 @@ export class NotificacionesSistema {
      **********************/
     const notificarEntregaActivoFijoPusherEvent = new NotificarEntregaActivoFijoPusherEvent()
     notificarEntregaActivoFijoPusherEvent.start()
+
+    /**
+     * Modulo de Control de Personal
+     */
+    const notificarAtrasoJefeInmediatoPusherEvent = new NotificarAtrasoJefeInmediatoPusherEvent()
+    notificarAtrasoJefeInmediatoPusherEvent.start()
   }
 }

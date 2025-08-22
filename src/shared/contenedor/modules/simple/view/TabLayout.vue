@@ -8,7 +8,7 @@
     <div v-if="tituloPagina" class="text-h5 text-bold q-mb-md">
       {{ tituloPagina }}
     </div>
-
+    <slot name="caption" />
     <!-- Tabs -->
     <q-tabs
       v-model="tabs"
@@ -48,12 +48,12 @@
       animated
       transition-prev="scale"
       transition-next="scale"
-      class="bodrde roundded cusdtom-shadow q-mt-lg"
+      class="borde rounded custom-shadow5 q-mt-lg"
       keep-alive
     >
       <!-- :class="{ 'rounded-tabpanel': !$q.screen.xs }" -->
       <!-- Formulario -->
-      <q-tab-panel name="formulario" class="q-pa-none">
+      <q-tab-panel name="formulario" >
         <slot name="formulario" />
         <div>
           <div class="row justify-end q-col-gutter-x-xs">

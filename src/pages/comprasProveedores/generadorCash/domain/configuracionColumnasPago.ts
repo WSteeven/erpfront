@@ -15,6 +15,9 @@ export const configuracionColumnasPago: ColumnConfig<Pago>[] = reactive([
     field: 'num_cuenta_empresa',
     label: 'Cta.empresa',
     align: 'left',
+    editable:true,
+    type:'select',
+    style: { width: '140px' }
   },
   {
     name: 'beneficiario',
@@ -72,6 +75,7 @@ export const configuracionColumnasPago: ColumnConfig<Pago>[] = reactive([
     editable: true,
     type: 'float',
     placeholder: 'Obligatorio',
+    style: { width: '80px' }
 
   },
   {
@@ -109,14 +113,16 @@ export const configuracionColumnasPago: ColumnConfig<Pago>[] = reactive([
     editable: true,
     type: 'textarea',
     placeholder: 'Obligatorio',
+    style: { width: '200px' }
   },
   {
     name: 'referencia_adicional',
     field: 'referencia_adicional',
-    label: 'Referencia adicional (Correo)',
+    label: 'Ref. Adic. (Correo)',
     align: 'left',
     editable: true,
     type: 'textarea',
     placeholder: 'Opcional',
+    style: { width: '200px' }
   },
 ])

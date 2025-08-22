@@ -20,6 +20,27 @@
             >
             </q-input>
           </div>
+
+          <!-- Cliente -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">¿Para qué empresa es el gasto?</label>
+            <q-select
+                v-model="gasto.cliente"
+                :options="clientes"
+                transition-show="jump-up"
+                transition-hide="jump-down"
+                options-dense
+                dense
+                outlined
+                hint="Empresa para la que hizo este gasto."
+                :disable="disabled"
+                :option-value="v => v.id"
+                :option-label="v => v.razon_social"
+                emit-value
+                map-options
+            />
+          </div>
+
           <!-- Lugar -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Lugar</label>

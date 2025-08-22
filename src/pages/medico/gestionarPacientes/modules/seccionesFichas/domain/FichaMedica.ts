@@ -13,6 +13,8 @@ export class FichaMedica extends EntidadAuditable {
   examenes_fisicos_regionales: ExamenFisicoRegional[]
   motivo_consulta: string | null
   registro_empleado_examen: number | null
+  tiene_accidente_trabajo: boolean
+  tiene_enfermedad_profesional: boolean
 
   constructor() {
     super()
@@ -24,5 +26,7 @@ export class FichaMedica extends EntidadAuditable {
     this.examenes_fisicos_regionales = []
     this.registro_empleado_examen = null
     this.motivo_consulta = null
+    this.tiene_accidente_trabajo = false
+    this.tiene_enfermedad_profesional = false
   }
 }

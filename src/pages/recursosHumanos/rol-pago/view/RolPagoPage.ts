@@ -58,10 +58,7 @@ export default defineComponent({
      * Mixin
      *********/
     const mixin = new ContenedorSimpleMixin(RolPago, new RolPagoController())
-    const mixinRolPago = new ContenedorSimpleMixin(
-      Archivo,
-      new ArchivoRolPagoController()
-    )
+    const mixinRolPago = new ContenedorSimpleMixin(Archivo,new ArchivoRolPagoController())
 
     // Mixin de Egreso
     const mixinEgresoRolPago = new ContenedorSimpleMixin(EgresoRolPago,new EgresoRolPagoController())

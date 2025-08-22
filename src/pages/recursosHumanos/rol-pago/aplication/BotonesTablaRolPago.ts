@@ -1,16 +1,15 @@
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useAuthenticationStore } from 'stores/authentication'
 import { useNotificaciones } from 'shared/notificaciones'
-import { acciones, estadosRolPago } from 'config/utils'
-import { useRolPagoStore } from 'stores/rolPago'
+import { estadosRolPago } from 'config/utils'
 import { CambiarEstadoRolPago } from './CambiarEstadoRolPago'
 
-export const useBotonesTablaRolPago = (modales: any) => {
+export const useBotonesTablaRolPago = () => {
   /***********
   * Stores
   ***********/
   const authenticationStore = useAuthenticationStore()
-  const rolPagoStore = useRolPagoStore()
+  // const rolPagoStore = useRolPagoStore()
 
 
 
@@ -35,7 +34,7 @@ export const useBotonesTablaRolPago = (modales: any) => {
       })
     }
   }
-  const btnRealizado: CustomActionTable = {
+  /*const btnRealizado: CustomActionTable = {
     titulo: '',
     icono: 'bi-check-circle',
     color: 'positive',
@@ -50,8 +49,9 @@ export const useBotonesTablaRolPago = (modales: any) => {
         notificarCorrecto('Rol de Pagos se esta Verificando!')
       })
     }
-  }
-  const btnFirmar: CustomActionTable = {
+  }*/
+  
+  /*const btnFirmar: CustomActionTable = {
     titulo: '',
     icono: 'fa-solid fa-file-signature',
     color: 'positive',
@@ -65,7 +65,7 @@ export const useBotonesTablaRolPago = (modales: any) => {
         entidad.estado = estadosRolPago.FINALIZADO
       })
     }
-  }
+  }*/
 
   const btnFinalizar: CustomActionTable = {
     titulo: '',
@@ -85,8 +85,8 @@ export const useBotonesTablaRolPago = (modales: any) => {
   }
   return {
     btnIniciar,
-    btnRealizado,
-    btnFirmar,
+    // btnRealizado,
+    // btnFirmar,
     btnFinalizar,
   }
 }

@@ -99,7 +99,7 @@ export const tabOptionsPedidos: TabOption[] = [
   { label: 'Completados', value: 'COMPLETA' }
 ]
 
-export const tabOptionsSolicitudPedido: TabOption[] = [
+export const tabOptionsSolicitudPrestamo: TabOption[] = [
   { label: 'Pendiente', value: '1' },
   { label: 'Validado', value: '4' },
   { label: 'Aprobados', value: '2' },
@@ -343,7 +343,8 @@ export const tipos_filtros = [
   { value: '7', name: 'RUC' },
   { value: '8', name: 'SIN FACTURA' },
   { value: '9', name: 'CIUDAD' },
-  { value: '10', name: 'GRUPO' }
+  { value: '10', name: 'GRUPO' },
+  { value: '11', name: 'EMPRESA O CLIENTE' }
 ]
 export const tipo_filtro = {
   TODOS: '0',
@@ -357,6 +358,7 @@ export const tipo_filtro = {
   SIN_FACTURA: '8',
   CIUDAD: '9',
   GRUPO: '10'
+  ,CLIENTE: '11'
 }
 export const tipo_saldo = {
   ACREDITACIONES: '1',
@@ -697,3 +699,6 @@ export const tipoAutenticacion = {
   empleado: 'private',
   usuario_externo: 'external'
 }
+
+/**JPCUSTODY */
+export const tipoJornadaBitacora = ['DIURNA', 'NOCTURNA']

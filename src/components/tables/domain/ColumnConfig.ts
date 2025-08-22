@@ -8,6 +8,7 @@ type funcion<T> = (entidad: T, rowIndex: number) => void
 
 export interface ColumnConfig<T> {
   id?: number
+  accept?: string
   name: keyof T
   field: keyof T
   label: string
@@ -36,5 +37,8 @@ export interface ColumnConfig<T> {
   table_index?: number // Para saber en que posición de la tabla se encuentra
   disableModal?: boolean
   disableTable?: boolean
-  columnClass?: string
+  columnClass?: string,
+  value?: any,
+  height?: string,
+  formato?: (val: any, entidad?: T) => string,
 }

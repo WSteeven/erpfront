@@ -63,7 +63,7 @@
     </template>
 
     <template #pagination="scope">
-      <botones-paginacion :scope="scope"> </botones-paginacion>
+      <botones-paginacion :scope="scope"></botones-paginacion>
     </template>
 
     <!-- Editar celdas -->
@@ -182,8 +182,23 @@
           </template>
         </q-select>
 
+        <selector-imagen
+          v-if="props.col.type === 'imagen'"
+          file_extensiones=".jpg, image/*"
+          :imagen="props.row[props.col.name]"
+          :disable="disable"
+          :placeholder="props.col.placeholder"
+          :error="
+            !!v$[keyError]?.$each?.$response.$errors[props.rowIndex][
+              props.col.name
+            ]?.length
+          "
+          :alto="props.col.height ?? '200px'"
+          @update:model-value="data => (props.row[props.col.name] = data)"
+        />
+
         <!-- Aún no está completado, porque falta controlar la manera de subir el archivo -->
-        <!-- <q-file
+        <q-file
           v-if="props.col.type === 'file'"
           v-model="props.row[props.col.name]"
           outlined
@@ -197,8 +212,10 @@
           :bg-color="$q.dark.isActive ? 'grey-10' : 'grey-3'"
           :accept="props.col.accept ?? '*'"
         >
-          <template v-slot:prepend> <q-icon name="attach_file" /> </template
-        ></q-file> -->
+          <template v-slot:prepend>
+            <q-icon name="attach_file" />
+          </template>
+        </q-file>
 
         <q-select
           v-if="props.col.type === 'select_multiple'"
@@ -1056,8 +1073,25 @@
                     ].includes(col.name)
                   "
                   class="ellipsis-3-lines"
-                  >{{ col.value }}</span
+                  :class="{
+                      'text-negative text-bold':!!v$[keyError]?.$each?.$response.$errors[props.rowIndex][col.name]?.length
+                  }"
                 >
+<!--                  Se modifica para que en la tabla vista movil se muestren los campos requeridos que tienen errores -->
+                  <error-component
+                    v-if="
+                      !!v$[keyError]?.$each?.$response.$errors[props.rowIndex][
+                        col.name
+                      ]?.length
+                    "
+                    :v$="v$"
+                    is-collection
+                    :key-error="keyError"
+                    :index-error="props.rowIndex"
+                    :clave="col.name"
+                  />
+                  {{ col.value }}
+                </span>
               </q-item-label>
             </q-item-section>
           </q-item>
@@ -1590,7 +1624,34 @@
     </template>
 
     <template #body-cell-estado="props">
+        <!-- estado activo -->
       <q-td :props="props">
+        <q-chip
+            v-if="props.value === 'ACTIVO'"
+            :class="{ 'bg-green-1': !$q.dark.isActive }"
+        >
+          <q-icon
+              name="bi-circle-fill"
+              color="positive"
+              class="q-mr-xs"
+          ></q-icon>
+          ACTIVO
+        </q-chip>
+
+        <!-- estado inactivo -->
+        <q-chip
+            v-if="props.value === 'INACTIVO'"
+            :class="{ 'bg-red-1': !$q.dark.isActive }"
+        >
+          <!-- One of primary, secondary, accent, dark, positive, negative, info, warning -->
+          <q-icon
+              name="bi-circle-fill"
+              color="negative"
+              class="q-mr-xs"
+          ></q-icon>
+          INACTIVO
+        </q-chip>
+
         <!-- estado retrasado -->
         <q-chip
           v-if="props.value === 'RETRASADO'"
@@ -1806,17 +1867,31 @@
         <campo-boleano :propsTable="props" />
       </q-td>
     </template> -->
+    <template #body-cell-es_principal="props">
+      <q-td :props="props">
+        <campo-boleano :propsTable="props" />
+      </q-td>
+    </template><template #body-cell-gestionada="props">
+      <q-td :props="props">
+        <campo-boleano :propsTable="props" />
+      </q-td>
+    </template>
+    <template #body-cell-justificado_por_atrasado="props">
+      <q-td :props="props">
+        <campo-boleano :propsTable="props" />
+      </q-td>
+    </template>
+    <template #body-cell-revisado="props">
+      <q-td :props="props">
+        <campo-boleano :propsTable="props" />
+      </q-td>
+    </template>
     <template #body-cell-opto_pago="props">
       <q-td :props="props">
         <campo-boleano :propsTable="props" />
       </q-td>
     </template>
     <template #body-cell-completadas="props">
-      <q-td :props="props">
-        <campo-boleano :propsTable="props" />
-      </q-td>
-    </template>
-    <template #body-cell-revisado="props">
       <q-td :props="props">
         <campo-boleano :propsTable="props" />
       </q-td>
@@ -1910,8 +1985,8 @@
             name="bi-check-circle-fill"
             color="positive"
             class="q-mr-xs"
-          ></q-icon
-          >{{ 'TICKET FINALIZADO' }}
+          ></q-icon>
+          {{ 'TICKET FINALIZADO' }}
         </q-chip>
 
         <span
@@ -2053,7 +2128,7 @@
     </template>
 
     <!-- esta pagado -->
-    <template #body-cell-pago_couta="props">
+    <template #body-cell-pago_cuota="props">
       <q-td :props="props">
         <q-icon
           v-if="props.value"

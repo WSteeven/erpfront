@@ -16,7 +16,7 @@ export const configuracionColumnasActividadFisica: ColumnConfig<ActividadFisica>
     label: 'Tiempo(dia)',
     align: 'left',
     sortable: true,
-    type: 'number',
+    type: 'text',
     editable: true,
   },
 ]

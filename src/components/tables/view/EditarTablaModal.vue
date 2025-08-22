@@ -98,6 +98,7 @@
               <label class="q-mb-sm block">{{ field.label }}</label>
               <selector-imagen
                 :imagen="field.valor"
+                :placeholder="field.placeholder"
                 file_extensiones=".jpg, image/*"
                 @update:modelValue="data => (field.valor = data)"
                 :hint="field.hint"

@@ -1,9 +1,11 @@
 <template>
   <tab-layout-filter-tabs2
     :mixin="mixin"
+    titulo-pagina="Préstamo Empresarial"
     :configuracionColumnas="configuracionColumnas"
     :permitirEliminar="false"
     :accion1="btnEliminarPrestamoEmpresarial"
+    :accion2="btnActualizarPrestamoEmpresarial"
     :tabOptions="tabPrestamoEmpresarial"
     :filtrar="filtrarPrestamoEmpresarial"
     tabDefecto="ACTIVO"
@@ -24,26 +26,21 @@
               dense
               outlined
               :disable="!esNuevo"
-              :readonly="disabled"
               :error="!!v$.solicitante.$errors.length"
               error-message="Debes seleccionar un empleado"
               use-input
               input-debounce="0"
               @filter="filtrarEmpleados"
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.nombres + ' ' + v.apellidos"
+              :option-value="v => v.id"
+              :option-label="v => v.nombres + ' ' + v.apellidos"
               emit-value
               map-options
             >
               <template v-slot:error>
-                <div v-for="error of v$.solicitante.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="solicitante" :v$="v$" />
               </template>
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
-                </q-item>
+                <no-option-component />
               </template>
             </q-select>
           </div>
@@ -61,10 +58,23 @@
             >
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
-                  <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                    <q-date v-model="prestamo.fecha" :mask="maskFecha" today-btn>
+                  <q-popup-proxy
+                    cover
+                    transition-show="scale"
+                    transition-hide="scale"
+                  >
+                    <q-date
+                      v-model="prestamo.fecha"
+                      :mask="maskFecha"
+                      today-btn
+                    >
                       <div class="row items-center justify-end">
-                        <q-btn v-close-popup label="Cerrar" color="primary" flat />
+                        <q-btn
+                          v-close-popup
+                          label="Cerrar"
+                          color="primary"
+                          flat
+                        />
                       </div>
                     </q-date>
                   </q-popup-proxy>
@@ -72,12 +82,59 @@
               </template>
 
               <template v-slot:error>
-                <div v-for="error of v$.fecha.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="fecha" :v$="v$" />
               </template>
             </q-input>
           </div>
+
+          <!-- Mes que inicia el cobro -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Mes inicia cobro</label>
+            <q-input
+              v-model="prestamo.fecha_inicio_cobro"
+              mask="####-##"
+              placeholder="Obligatorio"
+              :error="!!v$.fecha_inicio_cobro.$errors.length"
+              :disable="disabled"
+              @blur="v$.fecha_inicio_cobro.$touch"
+              outlined
+              dense
+            >
+              <template v-slot:append>
+                <q-icon name="event" class="cursor-pointer">
+                  <q-popup-proxy
+                    cover
+                    transition-show="scale"
+                    transition-hide="scale"
+                    v-model="is_month"
+                  >
+                    <q-date
+                      v-model="prestamo.fecha_inicio_cobro"
+                      minimal
+                      :mask="maskFecha"
+                      emit-immediately
+                      default-view="Years"
+                      @update:model-value="checkMes"
+                    >
+                      <div class="row items-center justify-end">
+                        <q-btn
+                          v-close-popup
+                          label="Cerrar"
+                          color="primary"
+                          flat
+                        />
+                      </div>
+                    </q-date>
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
+
+              <template v-slot:error>
+                <error-component clave="fecha_inicio_cobro" :v$="v$" />
+              </template>
+            </q-input>
+          </div>
+
           <!-- Valor  -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Valor </label>
@@ -86,6 +143,7 @@
               placeholder="Obligatorio"
               type="number"
               :disable="!esNuevo"
+              @update:model-value="calcularCantidadCuotas"
               :error="!!v$.monto.$errors.length"
               @blur="v$.monto.$touch"
               :hint="
@@ -97,9 +155,7 @@
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.monto.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="monto" :v$="v$" />
               </template>
             </q-input>
           </div>
@@ -113,13 +169,13 @@
               :disable="!esNuevo"
               :error="!!v$.plazo.$errors.length"
               @blur="v$.plazo.$touch"
+              @update:model-value="calcularCantidadCuotas"
+              @wheel.prevent
               outlined
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.plazo.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="plazo" :v$="v$" />
               </template>
             </q-input>
           </div>
@@ -136,19 +192,30 @@
             >
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
-                  <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                    <q-date v-model="prestamo.vencimiento" :mask="maskFecha" today-btn>
+                  <q-popup-proxy
+                    cover
+                    transition-show="scale"
+                    transition-hide="scale"
+                  >
+                    <q-date
+                      v-model="prestamo.vencimiento"
+                      :mask="maskFecha"
+                      today-btn
+                    >
                       <div class="row items-center justify-end">
-                        <q-btn v-close-popup label="Cerrar" color="primary" flat />
+                        <q-btn
+                          v-close-popup
+                          label="Cerrar"
+                          color="primary"
+                          flat
+                        />
                       </div>
                     </q-date>
                   </q-popup-proxy>
                 </q-icon>
               </template>
               <template v-slot:error>
-                <div v-for="error of v$.vencimiento.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="vencimiento" :v$="v$" />
               </template>
             </q-input>
           </div>
@@ -164,22 +231,44 @@
               dense
               outlined
               :disable="disabled"
-              :readonly="disabled"
               use-input
               input-debounce="0"
-              @filter="filtrarPeriodo"
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.nombre"
+              @filter="filtrarPeriodos"
+              :option-value="v => v.id"
+              :option-label="v => v.nombre"
               emit-value
               map-options
             >
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
-                </q-item>
+                <no-option-component />
               </template>
             </q-select>
           </div>
+
+          <!-- Estado -->
+          <div class="col-12 col-md-3" v-if="!esNuevo">
+            <label class="q-mb-sm block">Estado</label>
+            <q-input v-model="prestamo.estado" :disable="true" outlined dense />
+          </div>
+
+          <!-- Saldo pendiente -->
+          <div class="col-12 col-md-3" v-if="!esNuevo">
+            <label class="q-mb-sm block">Saldo Pendiente</label>
+            <q-input v-model="prestamo.saldo_pendiente" disable outlined dense />
+          </div>
+
+          <!-- Motivo -->
+          <div class="col-12 col-md-3" v-if="!esNuevo && prestamo.motivo">
+            <label class="q-mb-sm block">Motivo de anulación </label>
+            <q-input
+              v-model="prestamo.motivo"
+              autogrow
+              :disable="true"
+              outlined
+              dense
+            />
+          </div>
+
           <!-- Valor  -->
           <div class="col-12 col-md-3" v-if="prestamo.periodo != null">
             <label class="q-mb-sm block">Valor Utilidades </label>
@@ -194,32 +283,33 @@
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.valor_utilidad.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="valor_utilidad" :v$="v$" />
               </template>
             </q-input>
           </div>
         </div>
-      </q-form>
+
       <essential-table
-        v-if="prestamo.plazo > 0 && prestamo.plazo <= 12"
+        v-if="prestamo.plazo && prestamo.monto"
         titulo="Plazo de Prestamo"
-        :configuracionColumnas="[...configuracionColumnasPlazoPrestamo, accionesTabla]"
+        :configuracionColumnas="[
+          ...configuracionColumnasPlazoPrestamo,
+          accionesTabla
+        ]"
         :datos="prestamo.plazos"
         :permitirConsultar="false"
         :permitirEditar="false"
         :permitirEliminar="false"
-        :accion1="btnModificarCouta"
-        :accion2="btnPagarCouta"
-        :accion3="btnAplazarCouta"
-        :accion4="btnEditarTotalCouta"
+        :accion1="btnModificarCuota"
+        :accion2="btnPagarCuota"
+        :accion3="btnAplazarCuota"
+        :accion4="btnEditarTotalCuota"
+        :accion5="btnComentario"
         :altoFijo="false"
+        ajustar-celdas
       >
       </essential-table>
-      <!-- <label v-if="esMayorPrestamo" class="q-mb-sm text-red text-h6 block"
-        >La suma de todas las coutas no debe superar al valor del prestamo</label
-      > -->
+      </q-form>
     </template>
   </tab-layout-filter-tabs2>
 </template>

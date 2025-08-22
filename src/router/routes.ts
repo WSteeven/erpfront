@@ -5,13 +5,18 @@ import rutasTickets from './rutasTickets'
 import rutasRecursosHumanos from './rrhh/rutasRecursosHumanos'
 import rutasActivosFijos from './rutasActivosFijos'
 import rutasSSO from './rutasSSO'
-import { empresas } from 'config/utils/sistema'
+import rutasControlPersonal from './rutasControlPersonal'
+
+/* const JPCONSTRUCRED = process.env.VUE_APP_ID == empresas.JPCONSTRUCRED
+const JPCUSTODY = process.env.VUE_APP_ID == empresas.JPCUSTODY
+const CCLEDARE = process.env.VUE_APP_ID == empresas.CCLEDARE */
 import rutasFondosRotativos from './rutasFondosRotativos'
 import rutasVehiculos from './rutasVehiculos'
 import rutasSeguridad from './rutasSeguridad'
 import rutasComprasProveedores from './rutasComprasProveedores';
 import rutasVentasClaro from './rutasVentasClaro';
 import rutasAppenate from './rutasAppenate';
+import rutasBodega from './rutasBodega'
 
 console.log(process.env.VUE_APP_ID)
 const routes: RouteRecordRaw[] = [
@@ -94,13 +99,6 @@ const routes: RouteRecordRaw[] = [
           import('sistema/plantillasBase/view/PlantillaBasePage.vue'),
         meta: { requiresAuth: true },
       },
-      {
-        path: '/imagen',
-        name: 'imagen',
-        component: () =>
-          import('pages/bodega/pedidos/view/imagenComprimida.vue'),
-        meta: { requiresAuth: false },
-      },
       /**
        *  Módulo de FONDOS ROTATIVOS
        */
@@ -110,6 +108,7 @@ const routes: RouteRecordRaw[] = [
        * Módulo de RRHH
        *******************/
       ...rutasRecursosHumanos,
+      ...rutasControlPersonal,
 
       /*******************
        * Módulo de tareas
@@ -206,22 +205,8 @@ const routes: RouteRecordRaw[] = [
       /**************************************
        * Routes for bodega
        *************************************/
-      {
-        path: '/gestionar-egresos',
-        name: 'gestionar_egresos',
-        component: () =>
-          import(
-            'pages/bodega/transacciones/modules/GestionarEgreso/view/GestionarEgresoPage.vue'
-          ),
-        meta: { requiresAuth: false },
-      },
-      {
-        path: '/egresos-filtrados',
-        name: 'egresos_filtrados',
-        component: () =>
-          import('pages/bodega/comprobantes/view/ComprobantePage.vue'),
-        meta: { requiresAuth: false },
-      },
+      ...rutasBodega,
+
       {
         path: '/notificaciones',
         name: 'notificaciones',
@@ -230,207 +215,6 @@ const routes: RouteRecordRaw[] = [
             'pages/administracion/notificaciones/view/NotificacionPage.vue'
           ),
         meta: { requiresAuth: true, permissionRequired: false },
-      },
-      {
-        path: '/unidades-medidas',
-        name: 'unidades_medidas',
-        component: () =>
-          import('pages/bodega/unidades_medidas/view/UnidadMedidaPage.vue'),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: '/dashboard-bodega',
-        name: 'dashboard_bodega',
-        component: () =>
-          import('pages/bodega/dashboard/view/DashboardBodega.vue'),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: '/categorias',
-        name: 'categorias',
-        component: () =>
-          import('pages/bodega/categorias/view/CategoriaPage.vue'),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: '/permisos-armas',
-        name: 'permisos_armas',
-        component: () =>
-          import('pages/bodega/permisosArmas/view/PermisoArmaPage.vue'),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: '/control-stock',
-        name: 'control_stock',
-        component: () =>
-          import('pages/bodega/control_stocks/view/ControlStockPage.vue'),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: '/marcas',
-        name: 'marcas',
-        component: () => import('pages/bodega/marcas/view/MarcaPage.vue'),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: '/modelos',
-        name: 'modelos',
-        component: () => import('pages/bodega/modelos/view/ModeloPage.vue'),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: '/productos',
-        name: 'productos',
-        component: () => import('pages/bodega/productos/view/ProductoPage.vue'),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: '/detalles',
-        name: 'detalles',
-        component: () => {
-          switch (process.env.VUE_APP_ID) {
-            case empresas.JPCUSTODY: return import(
-              'pages/bodega/detalles_productos/view/jpcustody/DetalleProductoPage.vue'
-            )
-            default: return import(
-              'pages/bodega/detalles_productos/view/jpconstrucred/DetalleProductoPage.vue'
-            )
-          }
-        },
-        meta: { requiresAuth: true },
-      },
-      {
-        path: '/inventarios',
-        name: 'inventarios',
-        component: () =>
-          import('pages/bodega/inventario/view/InventarioPage.vue'),
-        meta: { requiresAuth: false },
-      },
-      {
-        path: '/productos-perchas',
-        name: 'productos_perchas',
-        component: () =>
-          import(
-            'pages/bodega/productos_en_perchas/view/ProductosPerchaPage.vue'
-          ),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: '/pedidos',
-        name: 'pedidos',
-        component: () => import('pages/bodega/pedidos/view/PedidoPage.vue'),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: '/preingresos-materiales',
-        name: 'preingresos_materiales',
-        component: () =>
-          import(
-            'pages/bodega/preingresoMateriales/view/PreingresoMaterialPage.vue'
-          ),
-        meta: { requiresAuth: true },
-      },
-      /* {
-        path: '/preingresos-materiales-coordinadores',
-        name: 'preingresos_materiales_coordinadores',
-        component: () => import('pages/bodega/preingresoMateriales/modules/view/PreingresoMaterialCoordinadorPage.vue'),
-        meta: { requiresAuth: true },
-      }, */
-      {
-        path: '/devoluciones',
-        name: 'devoluciones',
-        component: () =>
-          import('pages/bodega/devoluciones/view/DevolucionPage.vue'),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: '/transacciones-ingresos',
-        name: 'transacciones_ingresos',
-        component: () =>
-          import(
-            'pages/bodega/transacciones/modules/transaccionIngreso/view/TransaccionIngresoPage.vue'
-          ),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: '/transacciones-egresos',
-        name: 'transacciones_egresos',
-        component: () =>
-          import(
-            'pages/bodega/transacciones/modules/transaccionEgreso/TransaccionEgresoPage.vue'
-          ),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: '/traspasos',
-        name: 'traspasos',
-        component: () => import('pages/bodega/traspasos/view/TraspasoPage.vue'),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: '/transferencias',
-        name: 'transferencias',
-        component: () =>
-          import(
-            // 'pages/bodega/trans/view/TraspasoPage.vue',
-            'pages/bodega/transferencia/view/TransferenciaPage.vue'
-          ),
-        meta: { requiresAuth: true },
-      },
-      //reportes de bodega
-      {
-        path: '/reporte-ingresos',
-        name: 'reporte_ingresos',
-        component: () =>
-          import(
-            'pages/bodega/reportes/modules/rpt_ingresos/view/ReporteIngresosPage.vue'
-          ),
-        meta: { requiresAuth: false },
-      },
-      {
-        path: '/reporte-egresos',
-        name: 'reporte_egresos',
-        component: () =>
-          import(
-            'pages/bodega/reportes/modules/rpt_egresos/ReporteEgresosPage.vue'
-          ),
-        meta: { requiresAuth: false },
-      },
-      {
-        path: '/reporte-epps',
-        name: 'reporte_epps',
-        component: () =>
-          import(
-            'pages/bodega/reportes/modules/rpt_epps/ReporteEppsPage.vue'
-          ),
-        meta: { requiresAuth: false },
-      },
-      {
-        path: '/reporte-pedidos',
-        name: 'reporte_pedidos',
-        component: () =>
-          import(
-            'pages/bodega/reportes/modules/rpt_pedidos/view/ReportePedidosPage.vue'
-          ),
-        meta: { requiresAuth: false },
-      },
-      {
-        path: '/reporte-inventario',
-        name: 'reporte_inventario',
-        component: () =>
-          import(
-            'pages/bodega/reportes/modules/rpt_inventario/view/ReporteInventarioPage.vue'
-          ),
-        meta: { requiresAuth: false },
-      },
-      {
-        path: '/kardex',
-        name: 'kardex',
-        component: () =>
-          import(
-            'pages/bodega/reportes/modules/rpt_seguimiento_detalle/view/SeguimientoDetallePage.vue'
-          ),
-        meta: { requiresAuth: false },
       },
 
 
@@ -484,6 +268,12 @@ const routes: RouteRecordRaw[] = [
         path: '/clientes',
         name: 'clientes',
         component: () => import('pages/sistema/clientes/view/ClientePage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/cuentas-bancarias',
+        name: 'cuentas_bancarias',
+        component: () => import('pages/administracion/cuentasBancarias/view/CuentaBancariaPage.vue'),
         meta: { requiresAuth: true },
       },
       {
@@ -756,6 +546,170 @@ const routes: RouteRecordRaw[] = [
           ),
         meta: { requiresAuth: true },
       },
+      // Ventas Claro
+      {
+        path: '/productos-ventas',
+        name: 'productos_ventas',
+        component: () =>
+          import(
+            'pages/ventas-claro/productoVentas/view/ProductoVentasPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/vendedores',
+        name: 'vendedores',
+        component: () =>
+          import('pages/ventas-claro/vendedores/view/VendedorPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/ventas',
+        name: 'ventas',
+        component: () =>
+          import('pages/ventas-claro/ventas/view/VentaPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/chargebacks',
+        name: 'chargebacks',
+        component: () =>
+          import('pages/ventas-claro/chargeBack/view/ChargebackPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/pagos-comisiones',
+        name: 'pagos_comisiones',
+        component: () =>
+          import('pages/ventas-claro/pagoComision/view/PagoComisionPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/retenciones-chargebacks',
+        name: 'retenciones_chargebacks',
+        component: () =>
+          import('pages/ventas-claro/retencionChargeback/view/RetencionChargebackPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/bono-mensual-cumplimiento',
+        name: 'bonos_mensuales_cumplimientos',
+        component: () =>
+          import(
+            'pages/ventas-claro/bonoMensualCumplimiento/view/BonoMensualCumplimientoPagePage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/bonos-trimestrales-cumplimientos',
+        name: 'bonos_trimestrales_cumplimientos',
+        component: () =>
+          import(
+            'pages/ventas-claro/bonoTrimestralCumplimiento/view/BonoTrimestralCumplimientoPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/reporte_cobrojp',
+        name: 'reportes_cobrosjp_claro',
+        component: () =>
+          import('pages/ventas-claro/reporte/cobroJP/view/CobroJPPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/reportes-pagos-claro',
+        name: 'reportes_pagos_claro',
+        component: () =>
+          import('pages/ventas-claro/reporte/pagos/view/PagoPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/dashboard-ventas-claro',
+        name: 'dashboard_ventas',
+        component: () =>
+          import(
+            'pages/ventas-claro/dashboardVentas/view/DashboardVentasPage.vue'
+          ),
+        meta: { requiresAuth: false },
+      },
+      {
+        path: '/planes',
+        name: 'planes',
+        component: () =>
+          import('pages/ventas-claro/planes/view/PlanesPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/producto-ventas',
+        name: 'producto_ventas',
+        component: () =>
+          import('pages/ventas-claro/productoVentas/view/ProductoVentasPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/modalidades',
+        name: 'modalidades',
+        component: () =>
+          import('pages/ventas-claro/modalidad/view/ModalidadPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/tipos-chargebacks',
+        name: 'tipos_chargebacks',
+        component: () =>
+          import('pages/ventas-claro/tipoChargeBack/view/TipoChargeBack.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/comisiones',
+        name: 'comisiones',
+        component: () =>
+          import('pages/ventas-claro/comision/view/ComisionPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/bonos',
+        name: 'bonos',
+        component: () =>
+          import('pages/ventas-claro/bono/bonoVentas/view/BonoVentaPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/bonos-porcentuales',
+        name: 'bonos_porcentuales',
+        component: () =>
+          import('pages/ventas-claro/bono/bonoSupervisor/view/BonoSupervisorPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/umbrales-ventas',
+        name: 'umbrales_ventas',
+        component: () =>
+          import('pages/ventas-claro/umbralVentas/view/UmbralVentasPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/esquemas-comisiones',
+        name: 'esquemas_comisiones',
+        component: () =>
+          import('pages/ventas-claro/esquemaComision/view/EsquemaComisionPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/clientes-claro',
+        name: 'clientes_claro',
+        component: () =>
+          import('pages/ventas-claro/cliente/view/ClienteClaroPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/escenarios-ventas-jp',
+        name: 'escenarios_ventas_jp',
+        component: () =>
+          import('pages/ventas-claro/escenarioVentasJP/view/EscenarioVentaJPPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      ///
 
       /*********************************************
        * VENTAS CLARO

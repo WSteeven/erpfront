@@ -197,8 +197,9 @@
         >
         </q-input>
       </div>
+
       <!-- Documento -->
-      <div class="col-12 col-md-3" v-if="rolpago.estado == 'FINALIZADO'">
+      <div class="col-12 col-md-3" v-if="rolpago.estado == 'FINALIZADO' || true">
         <label class="q-mb-sm block">Rol de Pago Firmado</label>
         <gestor-documentos
           ref="refArchivoRolPago"
