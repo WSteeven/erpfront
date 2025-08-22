@@ -6,7 +6,7 @@
 
 <script>
 import { LocalStorage, Notify, useQuasar } from 'quasar'
-import { computed, defineComponent, onMounted } from 'vue'
+import { computed, defineComponent, onMounted, onUnmounted } from 'vue'
 import { userIsAuthenticated } from 'shared/helpers/verifyAuthenticatedUser'
 
 // import Echo from 'laravel-echo'
@@ -25,6 +25,8 @@ export default defineComponent({
     }) */
 
     const $q = useQuasar()
+    let intervalId
+    let serverVersion
 
     // Determina el layout basado en el estado de autenticación
     const { autenticado } = userIsAuthenticated()
@@ -46,6 +48,16 @@ export default defineComponent({
         )
     }
 
+    const checkVersion = () => {
+      serverVersion = process.env.APP_VERSION || import.meta.env.APP_VERSION
+      const currentVersion = LocalStorage.getItem('app_version')
+
+      if (!currentVersion) LocalStorage.setItem('app_version', serverVersion)
+      else if (currentVersion !== serverVersion) {
+        showUpdateNotification()
+      }
+    }
+
     function showUpdateNotification() {
       Notify.create({
         message:
@@ -57,7 +69,18 @@ export default defineComponent({
           {
             label: 'Recargar',
             color: 'white',
-            handler: () => window.location.reload(true)
+            handler: () => {
+              LocalStorage.setItem('app_version', serverVersion)
+              window.location.reload(true)
+            }
+          },
+          {
+            icon: 'close',
+            color: 'negative',
+            round:true,
+            handler: () => {
+              /* */
+            }
           }
         ]
       })
@@ -65,33 +88,17 @@ export default defineComponent({
 
     onMounted(() => {
       // console.log('Component mounted.', process.env.APP_VERSION)
-      const serverVersion = process.env.APP_VERSION || Date.now()
-      const currentVersion = LocalStorage.getItem('app_version')
-
-      if (!currentVersion) LocalStorage.setItem('app_version', serverVersion)
-      else if (currentVersion !== serverVersion) {
-        LocalStorage.setItem('app_version', serverVersion)
-        showUpdateNotification()
-      }
+      checkVersion()
+      //Revisar versión cada 5 minutos
+      intervalId = setInterval(checkVersion, 1000 * 60 * 5)
+    })
+    onUnmounted(() => {
+      clearInterval(intervalId)
     })
 
     return {
       layout
     }
   }
-  // mounted (){
-  //   window.Echo = new Echo({
-  //     broadcaster: 'pusher',
-  //     key: 'fZiFHdHn89NjzzxqN5p2',
-  //     wsHost: window.location.hostname,
-  //     wsPort: 6001,
-  //     disableStats: true,
-  //     forceTLS: false,
-  //     enabledTransports: ['ws'],
-  //   })
-  //   window.Echo.channel('prueba').listen('NewMessagePruebaEvent', (e)=>{
-  //     console.log('Llegó algo: ', e.message)
-  //   })
-  // }
 })
 </script>
