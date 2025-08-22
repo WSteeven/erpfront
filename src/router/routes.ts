@@ -19,18 +19,6 @@ import rutasBodega from './rutasBodega'
 
 console.log(process.env.VUE_APP_ID)
 const routes: RouteRecordRaw[] = [
-  // {
-  //   path: '/intranet',
-  //   component: () => import('layouts/FullLayout.vue'),
-  //   children: [
-  //     {
-  //       path: '',
-  //       name: 'intranet',
-  //       component: () => import('pages/intranet/intranet/view/IntranetPage.vue'),
-  //       meta: { requiresAuth: false },
-  //     },
-  //   ],
-  // },
   {
     path: '/',
     component: () => import('layouts/MainLayout.vue'),

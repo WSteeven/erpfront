@@ -6,7 +6,7 @@ import {
 import OptionGroupComponent from 'components/optionGroup/view/OptionGroupComponent.vue'
 import { useNotificaciones } from 'shared/notificaciones'
 import CalloutComponent from 'components/CalloutComponent.vue'
-import { useRoute } from 'vue-router'
+import {useRoute, useRouter} from 'vue-router'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { endpoints } from 'config/api'
 import { AxiosResponse } from 'axios'
@@ -23,12 +23,14 @@ export default defineComponent({
     )
     const { entidad: evaluacion } = mixin.useReferencias()
     const { guardar } = mixin.useComportamiento()
+    const { onGuardado } = mixin.useHooks()
 
     const { notificarCorrecto, notificarAdvertencia, notificarError } =
       useNotificaciones()
-
     const route = useRoute()
+    const router = useRouter()
     const token = route.params.token
+    const q = route.query.q
     const componenteCargado = ref(false)
     const finalizado = ref(false)
     const disable = ref(false)
@@ -91,7 +93,7 @@ export default defineComponent({
     }
 
     function irAPagina(pagina) {
-      console.log('ir a pagina: ', pagina)
+      // console.log('ir a pagina: ', pagina)
       paginaActual.value = pagina
     }
 
@@ -103,7 +105,7 @@ export default defineComponent({
     }
 
     async function enviarRespuestas(omitirNulos = false) {
-      console.log('respuestas', evaluacion.respuestas)
+      // console.log('respuestas', evaluacion.respuestas)
       const hayNulos = Object.values(evaluacion.respuestas).some(v => v === null)
       if (omitirNulos) await guardar(evaluacion, false)
       else {
@@ -116,6 +118,14 @@ export default defineComponent({
       }
     }
 
+    onGuardado(()=>{
+      notificarCorrecto('Respuestas guardadas correctamente. Serás redirigido a la ventana principal en 2 segundos.')
+      setTimeout(() => {
+        // Redirige a la ventana principal (ajusta la ruta según tu aplicación)
+
+        router.push({path:'/puestos-disponibles', query: { q: q }})
+      }, 2000)
+    })
     onMounted(() => {
       validarToken()
       preguntasTestPersonalidad.forEach(

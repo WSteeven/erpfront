@@ -8,7 +8,7 @@ import dayjs from 'dayjs'
 // Components
 import VisorImagen from 'components/VisorImagen.vue'
 import BasicContainer from 'shared/contenedor/modules/basic/view/BasicContainer.vue'
-import { userIsAuthenticated } from '../../../../../shared/helpers/verifyAuthenticatedUser'
+import { userIsAuthenticated } from 'shared/helpers/verifyAuthenticatedUser'
 import { useNotificaciones } from 'shared/notificaciones'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { useRoute, useRouter } from 'vue-router'

@@ -5,9 +5,9 @@
 </template>
 
 <script>
-import { useQuasar } from 'quasar'
-import { computed, defineComponent } from 'vue'
-import { userIsAuthenticated } from 'shared/helpers/verifyAuthenticatedUser';
+import { LocalStorage, Notify, useQuasar } from 'quasar'
+import { computed, defineComponent, onMounted } from 'vue'
+import { userIsAuthenticated } from 'shared/helpers/verifyAuthenticatedUser'
 
 // import Echo from 'laravel-echo'
 // import Pusher from 'pusher-js'
@@ -42,9 +42,38 @@ export default defineComponent({
         //   console.log('Service Worker registrado con éxito:', registration)
         // )
         .catch(error =>
-          console.log('Error al registrar el Service Worker:', error)
+          console.log('App.vue: Error al registrar el Service Worker:', error)
         )
     }
+
+    function showUpdateNotification() {
+      Notify.create({
+        message:
+          'Hay una nueva versión disponible. Recarga la página para actualizar.',
+        type: 'info',
+        timeout: 0, // hasta que el usuario cierre
+        position: 'top',
+        actions: [
+          {
+            label: 'Recargar',
+            color: 'white',
+            handler: () => window.location.reload(true)
+          }
+        ]
+      })
+    }
+
+    onMounted(() => {
+      // console.log('Component mounted.', process.env.APP_VERSION)
+      const serverVersion = process.env.APP_VERSION || Date.now()
+      const currentVersion = LocalStorage.getItem('app_version')
+
+      if (!currentVersion) LocalStorage.setItem('app_version', serverVersion)
+      else if (currentVersion !== serverVersion) {
+        LocalStorage.setItem('app_version', serverVersion)
+        showUpdateNotification()
+      }
+    })
 
     return {
       layout

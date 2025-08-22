@@ -343,19 +343,19 @@ export default defineComponent({
       }
     }
 
-    async function obtenerResultadosTestPersonalidad(id: number) {
-      try {
-        const ruta =
-          apiConfig.URL_BASE +
-          '/' +
-          axios.getEndpoint(endpoints.resultados_test_personalidad) +
-          id
-        await imprimirArchivo(ruta, 'GET', 'blob', 'xlsx', 'resultados_16pf')
-        notificarCorrecto('Archivo descargado con éxito')
-      } catch (e) {
-        console.error(e)
-      }
-    }
+    // async function obtenerResultadosTestPersonalidad(id: number) {
+    //   try {
+    //     const ruta =
+    //       apiConfig.URL_BASE +
+    //       '/' +
+    //       axios.getEndpoint(endpoints.resultados_test_personalidad) +
+    //       id
+    //     await imprimirArchivo(ruta, 'GET', 'blob', 'xlsx', 'resultados_16pf')
+    //     notificarCorrecto('Archivo descargado con éxito')
+    //   } catch (e) {
+    //     console.error(e)
+    //   }
+    // }
 
     /***************************************************************************
      * BOTONES DE TABLA

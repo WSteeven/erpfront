@@ -1,6 +1,13 @@
 // Dependencias
 import { isAxiosError, notificarMensajesError } from 'shared/utils'
-import { computed, defineComponent, onMounted, reactive, ref, watchEffect } from 'vue'
+import {
+  computed,
+  defineComponent,
+  onMounted,
+  reactive,
+  ref,
+  watchEffect
+} from 'vue'
 import { useQuasar, LocalStorage } from 'quasar'
 
 import { useRouter } from 'vue-router'
@@ -83,7 +90,7 @@ export default defineComponent({
       Router.replace('/registro-postulante')
     }
 
-    const loginTerceros = async (driver) => {
+    const loginTerceros = async driver => {
       if (!$q.loading.isActive) {
         try {
           cargando.activar()
@@ -94,7 +101,7 @@ export default defineComponent({
         } catch (error: any) {
           if (isAxiosError(error)) {
             const mensajes: string[] = error.erroresValidacion
-            notificarMensajesError(mensajes, notificaciones)
+            await notificarMensajesError(mensajes, notificaciones)
           }
         } finally {
           cargando.desactivar()
@@ -105,14 +112,14 @@ export default defineComponent({
     const enableLoginButton = computed(
       () => loginUser.name !== '' && loginUser.password !== ''
     )
-    const url = `${apiConfig.URL_BASE}/api/auth/facebook`
-    console.log(url)
+    // const url = `${apiConfig.URL_BASE}/api/auth/facebook`
+    // console.log(url)
+
     function loginWithProvider(provider: string) {
       const apiUrl = `${apiConfig.URL_BASE}/api/auth/${provider}`
       console.log(apiUrl)
-      window.location.href = apiUrl;
+      window.location.href = apiUrl
     }
-
 
     return {
       isPwd: ref(true),
@@ -132,7 +139,7 @@ export default defineComponent({
       cargando,
 
       // funciones
-      loginWithProvider,
+      loginWithProvider
     }
-  },
+  }
 })

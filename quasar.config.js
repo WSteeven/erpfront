@@ -50,7 +50,10 @@ module.exports = configure(function (/* ctx */) {
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#build
     build: {
-      env: require('dotenv').config().parsed,
+      env: {
+        ...require('dotenv').config().parsed,
+        APP_VERSION: Date.now()
+      },
       target: {
         browser: [
           'ES6',
@@ -62,17 +65,7 @@ module.exports = configure(function (/* ctx */) {
         ],
         node: 'node16'
       },
-
-      /* extendViteConf(viteConf, { isServer, isClient }) {
-              Object.assign(viteConf.resolve.alias, {
-                config: path.join(__dirname, './src/config'),
-                shared: path.join(__dirname, './src/shared'),
-                components: path.join(__dirname, './src/components'),
-              })
-            }, */
-
       vueRouterMode: 'history', // available values: 'hash', 'history'
-      env: require('dotenv').config().parsed,
       // vueRouterBase,
       // vueDevtools,
       // vueOptionsAPI: false,
