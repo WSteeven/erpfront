@@ -521,7 +521,10 @@
           style="border-radius: 8px"
         />
         <span class="column">
-          <b class="text-thin text-h5 elegant-blue-gradient-text">FIRSTRED</b>
+          <b class="text-h4 text-primary text-weight-bolder">
+  FIRST<span class="text-secondary">RED</span>
+</b>
+
           <small class="text-color">Enterprise Resource Planning</small>
         </span>
       </div>
