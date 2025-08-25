@@ -521,9 +521,9 @@
           style="border-radius: 8px"
         />
         <span class="column">
-          <b class="text-h4 text-primary text-weight-bolder">
-  FIRST<span class="text-secondary">RED</span>
-</b>
+          <b class="text-h4 text-primary text-weight-bold">
+            FIRST<span class="text-secondary">RED</span>
+          </b>
 
           <small class="text-color">Enterprise Resource Planning</small>
         </span>
@@ -614,7 +614,7 @@
         </keep-alive>
 
         <!-- Footer siempre visible, pero se adapta según plataforma -->
-        <footer-component/>
+        <footer-component />
       </router-view>
     </q-page-container>
   </q-layout>
