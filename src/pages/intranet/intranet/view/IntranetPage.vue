@@ -62,7 +62,7 @@
               <q-btn
                 v-if="active"
                 size="lg"
-                icon="visibility"
+                icon="la la-newspaper"
                 color="primary"
                 flat
                 round
@@ -73,7 +73,7 @@
                 v-else
                 size="sm"
                 :icon="btnProps.icon"
-                color="warning"
+                color="grey-11"
                 flat
                 round
                 dense

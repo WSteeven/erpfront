@@ -418,38 +418,36 @@ export default defineComponent({
     }
 
     //Funcion para consultar empleados nuevos
-async function obtenerEmpleadosNuevos() {
-  try {
-    cargando.activar()
+    async function obtenerEmpleadosNuevos() {
+      try {
+        cargando.activar()
 
-    // Calcular fecha de hace 30 días
-    const hace30Dias = new Date()
-    hace30Dias.setDate(hace30Dias.getDate() - 30)
-    const fechaLimite = hace30Dias.toISOString().split('T')[0] // formato YYYY-MM-DD
-
-    console.log('Fecha límite para empleados nuevos:', fechaLimite)
-
-    const empleadoController = new EmpleadoController()
-    const response = await empleadoController.listar({
-      estado: 1,
-      'fecha_ingreso[operator]': '>=', // Cambiado de fecha_vinculacion a fecha_ingreso
-      'fecha_ingreso[value]': fechaLimite
-    })
-
-
-    // Ordenar por fecha de ingreso más reciente primero
-    empleadosNuevos.value = response.result
-      ?.sort((a, b) => new Date(b.fecha_ingreso).getTime() - new Date(a.fecha_ingreso).getTime()) // Cambiado a fecha_ingreso
-      ?.slice(0, 6) || []
-
-
-  } catch (error) {
-    console.error('Error al obtener empleados nuevos:', error)
-    notificarError('Error al cargar nuevas incorporaciones')
-  } finally {
-    cargando.desactivar()
-  }
-}
+        // Calcular fecha de hace 30 días
+        const hace30Dias = new Date()
+        hace30Dias.setDate(hace30Dias.getDate() - 30)
+        const fechaLimite = hace30Dias.toISOString().split('T')[0] // formato YYYY-MM-DD
+        const empleadoController = new EmpleadoController()
+        const response = await empleadoController.listar({
+          estado: 1,
+          'fecha_ingreso[operator]': '>=', // Cambiado de fecha_vinculacion a fecha_ingreso
+          'fecha_ingreso[value]': fechaLimite
+        })
+        // Ordenar por fecha de ingreso más reciente primero
+        empleadosNuevos.value =
+          response.result
+            ?.sort(
+              (a, b) =>
+                new Date(b.fecha_ingreso).getTime() -
+                new Date(a.fecha_ingreso).getTime()
+            ) // Cambiado a fecha_ingreso
+            ?.slice(0, 6) || []
+      } catch (error) {
+        console.error('Error al obtener empleados nuevos:', error)
+        notificarError('Error al cargar nuevas incorporaciones')
+      } finally {
+        cargando.desactivar()
+      }
+    }
 
     const totalJefaturas = computed(() => {
       if (!empleados.value || empleados.value.length === 0) return 0
