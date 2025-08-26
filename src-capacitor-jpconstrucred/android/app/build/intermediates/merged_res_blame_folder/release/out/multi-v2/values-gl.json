@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "org.firstred.jpconstrucred.com.app-mergeReleaseResources-41:/values-gl/values-gl.xml",
+            "outputFile": "org.firstred.jpconstrucred.com.app-mergeReleaseResources-42:/values-gl/values-gl.xml",
             "map": [
                 {
                     "source": "C:\\Users\\STEEVEN\\.gradle\\caches\\transforms-3\\f948a95633a2d2cdaa6216f43ece699d\\transformed\\play-services-basement-18.3.0\\res\\values-gl\\values.xml",

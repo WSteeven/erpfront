@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "org.firstred.jpconstrucred.com.app-mergeReleaseResources-41:/values-eu/values-eu.xml",
+            "outputFile": "org.firstred.jpconstrucred.com.app-mergeReleaseResources-42:/values-eu/values-eu.xml",
             "map": [
                 {
                     "source": "C:\\Users\\STEEVEN\\.gradle\\caches\\transforms-3\\ecd63083fcba173e803df3926ffdadd6\\transformed\\play-services-base-18.0.1\\res\\values-eu\\values.xml",

@@ -62,7 +62,7 @@
               <q-btn
                 v-if="active"
                 size="lg"
-                icon="visibility"
+                icon="la la-newspaper"
                 color="primary"
                 flat
                 round
@@ -73,7 +73,7 @@
                 v-else
                 size="sm"
                 :icon="btnProps.icon"
-                color="warning"
+                color="grey-11"
                 flat
                 round
                 dense
@@ -237,125 +237,356 @@
           </div>
         </div>
 
-        <!-- Departamentos -->
-        <div class="col-12 col-md-9">
-          <q-card class="fixed-size-card-departamentos">
-            <q-card flat bordered class="departamentos-card">
-              <q-expansion-item
-                style="
-                  text-align-last: center;
-                  font-size: 20px;
-                  font-weight: bold;
-                "
-                icon="bi-buildings-fill"
-                header-class="text-bold bg-primary text-white"
-                label="DEPARTAMENTOS"
-                expand-separator
-                :default-opened="true"
+        <!-- Empleados Nuevos -->
+        <q-card flat class="col-12 col-md-9 q-mb-sm">
+          <q-card-section class="bg-white text-accent">
+            <div class="text-h6 text-bold text-center text-uppercase">
+              Nuevos Colaboradores
+            </div>
+            <p class="text-grey-8 text-center text-caption">
+              Conoce a nuestros nuevos talentos.
+            </p>
+          </q-card-section>
+
+          <q-carousel
+            v-model="carouselNuevosEmpleados"
+            animated
+            swipeable
+            infinite
+            :autoplay="true"
+            :interval="2000"
+            arrows
+            navigation
+            height="400px"
+            class="rounded-borders"
+          >
+            <!-- Generar slides dinámicamente usando Math.ceil -->
+            <q-carousel-slide
+              v-for="pageNumber in Math.ceil(empleadosNuevos.length / 4)"
+              :key="`page-${pageNumber}`"
+              :name="pageNumber - 1"
+              class="column fit justify-center q-pa-md"
+            >
+              <!-- Mostrar 4 empleados por página usando slice -->
+              <div
+                class="row q-col-gutter-md justify-center items-center full-height"
               >
-                <div>
-                  <q-tabs
-                    v-model="activeTab"
-                    align="left"
-                    active-class="tab-active"
-                    indicator-color="primary"
-                    dense
-                    class="border-bottom"
+                <div
+                  v-for="empleado in empleadosNuevos.slice(
+                    (pageNumber - 1) * 3,
+                    pageNumber * 3
+                  )"
+                  :key="empleado.id"
+                  class="col-12 col-sm-6 col-md-auto"
+                >
+                  <q-card
+                    flat
+                    class="text-center q-pa-lg full-height shadow-1 column justify-between"
+                    style="width: 300px"
                   >
-                    <q-tab
-                      v-for="departamento in departamentos"
-                      :key="departamento.id"
-                      :name="departamento.id"
-                      :label="departamento.nombre"
-                      @click="consultarEmpleadosDepartamento(departamento.id)"
-                    />
-                  </q-tabs>
+                    <!-- Avatar con badge -->
+                    <div class="col-auto">
+                      <div class="relative-position q-mb-md">
+                        <q-avatar size="100px" class="shadow-4">
+                          <img
+                            :src="empleado.foto_url || getAvatarUrl(empleado)"
+                            :alt="`Foto de ${empleado.nombres} ${empleado.apellidos}`"
+                          />
+                        </q-avatar>
+
+                        <q-badge
+                          floating
+                          color="positive"
+                          rounded
+                          class="text-caption"
+                          label="Nuevo"
+                        />
+                      </div>
+                    </div>
+
+                    <!-- Info del empleado -->
+                    <div class="col column q-gutter-xs">
+                      <!-- Nombre destacado -->
+                      <div
+                        class="text-h6 text-weight-bold text-primary ellipsis"
+                      >
+                        {{ empleado.nombres }}
+                      </div>
+                      <div
+                        class="text-h6 text-weight-bold text-primary ellipsis q-mb-sm"
+                      >
+                        {{ empleado.apellidos }}
+                      </div>
+
+                      <!-- Cargo como chip -->
+                      <div class="q-mb-sm">
+                        <q-chip
+                          color="secondary"
+                          text-color="white"
+                          class="text-caption text-weight-medium"
+                          :label="empleado.cargo"
+                        />
+                      </div>
+
+                      <!-- Departamento con ícono -->
+                      <div
+                        class="row items-center justify-center q-gutter-xs q-mb-sm"
+                      >
+                        <q-icon name="business" size="16px" color="grey-6" />
+                        <div class="text-body2 text-grey-6 ellipsis">
+                          {{ empleado.departamento }}
+                        </div>
+                      </div>
+
+                      <!-- Tiempo de ingreso -->
+                      <div class="row items-center justify-center q-gutter-xs">
+                        <q-icon name="schedule" size="16px" color="positive" />
+                        <div
+                          class="text-caption text-positive text-weight-medium"
+                        >
+                          Ingresó {{ dayjs(empleado.fecha_ingreso).fromNow() }}
+                        </div>
+                      </div>
+                    </div>
+                  </q-card>
+                </div>
+              </div>
+            </q-carousel-slide>
+          </q-carousel>
+        </q-card>
+
+        <!-- Departamentos -->
+        <div class="row q-col-gutter-lg">
+          <!-- DEPARTAMENTOS (card acoplable) -->
+          <div class="col-12 col-lg-12">
+            <q-card class="rounded-borders shadow-10 highlight">
+              <div
+                class="gradient-brand text-white rounded-t-borders q-pa-md row items-center bg-primary"
+              >
+                <!-- Columna izquierda (vacía o con contenido opcional) -->
+                <div class="col-3"></div>
+
+                <!-- Columna central con el título -->
+                <div class="col-6 text-center">
+                  <div class="row items-center justify-center q-gutter-sm">
+                    <q-icon name="bi-buildings-fill" size="15px" />
+                    <div class="text-h6 text-weight-bold text-uppercase">
+                      Departamentos
+                    </div>
+                  </div>
                 </div>
 
-                <div style="flex: 1; overflow-y: auto; color: blue">
-                  <q-tab-panels v-model="activeTab" animated>
-                    <q-tab-panel
-                      v-for="departamento in departamentos"
-                      :key="departamento.id"
-                      :name="departamento.id"
+                <!-- Columna derecha con el badge -->
+                <div class="col-3 text-right">
+                  <q-badge
+                    color="white"
+                    text-color="primary"
+                    class="text-weight-bold"
+                    >{{ departamentos?.length || 0 }} áreas</q-badge
+                  >
+                </div>
+              </div>
+
+              <!-- Chips de departamentos, fáciles de mover/usarse en otro lugar -->
+              <q-card-section class="q-pb-none">
+                <div class="row items-center no-wrap">
+                  <!-- Botón izquierdo -->
+                  <q-btn
+                    flat
+                    round
+                    dense
+                    icon="chevron_left"
+                    color="grey-6"
+                    size="sm"
+                    class="q-mr-sm"
+                    @click="
+                      $refs.scrollArea.setScrollPosition(
+                        'horizontal',
+                        Math.max(
+                          0,
+                          $refs.scrollArea.getScrollPosition().left - 150
+                        ),
+                        300
+                      )
+                    "
+                  />
+
+                  <!-- Área scrolleable -->
+                  <div class="col">
+                    <q-scroll-area
+                      ref="scrollArea"
+                      style="height: 46px"
+                      :bar-style="{ display: 'none' }"
+                      :thumb-style="{ display: 'none' }"
                     >
-                      <q-card-section>
-                        <q-scroll-area
-                          class="full-width"
-                          style="
-                            height: 400px;
-                            font-size: 14px;
-                            justify-items: center;
+                      <div class="row no-wrap q-gutter-sm q-px-xs">
+                        <q-chip
+                          v-for="d in departamentos"
+                          :key="d.id"
+                          clickable
+                          outline
+                          :color="activeTab === d.id ? 'primary' : 'grey-5'"
+                          :text-color="
+                            activeTab === d.id ? 'primary' : 'grey-7'
+                          "
+                          icon="apartment"
+                          @click="
+                            () => {
+                              activeTab = d.id
+                              consultarEmpleadosDepartamento(d.id)
+                            }
                           "
                         >
-                          <q-card>
-                            <q-card-section>
-                              <div class="text-h6 q-mb-md text-bold"></div>
-                              <q-timeline>
-                                <q-timeline-entry
-                                  v-for="empleado in empleados"
-                                  :key="empleado.id"
-                                  :title="
-                                    empleado.nombres + ' ' + empleado.apellidos
-                                  "
-                                  :subtitle="empleado.cargo"
-                                  icon="person"
-                                  
-                                >
-                                  <div class="row items-center q-gutter-sm">
-                                    <q-avatar size="50px">
-                                      <img
-                                        :src="
-                                          empleado.foto_url ||
-                                          getAvatarUrl(empleado)
-                                        "
-                                      />
-                                    </q-avatar>
-                                    <div>
-                                      <div class="text-body2">
-                                        {{ empleado.email }}
-                                      </div>
-                                      <q-chip size="sm" color="accent">{{
-                                        empleado.departamento
-                                      }}</q-chip>
-                                    </div>
-                                    <q-space></q-space>
-                                    <q-btn
-                                      flat
-                                      round
-                                      color="primary"
-                                      icon="more_vert"
-                                    >
-                                      <q-menu>
-                                        <q-list>
-                                          <q-item
-                                            clickable
-                                            @click="
-                                              showEmployeeDetails(empleado)
-                                            "
-                                          >
-                                            <q-item-section
-                                              >Ver detalles</q-item-section
-                                            >
-                                          </q-item>
-                                        </q-list>
-                                      </q-menu>
-                                    </q-btn>
-                                  </div>
-                                </q-timeline-entry>
-                              </q-timeline>
-                            </q-card-section>
-                          </q-card>
-                          <!-- Alternativa 4: Q-Timeline -->
-                          <div class="demo-section"></div>
-                        </q-scroll-area>
-                      </q-card-section>
-                    </q-tab-panel>
-                  </q-tab-panels>
+                          {{ d.nombre }}
+                        </q-chip>
+                      </div>
+                    </q-scroll-area>
+                  </div>
+
+                  <!-- Botón derecho -->
+                  <q-btn
+                    flat
+                    round
+                    dense
+                    icon="chevron_right"
+                    color="grey-6"
+                    size="sm"
+                    class="q-ml-sm"
+                    @click="
+                      $refs.scrollArea.setScrollPosition(
+                        'horizontal',
+                        $refs.scrollArea.getScrollPosition().left + 150,
+                        300
+                      )
+                    "
+                  />
                 </div>
-              </q-expansion-item>
+              </q-card-section>
+
+              <!-- Resumen rápido -->
+              <q-card-section class="q-pt-sm q-pb-sm">
+                <div class="row q-col-gutter-md">
+                  <div class="col-6 col-md-3">
+                    <q-item class="mini-stat hover-lift" clickable>
+                      <q-item-section avatar>
+                        <q-avatar icon="groups" class="bg-primary text-white" />
+                      </q-item-section>
+                      <q-item-section>
+                        <div class="text-caption text-grey-6">Empleados</div>
+                        <div class="text-h6">{{ empleados?.length || 0 }}</div>
+                      </q-item-section>
+                    </q-item>
+                  </div>
+                  <div class="col-6 col-md-3">
+                    <q-item class="mini-stat hover-lift" clickable>
+                      <q-item-section avatar>
+                        <q-avatar
+                          icon="workspace_premium"
+                          class="bg-amber text-white"
+                        />
+                      </q-item-section>
+                      <q-item-section>
+                        <div class="text-caption text-grey-6">Jefaturas</div>
+                        <div class="text-h6">
+                          {{ totalJefaturas || 0 }}
+                        </div>
+                      </q-item-section>
+                    </q-item>
+                  </div>
+                  <div class="col-6 col-md-3">
+                    <q-item class="mini-stat hover-lift" clickable>
+                      <q-item-section avatar>
+                        <q-avatar icon="event" class="bg-green-6 text-white" />
+                      </q-item-section>
+                      <q-item-section>
+                        <div class="text-caption text-grey-6">
+                          Antigüedad media
+                        </div>
+                        <div class="text-h6">
+                          {{ promedioAntiguedad?.label || '—' }}
+                        </div>
+                      </q-item-section>
+                    </q-item>
+                  </div>
+                  <div class="col-6 col-md-3">
+                    <q-item class="mini-stat hover-lift" clickable>
+                      <q-item-section avatar>
+                        <q-avatar icon="badge" class="bg-blue-6 text-white" />
+                      </q-item-section>
+                      <q-item-section>
+                        <div class="text-caption text-grey-6">
+                          Cargos únicos
+                        </div>
+                        <div class="text-h6">
+                          {{ cargosUnicos?.length || 0 }}
+                        </div>
+                      </q-item-section>
+                    </q-item>
+                  </div>
+                </div>
+              </q-card-section>
+
+              <!-- Vista empleados del dpto activo: grid adaptativa (reemplaza a timeline si prefieres) -->
+              <q-separator />
+              <q-card-section class="q-pt-md">
+                <div
+                  class="row q-col-gutter-md"
+                  style="height: 450px; overflow: auto"
+                >
+                  <div
+                    v-for="empleado in empleados"
+                    :key="empleado.id"
+                    class="col-12 col-sm-6 col-md-6"
+                  >
+                    <q-card
+                      flat
+                      bordered
+                      class="rounded-borders hover-lift emp-card"
+                    >
+                      <q-card-section class="row items-center q-gutter-sm">
+                        <q-avatar size="56px" class="avatar-ring">
+                          <img
+                            :src="empleado.foto_url || getAvatarUrl(empleado)"
+                          />
+                        </q-avatar>
+                        <div class="col">
+                          <div class="text-subtitle2 text-weight-bold ellipsis">
+                            {{ empleado.nombres }} {{ empleado.apellidos }}
+                          </div>
+                          <div class="text-caption text-grey-7 ellipsis">
+                            {{ empleado.cargo }}
+                          </div>
+                          <div class="text-lowercase text-grey-6 ellipsis">
+                            {{ empleado.email }}
+                          </div>
+                        </div>
+                      </q-card-section>
+                      <q-separator />
+                      <q-card-actions
+                        align="between"
+                        class="text-caption text-grey-7"
+                      >
+                        <div class="row items-center q-gutter-xs">
+                          <q-icon name="las la-user-tie" size="16px" />
+                          <span class="text-weight-bold">JEFE:</span>
+                          <span>{{ empleado.jefe }}</span>
+                        </div>
+                        <q-chip
+                          v-if="empleado.extension"
+                          size="sm"
+                          color="teal-5"
+                          text-color="white"
+                          icon="call"
+                        >
+                          {{ empleado.extension }}
+                        </q-chip>
+                      </q-card-actions>
+                    </q-card>
+                  </div>
+                </div>
+              </q-card-section>
             </q-card>
-          </q-card>
+          </div>
         </div>
 
         <!-- Seccion descargate la app movil  -->
@@ -432,7 +663,7 @@
                 class="q-mb-md text-subtitle text-primary q-pa-sm"
                 style="
                   font-family: Impact, sans-serif;
-                  font-size: 50px;
+                  font-size: 30px;
                   text-transform: uppercase;
                 "
               >
@@ -578,7 +809,7 @@
           v-if="vacantesDisponibles"
           flat
           bordered
-          class="vacantes-card q-mb-sm"
+          class="q-mb-sm"
           style="border-radius: 10px; overflow: hidden"
         >
           <q-expansion-item
@@ -600,7 +831,7 @@
               swipeable
               animated
               :arrows="vacantesDisponibles.length > 1"
-              height="260px"
+              height="450px"
               control-text-color="teal"
               autoplay
               autoplay-interval="3000"
@@ -610,11 +841,21 @@
                 v-for="(vacante, index) in vacantesDisponibles"
                 :key="index"
                 :name="index"
+                class="bg-white q-pa-sm"
               >
-                <div class="border-grey rounded-8">
-                  <p class="text-black">{{ vacante.nombre }}</p>
+                <div class="bg-white rounded-8">
+                  <img
+                    :src="vacante.imagen_publicidad"
+                    style="
+                      width: 100%;
+                      height: 250px;
+                      object-fit: cover;
+                      border-radius: 8px;
+                    "
+                  />
+                  <p class="text-white bg-primary">{{ vacante.nombre }}</p>
                   <div
-                    class="block q-px-xs text-caption text-grey text-justify"
+                    class="q-px-xs text-caption text-grey text-justify"
                     @click="visualizarVacante(vacante)"
                   >
                     <p>{{ acortarDescripcion($q, vacante.descripcion) }}</p>
@@ -622,7 +863,7 @@
                   <q-separator />
                   <div class="row q-pa-sm text-black" style="font-size: 11px">
                     <div class="col-6">
-                      <q-icon class="bi-clock-fill" />
+                      <q-icon class="bi-clock-fill text-green" />
                       <strong class="q-px-sm">
                         {{
                           dayjs() > dayjs(vacante.fecha_caducidad)
@@ -633,7 +874,7 @@
                       </strong>
                     </div>
                     <div class="col-6">
-                      <q-icon class="bi-geo-alt-fill" />
+                      <q-icon class="bi-geo-alt-fill text-red" />
                       <strong class="q-px-sm">
                         {{ vacante.canton }}
                       </strong>
@@ -1591,4 +1832,4 @@ h5 {
 }
 </style>
 
-<script src="./IntranetPage.ts"></script>
+<script src="./IntranetPageOriginal.ts"></script>

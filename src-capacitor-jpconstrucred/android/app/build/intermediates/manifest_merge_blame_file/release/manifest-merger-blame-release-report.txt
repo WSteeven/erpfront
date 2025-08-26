@@ -1,8 +1,8 @@
 1<?xml version="1.0" encoding="utf-8"?>
 2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
 3    package="org.firstred.jpconstrucred.com"
-4    android:versionCode="1"
-5    android:versionName="1.0" >
+4    android:versionCode="3"
+5    android:versionName="1.2.0" >
 6
 7    <uses-sdk
 8        android:minSdkVersion="23"
@@ -374,7 +374,17 @@
 205-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\STEEVEN\.gradle\caches\transforms-3\fdac71ace54bca54b6ae9e990cf9ac7e\transformed\profileinstaller-1.3.1\AndroidManifest.xml:50:17-95
 205-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\STEEVEN\.gradle\caches\transforms-3\fdac71ace54bca54b6ae9e990cf9ac7e\transformed\profileinstaller-1.3.1\AndroidManifest.xml:50:25-92
 206            </intent-filter>
-207        </receiver>
-208    </application>
-209
-210</manifest>
+207        </receiver> <!-- The activities will be merged into the manifest of the hosting app. -->
+208        <activity
+208-->[com.google.android.play:core-common:2.0.3] C:\Users\STEEVEN\.gradle\caches\transforms-3\3e75bea5205192c78fc7617dc0f4f9fb\transformed\core-common-2.0.3\AndroidManifest.xml:14:9-18:65
+209            android:name="com.google.android.play.core.common.PlayCoreDialogWrapperActivity"
+209-->[com.google.android.play:core-common:2.0.3] C:\Users\STEEVEN\.gradle\caches\transforms-3\3e75bea5205192c78fc7617dc0f4f9fb\transformed\core-common-2.0.3\AndroidManifest.xml:15:13-93
+210            android:exported="false"
+210-->[com.google.android.play:core-common:2.0.3] C:\Users\STEEVEN\.gradle\caches\transforms-3\3e75bea5205192c78fc7617dc0f4f9fb\transformed\core-common-2.0.3\AndroidManifest.xml:16:13-37
+211            android:stateNotNeeded="true"
+211-->[com.google.android.play:core-common:2.0.3] C:\Users\STEEVEN\.gradle\caches\transforms-3\3e75bea5205192c78fc7617dc0f4f9fb\transformed\core-common-2.0.3\AndroidManifest.xml:17:13-42
+212            android:theme="@style/Theme.PlayCore.Transparent" />
+212-->[com.google.android.play:core-common:2.0.3] C:\Users\STEEVEN\.gradle\caches\transforms-3\3e75bea5205192c78fc7617dc0f4f9fb\transformed\core-common-2.0.3\AndroidManifest.xml:18:13-62
+213    </application>
+214
+215</manifest>
