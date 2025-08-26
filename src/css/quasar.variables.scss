@@ -1,37 +1,49 @@
+// --------------------------------------------------
 // Quasar SCSS (& Sass) Variables
 // --------------------------------------------------
-// To customize the look and feel of this app, you can override
-// the Sass/SCSS variables found in Quasar's source Sass/SCSS files.
+// Para customizar la app, sobreescribimos las variables aquí.
+// Solo descomenta el bloque de la marca que quieras usar.
+// --------------------------------------------------
 
-// Check documentation for full list of Quasar variables
 
-// Your own variables (that are declared here) and Quasar's own
-// ones will be available out of the box in your .vue/.scss/.sass files
-
-// It's highly recommended to change the default colors
-// to match your app's branding.
-// Tip: Use the "Theme Builder" on Quasar's documentation website.
-
-// JP CONSTRUCRED
- $primary: #3f71fb; //003dff; // 0879dc;
- $primary-dark: #1B56FD; // 001b72
-
+// ==============================
 // JP CUSTODY
-//$primary:#e4bc0d;
-//$primary-dark:#000000;
+// ==============================
+$primary:        #F2B705;
+$primary-dark:   #BF7E04;
+$secondary:      #0b0700;
+$accent:         #F2E205;
+$info:           #1D4ED8;
+$warning:        #F2C037;
 
-// ----------------------------------------
-//$primary:#1d1d1d;
-// $primary:#1b508e; // ccledare
-//$secondary: #d3b81d; // jp custody
-$secondary: #283593; // jp construcred
-$accent: #ed9200;
-$dark: #1d1d1d;
-$dark-page: #121212;
 
-$positive: #11a900; //#12b500;
- //$positive: #98bf23;
-$negative: #9a070e; //#c94b4b;
-$error: #9a070e; //#c94b4b;
-$info: #0879dc;
-$warning: #f2c037;
+// ==============================
+//  JP CONSTRUCRED
+// ==============================
+/*  $primary:        #32598C;
+ $primary-dark:   #1A4169;
+ $secondary:      #D96E30;
+ $accent:         #14A1D9;
+ $info:           #1D4ED8;
+ $warning:        #F2C037;
+ */
+
+// ==============================
+//  CC LEDARE
+// ==============================
+/*  $primary:        #07598C;
+ $primary-dark:   #054264;
+ $secondary:      #F28705;
+ $accent:         #F2A341;
+ $info:           #07598C;
+ $warning:        #F2C791; */
+
+
+// ==============================
+// CUSTOM
+// ==============================
+$dark:           #1D1D1D;
+$dark-page:      #0D0D0D;
+$positive:       #16A34A;
+$negative:       #B91C1C;
+$error:          #B91C1C;

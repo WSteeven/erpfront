@@ -83,6 +83,9 @@ export default defineComponent({
     const departamentoSeleccionado = 1
     const empleados: Ref<Empleado[]> = ref([])
 
+    const empleadosNuevos = ref<Empleado[]>([])
+    const carouselNuevosEmpleados = ref(0)
+
     const usuarios = 20
     const carousel_noticias = ref(0)
     const carousel_vacantes = ref(0)
@@ -373,20 +376,153 @@ export default defineComponent({
     }
 
     async function consultarDepartamentos() {
-      const departamentoController = new DepartamentoController()
-      const respuesta = await departamentoController.listar({ activo: 1 })
+      try {
+        const departamentoController = new DepartamentoController()
+        const empleadoController = new EmpleadoController()
 
-      // Ocultar departamento de Gerencia
-      departamentos.value = respuesta.result.filter(
-        departamento => departamento.id !== 9
-      )
+        const respuesta = await departamentoController.listar({ activo: 1 })
+        const departamentosCandidatos = respuesta.result.filter(
+          departamento => departamento.id !== 9
+        )
+
+        // Consultar empleados de todos los departamentos en paralelo
+        const promesasEmpleados = departamentosCandidatos.map(
+          async departamento => {
+            try {
+              const empleados = await empleadoController.listar({
+                departamento_id: departamento.id,
+                estado: 1
+              })
+              return {
+                departamento,
+                tieneEmpleados: empleados.result && empleados.result.length > 0
+              }
+            } catch (error) {
+              return {
+                departamento,
+                tieneEmpleados: false
+              }
+            }
+          }
+        )
+
+        const resultados = await Promise.all(promesasEmpleados)
+
+        // Filtrar solo los departamentos que tienen empleados
+        departamentos.value = resultados
+          .filter(resultado => resultado.tieneEmpleados)
+          .map(resultado => resultado.departamento)
+      } catch (error) {
+        console.error('Error al consultar departamentos:', error)
+      }
     }
 
-    function totalJefaturas() {
-      return this.empleados.filter(
-        empleado => empleado.es_jefe === true || empleado.es_jefe === 1
-      ).length
+    //Funcion para consultar empleados nuevos
+    async function obtenerEmpleadosNuevos() {
+      try {
+        cargando.activar()
+
+        // Calcular fecha de hace 30 días
+        const hace30Dias = new Date()
+        hace30Dias.setDate(hace30Dias.getDate() - 30)
+        const fechaLimite = hace30Dias.toISOString().split('T')[0] // formato YYYY-MM-DD
+        const empleadoController = new EmpleadoController()
+        const response = await empleadoController.listar({
+          estado: 1,
+          'fecha_ingreso[operator]': '>=', // Cambiado de fecha_vinculacion a fecha_ingreso
+          'fecha_ingreso[value]': fechaLimite
+        })
+        // Ordenar por fecha de ingreso más reciente primero
+        empleadosNuevos.value =
+          response.result
+            ?.sort(
+              (a, b) =>
+                new Date(b.fecha_ingreso).getTime() -
+                new Date(a.fecha_ingreso).getTime()
+            ) // Cambiado a fecha_ingreso
+            ?.slice(0, 6) || []
+      } catch (error) {
+        console.error('Error al obtener empleados nuevos:', error)
+        notificarError('Error al cargar nuevas incorporaciones')
+      } finally {
+        cargando.desactivar()
+      }
     }
+
+    const totalJefaturas = computed(() => {
+      if (!empleados.value || empleados.value.length === 0) return 0
+
+      const jefesSet = new Set()
+
+      empleados.value.forEach(empleado => {
+        if (empleado.jefe && empleado.jefe.trim() !== '') {
+          jefesSet.add(empleado.jefe.trim())
+        }
+      })
+
+      return jefesSet.size
+    })
+
+    // Función para calcular la antigüedad promedio
+    const promedioAntiguedad = computed(() => {
+      if (!empleados.value || empleados.value.length === 0) {
+        return { label: '—', valor: 0 }
+      }
+
+      const antiguedades = empleados.value
+        .filter(empleado => empleado.fecha_vinculacion)
+        .map(empleado => {
+          const hoy = new Date()
+          const vinculacion = new Date(empleado.fecha_vinculacion)
+          return hoy.getTime() - vinculacion.getTime()
+        })
+
+      if (antiguedades.length === 0) {
+        return { label: '—', valor: 0 }
+      }
+
+      const promedioMs =
+        antiguedades.reduce((sum, ant) => sum + ant, 0) / antiguedades.length
+      const promedioDias = Math.floor(promedioMs / (1000 * 60 * 60 * 24))
+      const promedioAnios = Math.floor(promedioDias / 365)
+      const promedioMeses = Math.floor((promedioDias % 365) / 30)
+
+      if (promedioAnios > 0) {
+        return {
+          label: `${promedioAnios}a ${promedioMeses}m`,
+          valor: promedioDias
+        }
+      } else if (promedioMeses > 0) {
+        return {
+          label: `${promedioMeses} meses`,
+          valor: promedioDias
+        }
+      } else {
+        return {
+          label: `${promedioDias} días`,
+          valor: promedioDias
+        }
+      }
+    })
+
+    // Función para obtener cargos únicos
+    const cargosUnicos = computed(() => {
+      if (!empleados.value || empleados.value.length === 0) {
+        return []
+      }
+
+      const cargos = empleados.value
+        .filter(empleado => empleado.cargo && empleado.cargo.trim() !== '')
+        .map(empleado => empleado.cargo.trim().toLowerCase())
+
+      // Eliminar duplicados usando Set
+      const cargosUnicos = [...new Set(cargos)]
+
+      return cargosUnicos
+    })
+
+    // Si solo necesitas el conteo:
+    const totalCargosUnicos = computed(() => cargosUnicos.value.length)
 
     consultarDepartamentos()
 
@@ -504,6 +640,7 @@ export default defineComponent({
       obtenerVacantes()
       obtenerEmpleadosCumpleaneros()
       obtenerEmpleadosConExtension()
+      obtenerEmpleadosNuevos()
     })
 
     useNotificaciones()
@@ -610,6 +747,9 @@ export default defineComponent({
       mostrarMenu: ref(false),
       store,
       usuarios,
+      obtenerEmpleadosNuevos,
+      empleadosNuevos,
+      carouselNuevosEmpleados,
       loginJson,
       filtrosTareas,
       filtroTarea,
@@ -650,6 +790,9 @@ export default defineComponent({
       documentosIntranet,
       empleadosCumpleaneros,
       empleadosConExtension,
+      promedioAntiguedad,
+      cargosUnicos,
+      totalJefaturas,
       fechaActual,
       fechaSeleccionada,
       eventos,
@@ -661,7 +804,6 @@ export default defineComponent({
       isCumpleanerosModalOpen,
       openCumpleanerosModal,
       selectedEmpleado,
-totalJefaturas,
       calcularAntiguedad,
       calcularEdadEsteAno,
       notificarProximamente,
