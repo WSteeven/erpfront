@@ -1,0 +1,1 @@
+import{m as b,e as o}from"./index.976e8f3c.js";const u=b("trabajoAsignado",()=>{const a=o(),e=o(),t=o(),n=o(),s=o(),c=o(),i=o(),r=o(),d=o();return{idTareaSeleccionada:a,idSubtareaSeleccionada:e,idEmergencia:t,codigoSubtarea:n,idEmpleadoResponsable:s,subtarea:d,proyecto_id:c,etapa_id:i,cliente_id:r}});export{u};
