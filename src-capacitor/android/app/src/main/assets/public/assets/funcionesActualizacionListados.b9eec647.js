@@ -1,0 +1,1 @@
+import{S as e}from"./utils.30e08aa2.js";async function i(r){const a=new e;try{return a.activar(),await r()}catch(t){throw t}finally{a.desactivar()}}async function u(r,a,t,o,c){const s=o,n=await i(s.listar.bind(s,c));r[a]=n.result,t.value=n.result}export{u as r};
