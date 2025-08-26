@@ -1,7 +1,7 @@
 <template>
   <div class="row">
     <div class="col-12">
-      <label class="q-mb-sm block">{{ etiqueta }}</label>
+      <label class="q-mb-sm block">{{ label }}</label>
 
       <q-input
         v-model="valorInterno"
@@ -11,7 +11,7 @@
         dense
         :clearable="!grabando"
         autogrow
-        :placeholder="marcador"
+        :placeholder="placeholder"
         :hint="grabando ? 'Escuchando…' : 'Presione el micrófono para grabar'"
         :error="!!get(v$, claveError + '.$errors', []).length"
         @blur="
@@ -76,14 +76,15 @@ const props = defineProps({
   deshabilitado: { type: Boolean, default: false },
   v$: { type: Object as any, default: () => ({}) },
   claveError: { type: String, default: '' },
-  etiqueta: { type: String, default: 'Texto por voz' },
-  marcador: { type: String, default: '' },
-  mascara: { type: String, default: '' }
+  label: { type: String, default: '' },
+  placeholder: { type: String, default: '' },
+  mascara: { type: String, default: '' },
 })
 
 /** ====== ESTADO ====== */
 const grabando = ref(false)
 const operando = ref<'idle' | 'starting' | 'listening' | 'stopping'>('idle')
+const componenteMontado = ref(true) // Nuevo: controlar si está montado
 
 let reconocimientoWeb: any = null
 let quitarParcial: (() => Promise<void>) | undefined
@@ -100,7 +101,11 @@ let timerSesion: number | null = null
 
 const valorInterno = computed({
   get: () => props.modelValue as string,
-  set: (nuevo: string) => emitir('update:modelValue', nuevo)
+  set: (nuevo: string) => {
+    if (componenteMontado.value) {
+      emitir('update:modelValue', nuevo)
+    }
+  }
 })
 
 declare global {
@@ -126,15 +131,23 @@ async function asegurarPermisos() {
 }
 
 function tocarActividad() {
-  ultimoEventoMs = Date.now()
+  if (componenteMontado.value) {
+    ultimoEventoMs = Date.now()
+  }
 }
 
 function arrancarWatchdog() {
   pararWatchdog()
   ultimoEventoMs = Date.now()
   watchdog = window.setInterval(() => {
+    if (!componenteMontado.value) {
+      pararWatchdog()
+      return
+    }
+
     const ahora = Date.now()
-    if (ahora - ultimoEventoMs > MAX_SILENCIO_MS) {
+    // Verificar estado antes de detener
+    if (ahora - ultimoEventoMs > MAX_SILENCIO_MS && operando.value === 'listening') {
       detener(true) // forzar
     }
   }, 1000)
@@ -149,10 +162,11 @@ function pararWatchdog() {
 
 function arrancarTemporizadorSesion() {
   detenerTemporizadorSesion()
-  timerSesion = window.setTimeout(
-    () => detener(true),
-    MAX_SESION_MS
-  ) as unknown as number
+  timerSesion = window.setTimeout(() => {
+    if (componenteMontado.value && operando.value === 'listening') {
+      detener(true)
+    }
+  }, MAX_SESION_MS) as unknown as number
 }
 
 function detenerTemporizadorSesion() {
@@ -162,10 +176,22 @@ function detenerTemporizadorSesion() {
   }
 }
 
+/** ====== RESET DE ESTADO SEGURO ====== */
+function resetearEstadoSeguro() {
+  if (!componenteMontado.value) return
+
+  grabando.value = false
+  operando.value = 'idle'
+  pararWatchdog()
+  detenerTemporizadorSesion()
+}
+
 /** ====== INICIO DE ESCUCHA ====== */
 async function escuchar() {
+  if (!componenteMontado.value) return
   if (props.deshabilitado) return
   if (operando.value !== 'idle') return // evita doble start
+
   operando.value = 'starting'
   grabando.value = true
 
@@ -173,12 +199,17 @@ async function escuchar() {
     try {
       const { available } = await SpeechRecognition.available()
       if (!available) {
-        operando.value = 'idle'
-        grabando.value = false
+        resetearEstadoSeguro()
         return escucharWebInterno()
       }
 
+      // Verificar que seguimos montados después del await
+      if (!componenteMontado.value) return
+
       await asegurarPermisos()
+
+      if (!componenteMontado.value) return
+
       await SpeechRecognition.removeAllListeners().catch(() => {
         // Ignorar error al remover listeners
       })
@@ -186,6 +217,7 @@ async function escuchar() {
       const hParcial = await SpeechRecognition.addListener(
         'partialResults',
         datos => {
+          if (!componenteMontado.value) return
           if (Array.isArray(datos?.matches) && datos.matches[0]) {
             valorInterno.value = datos.matches[0]
             tocarActividad()
@@ -197,6 +229,8 @@ async function escuchar() {
       const hEstado = await SpeechRecognition.addListener(
         'listeningState',
         ({ status }) => {
+          if (!componenteMontado.value) return
+
           if (status === 'started') {
             grabando.value = true
             operando.value = 'listening'
@@ -204,14 +238,17 @@ async function escuchar() {
             arrancarWatchdog()
             arrancarTemporizadorSesion()
           } else if (status === 'stopped') {
-            grabando.value = false
-            operando.value = 'idle'
-            pararWatchdog()
-            detenerTemporizadorSesion()
+            resetearEstadoSeguro()
           }
         }
       )
       quitarEstado = hEstado.remove
+
+      // Verificación final antes de iniciar
+      if (!componenteMontado.value) {
+        await limpiarListenersNativo()
+        return
+      }
 
       await SpeechRecognition.start({
         language: IDIOMA,
@@ -221,24 +258,49 @@ async function escuchar() {
       })
     } catch (err) {
       console.error('[SR start error]', err)
-      grabando.value = false
-      operando.value = 'idle'
-      return escucharWebInterno()
+      resetearEstadoSeguro()
+      await limpiarListenersNativo()
+
+      // Solo hacer fallback si el componente sigue montado y no está deshabilitado
+      if (componenteMontado.value && !props.deshabilitado) {
+        return escucharWebInterno()
+      }
     }
   } else {
     return escucharWebInterno()
   }
 }
 
+/** ====== LIMPIEZA DE LISTENERS NATIVO ====== */
+async function limpiarListenersNativo() {
+  try {
+    await quitarParcial?.()
+  } catch {} finally {
+    quitarParcial = undefined
+  }
+
+  try {
+    await quitarEstado?.()
+  } catch {} finally {
+    quitarEstado = undefined
+  }
+
+  try {
+    await SpeechRecognition.removeAllListeners()
+  } catch {}
+}
+
 /** ====== ESCUCHA EN WEB ====== */
 function escucharWebInterno() {
+  if (!componenteMontado.value) return
+
   if (
     !('webkitSpeechRecognition' in window) &&
     !('SpeechRecognition' in window)
   ) {
-    alert('El reconocimiento de voz no es compatible con este navegador.')
-    grabando.value = false
-    operando.value = 'idle'
+    console.warn('El reconocimiento de voz no es compatible con este navegador.')
+    resetearEstadoSeguro()
+    // Podrías emitir un evento para mostrar un toast/notificación
     return
   }
 
@@ -250,6 +312,7 @@ function escucharWebInterno() {
     reconocimientoWeb.interimResults = true
 
     reconocimientoWeb.onstart = () => {
+      if (!componenteMontado.value) return
       operando.value = 'listening'
       grabando.value = true
       tocarActividad()
@@ -258,15 +321,19 @@ function escucharWebInterno() {
     }
 
     reconocimientoWeb.onresult = (evento: any) => {
+      if (!componenteMontado.value) return
+
       const indice = evento.resultIndex ?? evento.results.length - 1
       const resultado = evento.results[indice]
       const transcripcion = resultado[0]?.transcript ?? ''
       valorInterno.value = transcripcion
       tocarActividad()
+
       if (resultado.isFinal) detener()
     }
 
-    reconocimientoWeb.onerror = () => {
+    reconocimientoWeb.onerror = (error: any) => {
+      console.error('[Web SR error]', error)
       detener(true) // freno de emergencia
     }
 
@@ -282,17 +349,16 @@ function escucharWebInterno() {
 }
 
 function finalizarCierreWeb() {
-  grabando.value = false
-  operando.value = 'idle'
-  pararWatchdog()
-  detenerTemporizadorSesion()
+  resetearEstadoSeguro()
   reconocimientoWeb = null
 }
 
 /** ====== DETENER ====== */
 async function detener(forzado = false) {
+  if (!componenteMontado.value) return
   if (operando.value === 'idle') return
   if (operando.value === 'stopping') return
+
   operando.value = 'stopping'
   pararWatchdog()
   detenerTemporizadorSesion()
@@ -302,47 +368,57 @@ async function detener(forzado = false) {
       await SpeechRecognition.stop()
     } catch (e) {
       console.error('[SR stop error]', e)
-      // seguimos a limpiar igual
     } finally {
-      grabando.value = false
-      try {
-        await quitarParcial?.()
-      } catch {}
-      try {
-        await quitarEstado?.()
-      } catch {}
-      try {
-        await SpeechRecognition.removeAllListeners()
-      } catch {}
-      operando.value = 'idle'
+      resetearEstadoSeguro()
+      await limpiarListenersNativo()
     }
   } else if (reconocimientoWeb) {
     try {
-      if (!forzado) reconocimientoWeb.stop()
-      else if (typeof reconocimientoWeb.abort === 'function')
+      if (!forzado) {
+        reconocimientoWeb.stop()
+      } else if (typeof reconocimientoWeb.abort === 'function') {
         reconocimientoWeb.abort()
+      }
     } catch (e) {
       console.error('[Web SR stop/abort error]', e)
     } finally {
       finalizarCierreWeb()
     }
   } else {
-    grabando.value = false
-    operando.value = 'idle'
+    resetearEstadoSeguro()
   }
+}
+
+/** ====== LIMPIEZA TOTAL ====== */
+async function limpiezaTotal() {
+  componenteMontado.value = false
+  await detener(true)
+  pararWatchdog()
+  detenerTemporizadorSesion()
 }
 
 /** ====== LIFECYCLE ====== */
 onMounted(() => {
+  componenteMontado.value = true
+
   if (typeof document !== 'undefined') {
-    document.addEventListener('visibilitychange', () => {
-      if (document.hidden) detener(true)
+    const manejarVisibilidad = () => {
+      if (document.hidden && componenteMontado.value) {
+        detener(true)
+      }
+    }
+
+    document.addEventListener('visibilitychange', manejarVisibilidad)
+
+    // Limpiar listener cuando se desmonte
+    onBeforeUnmount(() => {
+      document.removeEventListener('visibilitychange', manejarVisibilidad)
     })
   }
 })
 
 onBeforeUnmount(async () => {
-  await detener(true)
+  await limpiezaTotal()
 })
 </script>
 
