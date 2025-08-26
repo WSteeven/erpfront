@@ -10,7 +10,6 @@ import { DetalleFondoController } from 'pages/fondosRotativos/detalleFondo/infre
 import { CondicionController } from 'pages/administracion/condiciones/infraestructure/CondicionController'
 import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
-import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController'
 import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller'
 import { ListadosSistema } from './ListadosSistemaInterface'
 

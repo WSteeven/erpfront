@@ -1,27 +1,18 @@
-import { useMenuAppMovilStore } from 'stores/menuAppMovil'
 // Dependencias
-import { Notificacion } from 'pages/administracion/notificaciones/domain/Notificacion'
-import { useNotificationRealtimeStore } from 'stores/notificationRealtime'
-import {
-  computed,
-  ComputedRef,
-  defineComponent,
-  Ref,
-  ref,
-  watch,
-  watchEffect
-} from 'vue'
-import { useAuthenticationStore } from 'src/stores/authentication'
-import { LocalStorage, useQuasar } from 'quasar'
-import { useMenuStore } from 'src/stores/menu'
-import { useRoute, useRouter } from 'vue-router'
+import {Notificacion} from 'pages/administracion/notificaciones/domain/Notificacion'
+import {useNotificationRealtimeStore} from 'stores/notificationRealtime'
+import {computed, ComputedRef, defineComponent, Ref, ref, watch, watchEffect} from 'vue'
+import {useAuthenticationStore} from 'src/stores/authentication'
+import {LocalStorage, useQuasar} from 'quasar'
+import {useMenuStore} from 'src/stores/menu'
+import {useRoute, useRouter} from 'vue-router'
 import Swal from 'sweetalert2'
 import dayjs from 'dayjs'
 import es from 'dayjs/locale/es'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import fondo from 'src/assets/img/bg.svg'
-import { StatusBar, Style } from '@capacitor/status-bar'
-import { Capacitor } from '@capacitor/core'
+import {StatusBar, Style} from '@capacitor/status-bar'
+import {Capacitor} from '@capacitor/core'
 
 // Componentes
 import ScrollToTopButton from 'components/buttonSubmits/ScrollToTopButton.vue'
@@ -32,24 +23,24 @@ import EssentialLink from 'components/EssentialLink.vue'
 import CrearTicket from 'src/pages/gestionTickets/tickets/view/CrearTicket.vue'
 
 // Logica y controladores
-import { ComportamientoModalesMainLayout } from './modales/application/ComportamientoModalesMainLayout'
-import { ObtenerIconoNotificacionRealtime } from 'shared/ObtenerIconoNotificacionRealtime'
-import { NotificacionesSistema } from './notificacionesSistema/NotificacionesSistema'
-import { useConfiguracionGeneralStore } from 'stores/configuracion_general'
-import { useMovilizacionSubtareaStore } from 'stores/movilizacionSubtarea'
-import { useIdle } from '@vueuse/core'
-import { formatearFechaTexto } from 'shared/utils'
-import { NotIdle } from 'idlejs'
-import { useMainLayoutStore } from 'stores/mainLayout'
-import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import {ComportamientoModalesMainLayout} from './modales/application/ComportamientoModalesMainLayout'
+import {ObtenerIconoNotificacionRealtime} from 'shared/ObtenerIconoNotificacionRealtime'
+import {NotificacionesSistema} from './notificacionesSistema/NotificacionesSistema'
+import {useConfiguracionGeneralStore} from 'stores/configuracion_general'
+import {useMovilizacionSubtareaStore} from 'stores/movilizacionSubtarea'
+import {useIdle} from '@vueuse/core'
+import {formatearFechaTexto} from 'shared/utils'
+import {NotIdle} from 'idlejs'
+import {useMainLayoutStore} from 'stores/mainLayout'
+import {StatusEssentialLoading} from 'components/loading/application/StatusEssentialLoading'
 
-import { MenuOption } from 'shared/menu/MenuOption'
-import { useAuthenticationExternalStore } from 'stores/authenticationExternal'
-import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
-import { endpoints } from 'config/api'
-import { AxiosResponse } from 'axios'
-import { useNotificaciones } from 'shared/notificaciones'
-import { Device } from '@capacitor/device'
+import {MenuOption} from 'shared/menu/MenuOption'
+import {useAuthenticationExternalStore} from 'stores/authenticationExternal'
+import {AxiosHttpRepository} from 'shared/http/infraestructure/AxiosHttpRepository'
+import {endpoints} from 'config/api'
+import {AxiosResponse} from 'axios'
+import {useNotificaciones} from 'shared/notificaciones'
+import {Device} from '@capacitor/device'
 
 export default defineComponent({
   name: 'MainLayout',
@@ -76,21 +67,21 @@ export default defineComponent({
     /*********
      * Stores
      *********/
-    const authenticationStore = useAuthenticationStore()
+    const store = useAuthenticationStore()
     const movilizacionSubtareaStore = useMovilizacionSubtareaStore()
     const configuracionGeneralStore = useConfiguracionGeneralStore()
     const { notificarCorrecto, notificarAdvertencia } = useNotificaciones()
     const mainLayoutStore = useMainLayoutStore()
     const modoNoDisponible = ref(false)
     const permisoModoNoDisponible = computed(() =>
-      authenticationStore.can('puede.ver.btn.modo_no_disponible')
+      store.can('puede.ver.btn.modo_no_disponible')
     )
 
     /*******
      * Init
      *******/
-    if (authenticationStore.esTecnico)
-      movilizacionSubtareaStore.getSubtareaDestino(authenticationStore.user.id)
+    if (store.esTecnico)
+      movilizacionSubtareaStore.getSubtareaDestino(store.user.id)
 
     /***************************
      * Permitir Notificaciones push
@@ -115,16 +106,16 @@ export default defineComponent({
     const Router = useRouter()
     const route = useRoute()
     const tituloPagina = computed(() => mainLayoutStore.tituloPagina)
-    const grupo = authenticationStore.user?.grupo
+    const grupo = store.user?.grupo
     const mostrarBuscar = ref(false)
 
     const saldo = computed(() => {
-      authenticationStore.consultar_saldo_actual()
-      return `${authenticationStore.saldo_actual ?? 0} `
+      store.consultar_saldo_actual()
+      return `${store.saldo_actual ?? 0} `
     })
 
     const nombreUsuario = computed(() => {
-      const usuario = authenticationStore.user
+      const usuario = store.user
       if (usuario) {
         return `${usuario.nombres} ${usuario.apellidos ?? ''} `
       }
@@ -133,7 +124,7 @@ export default defineComponent({
 
     async function logout() {
       cargando.activar()
-      await authenticationStore.logout()
+      await store.logout()
       await Router.replace({ name: 'Login' })
       cargando.desactivar()
     }
@@ -161,7 +152,7 @@ export default defineComponent({
       const ruta =
         axios.getEndpoint(endpoints.empleados_delegados) +
         '/desactivar/' +
-        authenticationStore.user.id
+        store.user.id
       const response: AxiosResponse = await axios.get(ruta)
       if (response.status === 200) notificarCorrecto(response.data.mensaje)
       else notificarAdvertencia('No tienes delegaciones activas')
@@ -176,7 +167,7 @@ export default defineComponent({
     notificacionesSistema.init()
 
     //Poner la imagen de perfil
-    const imagenPerfil = authenticationStore.user.foto_url // `https://ui-avatars.com/api/?name=${authenticationStore.user.nombres.substr(0, 1)}+${authenticationStore.user.apellidos.substr(0, 1)}&bold=true&background=0879dc28&color=0879dc`
+    const imagenPerfil = store.user.foto_url
 
     const notificacionesPusherStore = useNotificationRealtimeStore()
     const obtenerIconoNotificacion = new ObtenerIconoNotificacionRealtime()
@@ -221,7 +212,7 @@ export default defineComponent({
       switch (data.formulario) {
         case 'ModoNoDisponiblePage':
           modoNoDisponible.value = data.valor
-          authenticationStore.user.tiene_delegado = data.valor
+          store.user.tiene_delegado = data.valor
           break
         default:
         //
@@ -235,7 +226,7 @@ export default defineComponent({
 
     async function marcarComoLeidasTodas() {
       await notificacionesPusherStore.marcarLeidasTodas(
-        authenticationStore.user.id
+        store.user.id
       )
     }
 
@@ -290,7 +281,7 @@ export default defineComponent({
       }
     })
     */
-    if (authenticationStore.user) {
+    if (store.user) {
       new NotIdle()
         .whenInteractive()
         .within(60, 1000) // un minuto
@@ -302,7 +293,7 @@ export default defineComponent({
       // const LIMIT = 60 * 60 * 1000 // 60 minutes for logout session
       const LIMIT = 4 * 60 * 60 * 1000 // 4 horas for logout session
       setInterval(() => {
-        if (authenticationStore.user) {
+        if (store.user) {
           const la = new Date(
             JSON.parse(LocalStorage.getItem('lastActivity')!)
           ).getTime()
@@ -370,7 +361,7 @@ export default defineComponent({
 
     // barra de búsqueda
     const menuStore = useMenuStore()
-    const menuAppMovilStore = useMenuAppMovilStore()
+    // const menuAppMovilStore = useMenuAppMovilStore()
     const resultadosBusqueda = ref<MenuOption[]>([])
 
     function filtrarMenu(val) {
@@ -498,7 +489,7 @@ export default defineComponent({
       guardado,
       modoNoDisponible,
       permisoModoNoDisponible,
-      store: authenticationStore,
+      store,
       abrirModoNoDisponible,
       // ordenarNotificaciones() {
       //   notificaciones.value.sort((a: Notificacion, b: Notificacion) => {
@@ -511,7 +502,7 @@ export default defineComponent({
       selfCenterMiddle,
       grupo,
       mostrarTransferirTareas:
-        authenticationStore.esCoordinador || authenticationStore.esJefeTecnico,
+        store.esCoordinador || store.esJefeTecnico,
       notificacionesAgrupadas,
       tituloPagina,
       buscarModulo,

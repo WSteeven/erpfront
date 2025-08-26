@@ -710,7 +710,7 @@ export const useMenuStore = defineStore('menu', () => {
               store.esAdministrador
         },
         {
-          title: 'Plantilla de ejemplo',
+          title: 'Plantillas Base',
           link: 'plantillas-base',
           icon: 'bi-card-list',
           can: store.can('puede.acceder.plantillas_base')

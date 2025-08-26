@@ -13,10 +13,13 @@ export function  userIsAuthenticated() {
   const store = useAuthenticationStore()
   const storeExternal = useAuthenticationExternalStore()
   if (store.user) {
+  // console.log('if store.user',  true,  tipoAutenticacion.empleado, store)
     return { autenticado: true, tipoAutenticacion: tipoAutenticacion.empleado, store: store }
   } else if (storeExternal.user) {
+    // console.log('else if storeExternal.user',  true,  tipoAutenticacion.usuario_externo, store)
     return { autenticado: true, tipoAutenticacion: tipoAutenticacion.usuario_externo, store: storeExternal }
   } else
+    // console.log('else ',  false, null, null)
     return { autenticado: false, tipoAutenticacion: null, store: null }
 }
 

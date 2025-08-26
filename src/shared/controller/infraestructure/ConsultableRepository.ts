@@ -42,7 +42,7 @@ export class ConsultableRepository<T> {
         case 401:
           this.notificaciones.notificarError(error.response.data.message)
           const store = useAuthenticationStore()
-              store.isUserLoggedIn()
+              await store.isUserLoggedIn()
           break
         default:
           const axiosError = error as AxiosError

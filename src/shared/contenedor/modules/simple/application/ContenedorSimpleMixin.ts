@@ -1,6 +1,10 @@
 import { TransaccionSimpleController } from 'shared/contenedor/modules/simple/infraestructure/TransacccionSimpleController'
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
-import { downloadFile, isAxiosError, notificarMensajesError } from 'shared/utils'
+import {
+  downloadFile,
+  isAxiosError,
+  notificarMensajesError
+} from 'shared/utils'
 import { Contenedor } from '../../../application/contenedor.mixin'
 import { Instanciable } from 'shared/entidad/domain/instanciable'
 import { HooksSimples } from '../domain/hooksSimples'
@@ -8,13 +12,11 @@ import { acciones } from 'config/utils'
 
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { Referencias } from 'shared/contenedor/domain/Referencias/referencias'
-import { useAuthenticationStore } from 'stores/authentication'
-import { useRouter } from 'vue-router'
-import { markRaw, } from 'vue'
+import { markRaw } from 'vue'
 import { ParamsType } from 'config/types'
 import { Archivo } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/domain/Archivo'
 import { ArchivoController } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/infraestructure/ArchivoController'
-import {AxiosRequestConfig} from 'axios';
+import { AxiosRequestConfig } from 'axios'
 
 export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedor<T, Referencias<T>, TransaccionSimpleController<T>, ArchivoController> {
   private hooks = new HooksSimples()
@@ -104,13 +106,13 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
     // this.statusEssentialLoading.activar()
     const idEntidad = data.id
     try {
-      this.cargarVista(async () => {
-        const { result } = await this.controller.consultar(
-          idEntidad,
-          {
-            ...this.argsDefault,
-            ...params
-          }
+      await this.cargarVista(async () => {
+        const {result} = await this.controller.consultar(
+            idEntidad,
+            {
+              ...this.argsDefault,
+              ...params
+            }
         )
         await this.entidad.hydrate(result)
         await this.entidad_copia.hydrate(JSON.parse(JSON.stringify(this.entidad)))
@@ -180,9 +182,9 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
   }
 
   private async filtrar(uri: string) {
-    this.cargarVista(async () => {
+    await this.cargarVista(async () => {
       try {
-        const { result } = await this.controller.filtrar(uri)
+        const {result} = await this.controller.filtrar(uri)
         if (result.length == 0) this.notificaciones.notificarInformacion('No se encontraron coincidencias.')
 
         this.refs.listado.value = result
@@ -245,7 +247,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
 
       const copiaEntidad = JSON.parse(JSON.stringify(this.entidad))
       this.hooks.onGuardado(copiaEntidad.id, response.data)
-      this.reestablecer() // antes estaba arriba de onGuardado, no ha dado error asi que se deja aqui
+      await this.reestablecer() // antes estaba arriba de onGuardado, no ha dado error asi que se deja aqui
       return copiaEntidad
     } catch (error: any) {
       if (isAxiosError(error)) {
@@ -335,8 +337,8 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
 
   /**
    * Aqui se guardan los archivos
+   * @param id
    * @param data
-   * @param agregarAlListado
    * @returns
    */
   private async guardarArchivos(id: number, data: T): Promise<any> {
@@ -440,12 +442,12 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
         const id: number = response.data.modelo.id ?? 0
         this.hooks.onModificado(id, response.data)
 
-        if (resetOnUpdated) this.reestablecer()
+        if (resetOnUpdated) await this.reestablecer()
 
       } catch (error: any) {
         if (isAxiosError(error)) {
           const mensajes: string[] = error.erroresValidacion
-          notificarMensajesError(mensajes, this.notificaciones)
+          await notificarMensajesError(mensajes, this.notificaciones)
         } else {
           this.notificaciones.notificarError(error.message)
         }
@@ -479,13 +481,13 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
         this.entidad.hydrate(response.data.modelo)
 
         // this.hooks.onReestablecer()
-        this.reestablecer()
+        await this.reestablecer()
         this.hooks.onModificado(id, response.data)
 
       } catch (error: any) {
         if (isAxiosError(error)) {
           const mensajes: string[] = error.erroresValidacion
-          notificarMensajesError(mensajes, this.notificaciones)
+          await notificarMensajesError(mensajes, this.notificaciones)
         } else {
           this.notificaciones.notificarError(error.message)
         }
@@ -529,6 +531,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
     this.refs.validador.value = validador
   }
 
+/*
   private async verificarAutenticacion(): Promise<void> {
     const authentication = useAuthenticationStore()
     const autenticado = await authentication.isUserLoggedIn()
@@ -536,6 +539,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
 
     if (!autenticado) router.replace({ name: 'Login' })
   }
+*/
 
   /* private descargarArchivoBinario(formato: string) {
     if (this.refs.listado.value.length !== 0) {

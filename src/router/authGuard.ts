@@ -19,6 +19,15 @@ function getStrategy(): AuthStrategy {
   return strategyMap[method] || INTERNAL
 }
 
+// Colocar todas las rutas a las que no puede tener acceso un usuario que ya está loggueado
+const forbiddenRoutesWhenUserIsLoggedIn = [
+  'Login',
+  'LoginPostulante',
+  'ResetPassword',
+  'Register',
+  'RegistroPostulante'
+]
+
 async function checkInternal(
   to: RouteLocationNormalized,
   _: any,
@@ -26,7 +35,7 @@ async function checkInternal(
 ) {
   const auth = useAuthenticationStore()
   const loggedIn = await auth.isUserLoggedIn()
-
+  // console.log('private checkInternal', loggedIn, to.meta.requiresAuth, to.fullPath)
   if (to.meta.requiresAuth) {
     if (loggedIn) {
       if (auth.can(`puede.acceder.${to.name}`) && permisoRequerido(to)) {
@@ -45,7 +54,7 @@ async function checkInternal(
     }
   } else if (
     loggedIn &&
-    ['Login', 'ResetPassword', 'Register'].includes(to.name?.toString() ?? '')
+    forbiddenRoutesWhenUserIsLoggedIn.includes(to.name?.toString() ?? '')
   ) {
     next({ name: 'intranet' })
   } else {
@@ -75,7 +84,7 @@ async function checkExternal(
     }
   } else if (
     loggedIn &&
-    ['LoginPostulante', 'RegistroPostulante'].includes(
+    forbiddenRoutesWhenUserIsLoggedIn.includes(
       to.name?.toString() ?? ''
     )
   ) {
@@ -91,7 +100,6 @@ export async function authGuard(
   next: NavigationGuardNext
 ) {
   const strategy = getStrategy()
-
   return strategy === EXTERNAL
     ? checkExternal(to, _, next)
     : checkInternal(to, _, next)

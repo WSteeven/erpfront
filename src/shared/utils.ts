@@ -498,9 +498,8 @@ export async function imprimirArchivo(
   const statusLoading = new StatusEssentialLoading()
   const { notificarError } = useNotificaciones()
   const axiosHttpRepository = AxiosHttpRepository.getInstance()
-
   statusLoading.activar()
-  const axiosHttpRepository = AxiosHttpRepository.getInstance()
+
   axios({
     url: ruta,
     method: metodo,

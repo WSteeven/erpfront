@@ -1,13 +1,6 @@
 // Dependencias
 import EssentialLoading from 'components/loading/view/EssentialLoading.vue'
-import {
-  defineComponent,
-  ref,
-  computed,
-  ComputedRef,
-  onMounted,
-  watchEffect
-} from 'vue'
+import { computed, ComputedRef, defineComponent, ref, watchEffect } from 'vue'
 import { useAuthenticationExternalStore } from 'src/stores/authenticationExternal'
 
 import { LocalStorage, useQuasar } from 'quasar'
@@ -25,10 +18,8 @@ import EssentialLink from 'components/EssentialLink.vue'
 // Logica y controladores
 import { ComportamientoModalesMainLayout } from './modales/application/ComportamientoModalesMainLayout'
 import { useConfiguracionGeneralStore } from 'stores/configuracion_general'
-import { isAxiosError } from 'shared/utils'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { useMenuPostulanteStore } from 'stores/menuPostulante'
-import { LoginPostulanteController } from 'src/pages/recursosHumanos/seleccion_contratacion_personal/login-postulante/infraestructure/LoginPostulanteController'
 import { userIsAuthenticated } from 'shared/helpers/verifyAuthenticatedUser'
 
 export default defineComponent({
@@ -113,35 +104,17 @@ export default defineComponent({
     //Poner la imagen de perfil
     const imagenPerfil = computed(() => {
       const usuario = authenticationStore.user
-      if (usuario) {
-        return `https://ui-avatars.com/api/?name=${usuario.nombres.substr(
+      if (usuario.nombres) {
+        return `https://ui-avatars.com/api/?name=${usuario.nombres.substring(
           0,
           1
-        )}+${usuario.apellidos.substr(
+        )}+${usuario.apellidos.substring(
           0,
           1
         )}&bold=true&background=0879dc28&color=0879dc`
       }
-      return ' '
-    })
-    onMounted(async () => {
-      try {
-        cargando.activar()
-        const token = LocalStorage.getItem('token')
-        if (token === undefined) {
-          const loginController = new LoginPostulanteController()
-          await loginController.obtenerSesionUser()
-        }
-      } catch (error: any) {
-        console.log('montar errror', error)
-        if (isAxiosError(error)) {
-          // const mensajes: string[] = error.erroresValidacion
-          console.log('montar errror', error.mensaje)
-          //notificarMensajesError(mensajes, notificaciones)
-        }
-      } finally {
-        cargando.desactivar()
-      }
+      // return 'https://ui-avatars.com/api/?name=FR&bold=true&background=0879dc28&color=0879dc'
+      return ''
     })
 
     type tipo = 'center middle' | 'top start'

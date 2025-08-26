@@ -30,29 +30,22 @@ export class LoginPostulanteController {
       throw error
     }
   }
+
+  async logout(): Promise<void> {
+    return this.store
+      .logout()
+      .then(() => {
+        this.Router.replace({ name: 'LoginPostulante' })
+      })
+      .catch((e) => alert(e))
+  }
+
+
   async loginterceros(driver) {
     try {
       await this.store.loginTerceros(driver)
     } catch (error: unknown) {
       throw error
     }
-  }
-  async obtenerSesionUser() {
-    try {
-      const usuario = this.store.obtenerSesion()
-      this.store.setUser(usuario)
-      await this.Router.replace({ name: 'puestos_disponibles' })
-    } catch (error: unknown) {
-      throw error
-    }
-  }
-
-  async logout(): Promise<void> {
-    return this.store
-      .logout()
-      .then(() => {
-        this.Router.replace({ name: 'Login' })
-      })
-      .catch((e) => alert(e))
   }
 }

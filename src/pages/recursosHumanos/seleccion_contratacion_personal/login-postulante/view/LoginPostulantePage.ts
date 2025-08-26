@@ -45,11 +45,16 @@ export default defineComponent({
     watchEffect(() => (document.title = nombreEmpresa.value ?? ''))
     const $q = useQuasar()
     onMounted(async () => {
+      console.log('LoginPostulante montado')
       try {
         cargando.activar()
         const token = LocalStorage.getItem('token')
+        console.log('token', token)
         if (token !== null) {
-          await loginController.obtenerSesionUser()
+          if (!(await loginController.store.isUserLoggedIn())) {
+            LocalStorage.remove('token')
+            LocalStorage.remove('method_access')
+          }
         }
       } catch (error: any) {
         console.log('montar errror', error)

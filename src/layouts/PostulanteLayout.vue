@@ -59,7 +59,7 @@
           <!-- Perfil -->
           <q-btn v-if="true" dense round flat glossy @click.self="mostrarMenu = true">
             <q-avatar size="38px">
-              <img  v-bind:src="imagenPerfil" />
+              <img  v-bind:src="imagenPerfil" alt="imagen de perfil"/>
             </q-avatar>
 
             <q-menu
@@ -85,7 +85,7 @@
                 </div>
 
                 <q-avatar size="72px" class="double-border q-mb-md">
-                  <img v-bind:src="imagenPerfil" />
+                  <img v-bind:src="imagenPerfil" alt="avatar"/>
                 </q-avatar>
 
                 <div class="text-subtitle1 text-center">
@@ -141,6 +141,7 @@
       <!-- Drawer Header -->
       <div class="absolute-top q-pa-sm q-ma-sm rounded-card">
         <img
+            alt="logo empresa"
           :src="!$q.dark.isActive ? logoClaro : logoOscuro"
           height="80"
           class="q-mx-auto block"
