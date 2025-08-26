@@ -306,9 +306,6 @@ export default defineComponent({
     }
 
     const insertarFilaAntecedenteTrabajoAnterior = () => {
-      /* const antecedenteTrabajoAnterior = new AntecedenteTrabajoAnterior()
-                                                                                                                                                            antecedenteTrabajoAnterior.id = fichaPreocupacional.antecedentes_empleos_anteriores?.length ? encontrarUltimoIdListado(fichaPreocupacional.antecedentes_empleos_anteriores) + 1 : 1
-                                                                                                                                                            fichaPreocupacional.antecedentes_empleos_anteriores.push(antecedenteTrabajoAnterior) */
       const fila = JSON.parse(
         JSON.stringify(tipoFilaAntecedenteTrabajoAnterior)
       )
@@ -397,6 +394,7 @@ export default defineComponent({
           tipoFilaAntecedenteTrabajoAnterior[tipo.id + '' ?? ''] = false
         }
       )
+        // console.log('esta es la falla', tipoFilaAntecedenteTrabajoAnterior)
     }
     /********
      * Hooks

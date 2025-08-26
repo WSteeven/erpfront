@@ -1,7 +1,6 @@
 import { ResultadoExamenPreocupacional } from './ResultadoExamenPreocupacional'
 import { AntecedenteGinecoObstetrico } from './AntecedenteGinecoObstetrico'
 import { RevisionActualOrganoSistema } from './RevisionActualOrganoSistema'
-import { AntecedenteTrabajoAnterior } from './AntecedenteTrabajoAnterior'
 import { ResultadoHabitoToxico } from './ResultadoHabitoToxico'
 import { FrPuestoTrabajoActual } from './FrPuestoTrabajoActual'
 import { AntecedenteFamiliar } from './AntecedenteFamiliar'
@@ -10,6 +9,9 @@ import { MedicacionHabitual } from './MedicacionHabitual'
 import { ActividadFisica } from './ActividadFisica'
 import { FichaMedica } from '../../seccionesFichas/domain/FichaMedica'
 import { AptitudMedica } from '../../seccionesFichas/aptitudMedicaTrabajo/domain/AptitudMedica'
+import {
+  AntecedenteTrabajoAnterior
+} from 'medico/gestionarPacientes/modules/fichaPeriodicaPreocupacional/domain/AntecedenteTrabajoAnterior';
 
 export class FichaPeriodica extends FichaMedica {
   numero_archivo: number | null
