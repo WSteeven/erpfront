@@ -1056,7 +1056,7 @@
               @click="insertarFilaFrPuestoTrabajoActualReactive()"
               >Insertar fila
             </q-btn>
-            <span class="text-grey-8">(Opcional)</span>
+            <span class="text-grey-8">(Obligatorio)</span>
             <essential-table
               v-if="mostrarTablaFrPuestoTrabajoActualReactive"
               :configuracionColumnas="[
