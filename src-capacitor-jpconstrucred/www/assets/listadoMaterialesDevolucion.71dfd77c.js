@@ -1,0 +1,1 @@
+import{m as n,e}from"./index.846478c1.js";const c=n("listadoMaterialesDevolucion",()=>{const o=e([]),t=e(),s=e(),a=e(),i=e(!1),l=e(!1);return{listadoMateriales:o,tareaId:t,cliente_id:s,empleado_id:a,devolverAlStock:i,inactivo:l}});export{c as u};

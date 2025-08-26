@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "org.firstred.jpconstrucred.com.app-mergeReleaseResources-41:/values-v26/values-v26.xml",
+            "outputFile": "org.firstred.jpconstrucred.com.app-mergeReleaseResources-42:/values-v26/values-v26.xml",
             "map": [
                 {
                     "source": "C:\\Users\\STEEVEN\\.gradle\\caches\\transforms-3\\4ce7c60d257b8629ab4c81cf615a92a1\\transformed\\appcompat-1.6.1\\res\\values-v26\\values-v26.xml",

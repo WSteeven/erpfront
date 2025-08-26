@@ -29,6 +29,8 @@ MERGED from [androidx.constraintlayout:constraintlayout:2.0.1] C:\Users\STEEVEN\
 MERGED from [androidx.appcompat:appcompat:1.6.1] C:\Users\STEEVEN\.gradle\caches\transforms-3\4ce7c60d257b8629ab4c81cf615a92a1\transformed\appcompat-1.6.1\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.2.0] C:\Users\STEEVEN\.gradle\caches\transforms-3\44b764ef4a0c2818774bd443073d6bc9\transformed\coordinatorlayout-1.2.0\AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.core:core-splashscreen:1.0.1] C:\Users\STEEVEN\.gradle\caches\transforms-3\02af67d3594ada2148314bae886ebee9\transformed\core-splashscreen-1.0.1\AndroidManifest.xml:17:1-24:12
+MERGED from [com.google.android.play:app-update-ktx:2.1.0] C:\Users\STEEVEN\.gradle\caches\transforms-3\e151c09f9bc746e4d1c4d014bce9557c\transformed\app-update-ktx-2.1.0\AndroidManifest.xml:2:1-14:12
+MERGED from [com.google.android.play:app-update:2.1.0] C:\Users\STEEVEN\.gradle\caches\transforms-3\2705fd42ab177ef59ba9dda54c65c419\transformed\app-update-2.1.0\AndroidManifest.xml:2:1-14:12
 MERGED from [androidx.viewpager2:viewpager2:1.0.0] C:\Users\STEEVEN\.gradle\caches\transforms-3\d4af2973284b2ae0e8f0136bd1b22ce4\transformed\viewpager2-1.0.0\AndroidManifest.xml:17:1-24:12
 MERGED from [com.google.firebase:firebase-messaging:24.1.0] C:\Users\STEEVEN\.gradle\caches\transforms-3\d70dc91ef0f228efde4c80d95f102b08\transformed\firebase-messaging-24.1.0\AndroidManifest.xml:17:1-66:12
 MERGED from [com.google.android.gms:play-services-base:18.0.1] C:\Users\STEEVEN\.gradle\caches\transforms-3\ecd63083fcba173e803df3926ffdadd6\transformed\play-services-base-18.0.1\AndroidManifest.xml:16:1-24:12
@@ -91,6 +93,7 @@ MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] C:\Users\ST
 MERGED from [androidx.arch.core:core-runtime:2.2.0] C:\Users\STEEVEN\.gradle\caches\transforms-3\25d31c664b03672e3208c0be7777f9e4\transformed\core-runtime-2.2.0\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.annotation:annotation-experimental:1.4.1] C:\Users\STEEVEN\.gradle\caches\transforms-3\99457ee3a1be2cf10842a40b5ca09c69\transformed\annotation-experimental-1.4.1\AndroidManifest.xml:2:1-7:12
 MERGED from [org.apache.cordova:framework:10.1.1] C:\Users\STEEVEN\.gradle\caches\transforms-3\3e6973c88b0bd7e6b7ec07957e48cfc9\transformed\framework-10.1.1\AndroidManifest.xml:20:1-27:12
+MERGED from [com.google.android.play:core-common:2.0.3] C:\Users\STEEVEN\.gradle\caches\transforms-3\3e75bea5205192c78fc7617dc0f4f9fb\transformed\core-common-2.0.3\AndroidManifest.xml:2:1-21:12
 	package
 		INJECTED from C:\laragon\www\frontend_jpconstrucred\src-capacitor\android\app\src\main\AndroidManifest.xml
 	android:versionName
@@ -116,6 +119,10 @@ MERGED from [com.google.android.material:material:1.12.0] C:\Users\STEEVEN\.grad
 MERGED from [com.google.android.material:material:1.12.0] C:\Users\STEEVEN\.gradle\caches\transforms-3\b0676208751a459a05dfd3d94c84fe29\transformed\material-1.12.0\AndroidManifest.xml:22:5-20
 MERGED from [androidx.constraintlayout:constraintlayout:2.0.1] C:\Users\STEEVEN\.gradle\caches\transforms-3\20d48cf573eda110056dd09b0371c9bb\transformed\constraintlayout-2.0.1\AndroidManifest.xml:9:5-20
 MERGED from [androidx.constraintlayout:constraintlayout:2.0.1] C:\Users\STEEVEN\.gradle\caches\transforms-3\20d48cf573eda110056dd09b0371c9bb\transformed\constraintlayout-2.0.1\AndroidManifest.xml:9:5-20
+MERGED from [com.google.android.play:app-update-ktx:2.1.0] C:\Users\STEEVEN\.gradle\caches\transforms-3\e151c09f9bc746e4d1c4d014bce9557c\transformed\app-update-ktx-2.1.0\AndroidManifest.xml:11:5-12:19
+MERGED from [com.google.android.play:app-update-ktx:2.1.0] C:\Users\STEEVEN\.gradle\caches\transforms-3\e151c09f9bc746e4d1c4d014bce9557c\transformed\app-update-ktx-2.1.0\AndroidManifest.xml:11:5-12:19
+MERGED from [com.google.android.play:app-update:2.1.0] C:\Users\STEEVEN\.gradle\caches\transforms-3\2705fd42ab177ef59ba9dda54c65c419\transformed\app-update-2.1.0\AndroidManifest.xml:11:5-12:19
+MERGED from [com.google.android.play:app-update:2.1.0] C:\Users\STEEVEN\.gradle\caches\transforms-3\2705fd42ab177ef59ba9dda54c65c419\transformed\app-update-2.1.0\AndroidManifest.xml:11:5-12:19
 MERGED from [com.google.firebase:firebase-messaging:24.1.0] C:\Users\STEEVEN\.gradle\caches\transforms-3\d70dc91ef0f228efde4c80d95f102b08\transformed\firebase-messaging-24.1.0\AndroidManifest.xml:28:5-64:19
 MERGED from [com.google.firebase:firebase-messaging:24.1.0] C:\Users\STEEVEN\.gradle\caches\transforms-3\d70dc91ef0f228efde4c80d95f102b08\transformed\firebase-messaging-24.1.0\AndroidManifest.xml:28:5-64:19
 MERGED from [com.google.android.gms:play-services-base:18.0.1] C:\Users\STEEVEN\.gradle\caches\transforms-3\ecd63083fcba173e803df3926ffdadd6\transformed\play-services-base-18.0.1\AndroidManifest.xml:19:5-23:19
@@ -154,6 +161,8 @@ MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\STEEVEN\.gradle\ca
 MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\STEEVEN\.gradle\caches\transforms-3\2b19c49b9055d666a310de3e6f33c8a9\transformed\startup-runtime-1.1.1\AndroidManifest.xml:25:5-31:19
 MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] C:\Users\STEEVEN\.gradle\caches\transforms-3\6de92c6ebde913d3b53ba4b61d49b388\transformed\versionedparcelable-1.1.1\AndroidManifest.xml:24:5-25:19
 MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] C:\Users\STEEVEN\.gradle\caches\transforms-3\6de92c6ebde913d3b53ba4b61d49b388\transformed\versionedparcelable-1.1.1\AndroidManifest.xml:24:5-25:19
+MERGED from [com.google.android.play:core-common:2.0.3] C:\Users\STEEVEN\.gradle\caches\transforms-3\3e75bea5205192c78fc7617dc0f4f9fb\transformed\core-common-2.0.3\AndroidManifest.xml:11:5-19:19
+MERGED from [com.google.android.play:core-common:2.0.3] C:\Users\STEEVEN\.gradle\caches\transforms-3\3e75bea5205192c78fc7617dc0f4f9fb\transformed\core-common-2.0.3\AndroidManifest.xml:11:5-19:19
 	android:extractNativeLibs
 		INJECTED from C:\laragon\www\frontend_jpconstrucred\src-capacitor\android\app\src\main\AndroidManifest.xml
 	android:appComponentFactory
@@ -274,6 +283,10 @@ MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.2.0] C:\Users\STEEVE
 MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.2.0] C:\Users\STEEVEN\.gradle\caches\transforms-3\44b764ef4a0c2818774bd443073d6bc9\transformed\coordinatorlayout-1.2.0\AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.core:core-splashscreen:1.0.1] C:\Users\STEEVEN\.gradle\caches\transforms-3\02af67d3594ada2148314bae886ebee9\transformed\core-splashscreen-1.0.1\AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.core:core-splashscreen:1.0.1] C:\Users\STEEVEN\.gradle\caches\transforms-3\02af67d3594ada2148314bae886ebee9\transformed\core-splashscreen-1.0.1\AndroidManifest.xml:20:5-22:41
+MERGED from [com.google.android.play:app-update-ktx:2.1.0] C:\Users\STEEVEN\.gradle\caches\transforms-3\e151c09f9bc746e4d1c4d014bce9557c\transformed\app-update-ktx-2.1.0\AndroidManifest.xml:7:5-9:41
+MERGED from [com.google.android.play:app-update-ktx:2.1.0] C:\Users\STEEVEN\.gradle\caches\transforms-3\e151c09f9bc746e4d1c4d014bce9557c\transformed\app-update-ktx-2.1.0\AndroidManifest.xml:7:5-9:41
+MERGED from [com.google.android.play:app-update:2.1.0] C:\Users\STEEVEN\.gradle\caches\transforms-3\2705fd42ab177ef59ba9dda54c65c419\transformed\app-update-2.1.0\AndroidManifest.xml:7:5-9:41
+MERGED from [com.google.android.play:app-update:2.1.0] C:\Users\STEEVEN\.gradle\caches\transforms-3\2705fd42ab177ef59ba9dda54c65c419\transformed\app-update-2.1.0\AndroidManifest.xml:7:5-9:41
 MERGED from [androidx.viewpager2:viewpager2:1.0.0] C:\Users\STEEVEN\.gradle\caches\transforms-3\d4af2973284b2ae0e8f0136bd1b22ce4\transformed\viewpager2-1.0.0\AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.viewpager2:viewpager2:1.0.0] C:\Users\STEEVEN\.gradle\caches\transforms-3\d4af2973284b2ae0e8f0136bd1b22ce4\transformed\viewpager2-1.0.0\AndroidManifest.xml:20:5-22:41
 MERGED from [com.google.firebase:firebase-messaging:24.1.0] C:\Users\STEEVEN\.gradle\caches\transforms-3\d70dc91ef0f228efde4c80d95f102b08\transformed\firebase-messaging-24.1.0\AndroidManifest.xml:20:5-44
@@ -398,6 +411,8 @@ MERGED from [androidx.annotation:annotation-experimental:1.4.1] C:\Users\STEEVEN
 MERGED from [androidx.annotation:annotation-experimental:1.4.1] C:\Users\STEEVEN\.gradle\caches\transforms-3\99457ee3a1be2cf10842a40b5ca09c69\transformed\annotation-experimental-1.4.1\AndroidManifest.xml:5:5-44
 MERGED from [org.apache.cordova:framework:10.1.1] C:\Users\STEEVEN\.gradle\caches\transforms-3\3e6973c88b0bd7e6b7ec07957e48cfc9\transformed\framework-10.1.1\AndroidManifest.xml:25:5-44
 MERGED from [org.apache.cordova:framework:10.1.1] C:\Users\STEEVEN\.gradle\caches\transforms-3\3e6973c88b0bd7e6b7ec07957e48cfc9\transformed\framework-10.1.1\AndroidManifest.xml:25:5-44
+MERGED from [com.google.android.play:core-common:2.0.3] C:\Users\STEEVEN\.gradle\caches\transforms-3\3e75bea5205192c78fc7617dc0f4f9fb\transformed\core-common-2.0.3\AndroidManifest.xml:7:5-9:41
+MERGED from [com.google.android.play:core-common:2.0.3] C:\Users\STEEVEN\.gradle\caches\transforms-3\3e75bea5205192c78fc7617dc0f4f9fb\transformed\core-common-2.0.3\AndroidManifest.xml:7:5-9:41
 	android:targetSdkVersion
 		INJECTED from C:\laragon\www\frontend_jpconstrucred\src-capacitor\android\app\src\main\AndroidManifest.xml
 	android:minSdkVersion
@@ -682,3 +697,13 @@ action#androidx.profileinstaller.action.BENCHMARK_OPERATION
 ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\STEEVEN\.gradle\caches\transforms-3\fdac71ace54bca54b6ae9e990cf9ac7e\transformed\profileinstaller-1.3.1\AndroidManifest.xml:50:17-95
 	android:name
 		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\STEEVEN\.gradle\caches\transforms-3\fdac71ace54bca54b6ae9e990cf9ac7e\transformed\profileinstaller-1.3.1\AndroidManifest.xml:50:25-92
+activity#com.google.android.play.core.common.PlayCoreDialogWrapperActivity
+ADDED from [com.google.android.play:core-common:2.0.3] C:\Users\STEEVEN\.gradle\caches\transforms-3\3e75bea5205192c78fc7617dc0f4f9fb\transformed\core-common-2.0.3\AndroidManifest.xml:14:9-18:65
+	android:stateNotNeeded
+		ADDED from [com.google.android.play:core-common:2.0.3] C:\Users\STEEVEN\.gradle\caches\transforms-3\3e75bea5205192c78fc7617dc0f4f9fb\transformed\core-common-2.0.3\AndroidManifest.xml:17:13-42
+	android:exported
+		ADDED from [com.google.android.play:core-common:2.0.3] C:\Users\STEEVEN\.gradle\caches\transforms-3\3e75bea5205192c78fc7617dc0f4f9fb\transformed\core-common-2.0.3\AndroidManifest.xml:16:13-37
+	android:theme
+		ADDED from [com.google.android.play:core-common:2.0.3] C:\Users\STEEVEN\.gradle\caches\transforms-3\3e75bea5205192c78fc7617dc0f4f9fb\transformed\core-common-2.0.3\AndroidManifest.xml:18:13-62
+	android:name
+		ADDED from [com.google.android.play:core-common:2.0.3] C:\Users\STEEVEN\.gradle\caches\transforms-3\3e75bea5205192c78fc7617dc0f4f9fb\transformed\core-common-2.0.3\AndroidManifest.xml:15:13-93

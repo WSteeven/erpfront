@@ -1,7 +1,0 @@
-<?xml version='1.0' encoding='utf-8'?>
-<resources>
-    <string name="app_name">FIRSTRED JPCUSTODY</string>
-    <string name="title_activity_main">FIRSTRED JPCUSTODY</string>
-    <string name="package_name">org.firstred.jpcustody.com</string>
-    <string name="custom_url_scheme">org.firstred.jpcustody.com</string>
-</resources>

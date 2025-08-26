@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "org.firstred.jpconstrucred.com.app-mergeReleaseResources-41:/values-night-v8/values-night-v8.xml",
+            "outputFile": "org.firstred.jpconstrucred.com.app-mergeReleaseResources-42:/values-night-v8/values-night-v8.xml",
             "map": [
                 {
                     "source": "C:\\Users\\STEEVEN\\.gradle\\caches\\transforms-3\\02af67d3594ada2148314bae886ebee9\\transformed\\core-splashscreen-1.0.1\\res\\values-night-v8\\values-night-v8.xml",
