@@ -500,54 +500,6 @@ export async function imprimirArchivo(
   const axiosHttpRepository = AxiosHttpRepository.getInstance()
   statusLoading.activar()
 
-  axios({
-    url: ruta,
-    method: metodo,
-    data: data,
-    responseType: responseType,
-    headers: {
-      Authorization: axiosHttpRepository.getOptions().headers.Authorization
-    }
-  })
-    .then(response => {
-      if (response.status === 200) {
-        if (
-          response.data.size < 100 ||
-          response.data.type == 'application/json'
-        )
-          throw 'No se obtuvieron resultados para generar el reporte'
-        else {
-          const fileURL = URL.createObjectURL(
-            new Blob([response.data], { type: `appication/${formato}` })
-          )
-          const link = document.createElement('a')
-          link.href = fileURL
-          link.target = '_blank'
-          link.setAttribute('download', `${titulo}.${formato}`)
-          document.body.appendChild(link)
-          link.click()
-          link.remove()
-        }
-        // } else if (response.status === 500) {
-        //   console.log(response)
-      } else {
-        notificarError('Se produjo un error inesperado')
-      }
-    })
-    .catch(async error => {
-      const blob = error.response?.data
-      if (blob instanceof Blob && blob.type === 'application/json') {
-        const text = await blob.text()
-        const json = JSON.parse(text)
-        Object.values(json.errors).forEach((error: string) => {
-          notificarError(error)
-        })
-      } else {
-        notificarError(error)
-      }
-    })
-    .finally(() => statusLoading.desactivar())
-
   try {
     const response = await axios({
       url: ruta,

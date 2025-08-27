@@ -19,6 +19,7 @@ import ErrorComponent from 'components/ErrorComponent.vue';
 
 export default defineComponent({
   components: { ErrorComponent, OptionGroupComponent },
+  props: {},
   emits: ['cerrar-modal', 'guardado'],
   setup(props, { emit }) {
     const mixin = new ContenedorSimpleMixin(
@@ -72,11 +73,15 @@ export default defineComponent({
       entrevista.duracion = 30
       entrevista.canton = 53 //canton machala por defecto
       entrevista.direccion = direccionDefault
+      obtenerEntrevista(postulacionStore.idPostulacion)
     })
 
     /***************************************************************************
      * FUNCIONES
      ***************************************************************************/
+    async function obtenerEntrevista( postulacion_id:number){
+      const  = await new EntrevistaController().listar({postulacion_id: postulacion_id})
+    }
 
     async function agendar() {
       if (await v$.value.$validate()) {

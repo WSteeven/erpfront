@@ -88,6 +88,7 @@ module.exports = configure(function (/* ctx */) {
       //   [ 'package-name', { ..options.. } ]
       // ]
       alias: {
+        boot: path.join(__dirname, './src/boot'),
         config: path.join(__dirname, './src/config'),
         shared: path.join(__dirname, './src/shared'),
         pages: path.join(__dirname, './src/pages'),

@@ -41,7 +41,7 @@ import { usePostulacionStore } from 'stores/recursosHumanos/seleccionContratacio
 import { configuracionColumnasReferencias } from '../domain/configuracionColumnasReferencias'
 import { useNotificaciones } from 'shared/notificaciones'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
-import { apiConfig, endpoints } from 'config/api'
+import { endpoints } from 'config/api'
 import { AxiosResponse } from 'axios'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { usePostulanteStore } from 'stores/recursosHumanos/seleccionContratacion/postulante'
@@ -53,7 +53,7 @@ import { TipoDiscapacidad } from 'recursosHumanos/tipo-discapacidad/domain/TipoD
 import { imprimirArchivo } from 'shared/utils'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useCargandoStore } from 'stores/cargando'
-import { useQuasar } from 'quasar'
+import {useQuasar} from 'quasar'
 
 export default defineComponent({
   components: {
@@ -305,19 +305,8 @@ export default defineComponent({
         const contentType = response.headers['content-type']
         const disposition = response.headers['content-disposition']
         // Si es un archivo (descarga)
-        if (
-          contentType?.includes(
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-          ) ||
-          disposition?.includes('attachment')
-        ) {
-          await imprimirArchivo(
-            URL.createObjectURL(response.data),
-            'GET',
-            'blob',
-            'xlsx',
-            'resultados_16pf'
-          )
+        if (contentType?.includes('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') ||disposition?.includes('attachment')) {
+          await imprimirArchivo(URL.createObjectURL(response.data),'GET','blob','xlsx','resultados_16pf')
           notificarCorrecto('Archivo descargado con éxito')
           return
         }
@@ -326,8 +315,8 @@ export default defineComponent({
         const reader = new FileReader()
         reader.onload = async function () {
           const result = JSON.parse(reader.result as string)
-
-          if (result.link) {
+          console.log(result.link)
+          if (result.link!==undefined) {
             await navigator.clipboard.writeText(result.link)
             notificarCorrecto('¡El enlace ha sido copiado al portapapeles!')
           }
@@ -343,19 +332,7 @@ export default defineComponent({
       }
     }
 
-    // async function obtenerResultadosTestPersonalidad(id: number) {
-    //   try {
-    //     const ruta =
-    //       apiConfig.URL_BASE +
-    //       '/' +
-    //       axios.getEndpoint(endpoints.resultados_test_personalidad) +
-    //       id
-    //     await imprimirArchivo(ruta, 'GET', 'blob', 'xlsx', 'resultados_16pf')
-    //     notificarCorrecto('Archivo descargado con éxito')
-    //   } catch (e) {
-    //     console.error(e)
-    //   }
-    // }
+   
 
     /***************************************************************************
      * BOTONES DE TABLA
@@ -433,7 +410,7 @@ export default defineComponent({
       accion: async ({ entidad }) => {
         console.log('Evaluacion Valanti', entidad)
       },
-      visible: () => tabActual.value === estadosPostulacion.ENTREVISTA
+      visible: () => tabActual.value === estadosPostulacion.ENTREVISTA && false
     }
     const btnHabilitarEvaluacionPersonalidad: CustomActionTable = {
       // Puede ver los detalles de la entrevista o reagendarla
@@ -445,16 +422,6 @@ export default defineComponent({
         console.log('Evaluación de Personalidad', entidad)
         const link = await habilitarTestPersonalidad(entidad.id)
         console.log('Link', link)
-        navigator.clipboard
-          .writeText(link)
-          .then(() => {
-            notificarCorrecto('¡El enlace ha sido copiado al portapapeles!')
-          })
-          .catch(err => {
-            console.log(err)
-            notificarError('Error al copiar el enlace')
-          })
-        notificarCorrecto('Se ha habilitado la evaluación de personalidad')
       },
       visible: () => tabActual.value === estadosPostulacion.ENTREVISTA
     }

@@ -14,22 +14,15 @@ export class GuardableFileRepository<T> {
   }
 
   async guardarArchivos(id: number, entidad: T): Promise<ResponseItem<T, HttpResponsePost<T>>> {
-    let ruta
-    // console.log(params)
+
+
     try {
-      // if (params) {
-
-        // ruta = this.httpRepository.getEndpoint(this.endpoint) + '/files/' + id + '/' + this.httpRepository.mapearArgumentos(params)
-      // } else {
-
-        ruta = this.httpRepository.getEndpoint(this.endpoint) + '/files/'+id
-      // }
+      const ruta = this.httpRepository.getEndpoint(this.endpoint) + '/files/' + id
       const response: AxiosResponse = await this.httpRepository.post(ruta, entidad)
-
 
       return {
         response,
-        result: response.data.modelo,
+        result: response.data.modelo
       }
     } catch (error: unknown) {
       const axiosError = error as AxiosError

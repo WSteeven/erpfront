@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import axios, { AxiosInstance, AxiosRequestConfig } from 'axios'
-import { HttpRepository } from '../domain/HttpRepository'
-import { Endpoint } from '../domain/Endpoint'
-import { LocalStorage } from 'quasar'
+import {AxiosInstance, AxiosRequestConfig} from 'axios'
+import {HttpRepository} from '../domain/HttpRepository'
+import {Endpoint} from '../domain/Endpoint'
+import {LocalStorage} from 'quasar'
+import {api} from 'boot/axios';
 
 // SINGLETON
 export class AxiosHttpRepository implements HttpRepository {
@@ -14,15 +15,7 @@ export class AxiosHttpRepository implements HttpRepository {
   private constructor() { }
 
   private static initialize(): void {
-    this.axiosInst = axios.create({
-      // baseURL: 'https://api-sistemas.jpconstrucred.com/', //process.env.VUE_APP_API_URL,
-      // baseURL: 'http://localhost:8000', //process.env.VUE_APP_API_URL,
-      baseURL: process.env.API_URL, //process.env.VUE_APP_API_URL,
-      // baseURL: 'http://backend_jpconstrucred.test:80',
-      withCredentials: true,
-      // responseType: this.responseType.value,
-    })
-
+    this.axiosInst = api
   }
 
   // static config
@@ -93,22 +86,6 @@ export class AxiosHttpRepository implements HttpRepository {
     return accessor
   }
 
-  // borrar
-  public mapearArgumentosOld(args: Record<string, any>, filtrar = false): string {
-    const query: any = []
-
-    // comprueba si el valor es valido
-    for (const key in args)
-      if (args[key] !== null && args[key] !== undefined) {
-        //if (['campos', 'rol'].includes(key)) {
-        if (!filtrar) {
-          query.push(`${key}=${args[key]}`)
-        } else {
-          query.push(`${key}[like]=%${args[key]}%`)
-        }
-      }
-    return `?${query.join('&')}`
-  }
 
   public mapearArgumentos(args: Record<string, any>, filtrar = false): string {
     const query: any = []
@@ -118,8 +95,8 @@ export class AxiosHttpRepository implements HttpRepository {
       if (args[key] !== null && args[key] !== undefined) {
         if (!filtrar) {
           const operador = ['filter'].includes(key) ? '' : '='
-          const clave = key // ['filter'].includes(key) ? '' : key
-          query.push(`${clave}${operador}${args[key]}`)
+          //const clave = key // ['filter'].includes(key) ? '' : key
+          query.push(`${key}${operador}${args[key]}`)
         } else {
           query.push(`${key}[like]=%${args[key]}%`)
         }

@@ -7,12 +7,10 @@ import {
 } from 'shared/http/domain/HttpResponse'
 
 import { AxiosHttpRepository } from '../../http/infraestructure/AxiosHttpRepository'
-import { useNotificaciones } from 'shared/notificaciones'
 
 export class ListableRepository<T> {
   private readonly httpRepository = AxiosHttpRepository.getInstance()
   private readonly endpoint: Endpoint
-  private readonly notificaciones = useNotificaciones()
 
   constructor(endpoint: Endpoint) {
     this.endpoint = endpoint
@@ -33,13 +31,7 @@ export class ListableRepository<T> {
       })
       .catch(error => {
         // console.error(error)
-        switch (error.status) {
-          // case 401:
-          //   this.notificaciones.notificarError(error.response.data.message)
-          //   break
-          default:
-            throw new ApiError(error)
-        }
+        throw new ApiError(error)
       })
   }
 }
