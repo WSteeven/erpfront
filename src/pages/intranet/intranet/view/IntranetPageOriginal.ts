@@ -1,3 +1,4 @@
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { Capacitor } from '@capacitor/core'
 //Dependencies
 import relativeTime from 'dayjs/plugin/relativeTime'
@@ -377,41 +378,16 @@ export default defineComponent({
 
     async function consultarDepartamentos() {
       try {
-        const departamentoController = new DepartamentoController()
-        const empleadoController = new EmpleadoController()
+        const axios = AxiosHttpRepository.getInstance()
+        const response = await axios.get('api/departamentos-con-empleados')
+        departamentos.value = response.data
 
-        const respuesta = await departamentoController.listar({ activo: 1 })
-        const departamentosCandidatos = respuesta.result.filter(
-          departamento => departamento.id !== 9
-        )
-
-        // Consultar empleados de todos los departamentos en paralelo
-        const promesasEmpleados = departamentosCandidatos.map(
-          async departamento => {
-            try {
-              const empleados = await empleadoController.listar({
-                departamento_id: departamento.id,
-                estado: 1
-              })
-              return {
-                departamento,
-                tieneEmpleados: empleados.result && empleados.result.length > 0
-              }
-            } catch (error) {
-              return {
-                departamento,
-                tieneEmpleados: false
-              }
-            }
-          }
-        )
-
-        const resultados = await Promise.all(promesasEmpleados)
-
-        // Filtrar solo los departamentos que tienen empleados
-        departamentos.value = resultados
-          .filter(resultado => resultado.tieneEmpleados)
-          .map(resultado => resultado.departamento)
+        // Si quieres seleccionar automáticamente el primero
+        if (departamentos.value.length > 0) {
+          const primerDepartamento = empleados.value[0].departamento_id
+          activeTab.value = primerDepartamento.id
+          await consultarEmpleadosDepartamento(primerDepartamento.id)
+        }
       } catch (error) {
         console.error('Error al consultar departamentos:', error)
       }

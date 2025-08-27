@@ -1,1 +1,0 @@
-import{bz as o,t as r}from"./index.976e8f3c.js";class a extends o{constructor(){super(r.tipos_trabajos)}}export{a as T};

@@ -1,1 +1,0 @@
-const l=[{name:"apellidos",field:"apellidos",label:"Apellidos",align:"left"},{name:"nombres",field:"nombres",label:"Nombres",align:"left"},{name:"cargo",field:"cargo",label:"Cargo",align:"left"}];export{l as c};

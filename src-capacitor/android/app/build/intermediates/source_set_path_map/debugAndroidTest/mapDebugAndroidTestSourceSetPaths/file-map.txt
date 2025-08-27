@@ -1,7 +1,0 @@
-org.firstred.jpcustody.com.test.app-core-1.5.0-0 C:\Users\JPCONSTRUCRED\.gradle\caches\8.9\transforms\1a2115fb11575112a1083a5fa012615e\transformed\core-1.5.0\res
-org.firstred.jpcustody.com.test.app-tracing-1.2.0-1 C:\Users\JPCONSTRUCRED\.gradle\caches\8.9\transforms\af958a5d5d7f491a3e94d4411bd47430\transformed\tracing-1.2.0\res
-org.firstred.jpcustody.com.test.app-annotation-experimental-1.4.1-2 C:\Users\JPCONSTRUCRED\.gradle\caches\8.9\transforms\db731f5d86afb3dd6588663effd124b4\transformed\annotation-experimental-1.4.1\res
-org.firstred.jpcustody.com.test.app-androidTest-3 C:\laragon\www\JPCONSTRUCRED\frontend_jpconstrucred\src-capacitor\android\app\build\generated\res\resValues\androidTest\debug
-org.firstred.jpcustody.com.test.app-mergeDebugAndroidTestResources-4 C:\laragon\www\JPCONSTRUCRED\frontend_jpconstrucred\src-capacitor\android\app\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\merged.dir
-org.firstred.jpcustody.com.test.app-mergeDebugAndroidTestResources-5 C:\laragon\www\JPCONSTRUCRED\frontend_jpconstrucred\src-capacitor\android\app\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\stripped.dir
-org.firstred.jpcustody.com.test.app-debugAndroidTest-6 C:\laragon\www\JPCONSTRUCRED\frontend_jpconstrucred\src-capacitor\android\app\build\intermediates\merged_res\debugAndroidTest\mergeDebugAndroidTestResources
