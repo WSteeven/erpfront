@@ -51,7 +51,7 @@
             </template>
 
             <template v-slot:error>
-              <error-component clave="fecha_hora" :v$="v$"/>
+              <error-component clave="fecha_hora" :v$="v$" />
             </template>
           </q-input>
         </div>
@@ -71,7 +71,7 @@
             dense
           >
             <template v-slot:error>
-              <error-component clave="duracion" :v$="v$"/>
+              <error-component clave="duracion" :v$="v$" />
             </template>
           </q-input>
         </div>
@@ -95,7 +95,8 @@
             :option-label="v => v.canton"
             emit-value
             map-options
-            ><template v-slot:no-option>
+          >
+            <template v-slot:no-option>
               <q-item>
                 <q-item-section class="text-grey">
                   No hay resultados
@@ -107,8 +108,8 @@
                 <q-item-section>
                   <q-item-label>{{ scope.opt.canton }}</q-item-label>
                   <q-item-label caption
-                    >Provincia {{ scope.opt.provincia }}</q-item-label
-                  >
+                    >Provincia {{ scope.opt.provincia }}
+                  </q-item-label>
                 </q-item-section>
               </q-item>
             </template>
@@ -118,9 +119,9 @@
         <div class="col-12 col-md-3">
           Tipo de entrevista
           <option-group-component
-            class="q-pt-sm"
             v-model="entrevista.presencial"
             :options="options"
+            :disable="disabled"
           />
         </div>
         <!-- update:model-value="actualizada" -->
@@ -136,11 +137,12 @@
             outlined
             dense
             autogrow
+            :disable="disabled"
             :error="!!v$.direccion.$errors.length"
             @blur="v$.direccion.$touch"
           >
             <template v-slot:error>
-              <error-component clave="direccion" :v$="v$"/>
+              <error-component clave="direccion" :v$="v$" />
             </template>
           </q-input>
         </div>
@@ -157,22 +159,115 @@
             @blur="v$.link.$touch"
           >
             <template v-slot:error>
-              <error-component clave="link" :v$="v$"/>
+              <error-component clave="link" :v$="v$" />
             </template>
           </q-input>
         </div>
+
+        <div class="col-12 col-md-3">
+          ¿Desea reagendar entrevista?
+          <option-group-component
+            v-model="entrevista.reagendada"
+            :disable="disabled"
+          />
+        </div>
+
+        <!-- Nueva fecha hora -->
+        <div class="col-12 col-md-3" v-if="entrevista.reagendada">
+          <label class="q-mb-sm block">Nueva Fecha</label>
+          <q-input
+            v-model="entrevista.nueva_fecha_hora"
+            placeholder="Obligatorio"
+            :error="!!v$.nueva_fecha_hora.$errors.length"
+            :disable="disabled"
+            @blur="v$.fecha_hora.$touch"
+            readonly
+            outlined
+            dense
+          >
+            <template v-slot:append>
+              <q-icon name="event" class="cursor-pointer">
+                <q-popup-proxy
+                  cover
+                  transition-show="scale"
+                  transition-hide="scale"
+                >
+                  <div class="q-gutter-md row items-start">
+                    <q-date
+                      v-model="entrevista.nueva_fecha_hora"
+                      :mask="mask"
+                      :options="optionsFecha"
+                      today-btn
+                    >
+                      <div class="row items-center justify-end">
+                        <q-btn
+                          v-close-popup
+                          label="Cerrar"
+                          color="primary"
+                          flat
+                        />
+                      </div>
+                    </q-date>
+                    <q-time
+                      v-model="entrevista.nueva_fecha_hora"
+                      :mask="mask"
+                      :hourOptions="hourOptions"
+                      :minuteOptions="minuteOptions"
+                      color="primary"
+                    />
+                  </div>
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+
+            <template v-slot:error>
+              <error-component clave="nueva_fecha_hora" :v$="v$" />
+            </template>
+          </q-input>
+        </div>
+
+        <!-- Observación -->
+        <div class="col-12 col-md-3" v-if="accion !== acciones.nuevo">
+          <label class="q-mb-sm block">Observación</label>
+          <q-input
+            type="textarea"
+            v-model="entrevista.observacion"
+            placeholder="Opcional"
+            outlined
+            :disable="disabled"
+            dense
+            autogrow
+          />
+        </div>
+        <div class="col-12 col-md-3">
+          ¿Asistió a la entrevista?
+          <option-group-component
+            v-model="entrevista.asistio"
+            :disable="disabled"
+          />
+        </div>
       </div>
       <div class="row q-gutter-sm justify-end">
-        <!-- Boton guardar -->
-        <q-btn color="primary" no-caps push @click="agendar()">
-          <q-icon name="bi-save" size="xs" class="q-pr-sm" />
-          <span>Guardar</span>
-        </q-btn>
+        <div class="row q-gutter-xs">
+          <q-btn
+            v-if="accion === acciones.consultar"
+            push
+            no-caps
+            @click="() => (accion = acciones.editar)"
+            color="secondary"
+          >
+            <q-tooltip class="bg-dark"> Editar</q-tooltip>
+            <q-icon name="bi-pencil-square" class="q-pr-sm" size="xs" />
+            <span>Editar</span>
+          </q-btn>
+        </div>
 
-        <q-btn color="negative" no-caps push @click="cancelar()">
-          <q-icon name="bi-x" size="xs" class="q-pr-sm" />
-          <span>Cancelar</span>
-        </q-btn>
+        <ButtonSubmits
+          :accion="accion"
+          @guardar="guardar"
+          @editar="editar(entrevista)"
+          @cancelar="reestablecer"
+        />
       </div>
     </q-card-section>
   </q-card>

@@ -236,9 +236,11 @@ import { LocalStorage } from 'quasar'
 import { useNotificaciones } from 'shared/notificaciones'
 import { acciones } from 'config/utils'
 import { useCargandoStore } from 'stores/cargando'
+import SelectorImagen from 'components/SelectorImagen.vue';
+
 
 export default defineComponent({
-  components: { EssentialTable, buttonSubmits },
+  components: {SelectorImagen, EssentialTable, buttonSubmits },
   emits: ['cerrar-modal'],
   setup(props, { emit }) {
     const pedidoStore = usePedidoStore()
@@ -284,7 +286,7 @@ export default defineComponent({
       color: 'negative',
       icono: 'bi-x',
       accion: ({ entidad, posicion }) => eliminar({ entidad, posicion }),
-      visible: ({ entidad }) => (entidad.despachado == 0 ? true : false),
+      visible: ({ entidad }) => (entidad.despachado == 0),
     }
 
     const botonEditarCantidad: CustomActionTable = {

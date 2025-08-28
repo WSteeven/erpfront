@@ -6,6 +6,7 @@ export class EvaluacionPersonalidad extends EntidadAuditable {
   respuestas: []
   fecha_realizacion: string | null
   completado: boolean
+  enviada_mail: boolean
 
   constructor() {
     super()

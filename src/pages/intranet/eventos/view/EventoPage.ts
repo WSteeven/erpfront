@@ -4,7 +4,7 @@ import { EventoController } from '../infraestructure/EventoController';
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
 import EssentialCalendar from 'components/qalendar/EssentialCalendar.vue';
 import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue';
-import { acciones } from '../../../../config/utils';
+import { acciones } from 'config/utils';
 import { useCargandoStore } from 'stores/cargando';
 import { TipoEventoController } from 'pages/intranet/tiposEventos/infraestructure/TipoEventoController';
 

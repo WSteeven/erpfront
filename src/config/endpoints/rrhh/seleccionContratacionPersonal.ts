@@ -23,6 +23,7 @@ export const seleccionContratacionPersonal = {
   evaluaciones_personalidades: new Endpoint('seleccion-contratacion/evaluaciones-personalidades'),
   validar_token_test_personalidad: new Endpoint('seleccion-contratacion/validar-token-test-personalidad'),
   habilitar_test_personalidad: new Endpoint('seleccion-contratacion/habilitar-test-personalidad/'),
+  descargar_evaluacion_personalidad: new Endpoint('seleccion-contratacion/descargar-evaluacion-personalidad/'),
   // resultados_test_personalidad: new Endpoint('seleccion-contratacion/resultados-test-personalidad/'),
 
 

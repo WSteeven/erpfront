@@ -385,6 +385,7 @@ export default defineComponent({
       icono: 'bi-check-circle-fill',
       accion: async ({ entidad }) => {
         postulacionStore.idPostulacion = entidad?.id ?? postulacion.id
+        postulacionStore.accionEntrevista = acciones.nuevo
         modales.abrirModalEntidad('EntrevistarPage')
       },
       visible: () => tabActual.value === estadosPostulacion.PRESELECCIONADO
@@ -397,6 +398,7 @@ export default defineComponent({
       tooltip: 'Ver, reagendar o colocar comentarios de la entrevista',
       accion: async ({ entidad }) => {
         postulacionStore.idPostulacion = entidad?.id ?? postulacion.id
+        postulacionStore.accionEntrevista = acciones.consultar
         modales.abrirModalEntidad('EntrevistarPage')
       },
       visible: () => tabActual.value === estadosPostulacion.ENTREVISTA
@@ -412,16 +414,19 @@ export default defineComponent({
       },
       visible: () => tabActual.value === estadosPostulacion.ENTREVISTA && false
     }
-    const btnHabilitarEvaluacionPersonalidad: CustomActionTable = {
+
+    const btnHabilitarEvaluacionPersonalidad: CustomActionTable<Postulacion> = {
       // Puede ver los detalles de la entrevista o reagendarla
       titulo: 'Evaluación Personalidad',
       color: 'positive',
       icono: 'fa-solid fa-brain',
       tooltip: 'Ver, habilitar Evaluación de Personalidad',
       accion: async ({ entidad }) => {
-        console.log('Evaluación de Personalidad', entidad)
-        const link = await habilitarTestPersonalidad(entidad.id)
-        console.log('Link', link)
+        postulacionStore.idPostulacion = entidad.id ?? postulacion.id
+        modales.abrirModalEntidad('EvaluacionPersonalidadPage')
+        // console.log('Evaluación de Personalidad', entidad)
+        // const link = await habilitarTestPersonalidad(entidad.id)
+        // console.log('Link', link)
       },
       visible: () => tabActual.value === estadosPostulacion.ENTREVISTA
     }

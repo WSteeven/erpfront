@@ -8,6 +8,9 @@ import CalificarCandidatoPage from '../modules/calificarCandidatos/view/Califica
 import EntrevistarPage from '../modules/entrevistas/view/EntrevistarPage.vue';
 import AgendarCitaMedicaPage from '../modules/citasMedicas/view/AgendarCitaMedicaPage.vue';
 import ActualizarResultadosCitaMedicaPage from '../modules/citasMedicas/view/ActualizarResultadosCitaMedicaPage.vue';
+import EvaluacionPersonalidadPage
+  from 'seleccionContratacion/postulacionVacante/modules/testPersonalidad/view/EvaluacionPersonalidadPage.vue';
+
 
 
 export class PostulacionModales {
@@ -16,6 +19,7 @@ export class PostulacionModales {
   EntrevistarPage: ComponenteModal
   AgendarCitaMedicaPage: ComponenteModal
   ActualizarResultadosCitaMedicaPage: ComponenteModal
+  EvaluacionPersonalidadPage:ComponenteModal
 
   constructor() {
     this.AgregarBancoPostulantePage = markRaw(new ComponenteModal('Agregar al banco de postulantes', AgregarBancoPostulantePage))
@@ -23,5 +27,6 @@ export class PostulacionModales {
     this.EntrevistarPage = markRaw(new ComponenteModal('Establecer fecha de entrevista', EntrevistarPage))
     this.AgendarCitaMedicaPage = markRaw(new ComponenteModal('Agendamiento de cita para exámenes médicos del postulante', AgendarCitaMedicaPage))
     this.ActualizarResultadosCitaMedicaPage = markRaw(new ComponenteModal('Resultados de exámenes médicos del postulante', ActualizarResultadosCitaMedicaPage))
+    this.EvaluacionPersonalidadPage = markRaw(new ComponenteModal('Evaluación de Personalidad', EvaluacionPersonalidadPage))
   }
 }
