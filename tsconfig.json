@@ -1,58 +1,140 @@
 {
-  "extends": "@quasar/app-vite/tsconfig-preset",
+  "extends": "./.quasar/tsconfig.json",
   "compilerOptions": {
     "baseUrl": ".",
-    "noImplicitAny": false,
-    "strictFunctionTypes": false,
-    "module": "esnext",
-    "target": "esnext",
-    "types": ["node"],
-    "typeRoots": ["./node_modules/@types", "./src/types"],
+    "allowJs": true,
+    "checkJs": false,
+    "noEmit": true,
+    "types": [
+      "vite/client",
+      "node"
+    ],
+    "typeRoots": [
+      "./node_modules/@types",
+      "./src/types"
+    ],
     "paths": {
-      "boot/*": ["src/boot/*"],
-      "config/*": ["src/config/*"],
-      "shared/*": ["src/shared/*"],
-      "components/*": ["src/components/*"],
-      "stores/*": ["src/stores/*"],
-      "sistema/*": ["src/pages/sistema/*"],
-      "pages/*": ["src/pages/*"],
-      "gestionTrabajos/*": ["src/pages/gestionTrabajos/*"],
-      "tareas/*": ["src/pages/gestionTrabajos/tareas/*"],
-      "vehiculos/*": ["src/pages/controlVehiculos/*"],
-      "trabajos/*": ["src/pages/gestionTrabajos/trabajos/*"],
-      "clientesFinales/*": ["src/pages/gestionTrabajos/clientesFinales/*"],
+      "boot/*": [
+        "src/boot/*"
+      ],
+      "config/*": [
+        "src/config/*"
+      ],
+      "shared/*": [
+        "src/shared/*"
+      ],
+      "components/*": [
+        "src/components/*"
+      ],
+      "stores/*": [
+        "src/stores/*"
+      ],
+      "sistema/*": [
+        "src/pages/sistema/*"
+      ],
+      "pages/*": [
+        "src/pages/*"
+      ],
+      "gestionTrabajos/*": [
+        "src/pages/gestionTrabajos/*"
+      ],
+      "tareas/*": [
+        "src/pages/gestionTrabajos/tareas/*"
+      ],
+      "vehiculos/*": [
+        "src/pages/controlVehiculos/*"
+      ],
+      "trabajos/*": [
+        "src/pages/gestionTrabajos/trabajos/*"
+      ],
+      "clientesFinales/*": [
+        "src/pages/gestionTrabajos/clientesFinales/*"
+      ],
       "formulariosTrabajos/*": [
         "src/pages/gestionTrabajos/formulariosTrabajos/*"
       ],
-      "tiposTareas/*": ["src/pages/gestionTrabajos/tiposTareas/*"],
-      "proyectos/*": ["src/pages/gestionTrabajos/proyectos/*"],
-      "miBodega/*": ["src/pages/gestionTrabajos/miBodega/*"],
-      "recursosHumanos/*": ["src/pages/recursosHumanos/*"],
-      "controlTareas/*": ["src/pages/tareas/controlTareas/*"],
-      "subtareas/*": ["src/pages/gestionTrabajos/subtareas/*"],
-      "tiposTrabajos/*": ["src/pages/tareas/tiposTareas/*"],
-      "dashboardTickets/*": ["src/pages/gestionTickets/dashboardTickets"],
-      "gestionTickets/*": ["gestionTickets"],
-      "tickets/*": ["gestionTickets/tickets"],
-      "ticketsAsignados/*": ["gestionTickets/ticketsAsignados"],
-      "tiposTickets/*": ["gestionTickets/tiposTickets"],
-      "categoriasTiposTickets/*": ["gestionTickets/categoriasTiposTickets"],
-      "motivosPausasTickets/*": ["gestionTickets/motivosPausasTickets"],
-      "motivosCanceladosTickets/*": ["gestionTickets/motivosCanceladosTickets"],
+      "tiposTareas/*": [
+        "src/pages/gestionTrabajos/tiposTareas/*"
+      ],
+      "proyectos/*": [
+        "src/pages/gestionTrabajos/proyectos/*"
+      ],
+      "miBodega/*": [
+        "src/pages/gestionTrabajos/miBodega/*"
+      ],
+      "recursosHumanos/*": [
+        "src/pages/recursosHumanos/*"
+      ],
+      "controlTareas/*": [
+        "src/pages/tareas/controlTareas/*"
+      ],
+      "subtareas/*": [
+        "src/pages/gestionTrabajos/subtareas/*"
+      ],
+      "tiposTrabajos/*": [
+        "src/pages/tareas/tiposTareas/*"
+      ],
+      "dashboardTickets/*": [
+        "src/pages/gestionTickets/dashboardTickets"
+      ],
+      "gestionTickets/*": [
+        "gestionTickets"
+      ],
+      "tickets/*": [
+        "gestionTickets/tickets"
+      ],
+      "ticketsAsignados/*": [
+        "gestionTickets/ticketsAsignados"
+      ],
+      "tiposTickets/*": [
+        "gestionTickets/tiposTickets"
+      ],
+      "categoriasTiposTickets/*": [
+        "gestionTickets/categoriasTiposTickets"
+      ],
+      "motivosPausasTickets/*": [
+        "gestionTickets/motivosPausasTickets"
+      ],
+      "motivosCanceladosTickets/*": [
+        "gestionTickets/motivosCanceladosTickets"
+      ],
       // Modulo medico
-      "medico/*": ["src/pages/medico/*"],
+      "medico/*": [
+        "src/pages/medico/*"
+      ],
       "seleccionContratacion/*": [
         "src/pages/recursosHumanos/SeleccionContratacionPersonal/*"
       ],
-      "trabajoSocial/*": ["src/pages/recursosHumanos/TrabajoSocial/*"],
-      "capacitacion/*": ["src/pages/recursosHumanos/Capacitacion/*"],
-
-      "activosFijos/*": ["src/pages/activosFijos/*"],
-      "controlActivosFijos/*": ["src/pages/activosFijos/controlActivosFijos/*"],
-      "controlPersonal/*": ["src/pages/recursosHumanos/control_personal/*"],
-      "sso/*": ["src/pages/sso/*"],
-      "comprasProveedores/*": ["src/pages/comprasProveedores/*"],
-      "seguridad/*": ["src/pages/seguridad/*"]
+      "trabajoSocial/*": [
+        "src/pages/recursosHumanos/TrabajoSocial/*"
+      ],
+      "capacitacion/*": [
+        "src/pages/recursosHumanos/Capacitacion/*"
+      ],
+      "activosFijos/*": [
+        "src/pages/activosFijos/*"
+      ],
+      "controlActivosFijos/*": [
+        "src/pages/activosFijos/controlActivosFijos/*"
+      ],
+      "controlPersonal/*": [
+        "src/pages/recursosHumanos/control_personal/*"
+      ],
+      "sso/*": [
+        "src/pages/sso/*"
+      ],
+      "comprasProveedores/*": [
+        "src/pages/comprasProveedores/*"
+      ],
+      "seguridad/*": [
+        "src/pages/seguridad/*"
+      ]
     }
-  }
+  },
+  "include": [
+    ".quasar/**/*",
+    "src/**/*",
+    "tests/**/*",
+    "env.d.ts"
+  ]
 }

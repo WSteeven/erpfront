@@ -23,11 +23,7 @@
                   transition-hide="scale"
                 >
                   <div class="q-gutter-md row items-start">
-                    <q-date
-                      v-model="examen.fecha_hora"
-                      :mask="mask"
-                      today-btn
-                    >
+                    <q-date v-model="examen.fecha_hora" :mask="mask" today-btn>
                       <div class="row items-center justify-end">
                         <q-btn
                           v-close-popup
@@ -48,9 +44,7 @@
             </template>
 
             <template v-slot:error>
-              <div v-for="error of v$.fecha_hora.$errors" :key="error.$uid">
-                <div class="error-msg">{{ error.$message }}</div>
-              </div>
+              <error-component clave="fecha_hora" :v$="v$" />
             </template>
           </q-input>
         </div>
@@ -75,27 +69,22 @@
             :error="!!v$.canton.$errors.length"
             emit-value
             map-options
-            ><template v-slot:no-option>
-              <q-item>
-                <q-item-section class="text-grey">
-                  No hay resultados
-                </q-item-section>
-              </q-item>
+          >
+            <template v-slot:no-option>
+              <no-option-component/>
             </template>
             <template v-slot:option="scope">
               <q-item v-bind="scope.itemProps">
                 <q-item-section>
                   <q-item-label>{{ scope.opt.canton }}</q-item-label>
                   <q-item-label caption
-                    >Provincia {{ scope.opt.provincia }}</q-item-label
-                  >
+                    >Provincia {{ scope.opt.provincia }}
+                  </q-item-label>
                 </q-item-section>
               </q-item>
             </template>
             <template v-slot:error>
-              <div v-for="error of v$.canton.$errors" :key="error.$uid">
-                <div class="error-msg">{{ error.$message }}</div>
-              </div>
+              <error-component clave="canton" :v$="v$" />
             </template>
           </q-select>
         </div>
@@ -113,9 +102,7 @@
             dense
           >
             <template v-slot:error>
-              <div v-for="error of v$.laboratorio.$errors" :key="error.$uid">
-                <div class="error-msg">{{ error.$message }}</div>
-              </div>
+              <error-component clave="laboratorio" :v$="v$"/>
             </template>
           </q-input>
         </div>
@@ -134,9 +121,7 @@
             dense
           >
             <template v-slot:error>
-              <div v-for="error of v$.direccion.$errors" :key="error.$uid">
-                <div class="error-msg">{{ error.$message }}</div>
-              </div>
+              <error-component clave="direccion" :v$="v$"/>
             </template>
           </q-input>
         </div>
@@ -155,9 +140,7 @@
             dense
           >
             <template v-slot:error>
-              <div v-for="error of v$.indicaciones.$errors" :key="error.$uid">
-                <div class="error-msg">{{ error.$message }}</div>
-              </div>
+              <error-component clave="indicaciones" :v$="v$" />
             </template>
           </q-input>
         </div>
@@ -165,19 +148,13 @@
         <!-- Se realizo examenes -->
         <div class="col-12 col-md-3">
           ¿Se realizó exámenes?
-          <option-group-component
-            class="q-pt-sm"
-            v-model="examen.se_realizo_examen"
-          />
+          <option-group-component v-model="examen.se_realizo_examen" />
         </div>
 
         <!-- es apto -->
         <div class="col-12 col-md-3">
           ¿Es Apto?
-          <option-group-component
-            class="q-pt-sm"
-            v-model="examen.es_apto"
-          />
+          <option-group-component v-model="examen.es_apto" />
         </div>
 
         <!-- observaciones -->
@@ -193,9 +170,7 @@
             dense
           >
             <template v-slot:error>
-              <div v-for="error of v$.observacion.$errors" :key="error.$uid">
-                <div class="error-msg">{{ error.$message }}</div>
-              </div>
+              <error-component clave="observacion" :v$="v$" />
             </template>
           </q-input>
         </div>

@@ -50,10 +50,9 @@ import { TipoDiscapacidadController } from 'recursosHumanos/tipo-discapacidad/in
 import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
 import { TipoDiscapacidadPorcentaje } from 'recursosHumanos/empleados/domain/TipoDiscapacidadPorcentaje'
 import { TipoDiscapacidad } from 'recursosHumanos/tipo-discapacidad/domain/TipoDiscapacidad'
-import { imprimirArchivo } from 'shared/utils'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useCargandoStore } from 'stores/cargando'
-import {useQuasar} from 'quasar'
+import { useQuasar } from 'quasar'
 
 export default defineComponent({
   components: {
@@ -293,46 +292,38 @@ export default defineComponent({
       modalesVacante.abrirModalEntidad('VisualizarVacantePage')
     }
 
-    async function habilitarTestPersonalidad(id: number) {
+    async function checkearTieneEvaluacion(postulacion_id: number) {
       try {
         cargando.activar()
         const ruta =
-          axios.getEndpoint(endpoints.habilitar_test_personalidad) + id
-        const response: AxiosResponse = await axios.post(ruta, null, {
-          responseType: 'blob'
-        })
+          axios.getEndpoint(endpoints.tiene_evaluacion_personalidad) +
+          postulacion_id
+        const response: AxiosResponse = await axios.get(ruta)
+        return response.data.completada
+      } catch (err: any) {
+        notificarAdvertencia(err)
+      } finally {
+        cargando.desactivar()
+      }
+      return false
+    }
 
-        const contentType = response.headers['content-type']
-        const disposition = response.headers['content-disposition']
-        // Si es un archivo (descarga)
-        if (contentType?.includes('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') ||disposition?.includes('attachment')) {
-          await imprimirArchivo(URL.createObjectURL(response.data),'GET','blob','xlsx','resultados_16pf')
-          notificarCorrecto('Archivo descargado con éxito')
-          return
-        }
-
-        // Si no es un archivo, intentamos leer como JSON (respuesta con link)
-        const reader = new FileReader()
-        reader.onload = async function () {
-          const result = JSON.parse(reader.result as string)
-          console.log(result.link)
-          if (result.link!==undefined) {
-            await navigator.clipboard.writeText(result.link)
-            notificarCorrecto('¡El enlace ha sido copiado al portapapeles!')
-          }
-        }
-        reader.readAsText(response.data)
-      } catch (e: any) {
-        console.error(e)
-        notificarAdvertencia(
-          'Hubo un problema al habilitar el test de personalidad.'
-        )
+    async function seleccionarCandidato(id: number) {
+      try {
+        cargando.activar()
+        const ruta =
+          axios.getEndpoint(endpoints.postulacion_vacante) +
+          '/seleccionar/' +
+          id
+        const response: AxiosResponse = await axios.post(ruta)
+        notificarCorrecto(response.data.mensaje)
+        await filtrarPostulaciones(estadosPostulacion.SELECCIONADO)
+      } catch (err: any) {
+        notificarAdvertencia(err)
       } finally {
         cargando.desactivar()
       }
     }
-
-   
 
     /***************************************************************************
      * BOTONES DE TABLA
@@ -436,25 +427,24 @@ export default defineComponent({
       color: 'positive',
       icono: 'bi-check-circle-fill',
       accion: async ({ entidad }) => {
-        confirmar(
-          'Se notificará al candidato que ha sido seleccionado para el puesto y deberá hacerse los exámenes médicos como último paso. ¿Está seguro de continuar?',
-          async () => {
-            try {
-              cargando.activar()
-              const ruta =
-                axios.getEndpoint(endpoints.postulacion_vacante) +
-                  '/seleccionar/' +
-                  entidad?.id ?? postulacion.id
-              const response: AxiosResponse = await axios.post(ruta)
-              notificarCorrecto(response.data.mensaje)
-              await filtrarPostulaciones(estadosPostulacion.SELECCIONADO)
-            } catch (err: any) {
-              notificarAdvertencia(err)
-            } finally {
-              cargando.desactivar()
+        const tieneEvaluacion = await checkearTieneEvaluacion(entidad.id)
+        const confirmarSeleccion = () => {
+          confirmar(
+            'Se notificará al candidato que ha sido seleccionado para el puesto y deberá hacerse los exámenes médicos como último paso. ¿Está seguro de continuar?',
+            async () => {
+              await seleccionarCandidato(entidad.id)
             }
-          }
-        )
+          )
+        }
+
+        if (!tieneEvaluacion)
+          confirmar(
+            'El postulante aún no tiene una evaluación de personalidad creada/completada. ¿Desea continuar con la selección de todas formas?',
+            // Si acepta, mostramos el confirmar "normal"
+             () => confirmarSeleccion()
+          )
+        // ✅ Si ya tiene evaluación, solo mostramos el confirmar "normal"
+        else confirmarSeleccion()
       },
       visible: () => tabActual.value === estadosPostulacion.ENTREVISTA
     }
@@ -471,13 +461,12 @@ export default defineComponent({
         store.can('puede.crear.rrhh_examenes_postulantes')
     }
 
-    const btnActualizarResultadosExamenes: CustomActionTable = {
+    const btnActualizarResultadosExamenes: CustomActionTable<Postulacion> = {
       titulo: 'Actualizar Resultados Exámenes',
       color: 'warning',
       icono: 'bi-calendar-check',
       accion: async ({ entidad }) => {
-        postulacionStore.idPostulacion = entidad?.id ?? postulacion.id
-        console.log(postulacionStore.idPostulacion)
+        postulacionStore.idPostulacion = entidad.id ?? postulacion.id
         modales.abrirModalEntidad('ActualizarResultadosCitaMedicaPage')
       },
       visible: () =>

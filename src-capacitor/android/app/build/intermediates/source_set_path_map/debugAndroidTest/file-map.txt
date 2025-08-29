@@ -1,6 +1,0 @@
-org.firstred.jpconstrucred.com.test.app-annotation-experimental-1.4.0-0 C:\Users\STEEVEN\.gradle\caches\transforms-3\547cf09bda3e2f364bb640bed843544a\transformed\annotation-experimental-1.4.0\res
-org.firstred.jpconstrucred.com.test.app-core-1.5.0-1 C:\Users\STEEVEN\.gradle\caches\transforms-3\bfef745fe0d6813a50960525dcc92f4d\transformed\core-1.5.0\res
-org.firstred.jpconstrucred.com.test.app-androidTest-2 C:\laragon\www\frontend_jpconstrucred\src-capacitor\android\app\build\generated\res\resValues\androidTest\debug
-org.firstred.jpconstrucred.com.test.app-mergeDebugAndroidTestResources-3 C:\laragon\www\frontend_jpconstrucred\src-capacitor\android\app\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\merged.dir
-org.firstred.jpconstrucred.com.test.app-mergeDebugAndroidTestResources-4 C:\laragon\www\frontend_jpconstrucred\src-capacitor\android\app\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\stripped.dir
-org.firstred.jpconstrucred.com.test.app-merged_res-5 C:\laragon\www\frontend_jpconstrucred\src-capacitor\android\app\build\intermediates\merged_res\debugAndroidTest

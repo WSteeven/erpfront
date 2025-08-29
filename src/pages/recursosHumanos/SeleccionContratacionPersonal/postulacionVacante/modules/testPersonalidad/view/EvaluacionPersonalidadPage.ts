@@ -12,7 +12,7 @@ import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpReposi
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { AxiosResponse } from 'axios'
 import { imprimirArchivo } from 'shared/utils'
-import { endpoints } from 'config/api'
+import { apiConfig, endpoints } from 'config/api'
 import { useNotificaciones } from 'shared/notificaciones'
 
 export default defineComponent({
@@ -21,17 +21,24 @@ export default defineComponent({
     CalloutComponent,
     ButtonSubmits
   },
-  setup() {
+  emits: ['cerrar-modal'],
+  setup(_, { emit }) {
     const mixin = new ContenedorSimpleMixin(
       EvaluacionPersonalidad,
       new EvaluacionPersonalidadController()
     )
-    const { entidad: evaluacion, accion } = mixin.useReferencias()
-    const { notificarAdvertencia } = useNotificaciones()
+    const { entidad: evaluacion, accion, disabled } = mixin.useReferencias()
+    const { editar, reestablecer } = mixin.useComportamiento()
+    const { onModificado, onReestablecer } = mixin.useHooks()
+    const { notificarCorrecto, notificarAdvertencia } = useNotificaciones()
     const postulacionStore = usePostulacionStore()
     const tieneEvaluacionCreada = ref(false)
+
     const axios = AxiosHttpRepository.getInstance()
     const cargando = new StatusEssentialLoading()
+
+    onModificado(() => emit('cerrar-modal'))
+    onReestablecer(() => emit('cerrar-modal'))
 
     /***************************************************************************
      * FUNCIONES
@@ -40,8 +47,8 @@ export default defineComponent({
       const { result } = await new PostulacionController().consultar(
         postulacionStore.idPostulacion
       )
-      console.log(result)
-      if (result.token_test !== null) tieneEvaluacionCreada.value = true
+      if (result.token_test !== undefined && result.token_test !== null)
+        tieneEvaluacionCreada.value = true
     }
 
     async function obtenerEvaluacion() {
@@ -50,6 +57,7 @@ export default defineComponent({
       })
       if (result[0]) {
         evaluacion.hydrate(result[0])
+        evaluacion.postulacion = postulacionStore.idPostulacion
         accion.value = acciones.consultar
       } else {
         accion.value = acciones.consultar
@@ -60,9 +68,14 @@ export default defineComponent({
       try {
         cargando.activar()
         const ruta =
-          axios.getEndpoint(endpoints.habilitar_test_personalidad) + id
+          axios.getEndpoint(endpoints.habilitar_test_personalidad) +
+          postulacionStore.idPostulacion
         const response: AxiosResponse = await axios.post(ruta)
-        console.log(response)
+        if (response.status === 200) {
+          await navigator.clipboard.writeText(response.data.link)
+          notificarCorrecto('¡El enlace ha sido copiado al portapapeles!')
+          emit('cerrar-modal')
+        }
       } catch (e: any) {
         console.error(e)
         notificarAdvertencia(
@@ -75,6 +88,8 @@ export default defineComponent({
 
     async function descargarEvaluacionResuelta() {
       const url =
+        apiConfig.URL_BASE +
+        '/' +
         axios.getEndpoint(endpoints.descargar_evaluacion_personalidad) +
         postulacionStore.idPostulacion
       await imprimirArchivo(
@@ -93,11 +108,16 @@ export default defineComponent({
 
     return {
       evaluacion,
+      accion,
+      acciones,
+      disabled,
       tieneEvaluacionCreada,
 
       //funciones
       enviarEvaluacionPostulante,
-      descargarEvaluacionResuelta
+      descargarEvaluacionResuelta,
+      editar,
+      reestablecer
     }
   }
 })

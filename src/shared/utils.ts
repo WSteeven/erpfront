@@ -19,9 +19,9 @@ import { Ref } from 'vue'
 import { Cliente } from 'sistema/clientes/domain/Cliente'
 import { Capacitor } from '@capacitor/core'
 import { Directory, Filesystem } from '@capacitor/filesystem'
-import {Toast} from '@capacitor/toast'
+import { Toast } from '@capacitor/toast'
 
-declare let cordova: any  // Asegúrate de que esto esté arriba si usas cordova plugins
+declare let cordova: any // Asegúrate de que esto esté arriba si usas cordova plugins
 
 const authenticationStore = useAuthenticationStore()
 const usuario = authenticationStore.user
@@ -400,8 +400,8 @@ export async function obtenerTiempoActual() {
       axios.getEndpoint(endpoints.fecha)
     )
     /* const hora: AxiosResponse = await axios.get(
-                  axios.getEndpoint(endpoints.hora)
-                ) */
+                      axios.getEndpoint(endpoints.hora)
+                    ) */
 
     return {
       fecha: fechaHora.data.split(' ')[0],
@@ -488,12 +488,12 @@ function blobToBase64(blob: Blob): Promise<string> {
  * @returns mensaje que indica que no se puede imprimir el archivo
  */
 export async function imprimirArchivo(
-    ruta: string,
-    metodo: Method,
-    responseType: ResponseType,
-    formato: 'pdf'|'xlsx'|string,
-    titulo: string,
-    data?: any
+  ruta: string,
+  metodo: Method,
+  responseType: ResponseType,
+  formato: 'pdf' | 'xlsx' | string,
+  titulo: string,
+  data?: any
 ) {
   const statusLoading = new StatusEssentialLoading()
   const { notificarError } = useNotificaciones()
@@ -512,15 +512,15 @@ export async function imprimirArchivo(
     })
 
     if (
-        response.status !== 200 ||
-        response.data.size < 100 ||
-        response.data.type === 'application/json'
+      response.status !== 200 ||
+      response.data.size < 100 ||
+      response.data.type === 'application/json'
     ) {
       throw 'No se obtuvieron resultados para generar el reporte'
     }
 
     const fileName = `${titulo}.${formato}`
-    const blob = new Blob([response.data], {type: `application/${formato}`})
+    const blob = new Blob([response.data], { type: `application/${formato}` })
 
     if (!Capacitor.isNativePlatform()) {
       // ✅ Web (Navegador)
@@ -542,16 +542,18 @@ export async function imprimirArchivo(
         directory: Directory.Documents
       })
 
-      console.log(`✅ Archivo ${fileName} guardado correctamente en el dispositivo.`)
+      console.log(
+        `✅ Archivo ${fileName} guardado correctamente en el dispositivo.`
+      )
 
       //Notificacion tipo Toast
       await Toast.show({
-        text:`✅ Archivo ${fileName} descargado con éxito.`,
-        duration :'short'
+        text: `✅ Archivo ${fileName} descargado con éxito.`,
+        duration: 'short'
       })
 
       // Intentar abrir automáticamente
-      const { uri } =await Filesystem.getUri({
+      const { uri } = await Filesystem.getUri({
         path: fileName,
         directory: Directory.Documents
       })
@@ -565,23 +567,28 @@ export async function imprimirArchivo(
 
       const mimeType = mimeMap[formato] || `application/${formato}`
 
-      cordova.plugins.fileOpener2.open(
-          uri,
-          mimeType,
-          {
-            error: (e: any) => console.error('❌ No se pudo abrir el archivo', e),
-            success: () => console.log('✅ Archivo abierto')
-          }
-      )
+      cordova.plugins.fileOpener2.open(uri, mimeType, {
+        error: (e: any) => console.error('❌ No se pudo abrir el archivo', e),
+        success: () => console.log('✅ Archivo abierto')
+      })
     }
   } catch (error: any) {
+    // console.error(error)
     const blob = error?.response?.data
     if (blob instanceof Blob && blob.type === 'application/json') {
       const text = await blob.text()
+      // console.log('el blob parseado', text)
       const json = JSON.parse(text)
-      Object.values(json.errors).forEach((errorMsg: string) => {
-        notificarError(errorMsg)
-      })
+      // console.log('el parseado jsoneado', json)
+      if (error.status === 500) {
+        notificarError(
+          `${json.exception} en archivo ${json.file} linea ${json.line}, mensaje: ${json.message}`
+        )
+      } else {
+        Object.values(json.errors).forEach((errorMsg: string) => {
+          notificarError(errorMsg)
+        })
+      }
     } else {
       notificarError(error?.message || 'Error inesperado')
     }
@@ -645,31 +652,37 @@ export function ordernarListaString(a: string, b: string) {
   return 0
 }
 
-export function ordenarSucursalesPorBodeguero(sucursales: Ref<Sucursal[]>, esBodegueroTelconet:boolean) {
+export function ordenarSucursalesPorBodeguero(
+  sucursales: Ref<Sucursal[]>,
+  esBodegueroTelconet: boolean
+) {
   if (esBodegueroTelconet) {
     const sucursalesTelconet = sucursales.value.filter(
-        (v: Sucursal) => v.lugar!.indexOf('TELCONET') > -1
+      (v: Sucursal) => v.lugar!.indexOf('TELCONET') > -1
     )
-    sucursales.value = sucursalesTelconet.sort(
-        (a: Sucursal, b: Sucursal) =>
-            ordernarListaString(a.lugar!, b.lugar!)
+    sucursales.value = sucursalesTelconet.sort((a: Sucursal, b: Sucursal) =>
+      ordernarListaString(a.lugar!, b.lugar!)
     )
   } else
     sucursales.value.sort((a: Sucursal, b: Sucursal) =>
-        ordernarListaString(a.lugar!, b.lugar!)
+      ordernarListaString(a.lugar!, b.lugar!)
     )
 }
 
-export function ordenarClientesPorBodeguero(clientes: Ref<Cliente[]>, esBodegueroTelconet:boolean) {
+export function ordenarClientesPorBodeguero(
+  clientes: Ref<Cliente[]>,
+  esBodegueroTelconet: boolean
+) {
   if (esBodegueroTelconet)
     clientes.value = clientes.value.filter(
-        (v: Cliente) => v.razon_social!.indexOf('TELCONET') > -1
+      (v: Cliente) => v.razon_social!.indexOf('TELCONET') > -1
     )
   else
     clientes.value.sort((a: Cliente, b: Cliente) =>
-        ordernarListaString(a.razon_social!, b.razon_social!)
+      ordernarListaString(a.razon_social!, b.razon_social!)
     )
 }
+
 export function obtenerUbicacion(onUbicacionConcedida) {
   const onErrorDeUbicacion = err => {
     console.log('Error obteniendo ubicación: ', err)

@@ -9,15 +9,18 @@ import { CantonController } from 'sistema/ciudad/infraestructure/CantonControlle
 import { required } from 'shared/i18n-validators';
 import useVuelidate from '@vuelidate/core';
 import OptionGroupComponent from 'components/optionGroup/view/OptionGroupComponent.vue';
+import ErrorComponent from 'components/ErrorComponent.vue';
+import NoOptionComponent from 'components/NoOptionComponent.vue';
 
 export default defineComponent({
-  components: { OptionGroupComponent },
+  components: { NoOptionComponent, ErrorComponent, OptionGroupComponent },
   props: {},
   emits: ['cerrar-modal', 'guardado'],
   setup(props, { emit }) {
     const mixin = new ContenedorSimpleMixin(Examen, new ExamenController())
     const { entidad: examen, listadosAuxiliares } = mixin.useReferencias()
-    const { cargarVista, obtenerListados, consultar, editar } = mixin.useComportamiento()
+    const { cargarVista, obtenerListados, consultar, editar } =
+      mixin.useComportamiento()
     const { onReestablecer } = mixin.useHooks()
 
     const postulacionStore = usePostulacionStore()
@@ -27,7 +30,8 @@ export default defineComponent({
     }
 
     const cargando = new StatusEssentialLoading()
-    const { cantones, filtrarCantones } = useFiltrosListadosSelects(listadosAuxiliares)
+    const { cantones, filtrarCantones } =
+      useFiltrosListadosSelects(listadosAuxiliares)
     cargarVista(async () => {
       await obtenerListados({
         cantones: new CantonController()
@@ -42,10 +46,9 @@ export default defineComponent({
       indicaciones: { required },
       laboratorio: { required },
       direccion: { required },
-      observacion: { required },
+      observacion: { required }
     }
     const v$ = useVuelidate(reglas, examen)
-
 
     onReestablecer(() => {
       emit('cerrar-modal', false)
@@ -63,13 +66,16 @@ export default defineComponent({
       emit('cerrar-modal', false)
     }
     return {
-      examen, v$,
+      examen,
+      v$,
       mask: 'YYYY-MM-DD HH:mm',
 
       // listados
-      cantones, filtrarCantones,
+      cantones,
+      filtrarCantones,
       // functions
-      actualizar, cancelar,
+      actualizar,
+      cancelar
     }
   }
 })

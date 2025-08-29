@@ -20,6 +20,7 @@ export class Postulacion extends EntidadAuditable {
   pais_residencia: string | null //
   fecha_nacimiento: string | null //
   direccion: string | null //
+  token_test: string | null //
   mi_experiencia: string | null //
   ruta_cv: string | null //
   estado: string | null //
@@ -58,6 +59,7 @@ export class Postulacion extends EntidadAuditable {
     this.pais = null
     this.direccion = null
     this.mi_experiencia = null
+    this.token_test = null
     this.pais_residencia = null
     this.fecha_nacimiento = null
     this.ruta_cv = null

@@ -7,8 +7,7 @@
   "private": true,
   "scripts": {
     "lint": "eslint --ext .js,.ts,.vue ./",
-    "format": "prettier --write \"**/*.{js,ts,vue,scss,html,md,json}\" --ignore-path .gitignore",
-    "test": "vue-cli-service test:unit"
+    "format": "prettier --write \"**/*.{js,ts,vue,scss,html,md,json}\" --ignore-path .gitignore"
   },
   "dependencies": {
     "@balkangraph/orgchart.js": "^8.14.48",
@@ -20,7 +19,7 @@
     "@capacitor/status-bar": "^7.0.1",
     "@capacitor/toast": "^7.0.1",
     "@formkit/tempo": "^0.0.16",
-    "@quasar/extras": "^1.0.0",
+    "@quasar/extras": "^1.17.0",
     "@types/vuelidate": "^0.7.15",
     "@vuelidate/core": "^2.0.0-alpha.44",
     "@vuelidate/validators": "^2.0.0-alpha.31",
@@ -43,7 +42,7 @@
     "pinia": "^2.0.11",
     "push.js": "^1.0.12",
     "qalendar": "^3.8.1",
-    "quasar": "^2.11.10",
+    "quasar": "^2.18.2",
     "sweetalert2": "^11.6.13",
     "vue": "^3.0.0",
     "vue-chartjs": "^5.2.0",
@@ -58,12 +57,16 @@
   },
   "devDependencies": {
     "@capacitor/assets": "^3.0.5",
-    "@quasar/app-vite": "^1.11.0",
+    "@quasar/app-vite": "^2.3.0",
+    "@quasar/cli": "^2.5.0",
+    "@quasar/quasar-app-extension-qcalendar": "^4.1.2",
+    "@quasar/quasar-ui-qcalendar": "^4.1.2",
     "@types/i18n": "^0.13.6",
     "@types/lodash.get": "^4.4.9",
-    "@types/node": "^12.20.21",
+    "@types/node": "^20.19.11",
     "@typescript-eslint/eslint-plugin": "^5.10.0",
     "@typescript-eslint/parser": "^5.10.0",
+    "@vitejs/plugin-vue": "^6.0.1",
     "autoprefixer": "^10.4.2",
     "eslint": "^8.10.0",
     "eslint-config-prettier": "^8.1.0",
