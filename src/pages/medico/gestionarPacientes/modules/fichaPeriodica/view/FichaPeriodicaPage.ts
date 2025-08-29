@@ -1,6 +1,6 @@
 import { configuracionColumnasResultadoExamenPreocupacional } from '../domain/configuracionColumnasResultadoExamenPreocupacional'
 import { configuracionColumnasRevisionActualOrganoSistema } from '../domain/configuracionColumnasRevisionActualOrganoSistema'
-import { configuracionColumnasAntecedenteTrabajoAnterior } from '../domain/configuracionColumnasAntecedenteTrabajoAnterior'
+import {configuracionColumnasAntecedenteTrabajoAnterior} from 'medico/gestionarPacientes/modules/fichaPeriodicaPreocupacional/domain/configuracionColumnasAntecedenteTrabajoAnterior'
 import { configuracionColumnasResultadoHabitoToxico } from '../domain/configuracionColumnasResultadoHabitoToxico'
 import { configuracionColumnasFrPuestoTrabajoActual } from '../domain/configuracionColumnasFrPuestoTrabajoActual'
 import { configuracionColumnasAntecedenteFamiliar } from '../domain/configuracionColumnasAntecedenteFamiliar'
@@ -40,7 +40,6 @@ import { ExamenFisicoRegional } from '../../seccionesFichas/examenFisicoRegional
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { ResultadoExamenPreocupacional } from '../domain/ResultadoExamenPreocupacional'
 import { RevisionActualOrganoSistema } from '../domain/RevisionActualOrganoSistema'
-import { AntecedenteTrabajoAnterior } from '../domain/AntecedenteTrabajoAnterior'
 import { ConstanteVital } from '../../seccionesFichas/domain/ConstanteVital'
 import { TipoAntecedenteFamiliar } from '../domain/TipoAntecedenteFamiliar'
 import { ResultadoHabitoToxico } from '../domain/ResultadoHabitoToxico'
@@ -53,6 +52,9 @@ import { TipoHabitoToxico } from '../domain/TipoHabitoToxico'
 import { ActividadFisica } from '../domain/ActividadFisica'
 import { FichaPeriodica } from '../domain/FichaPeriodica'
 import { SistemaOrgano } from '../domain/SistemaOrgano'
+import {
+  AntecedenteTrabajoAnterior
+} from 'medico/gestionarPacientes/modules/fichaPeriodicaPreocupacional/domain/AntecedenteTrabajoAnterior';
 
 export default defineComponent({
   name: 'fichas_periodicas',
@@ -92,7 +94,7 @@ export default defineComponent({
     *********/
     const mixin = new ContenedorSimpleMixin(FichaPeriodica, new FichaPeriodicaController())
     const { entidad: fichaPeriodica, listadosAuxiliares, disabled, accion } = mixin.useReferencias()
-    const { setValidador, cargarVista, obtenerListados, consultar, editarParcial, listar } = mixin.useComportamiento()
+    const { setValidador, cargarVista, obtenerListados, consultar } = mixin.useComportamiento()
     const { onBeforeGuardar, onReestablecer, onConsultado, onGuardado } = mixin.useHooks()
 
     cargarVista(async () => {
@@ -133,11 +135,11 @@ export default defineComponent({
         return rev
       })
 
-      configurarColumnasFrPuestoTrabajoActual()
+      await configurarColumnasFrPuestoTrabajoActual()
       configurarFilaFrPuestoTrabajoActual()
 
       // Consultar ficha
-      if (medicoStore.idFichaPeriodica) consultar({ id: medicoStore.idFichaPeriodica })
+      if (medicoStore.idFichaPeriodica) await consultar({ id: medicoStore.idFichaPeriodica })
     })
 
     /******************
@@ -212,7 +214,7 @@ export default defineComponent({
       const axios = AxiosHttpRepository.getInstance()
       const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.fichas_periodicas_imprimir) + '/' + fichaPeriodica.id
       const filename = 'ficha_periodica_' + fichaPeriodica.id + '_' + Date.now()
-      imprimirArchivo(url, 'GET', 'blob', 'pdf', filename)
+      await imprimirArchivo(url, 'GET', 'blob', 'pdf', filename)
     }
 
     const hidratarConstanteVital = (constanteVital: ConstanteVital) => fichaPeriodica.constante_vital.hydrate(constanteVital)
