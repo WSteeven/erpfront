@@ -4,7 +4,7 @@ import { acciones } from 'config/utils'
 
 export const usePostulacionStore = defineStore('postulacion', () => {
   const idPostulacion = ref()
-  const accionEntrevista = ref(acciones.nuevo)
+  const accionEntrevista = ref<string>(acciones.nuevo)
 
   return {
     idPostulacion,

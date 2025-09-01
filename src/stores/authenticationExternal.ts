@@ -195,6 +195,9 @@ export const useAuthenticationExternalStore = defineStore('authentication_extern
     extraerRol,
     registro,
     setUser,
+
+    // verificar si es cierto Rol
+    esRecursosHumanos:false,
   }
 }
 )

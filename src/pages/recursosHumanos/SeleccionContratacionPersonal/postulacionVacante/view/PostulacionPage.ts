@@ -232,7 +232,7 @@ export default defineComponent({
       // console.log(vacanteStore.idVacante, vacanteStore.vacante)
     }
 
-    function guardado(data) {
+    function guardado(data: any) {
       console.log(data)
       reestablecer()
       switch (data.formulario) {
@@ -253,12 +253,12 @@ export default defineComponent({
       }
     }
 
-    function optionsFecha(date) {
+    function optionsFecha(date: string) {
       const hoy = convertir_fecha(new Date())
       return date <= hoy
     }
 
-    function checkPoseoLicencia(val) {
+    function checkPoseoLicencia(val: boolean) {
       if (!val) {
         postulacion.tipo_licencia = null
       }
@@ -354,7 +354,9 @@ export default defineComponent({
       visible: () =>
         [estadosPostulacion.POSTULADO, estadosPostulacion.REVISION_CV].includes(
           tabActual.value
-        )
+        ) &&
+        store.esRecursosHumanos &&
+        store.can('puede.ver.btn.preseleccionar_candidato')
     }
 
     const btnBancoPostulantes: CustomActionTable = {
@@ -379,7 +381,10 @@ export default defineComponent({
         postulacionStore.accionEntrevista = acciones.nuevo
         modales.abrirModalEntidad('EntrevistarPage')
       },
-      visible: () => tabActual.value === estadosPostulacion.PRESELECCIONADO
+      visible: () =>
+        tabActual.value === estadosPostulacion.PRESELECCIONADO &&
+        store.esRecursosHumanos &&
+        store.can('puede.ver.btn.entrevistar_postulante')
     }
     const btnVerEntrevista: CustomActionTable = {
       // Puede ver los detalles de la entrevista o reagendarla
@@ -392,7 +397,7 @@ export default defineComponent({
         postulacionStore.accionEntrevista = acciones.consultar
         modales.abrirModalEntidad('EntrevistarPage')
       },
-      visible: () => tabActual.value === estadosPostulacion.ENTREVISTA
+      visible: () => tabActual.value === estadosPostulacion.ENTREVISTA && store.esRecursosHumanos
     }
     const btnHabilitarEvaluacionValanti: CustomActionTable = {
       // Puede ver los detalles de la entrevista o reagendarla
@@ -419,7 +424,7 @@ export default defineComponent({
         // const link = await habilitarTestPersonalidad(entidad.id)
         // console.log('Link', link)
       },
-      visible: () => tabActual.value === estadosPostulacion.ENTREVISTA
+      visible: () => tabActual.value === estadosPostulacion.ENTREVISTA && store.esRecursosHumanos
     }
 
     const btnSeleccionar: CustomActionTable = {
@@ -441,12 +446,15 @@ export default defineComponent({
           confirmar(
             'El postulante aún no tiene una evaluación de personalidad creada/completada. ¿Desea continuar con la selección de todas formas?',
             // Si acepta, mostramos el confirmar "normal"
-             () => confirmarSeleccion()
+            () => confirmarSeleccion()
           )
         // ✅ Si ya tiene evaluación, solo mostramos el confirmar "normal"
         else confirmarSeleccion()
       },
-      visible: () => tabActual.value === estadosPostulacion.ENTREVISTA
+      visible: () =>
+        tabActual.value === estadosPostulacion.ENTREVISTA &&
+        store.esRecursosHumanos &&
+        store.can('puede.ver.btn.seleccionar_postulante')
     }
     const btnCitaMedica: CustomActionTable = {
       titulo: 'Agendar Cita Médica',
@@ -487,7 +495,7 @@ export default defineComponent({
         store.esRecursosHumanos
     }
 
-    const btnDescartar: CustomActionTable = {
+    const btnDescartar: CustomActionTable<Postulacion> = {
       titulo: 'Descartar',
       color: 'negative',
       icono: 'bi-x-circle-fill',
@@ -499,8 +507,8 @@ export default defineComponent({
               cargando.activar()
               const ruta =
                 axios.getEndpoint(endpoints.postulacion_vacante) +
-                  '/descartar/' +
-                  entidad?.id ?? postulacion.id
+                '/descartar/' +
+                (entidad.id ?? postulacion.id)
               const response: AxiosResponse = await axios.post(ruta)
               notificarCorrecto(response.data.mensaje)
               await filtrarPostulaciones(estadosPostulacion.DESCARTADO)
@@ -516,7 +524,9 @@ export default defineComponent({
         [
           estadosPostulacion.PRESELECCIONADO,
           estadosPostulacion.ENTREVISTA
-        ].includes(tabActual.value)
+        ].includes(tabActual.value) &&
+        store.esRecursosHumanos &&
+        store.can('puede.ver.btn.descartar_postulante')
     }
     const btnImprimir: CustomActionTable = {
       titulo: 'Imprimir',
