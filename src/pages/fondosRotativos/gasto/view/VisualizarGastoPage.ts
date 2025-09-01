@@ -39,9 +39,12 @@ import { isAxiosError, notificarMensajesError } from 'shared/utils'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import NoOptionComponent from 'components/NoOptionComponent.vue';
 import ErrorComponent from 'components/ErrorComponent.vue';
+import EssentialTable from 'components/tables/view/EssentialTable.vue';
+import {configuracionColumnasValijas} from 'pages/fondosRotativos/valijas/domain/configuracionColumnasValijas';
 
 export default defineComponent({
   components: {
+    EssentialTable,
     ErrorComponent,
     NoOptionComponent,
     TabLayout,
@@ -189,6 +192,13 @@ export default defineComponent({
       listadosAuxiliares.sub_detalles = sub_detalles.value
       if (fondoRotativoStore.gasto !== null) {
         await gasto.hydrate(fondoRotativoStore.gasto)
+        if(fondoRotativoStore.gasto.se_envia_valija){
+          const { result } = await new GastoController().consultar(
+            fondoRotativoStore.gasto.id
+          )
+          gasto.hydrate(result)
+        }
+
         mostrarListado.value = false
         mostrarAprobacion.value = true
         esFactura.value = !!gasto.factura
@@ -684,7 +694,8 @@ export default defineComponent({
       optionsFechaGasto,
       recargar_detalle,
       isConsultar,
-      estadosGastos
+      estadosGastos,
+      configuracionColumnasValijas,
     }
   }
 })

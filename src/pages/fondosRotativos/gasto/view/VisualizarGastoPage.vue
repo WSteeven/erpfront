@@ -66,14 +66,10 @@
               map-options
             >
               <template v-slot:error>
-                <div v-for="error of v$.lugar.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="lugar" :v$="v$"/>
               </template>
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
-                </q-item>
+                <no-option-component/>
               </template>
             </q-select>
           </div>
@@ -109,9 +105,7 @@
               </template>
 
               <template v-slot:error>
-                <div v-for="error of v$.fecha_viat.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="fecha_viat" :v$="v$"/>
               </template>
             </q-input>
           </div>
@@ -167,9 +161,7 @@
               map-options
             >
               <template v-slot:error>
-                <div v-for="error of v$.proyecto.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="proyecto" :v$="v$"/>
               </template>
               <template v-slot:option="scope">
                 <q-item v-bind="scope.itemProps" class="q-my-sm">
@@ -182,9 +174,7 @@
                 </q-item>
               </template>
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
-                </q-item>
+               <no-option-component/>
               </template>
             </q-select>
           </div>
@@ -229,9 +219,7 @@
               map-options
             >
               <template v-slot:error>
-                <div v-for="error of v$.num_tarea.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="num_tarea" :v$="v$"/>
               </template>
               <template v-slot:option="scope">
                 <q-item v-bind="scope.itemProps" class="q-my-sm">
@@ -244,9 +232,7 @@
                 </q-item>
               </template>
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
-                </q-item>
+              <no-option-component/>
               </template>
             </q-select>
           </div>
@@ -313,14 +299,10 @@
               map-options
             >
               <template v-slot:error>
-                <div v-for="error of v$.detalle.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="detalle" :v$="v$"/>
               </template>
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
-                </q-item>
+                <no-option-component/>
               </template>
               <template v-slot:after>
                 <q-btn color="positive" @click="recargar_detalle('detalle')">
@@ -384,14 +366,10 @@
                 </q-item>
               </template>
               <template v-slot:error>
-                <div v-for="error of v$.sub_detalle.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="sub_detalle" :v$="v$"/>
               </template>
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
-                </q-item>
+                <no-option-component/>
               </template>
               <template v-slot:after>
                 <q-btn color="positive" @click="recargar_detalle('sub_detalle')">
@@ -417,9 +395,7 @@
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.factura.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="factura" :v$="v$"/>
               </template>
             </q-input>
           </div>
@@ -437,9 +413,7 @@
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.num_comprobante.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="num_comprobante" :v$="v$"/>
               </template>
             </q-input>
           </div>
@@ -457,9 +431,7 @@
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.ruc.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="ruc" :v$="v$"/>
               </template>
             </q-input>
           </div>
@@ -477,9 +449,7 @@
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.cantidad.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="cantidad" :v$="v$"/>
               </template>
             </q-input>
           </div>
@@ -498,9 +468,7 @@
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.valor_u.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="valor_u" :v$="v$"/>
               </template>
             </q-input>
           </div>
@@ -518,9 +486,7 @@
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.total.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="total" :v$="v$"/>
               </template>
             </q-input>
           </div>
@@ -575,9 +541,7 @@
                 </q-item>
               </template>
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
-                </q-item>
+               <no-option-component/>
               </template>
             </q-select>
           </div>
@@ -596,9 +560,7 @@
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.kilometraje.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="kilometraje" :v$="v$"/>
               </template>
             </q-input>
           </div>
@@ -628,9 +590,7 @@
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.placa.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="placa" :v$="v$"/>
               </template>
             </q-input>
           </div>
@@ -686,9 +646,7 @@
               map-options
             >
               <template v-slot:error>
-                <div v-for="error of v$.vehiculo.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="vehiculo" :v$="v$"/>
               </template>
               <template v-slot:option="scope">
                 <q-item v-bind="scope.itemProps" class="q-my-sm">
@@ -700,9 +658,7 @@
                 </q-item>
               </template>
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
-                </q-item>
+                <no-option-component/>
               </template>
             </q-select>
           </div>
@@ -784,9 +740,7 @@
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.observacion.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="observacion" :v$="v$"/>
               </template>
             </q-input>
           </div>
@@ -805,9 +759,7 @@
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.detalle_estado.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="detalle_estado" :v$="v$"/>
               </template>
             </q-input>
           </div>
@@ -826,9 +778,7 @@
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.observacion_anulacion.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="observacion_anulacion" :v$="v$"/>
               </template>
             </q-input>
           </div>
@@ -858,6 +808,58 @@
           </div>
         </div>
       </q-form>
+      <q-separator color="primary" v-if="gasto.se_envia_valija"></q-separator>
+      <div
+          v-if="gasto.se_envia_valija"
+          id="step1"
+          class="col-12 text-primary bg-blue-1 q-px-md q-py-sm text-bold"
+      >
+        <q-icon name="bi-view-list" class="q-mr-sm"></q-icon>
+        Detalles de envío de valija
+      </div>
+      <q-separator color="primary" v-if="gasto.se_envia_valija"></q-separator>
+      <div class="row q-col-gutter-sm q-pa-md">
+        <!-- Curier -->
+        <div class="col-12 col-md-6" v-if="gasto.se_envia_valija">
+          <label class="q-mb-sm block">Curier</label>
+          <q-input
+              v-model="gasto.envio_valija.courier"
+              placeholder="Obligatorio"
+              disable
+              outlined
+              dense
+          />
+        </div>
+
+        <!-- Fotografía Guía -->
+        <div class="col-12 col-md-6" v-if="gasto.se_envia_valija">
+          <label class="q-mb-sm block">Fotografía Guía</label>
+          <selector-imagen
+              :imagen="gasto.envio_valija.fotografia_guia"
+              disable
+              file_extensiones=".jpg, image/*"
+          />
+        </div>
+
+        <!-- Aqui va el componente de valija -->
+        <div class="col-12 rounded-8">
+          <essential-table
+              v-if="gasto.se_envia_valija"
+              :datos="gasto.registros_valijas"
+              :configuracion-columnas="configuracionColumnasValijas"
+              ajustar-celdas
+              disable
+              :permitirConsultar="false"
+              :permitirEditarCeldas="true"
+              :permitirEditar="true"
+              permitirEditarModal
+              :permitirEliminar="false"
+              :altoFijo="false"
+              :mostrar-header="false"
+              :mostrarFooter="false"
+          />
+        </div>
+      </div>
       <div
         class="q-pa-md q-gutter-sm flex flex-center"
         v-if="usuario.id == gasto.aut_especial && gasto.estado_info == 'POR APROBAR'"

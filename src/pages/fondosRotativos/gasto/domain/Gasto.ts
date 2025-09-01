@@ -1,8 +1,8 @@
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import { Valija } from 'pages/fondosRotativos/valijas/domain/Valija'
+import {EnvioValija} from 'pages/fondosRotativos/gasto/domain/EnvioValija';
 
 export class Gasto extends EntidadAuditable {
-  id: number | null
   fecha_viat: Date | null
   lugar: number | null
   num_tarea: string | null
@@ -39,20 +39,18 @@ export class Gasto extends EntidadAuditable {
   detalle_estado: string | null
   kilometraje: number | null
   vehiculo: number | null
-  created_at: string | null
   tiene_factura: boolean | null
   centro_costo: string | null
   subcentro_costo: string | null
   placa: string | null
   es_vehiculo_alquilado: boolean
   observacion_anulacion: string | null
-
+  envio_valija: EnvioValija
   se_envia_valija: boolean
   registros_valijas: Valija[]
 
   constructor() {
     super()
-    this.id = null
     this.fecha_viat = null
     this.lugar = null
     this.lugar_info = null
@@ -89,7 +87,6 @@ export class Gasto extends EntidadAuditable {
     this.detalle_estado = null
     this.kilometraje = null
     this.vehiculo = null
-    this.created_at = null
     this.tiene_factura = true
     this.centro_costo = null
     this.subcentro_costo = null
@@ -97,6 +94,7 @@ export class Gasto extends EntidadAuditable {
     this.es_vehiculo_alquilado = false
     this.observacion_anulacion = null
 
+    this.envio_valija = new EnvioValija()
     this.se_envia_valija = false
     this.registros_valijas = []
   }

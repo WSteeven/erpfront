@@ -757,8 +757,8 @@
               placeholder="obligatorio"
               type="textarea"
               :disable="disabled"
-              :error="!!v$.observacion.$errors.length"
               autogrow
+              :error="!!v$.observacion.$errors.length"
               @blur="v$.observacion.$touch"
               outlined
               dense
@@ -833,14 +833,45 @@
             Registro de envío de valija
           </div>
           <q-separator color="primary"></q-separator>
-          <div class="row q-pa-md">
-            <div class="col-12 col-md-3">
+          <div class="row q-col-gutter-sm q-pa-md">
+            <div class="col-12 col-md-12">
               <q-toggle
                 v-model="gasto.se_envia_valija"
                 label="¿Va a registrar envío de valija?"
                 :disable="disabled"
                 @update:model-value="checkSeEnviaValija"
               />
+            </div>
+
+            <!-- Curier -->
+            <div class="col-12 col-md-6" v-if="gasto.se_envia_valija">
+              <label class="q-mb-sm block">Curier</label>
+              <q-input
+                  v-model="gasto.envio_valija.courier"
+                  placeholder="Obligatorio"
+                  :disable="disabled"
+                  outlined
+                  dense
+                  :error="!!v$.envio_valija.courier.$errors.length"
+                  @blur="v$.envio_valija.courier.$touch"
+              >
+                <template v-slot:error>
+                  <error-component clave="envio_valija.courier" :v$="v$"/>
+                </template>
+              </q-input>
+            </div>
+
+            <!-- Fotografía Guía -->
+            <div class="col-12 col-md-6" v-if="gasto.se_envia_valija">
+              <label class="q-mb-sm block">Fotografía Guía</label>
+              <selector-imagen
+                  :imagen="gasto.envio_valija.fotografia_guia"
+                  :disable="disabled"
+                  placeholder="Obligatorio"
+                  file_extensiones=".jpg, image/*"
+                  @update:modelValue="data => (gasto.envio_valija.fotografia_guia = data)"
+                  :error="!!v$.envio_valija.fotografia_guia.$errors.length"
+              ></selector-imagen>
             </div>
 
             <!-- Aqui va el componente de valija -->

@@ -62,7 +62,8 @@ import { DepartamentoController } from 'recursosHumanos/departamentos/infraestru
 import { Departamento } from 'recursosHumanos/departamentos/domain/Departamento'
 import { Proyecto } from 'proyectos/domain/Proyecto'
 import { cargarDesdeLocalStorage } from '../../../../utils/storage'
-import {ClienteController} from 'sistema/clientes/infraestructure/ClienteController';
+import { ClienteController } from 'sistema/clientes/infraestructure/ClienteController'
+import { useNotificaciones } from 'shared/notificaciones'
 
 export default defineComponent({
   components: {
@@ -93,7 +94,7 @@ export default defineComponent({
     const { setValidador, obtenerListados, cargarVista, consultar, listar } =
       mixin.useComportamiento()
     const { onConsultado } = mixin.useHooks()
-
+    const { notificarAdvertencia } = useNotificaciones()
     /*******
      * Init
      ******/
@@ -118,14 +119,15 @@ export default defineComponent({
       filtrarDetalles,
       departamentos,
       filtrarDepartamentos,
-        clientes, filtrarClientes
+      clientes,
+      filtrarClientes
     } = useFiltrosListadosSelects(listadosAuxiliares)
 
     const visualizarAutorizador = computed(() => {
       return store.can('puede.ver.campo.autorizador')
       /*return usuario.roles.findIndex((rol) => rol === 'TECNICO') > -1
-                                                                          ? true
-                                                                          : false*/
+                                                                                      ? true
+                                                                                      : false*/
     })
 
     onConsultado(async () => {
@@ -250,7 +252,7 @@ export default defineComponent({
             [21, 22, 23, 24, 25].some(num => gasto.sub_detalle?.includes(num))
         )
       },
-      cliente:{ required },
+      cliente: { required },
       ruc: {
         minLength: minLength(11),
         maxLength: maxLength(13),
@@ -284,7 +286,11 @@ export default defineComponent({
         )
       },
       observacion: { required },
-      placa: { required: requiredIf(() => gasto.es_vehiculo_alquilado) }
+      placa: { required: requiredIf(() => gasto.es_vehiculo_alquilado) },
+      envio_valija: {
+        courier: { required: requiredIf(() => gasto.se_envia_valija) },
+        fotografia_guia: { required: requiredIf(() => gasto.se_envia_valija) }
+      }
     }
 
     const v$ = useVuelidate(reglas, gasto)
@@ -329,7 +335,7 @@ export default defineComponent({
         },
         clientes: {
           controller: new ClienteController(),
-          params:{estado:1, requiere_fr:1}
+          params: { estado: 1, requiere_fr: 1 }
         },
         nodos: []
       })
@@ -603,12 +609,25 @@ export default defineComponent({
       }
     }
 
+    const comprobarDatosEnvioValija = () => {
+      if (
+        gasto.envio_valija.courier == null ||
+        gasto.envio_valija.fotografia_guia == null
+      ) {
+        notificarAdvertencia(
+          'Primero debes llenar los datos de courier y fotografía de la guía'
+        )
+        return false
+      }
+      return true
+    }
     const btnAgregarRegistroValija: CustomActionTable<Valija> = {
       titulo: 'Agregar Registro',
       icono: 'bi-arrow-bar-down',
       color: 'positive',
       tooltip: 'Agregar registro de valija',
       accion: () => {
+        if(!comprobarDatosEnvioValija()) return
         const fila = new Valija()
         fila.empleado_id = store.user.id
         fila.empleado = store.nombreUsuario
@@ -724,7 +743,8 @@ export default defineComponent({
       filtrarVehiculos,
       cambiarDetalle,
       cambiarProyecto,
-      clientes, filtrarClientes,
+      clientes,
+      filtrarClientes,
       optionsFechaGasto: optionsFecha,
       recargar,
       editarGasto,
