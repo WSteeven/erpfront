@@ -95,6 +95,26 @@
               </template>
             </q-input>
           </div>
+          <!-- Fecha Nacimiento -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Fecha Nacimiento</label>
+            <q-input
+              v-model="familiares.apellidos"
+              @update:model-value="(v) => (familiares.apellidos = removeAccents(v))"
+              placeholder="Obligatorio"
+              :disable="disabled"
+              @blur="v$.apellidos.$touch"
+              :error="!!v$.apellidos.$errors.length"
+              outlined
+              dense
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.apellidos.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
+          </div>
           <!-- Parentezco -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Parentezco</label>

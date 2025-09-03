@@ -60,15 +60,19 @@ export default defineComponent({
 
     function showUpdateNotification() {
       Notify.create({
-        message:
-          'Hay una nueva versión disponible. Recarga la página para actualizar.',
+        message: 'Nueva versión disponible. Recarga para actualizar. 🚀 ',
         type: 'info',
-        timeout: 0, // hasta que el usuario cierre
         position: 'top',
+        timeout: 0,
+        color: 'gray-5',
+        textColor: 'white',
+        icon: 'system_update',
+        classes: 'update-notification', 
         actions: [
           {
             label: 'Recargar',
-            color: 'white',
+            color: 'secondary',
+            icon: 'refresh',
             handler: () => {
               LocalStorage.setItem('app_version', serverVersion)
               window.location.reload(true)
@@ -76,10 +80,10 @@ export default defineComponent({
           },
           {
             icon: 'close',
-            color: 'negative',
-            round:true,
+            color: 'red',
+            round: true,
             handler: () => {
-              /* */
+                /** */
             }
           }
         ]
