@@ -28,6 +28,16 @@ export const configuracionColumnasFamiliaresEmpleado: ColumnConfig<Familiares>[]
       editable: true,
     },
     {
+        name: 'fecha_nacimiento',
+        field: 'fecha_nacimiento',
+        label: 'Fecha Nacimiento',
+        align: 'left',
+        sortable: true,
+        editable: true,
+        type: 'date',
+
+    },
+    {
       name: 'parentezco',
       field: 'parentezco',
       label: 'Parentezco',

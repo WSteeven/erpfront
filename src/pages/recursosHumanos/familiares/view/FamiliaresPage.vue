@@ -23,14 +23,16 @@
               use-input
               input-debounce="0"
               @filter="filtrarEmpleados"
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.nombres + ' ' + v.apellidos"
+              :option-value="v => v.id"
+              :option-label="v => v.nombres + ' ' + v.apellidos"
               emit-value
               map-options
             >
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -40,7 +42,9 @@
             <label class="q-mb-sm block">Identificación</label>
             <q-input
               v-model="familiares.identificacion"
-              @update:model-value="(v) => (familiares.identificacion = removeAccents(v))"
+              @update:model-value="
+                v => (familiares.identificacion = removeAccents(v))
+              "
               placeholder="Obligatorio"
               :disable="disabled"
               @blur="v$.identificacion.$touch"
@@ -60,7 +64,7 @@
             <label class="q-mb-sm block">Nombres</label>
             <q-input
               v-model="familiares.nombres"
-              @update:model-value="(v) => (familiares.nombres = removeAccents(v))"
+              @update:model-value="v => (familiares.nombres = removeAccents(v))"
               placeholder="Obligatorio"
               :disable="disabled"
               @blur="v$.nombres.$touch"
@@ -80,7 +84,9 @@
             <label class="q-mb-sm block">Apellidos</label>
             <q-input
               v-model="familiares.apellidos"
-              @update:model-value="(v) => (familiares.apellidos = removeAccents(v))"
+              @update:model-value="
+                v => (familiares.apellidos = removeAccents(v))
+              "
               placeholder="Obligatorio"
               :disable="disabled"
               @blur="v$.apellidos.$touch"
@@ -97,24 +103,41 @@
           </div>
           <!-- Fecha Nacimiento -->
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Fecha Nacimiento</label>
+            <label class="q-mb-sm block">Fecha de nacimiento</label>
             <q-input
-              v-model="familiares.apellidos"
-              @update:model-value="(v) => (familiares.apellidos = removeAccents(v))"
+              v-model="familiares.fecha_nacimiento"
               placeholder="Obligatorio"
-              :disable="disabled"
-              @blur="v$.apellidos.$touch"
-              :error="!!v$.apellidos.$errors.length"
+              readonly
               outlined
               dense
             >
-              <template v-slot:error>
-                <div v-for="error of v$.apellidos.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+              <template v-slot:append>
+                <q-icon name="event" class="cursor-pointer">
+                  <q-popup-proxy
+                    cover
+                    transition-show="scale"
+                    transition-hide="scale"
+                  >
+                    <q-date
+                      v-model="familiares.fecha_nacimiento"
+                      :mask="maskFecha"
+                      today-btn
+                    >
+                      <div class="row items-center justify-end">
+                        <q-btn
+                          v-close-popup
+                          label="Cerrar"
+                          color="primary"
+                          flat
+                        />
+                      </div>
+                    </q-date>
+                  </q-popup-proxy>
+                </q-icon>
               </template>
             </q-input>
           </div>
+
           <!-- Parentezco -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Parentezco</label>
@@ -132,8 +155,8 @@
               :readonly="disabled"
               use-input
               input-debounce="0"
-              :option-value="(v) => v.nombre"
-              :option-label="(v) => v.nombre"
+              :option-value="v => v.nombre"
+              :option-label="v => v.nombre"
               emit-value
               map-options
             >
@@ -144,7 +167,9 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
                 </q-item>
               </template>
             </q-select>

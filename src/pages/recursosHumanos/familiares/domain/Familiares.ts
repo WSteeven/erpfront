@@ -8,6 +8,7 @@ export class Familiares extends EntidadAuditable {
   parentezco: string | null
   nombres: string | null
   apellidos: string | null
+  fecha_nacimiento: string | null // fecha de nacimiento agg por el ticket
 
   constructor() {
     super()
@@ -18,5 +19,6 @@ export class Familiares extends EntidadAuditable {
     this.parentezco = null
     this.nombres = null
     this.apellidos = null
+    this.fecha_nacimiento = null
   }
 }
