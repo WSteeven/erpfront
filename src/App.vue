@@ -67,11 +67,11 @@ export default defineComponent({
         color: 'gray-5',
         textColor: 'white',
         icon: 'system_update',
-        classes: 'update-notification', 
+        classes: 'update-notification',
         actions: [
           {
             label: 'Recargar',
-            color: 'secondary',
+            color: 'accent',
             icon: 'refresh',
             handler: () => {
               LocalStorage.setItem('app_version', serverVersion)

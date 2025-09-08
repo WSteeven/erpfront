@@ -843,9 +843,9 @@
               />
             </div>
 
-            <!-- Curier -->
+            <!-- Courier -->
             <div class="col-12 col-md-6" v-if="gasto.se_envia_valija">
-              <label class="q-mb-sm block">Curier</label>
+              <label class="q-mb-sm block">Courier</label>
               <q-input
                   v-model="gasto.envio_valija.courier"
                   placeholder="Obligatorio"

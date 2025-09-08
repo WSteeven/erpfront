@@ -102,14 +102,20 @@ export default defineComponent({
       filtros.fecha_fin = obtenerFechaActual(maskFecha)
 
       //listados
-      //empleados con rol de guardia
-      empleados.value = listadosAuxiliares.empleados.filter((emp: any) => {
-        if (!emp.roles) return false
-        const roles = emp.roles
-          .split(',')
-          .map((r: string) => r.trim().toUpperCase())
-        return roles.includes('GUARDIA')
-      })
+      // empleados con rol de guardia
+      empleados.value = listadosAuxiliares.empleados
+        .filter((emp: any) => {
+          if (!emp.roles) return false
+          const roles = emp.roles
+            .split(',')
+            .map((r: string) => r.trim().toUpperCase())
+          return roles.includes('GUARDIA')
+        })
+        //
+        .sort((a: any, b: any) =>
+          a.apellidos.localeCompare(b.apellidos, 'es', { sensitivity: 'base' })
+        )
+
       //zonas
       zonas.value = listadosAuxiliares.zonas
     })
