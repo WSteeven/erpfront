@@ -714,6 +714,12 @@ export const useMenuStore = defineStore('menu', () => {
           link: 'plantillas-base',
           icon: 'bi-card-list',
           can: store.can('puede.acceder.plantillas_base')
+        },
+        {
+          title: 'Plantillas Capacitaciones',
+          link: 'plantillas-capacitaciones',
+          icon: 'bi-card-list',
+          can: store.can('puede.acceder.plantillas_capacitaciones')
         }
       ]
     },

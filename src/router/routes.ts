@@ -87,6 +87,13 @@ const routes: RouteRecordRaw[] = [
           import('sistema/plantillasBase/view/PlantillaBasePage.vue'),
         meta: { requiresAuth: true },
       },
+      {
+        path: 'plantillas-capacitaciones',
+        name: 'plantillas_capacitaciones',
+        component: () =>
+          import('sistema/plantillasCapacitaciones/view/PlantillaCapacitacionPage.vue'),
+        meta: { requiresAuth: true },
+      },
       /**
        *  Módulo de FONDOS ROTATIVOS
        */

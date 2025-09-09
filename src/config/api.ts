@@ -12,6 +12,7 @@ import { fondosRotativos } from 'config/endpoints/fondosRotativos'
 import { controlPersonal } from 'config/endpoints/rrhh/controlPersonal'
 import {ventasClaro} from 'config/endpoints/ventasClaro';
 import {appenate} from 'config/endpoints/appenate/telconet';
+import { plantillas } from './plantillas'
 
 export const apiConfig = {
   // URL_BASE: 'http://localhost:8000',
@@ -25,6 +26,7 @@ export const endpoints = {
   usuarios: new Endpoint('usuarios'),
   configuracion: new Endpoint('configuracion'),
   plantillas_base: new Endpoint('plantillas-base'),
+  plantillas_capacitaciones: new Endpoint('plantillas-capacitaciones'),
   obtener_plantilla_base_por_nombre: new Endpoint('obtener-plantilla-base-por-nombre'),
   auditorias: new Endpoint('auditorias'),
   adm_cuentas_bancarias: new Endpoint('cuentas-bancarias'),
