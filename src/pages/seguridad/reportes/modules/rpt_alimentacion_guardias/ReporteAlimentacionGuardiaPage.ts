@@ -145,7 +145,7 @@ export default defineComponent({
       cargando.value = true
       try {
         const axios = AxiosHttpRepository.getInstance()
-        let url = axios.getEndpoint(endpoints.bitacoras) + '/reportes'
+        let url = '/'+ axios.getEndpoint(endpoints.bitacoras) + '/reportes'
         const filename = 'reporte_alimentacion_guardia'
 
         filtros.accion = accion
