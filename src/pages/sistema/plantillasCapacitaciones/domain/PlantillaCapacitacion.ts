@@ -9,10 +9,11 @@ export class PlantillaCapacitacion extends EntidadAuditable {
   capacitador_id: number | null
   modalidad: string | null
   asistentes: number[]
+  capacitador_nombre: string | null
 
   constructor() {
     super()
-    this.id = null            
+    this.id = null
     this.tema = null
     this.fecha = null
     this.hora_inicio = null
@@ -20,5 +21,6 @@ export class PlantillaCapacitacion extends EntidadAuditable {
     this.capacitador_id = null
     this.modalidad = 'Interno'
     this.asistentes = []
+    this.capacitador_nombre = null
   }
 }

@@ -11,6 +11,13 @@ export const configuracionColumnasPlantillaCapacitacion: ColumnConfig<PlantillaC
       sortable: true
     },
     {
+      name: 'capacitador_nombre',
+      field: 'capacitador_nombre',
+      label: 'Capacitador',
+      align: 'left',
+      sortable: true
+    },
+    {
       name: 'fecha',
       field: 'fecha',
       label: 'Fecha',
@@ -32,17 +39,10 @@ export const configuracionColumnasPlantillaCapacitacion: ColumnConfig<PlantillaC
       sortable: true
     },
     {
-      name: 'capacitador_id',
-      field: 'capacitador_id',
-      label: 'Capacitador',
-      align: 'left',
-      sortable: true
-    },
-    {
       name: 'modalidad',
       field: 'modalidad',
       label: 'Modalidad',
       align: 'left',
       sortable: true
-    },
+    }
   ]

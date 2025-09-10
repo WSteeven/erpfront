@@ -18,7 +18,6 @@
               :v$="v$"
             />
           </div>
-
           <!-- Fecha -->
           <div class="col-12 col-md-6">
             <label class="q-mb-sm block">Fecha</label>
@@ -29,12 +28,15 @@
               mask="####-##-##"
               placeholder="YYYY-MM-DD"
             >
-              <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+              <q-popup-proxy
+                cover
+                transition-show="scale"
+                transition-hide="scale"
+              >
                 <q-date v-model="plantilla.fecha" mask="YYYY-MM-DD" />
               </q-popup-proxy>
             </q-input>
           </div>
-
           <!-- Hora inicio -->
           <div class="col-12 col-md-6">
             <label class="q-mb-sm block">Hora Inicio</label>
@@ -45,12 +47,15 @@
               mask="time"
               placeholder="HH:mm"
             >
-              <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+              <q-popup-proxy
+                cover
+                transition-show="scale"
+                transition-hide="scale"
+              >
                 <q-time v-model="plantilla.hora_inicio" format24h />
               </q-popup-proxy>
             </q-input>
           </div>
-
           <!-- Hora fin -->
           <div class="col-12 col-md-6">
             <label class="q-mb-sm block">Hora Fin</label>
@@ -61,12 +66,15 @@
               mask="time"
               placeholder="HH:mm"
             >
-              <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+              <q-popup-proxy
+                cover
+                transition-show="scale"
+                transition-hide="scale"
+              >
                 <q-time v-model="plantilla.hora_fin" format24h />
               </q-popup-proxy>
             </q-input>
           </div>
-
           <!-- Capacitador -->
           <div class="col-12 col-md-6">
             <label class="q-mb-sm block">Capacitador</label>
@@ -85,7 +93,6 @@
               map-options
             />
           </div>
-
           <!-- Modalidad -->
           <div class="col-12 col-md-6">
             <label class="q-mb-sm block">Modalidad</label>
@@ -99,45 +106,34 @@
             />
           </div>
         </div>
-
         <!-- Asistentes -->
         <div class="col-12 q-mt-md">
-          <label class="q-mb-sm block">Asistentes</label>
-
-
-          <br />
-
+          <label class="q-mb-sm block">Asistentes</label> <br />
           <!-- Tabla de empleados -->
           <essential-table
             :configuracionColumnas="configuracionColumnasEmpleados"
-            :datos="empleadosFiltrados"
+            :datos="empleadosFiltrados || []"
             tipo-seleccion="multiple"
             :emitirAlSeleccionar="true"
             @selected="seleccionarAsistentes"
           />
-
           <!-- DEBUG -->
           <pre>Asistentes seleccionados: {{ asistentesSeleccionados }}</pre>
           <pre>Plantilla.asistentes: {{ plantilla.asistentes }}</pre>
         </div>
-
         <!-- Botones -->
         <div class="col-12 q-mt-md">
           <div class="row justify-end q-col-gutter-x-xs">
             <button-submits
               :accion="accion"
               :permitirGuardar="true"
+              :permitirEditar="true"
+              :permitirEliminar="true"
               :disabled="cargando.estaCargando.value"
               @cancelar="reestablecer()"
-              @editar="guardar(plantilla, false)"
-              @eliminar="eliminar(plantilla)"
+              @editar="guardar(plantilla, true)"
+              @eliminar="eliminar(plantilla, true)"
               @guardar="guardar(plantilla, true)"
-            />
-            <q-btn
-              color="primary"
-              icon="picture_as_pdf"
-              label="Exportar PDF"
-              @click="exportarPdf"
             />
           </div>
         </div>
@@ -145,5 +141,4 @@
     </template>
   </tab-layout>
 </template>
-
 <script src="./PlantillaCapacitacionPage.ts" />

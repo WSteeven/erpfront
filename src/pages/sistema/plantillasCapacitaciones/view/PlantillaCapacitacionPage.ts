@@ -1,3 +1,4 @@
+import { listadoAuxiliar } from './../../../../shared/contenedor/domain/listable';
 import { defineComponent, ref, watch, computed } from 'vue'
 import { useVuelidate } from '@vuelidate/core'
 import { required } from 'shared/i18n-validators'
@@ -6,10 +7,10 @@ import { PlantillaCapacitacion } from '../domain/PlantillaCapacitacion'
 import { configuracionColumnasEmpleados } from 'pages/recursosHumanos/empleados/domain/configuracionColumnasEmpleados'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
-import { configuracionColumnasPlantillaCapacitacion } from '../domain/configuracionPlantillaCapacitacion'
+import { configuracionColumnasPlantillaCapacitacion } from '../domain/configuracionColumnasPlantillaCapacitacion'
 import { PlantillaCapacitacionController } from '../infraestructure/PlantillaCapacitacionController'
 
-//componentes
+// componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import InputComponent from 'components/inputs/InputComponent.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
@@ -18,41 +19,18 @@ import { acciones } from 'config/utils'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 
 export default defineComponent({
-  components: {
-    TabLayout,
-    InputComponent,
-    EssentialTable,
-    ButtonSubmits
-  },
+  components: { TabLayout, InputComponent, EssentialTable, ButtonSubmits },
   setup() {
     const mixin = new ContenedorSimpleMixin(
       PlantillaCapacitacion,
       new PlantillaCapacitacionController()
     )
 
-    const {
-      entidad: plantilla,
-      disabled,
-      accion,
-      listadosAuxiliares
-    } = mixin.useReferencias()
-    const {
-      setValidador,
-      cargarVista,
-      obtenerListados,
-      guardar,
-      reestablecer,
-      eliminar,
-      listar
-    } = mixin.useComportamiento()
-
-    const {
-      onBeforeGuardar,
-      onGuardado,
-      onBeforeModificar,
-      onModificado,
-      onReestablecer
-    } = mixin.useHooks()
+    const { entidad: plantilla, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
+    const { setValidador, cargarVista, obtenerListados, guardar, reestablecer, eliminar, listar } =
+      mixin.useComportamiento()
+    const { onBeforeGuardar, onGuardado, onBeforeModificar, onModificado, onReestablecer } =
+      mixin.useHooks()
 
     const cargando = new StatusEssentialLoading()
 
@@ -77,8 +55,8 @@ export default defineComponent({
     onReestablecer(() => (plantilla._method = metodo.value))
 
     // Empleados
-    const { empleados, filtrarEmpleados } =
-      useFiltrosListadosSelects(listadosAuxiliares)
+    const { empleados, filtrarEmpleados } = useFiltrosListadosSelects(listadosAuxiliares)
+
     const modalidades = ref([
       { label: 'Interno', value: 'Interno' },
       { label: 'Externo', value: 'Externo' }
@@ -89,13 +67,21 @@ export default defineComponent({
         empleados: {
           controller: new EmpleadoController(),
           params: {
-            campos: 'id,nombres,apellidos,identificacion,cargo,departamento',
+            campos: 'id,nombres,apellidos,identificacion,cargo_id,departamento_id',
             estado: 1
           }
         }
       })
     })
+
     empleados.value = listadosAuxiliares.empleados
+
+    const listado = ref<any[]>([])
+
+async function listar() {
+  const { result } = await controller.listar()
+  listado.value = Array.isArray(result) ? result : []
+}
 
     // Asistentes
     const empleadosFiltrados = ref<any[]>([])
@@ -106,7 +92,7 @@ export default defineComponent({
         estado: 1,
         fecha_ingreso_hasta: fecha
       })
-      empleadosFiltrados.value = result ?? []
+      empleadosFiltrados.value = Array.isArray(result) ? result : []
     }
 
     function seleccionarAsistentes(rows: any[]) {
@@ -133,6 +119,7 @@ export default defineComponent({
       capacitador_id: { required },
       modalidad: { required }
     }
+
     const v$ = useVuelidate(reglas, plantilla)
     setValidador(v$.value)
 
@@ -153,6 +140,7 @@ export default defineComponent({
       modalidades,
       v$,
       empleadosFiltrados,
+      listado,
       asistentesSeleccionados,
       seleccionarAsistentes,
       configuracionColumnasEmpleados,
