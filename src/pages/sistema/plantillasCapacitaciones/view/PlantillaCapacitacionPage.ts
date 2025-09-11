@@ -78,10 +78,7 @@ export default defineComponent({
 
     const listado = ref<any[]>([])
 
-async function listar() {
-  const { result } = await controller.listar()
-  listado.value = Array.isArray(result) ? result : []
-}
+
 
     // Asistentes
     const empleadosFiltrados = ref<any[]>([])

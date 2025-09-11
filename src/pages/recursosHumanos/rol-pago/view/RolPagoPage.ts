@@ -58,15 +58,26 @@ export default defineComponent({
      * Mixin
      *********/
     const mixin = new ContenedorSimpleMixin(RolPago, new RolPagoController())
-    const mixinRolPago = new ContenedorSimpleMixin(Archivo,new ArchivoRolPagoController())
+    const mixinRolPago = new ContenedorSimpleMixin(
+      Archivo,
+      new ArchivoRolPagoController()
+    )
 
     // Mixin de Egreso
-    const mixinEgresoRolPago = new ContenedorSimpleMixin(EgresoRolPago,new EgresoRolPagoController())
-    const { eliminar: eliminarEgreso, guardar: guardarEgreso } = mixinEgresoRolPago.useComportamiento()
-    const {onGuardado: onEgresoGuardado}=mixinEgresoRolPago.useHooks()
+    const mixinEgresoRolPago = new ContenedorSimpleMixin(
+      EgresoRolPago,
+      new EgresoRolPagoController()
+    )
+    const { eliminar: eliminarEgreso, guardar: guardarEgreso } =
+      mixinEgresoRolPago.useComportamiento()
+    const { onGuardado: onEgresoGuardado } = mixinEgresoRolPago.useHooks()
     // Mixin de Ingreso
-    const mixinIngresoRolPago = new ContenedorSimpleMixin(IngresoRolPago,new IngresoRolPagoController())
-    const { eliminar: eliminarIngreso, guardar: guardarIngreso } =mixinIngresoRolPago.useComportamiento()
+    const mixinIngresoRolPago = new ContenedorSimpleMixin(
+      IngresoRolPago,
+      new IngresoRolPagoController()
+    )
+    const { eliminar: eliminarIngreso, guardar: guardarIngreso } =
+      mixinIngresoRolPago.useComportamiento()
 
     /*********
      * Stores
@@ -230,7 +241,7 @@ export default defineComponent({
     /********
      * Hooks
      *********/
-    onEgresoGuardado((id, data)=>{
+    onEgresoGuardado((id, data) => {
       console.log(id, data)
       rolpago.egresos.push(data.modelo)
     })
@@ -801,7 +812,9 @@ export default defineComponent({
         if (entidad.id == undefined) {
           rolpago.egresos.splice(posicion, 1)
         } else {
-          await eliminarEgreso(entidad, () => rolpago.egresos.splice(posicion, 1))
+          await eliminarEgreso(entidad, () =>
+            rolpago.egresos.splice(posicion, 1)
+          )
         }
       }
     }
@@ -815,7 +828,9 @@ export default defineComponent({
         if (entidad.id == undefined) {
           rolpago.ingresos.splice(posicion, 1)
         } else {
-          await eliminarIngreso(entidad, () => rolpago.ingresos.splice(posicion, 1))
+          await eliminarIngreso(entidad, () =>
+            rolpago.ingresos.splice(posicion, 1)
+          )
           // rolpago.ingresos.splice(posicion, 1)
         }
       }
@@ -833,56 +848,28 @@ export default defineComponent({
     // }
 
     function calcularSalario(tipo_contrato) {
-      // let dias_quincena = rolpago.es_quincena ? 15 : 0
-      // if (rolpago.medio_tiempo || rolpago.tipo_contrato == 3) {
-      // dias_quincena = 0
-      // }
       const dias = parseInt(rolpago.dias ? rolpago.dias.toString() : '0')
-      const salario = parseFloat(rolpago.salario ?? '0') //salario es el definido en el registro del empleado
-      console.log(dias, salario)
+      const salario = parseFloat(rolpago.salario ?? '0')
       const porcentajeAnticipo = recursosHumanosStore.porcentajeAnticipo / 100
-      const sueldo = rolpago.es_quincena
-        ? (salario / 30) *
-          dias *
-          (porcentajeAnticipo + (rolpago.es_quincena ? porcentajeAnticipo : 0))
-        : (salario / 30) * dias
-      // console.log(sueldo)
-      // const sueldo = (salario / 30) * dias_totales
-      //
-      let total_sueldo: number
-      console.log(porcentajeAnticipo, tipo_contrato)
-      // switch (tipo_contrato) {
-      // case 3:
-      //   if (dias == 15) {
-      //     total_sueldo = salario * porcentajeAnticipo
-      //   } else {
-      //     const quincena = (salario / 30)
-      //     total_sueldo = quincena * dias
-      //     console.log(quincena)
-      //     console.log(total_sueldo)
-      //   }
-      //   break
-      // default:
+      let total_sueldo = 0
+
       if (rolpago.es_vendedor_medio_tiempo) {
         const porcentaje = rolpago.porcentaje_quincena
           ? rolpago.porcentaje_quincena / 100
           : 1
-        total_sueldo = rolpago.es_quincena ? salario * 0.5 * porcentaje : sueldo
-        console.log('if', total_sueldo, porcentaje)
+        total_sueldo = rolpago.es_quincena
+          ? salario * 0.5 * porcentaje
+          : (salario / 30) * dias
       } else {
         if (rolpago.es_quincena) {
-          if (dias == 15) total_sueldo = sueldo
-          else {
-            if (empleadoStore.empleado.departamento == 'CUADRILLA') {
-              total_sueldo = ((salario * porcentajeAnticipo) / 15) * dias
-            } else total_sueldo = ((salario * porcentajeAnticipo) / 30) * dias //* porcentajeAnticipo
-          }
-        } else total_sueldo = sueldo
-        console.log(total_sueldo)
+          // Calculo para quincena proporcional
+          const sueldoQuincena = salario * porcentajeAnticipo
+          total_sueldo = (sueldoQuincena / 15) * dias
+        } else {
+          total_sueldo = (salario / 30) * dias
+        }
       }
 
-      //     break
-      // }
       rolpago.sueldo = parseFloat(total_sueldo.toFixed(2))
     }
 
