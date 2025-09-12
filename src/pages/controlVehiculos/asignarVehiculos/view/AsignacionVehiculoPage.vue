@@ -239,7 +239,7 @@
               v-model="asignacion.observacion_entrega"
               placeholder="Opcional"
               autogrow
-              :disable="disabled || soloLectura"
+              :disable="disabled"
               outlined
               dense
             />
