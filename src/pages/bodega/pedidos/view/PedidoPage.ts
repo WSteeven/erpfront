@@ -468,7 +468,8 @@ export default defineComponent({
       visible: ({ entidad }) => {
         return (
           ((tabSeleccionado.value === autorizacionesTransacciones.aprobado ||
-            tabSeleccionado.value === estadosTransacciones.parcial) &&
+            tabSeleccionado.value === estadosTransacciones.parcial ||
+            tabSeleccionado.value === estadosTransacciones.pendiente) &&
             (((entidad.per_autoriza_id === store.user.id ||
               entidad.solicitante_id === store.user.id) &&
               entidad.estado === estadosTransacciones.pendiente) ||
