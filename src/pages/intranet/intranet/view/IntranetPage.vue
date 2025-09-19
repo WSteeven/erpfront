@@ -701,7 +701,7 @@
 
             <div class="column q-gutter-xs q-mt-md q-mb-md q-mx-auto">
               <q-btn
-                href="https://drive.google.com/drive/folders/1Zv3eTjramxByFRht-L5Gz_nrulgFE32V?usp=sharing_eip_m&ts=64386770"
+                href="https://drive.google.com/drive/folders/11bJYA0SbPeGaESQfi6TKaFQEa_RaxlE6?usp=drive_link"
                 color="blue-14"
                 class="bg-blue-1"
                 icon-right="las la-external-link-alt"
@@ -723,7 +723,7 @@
                 no-caps
               />
 
-              <q-btn
+              <!--               <q-btn
                 icon-right="las la-external-link-alt"
                 label="Plugins"
                 class="bg-blue-1"
@@ -733,7 +733,7 @@
                 unelevated
                 href="https://drive.google.com/drive/folders/1KypTE2iv-2pHbwQxpzVhVPEhf5Ra8fow?usp=sharing"
                 target="_blank"
-              ></q-btn>
+              ></q-btn> -->
 
               <q-btn
                 v-for="documento in documentosIntranet"
@@ -856,9 +856,17 @@
                   <p class="text-white bg-primary">{{ vacante.nombre }}</p>
                   <div
                     class="q-px-xs text-caption text-grey text-justify"
+                    style="cursor: pointer"
                     @click="visualizarVacante(vacante)"
                   >
                     <p>{{ acortarDescripcion($q, vacante.descripcion) }}</p>
+                    <q-tooltip
+                      anchor="center middle"
+                      self="bottom middle"
+                      :offset="[0, 12]"
+                    >
+                      Ver vacante
+                    </q-tooltip>
                   </div>
                   <q-separator />
                   <div class="row q-pa-sm text-black" style="font-size: 11px">
