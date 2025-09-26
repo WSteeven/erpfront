@@ -39,7 +39,7 @@ export default defineComponent({
             await obtenerListados({
                 provincias: {
                     controller: new ProvinciaController(),
-                    params: { pais_id: 66 }
+                    params: { activo: 1 }
                 }
             })
             listadosAuxiliares.cantones = JSON.parse(LocalStorage.getItem('cantones')!.toString())

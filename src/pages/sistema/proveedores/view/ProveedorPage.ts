@@ -53,6 +53,7 @@ import { ArchivoController } from 'pages/gestionTrabajos/subtareas/modules/gesto
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { ValidarPropiedadesProveedor } from '../application/validaciones/ValidarPropiedadesProveedor'
 import { DatoBancarioController } from 'pages/comprasProveedores/datosBancariosProveedor/infraestructure/DatoBancarioController'
+import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller'
 
 export default defineComponent({
   components: {
@@ -123,6 +124,7 @@ export default defineComponent({
           controller: new EmpresaController(),
           params: { es_proveedor: 1 }
         },
+        cantones: new CantonController(),
         parroquias: new ParroquiaController(),
         categorias: new CategoriaOfertaController(),
         departamentos: new DepartamentoController(),
