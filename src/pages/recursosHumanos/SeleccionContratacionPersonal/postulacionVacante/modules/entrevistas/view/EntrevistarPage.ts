@@ -28,7 +28,7 @@ export default defineComponent({
       accion,
       listadosAuxiliares
     } = mixin.useReferencias()
-    const { cargarVista, obtenerListados, guardar, editar, reestablecer } =
+    const { cargarVista, obtenerListados, guardar, editar, reestablecer, setValidador } =
       mixin.useComportamiento()
     const { onGuardado, onModificado, onReestablecer } = mixin.useHooks()
 

@@ -156,6 +156,18 @@ export default defineComponent({
     const ticketsPorDepartamentoEstadoFinalizadoSinSolucionBar = ref()
     const ticketsPorDepartamentoEstadoCalificadoBar = ref()
 
+    // Graficos para Categorias y Tipos de Tickets
+
+    const ticketsPorCategoria = ref([])
+    const ticketsPorTipo = ref([])
+    const ticketsPorCategoriaBar = ref()
+    const ticketsPorTipoBar = ref()
+
+    const ticketsPorDepartamentoCategoria = ref([])
+    const ticketsPorDepartamentoTipo = ref([])
+    const ticketsPorDepartamentoCategoriaBar = ref()
+    const ticketsPorDepartamentoTipoBar = ref()
+
     // -- Graficos tiempos
     const promedioTiemposLine = ref()
 
@@ -272,7 +284,7 @@ export default defineComponent({
       if (await v$.value.$validate()) {
         try {
           /* const empleadoSeleccionado: Empleado = empleados.value.filter((emp: Empleado) => emp.id === filtro.empleado)[0]
-          
+
                     esResponsableDepartamento.value = empleadoSeleccionado.responsable_departamento
                     departamento = empleadoSeleccionado.departamento_id
                     filtro.departamento = empleadoSeleccionado.departamento_id */
@@ -369,6 +381,53 @@ export default defineComponent({
             'Cantidad de tickets recibidos por los departamentos',
             colores2
           )
+          // Gráfico por categoría
+          ticketsPorCategoria.value = result.ticketsPorCategoria || []
+          if (ticketsPorCategoria.value.length) {
+            const graficoTicketsPorCategoria = contarTicketsPorCampo(
+              ticketsPorCategoria.value,
+              'categoria'
+            )
+            const labelsCategoria = graficoTicketsPorCategoria.map(
+              item => item.categoria
+            )
+            const valoresCategoria = graficoTicketsPorCategoria.map(
+              item => item.total_tickets
+            )
+            const coloresCategoria = graficoTicketsPorCategoria.map(() =>
+              generarColorAzulPastelClaro()
+            )
+            ticketsPorCategoriaBar.value = mapearDatos(
+              labelsCategoria,
+              valoresCategoria,
+              'Cantidad de tickets por categoría',
+              coloresCategoria
+            )
+          }
+
+          // Gráfico por tipo
+          ticketsPorTipo.value = result.ticketsPorTipo || []
+          if (ticketsPorTipo.value.length) {
+            const graficoTicketsPorTipo = contarTicketsPorCampo(
+              ticketsPorTipo.value,
+              'tipo_ticket'
+            )
+            const labelsTipo = graficoTicketsPorTipo.map(
+              item => item.tipo_ticket
+            )
+            const valoresTipo = graficoTicketsPorTipo.map(
+              item => item.total_tickets
+            )
+            const coloresTipo = graficoTicketsPorTipo.map(() =>
+              generarColorAzulPastelClaro()
+            )
+            ticketsPorTipoBar.value = mapearDatos(
+              labelsTipo,
+              valoresTipo,
+              'Cantidad de tickets por tipo',
+              coloresTipo
+            )
+          }
 
           // Tiempos
           // const tiemposTicketsFinalizadosPorDepartamento = tiemposTicketsFinalizadosPorDepartamento
@@ -597,6 +656,47 @@ export default defineComponent({
             'Tiempo ocupado (h)',
             colores11
           )
+          // Gráfico por categoría para departamento
+          ticketsPorDepartamentoCategoria.value =
+            result.ticketsPorDepartamentoCategoria || []
+          if (ticketsPorDepartamentoCategoria.value.length) {
+            const labels13 = result.ticketsPorDepartamentoCategoria.map(
+              item => item.categoria
+            )
+            const valores13 = result.ticketsPorDepartamentoCategoria.map(
+              item => item.total_tickets
+            )
+            const colores13 = result.ticketsPorDepartamentoCategoria.map(() =>
+              generarColorAzulPastelClaro()
+            )
+            ticketsPorDepartamentoCategoriaBar.value = mapearDatos(
+              labels13,
+              valores13,
+              'Cantidad de tickets por categoría',
+              colores13
+            )
+          }
+
+          // Gráfico por tipo para departamento
+          ticketsPorDepartamentoTipo.value =
+            result.ticketsPorDepartamentoTipo || []
+          if (ticketsPorDepartamentoTipo.value.length) {
+            const labels14 = result.ticketsPorDepartamentoTipo.map(
+              item => item.tipo_ticket
+            )
+            const valores14 = result.ticketsPorDepartamentoTipo.map(
+              item => item.total_tickets
+            )
+            const colores14 = result.ticketsPorDepartamentoTipo.map(() =>
+              generarColorAzulPastelClaro()
+            )
+            ticketsPorDepartamentoTipoBar.value = mapearDatos(
+              labels14,
+              valores14,
+              'Cantidad de tickets por tipo',
+              colores14
+            )
+          }
 
           listados.tiempoPromedio = result.tiempoPromedio
           listados.totalTicketsFinalizados = result.totalTicketsFinalizados
@@ -611,6 +711,26 @@ export default defineComponent({
     function consultarDesdeFechas() {
       if (mostrarSeccionEmpleado.value) consultar()
       if (mostrarSeccionDepartamento.value) consultarDepartamento()
+    }
+
+    function contarTicketsPorCampo(tickets: Ticket[], campo: string): any[] {
+      const conteo = tickets.reduce((acumulador: any, ticket) => {
+        const valor = ticket[campo]
+
+        if (valor) {
+          const elementoExistente: any = acumulador.find(
+            (item: any) => item[campo] === valor
+          )
+
+          if (!elementoExistente)
+            acumulador.push({ [campo]: valor, total_tickets: 1 })
+          else elementoExistente.total_tickets++
+        }
+
+        return acumulador
+      }, [])
+
+      return conteo
     }
 
     function mapearDatos(
@@ -860,10 +980,10 @@ export default defineComponent({
       filtro.empleado = null
       await consultar()
       listadosAuxiliares.empleados = await cargando.cargarConsulta(
-          async () =>
-              (
-                  await new EmpleadoController().listar({ estado: val ? 0 : 1 })
-              ).result
+        async () =>
+          (
+            await new EmpleadoController().listar({ estado: val ? 0 : 1 })
+          ).result
       )
       empleados.value = listadosAuxiliares.empleados
     }
@@ -969,7 +1089,15 @@ export default defineComponent({
       reporteExcel,
       maskFecha,
       mostrarInactivos,
-      checkMostrarInactivos
+      checkMostrarInactivos,
+      ticketsPorCategoria,
+      ticketsPorTipo,
+      ticketsPorCategoriaBar,
+      ticketsPorTipoBar,
+      ticketsPorDepartamentoCategoria,
+      ticketsPorDepartamentoTipo,
+      ticketsPorDepartamentoCategoriaBar,
+      ticketsPorDepartamentoTipoBar
     }
   }
 })

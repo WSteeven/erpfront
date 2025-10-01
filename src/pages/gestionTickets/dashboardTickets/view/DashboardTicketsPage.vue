@@ -46,7 +46,7 @@
               </template>
 
               <template v-slot:error>
-                <error-component clave="fecha_inicio" :v$="v$"/>
+                <error-component clave="fecha_inicio" :v$="v$" />
               </template>
             </q-input>
           </div>
@@ -87,7 +87,7 @@
               </template>
 
               <template v-slot:error>
-                <error-component clave="fecha_fin" :v$="v$"/>
+                <error-component clave="fecha_fin" :v$="v$" />
               </template>
             </q-input>
           </div>
@@ -140,11 +140,11 @@
               map-options
             >
               <template v-slot:no-option>
-                <no-option-component/>
+                <no-option-component />
               </template>
 
               <template v-slot:error>
-                <error-component clave="empleado" :v$="v$"/>
+                <error-component clave="empleado" :v$="v$" />
               </template>
             </q-select>
           </div>
@@ -174,23 +174,23 @@
               @blur="v$.departamento.$touch"
             >
               <template v-slot:no-option>
-                <no-option-component/>
+                <no-option-component />
               </template>
 
               <template v-slot:error>
-                <error-component clave="departamento" :v$="v$"/>
+                <error-component clave="departamento" :v$="v$" />
               </template>
             </q-select>
           </div>
 
           <div class="col-12 col-md-2 q-pt-lg" v-if="mostrarSeccionEmpleado">
             <q-checkbox
-                class="q-mt-sm q-pt-sm"
-                v-model="mostrarInactivos"
-                label="Inactivos"
-                outlined
-                @update:model-value="checkMostrarInactivos"
-                dense
+              class="q-mt-sm q-pt-sm"
+              v-model="mostrarInactivos"
+              label="Inactivos"
+              outlined
+              @update:model-value="checkMostrarInactivos"
+              dense
             ></q-checkbox>
           </div>
           <div class="col-12 col-md-2">
@@ -527,6 +527,32 @@
                 />
               </div>
             </div>
+
+            <div
+              v-if="ticketsPorCategoria.length"
+              class="col-12 col-md-6 text-center"
+            >
+              <div class="text-subtitle2 q-mb-lg">Tickets por categoría</div>
+              <div>
+                <grafico-generico
+                  :data="ticketsPorCategoriaBar"
+                  :options="optionsPie"
+                />
+              </div>
+            </div>
+
+            <div
+              v-if="ticketsPorTipo.length"
+              class="col-12 col-md-6 text-center"
+            >
+              <div class="text-subtitle2 q-mb-lg">Tickets por tipo</div>
+              <div>
+                <grafico-generico
+                  :data="ticketsPorTipoBar"
+                  :options="optionsPie"
+                />
+              </div>
+            </div>
           </div>
         </q-tab-panel>
 
@@ -841,6 +867,32 @@
                   :data="ticketsPorDepartamentoEstadoCalificadoBar"
                   :options="optionsPie"
                   v-if="ticketsPorDepartamentoEstadoCalificado.length"
+                />
+              </div>
+            </div>
+
+            <div
+              v-if="ticketsPorDepartamentoCategoria.length"
+              class="col-12 col-md-6 text-center"
+            >
+              <div class="text-subtitle2 q-mb-lg">Tickets por categoría</div>
+              <div>
+                <grafico-generico
+                  :data="ticketsPorDepartamentoCategoriaBar"
+                  :options="optionsPie"
+                />
+              </div>
+            </div>
+
+            <div
+              v-if="ticketsPorDepartamentoTipo.length"
+              class="col-12 col-md-6 text-center"
+            >
+              <div class="text-subtitle2 q-mb-lg">Tickets por tipo</div>
+              <div>
+                <grafico-generico
+                  :data="ticketsPorDepartamentoTipoBar"
+                  :options="optionsPie"
                 />
               </div>
             </div>
