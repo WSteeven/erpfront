@@ -383,10 +383,12 @@ export default defineComponent({
         departamentos.value = response.data
 
         // Si quieres seleccionar automáticamente el primero
-        if (departamentos.value.length > 0) {
-          const primerDepartamento = empleados.value[0].departamento_id
-          activeTab.value = primerDepartamento.id
-          await consultarEmpleadosDepartamento(primerDepartamento.id)
+        if (departamentos.value && departamentos.value.length > 0) {
+          const primerDepartamento = departamentos.value[0]
+          if (primerDepartamento) {
+            activeTab.value = primerDepartamento.id
+            await consultarEmpleadosDepartamento(primerDepartamento.id)
+          }
         }
       } catch (error) {
         console.error('Error al consultar departamentos:', error)
