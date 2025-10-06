@@ -880,6 +880,7 @@
                 <grafico-generico
                   :data="ticketsPorDepartamentoCategoriaBar"
                   :options="optionsPie"
+                  @element-click="clickGraficoTicketsCategoria"
                 />
               </div>
             </div>
@@ -893,6 +894,7 @@
                 <grafico-generico
                   :data="ticketsPorDepartamentoTipoBar"
                   :options="optionsPie"
+                  @element-click="clickGraficoTicketsTipo"
                 />
               </div>
             </div>

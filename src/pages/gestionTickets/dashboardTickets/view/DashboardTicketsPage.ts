@@ -1,3 +1,4 @@
+import { TipoTicket } from 'pages/gestionTickets/tiposTickets/domain/TipoTicket'
 // Dependencias
 import { configuracionColumnasSubtareasRealizadasPorGrupoTiposTrabajosEmergencia } from '../domain/configuracionColumnasSubtareasRealizadasPorGrupoTiposTrabajosEmergencia'
 import { configuracionColumnasSubtareasRealizadasPorRegion } from '../domain/configuracionColumnasSubtareasRealizadasPorRegion'
@@ -867,6 +868,26 @@ export default defineComponent({
       }
     }
 
+    function clickGraficoTicketsCategoria(data) {
+      const { label } = data
+      if (label) {
+        ticketsPorEstadoListado.value = ticketsPorCategoria.value.filter(
+          (ticket: Ticket) => ticket.categoria_tipo_ticket === label
+        )
+        tabsEmpleado.value = opcionesEmpleado.empleadoListado
+      }
+    }
+
+    function clickGraficoTicketsTipo(data) {
+      const { label } = data
+      if (label) {
+        ticketsPorEstadoListado.value = ticketsPorTipo.value.filter(
+          (ticket: Ticket) => ticket.tipo_ticket === label
+        )
+        tabsEmpleado.value = opcionesEmpleado.empleadoListado
+      }
+    }
+
     function clickGraficoLineaTiempo(data) {
       if (!data.label) return
 
@@ -1004,6 +1025,8 @@ export default defineComponent({
       categoriaGraficosEmpleado,
       clickGraficoTicketsEmpleado,
       clickGraficoTicketsDepartamento,
+      clickGraficoTicketsCategoria,
+      clickGraficoTicketsTipo,
       clickGraficoLineaTiempo,
       modoUnaColumna: ref(false),
       tabsTickets,
