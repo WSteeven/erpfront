@@ -5,7 +5,7 @@
     </div>
 
     <div class="col-12 col-md-10">
-      
+
       <div class="row q-col-gutter-md">
         <div class="col-12 text-primary text-bold text-h6 q-mb-md">
           {{ nombres }}
@@ -152,7 +152,10 @@ const genero = computed(() =>
   props.empleado.genero === 'M' ? 'MASCULINO' : 'FEMENINO'
 )
 
-const nombres = computed(
-  () => props.empleado.nombres + ' ' + (props.empleado.apellidos ?? '')
-)
+const nombres = computed(() => {
+  const apellidos = props.empleado.apellidos?.toLocaleUpperCase('es') ?? ''
+  const nombres = props.empleado.nombres?.toLocaleUpperCase('es') ?? ''
+  return `${apellidos} ${nombres}`.trim()
+})
+
 </script>
