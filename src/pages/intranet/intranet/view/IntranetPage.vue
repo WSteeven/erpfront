@@ -238,7 +238,7 @@
         </div>
 
         <!-- Empleados Nuevos -->
-        <q-card flat class="col-12 col-md-9 q-mb-sm">
+        <q-card v-if="empleadosNuevos && empleadosNuevos.length > 0" flat class="col-12 col-md-9 q-mb-sm">
           <q-card-section class="bg-white text-accent">
             <div class="text-h6 text-bold text-center text-uppercase">
               Nuevos Colaboradores
