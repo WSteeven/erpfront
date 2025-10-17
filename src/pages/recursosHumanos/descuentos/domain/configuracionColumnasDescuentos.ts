@@ -3,6 +3,12 @@ import { Descuento } from 'recursosHumanos/descuentos/domain/Descuento'
 
 export const configuracionColumnasDescuentos: ColumnConfig<Descuento>[]=[
   {
+    name: 'id',
+    field: 'id',
+    label: 'N°',
+    align: 'left',
+    sortable: true
+  },{
     name: 'empleado',
     field: 'empleado',
     label: 'Empleado',

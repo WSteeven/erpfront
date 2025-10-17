@@ -26,7 +26,7 @@
             <q-tooltip class="bg-dark">Maximizar</q-tooltip>
           </q-btn> -->
 
-          <q-btn
+          <q-btn v-if="mostrarBotonCerrarModal"
             round
             dense
             push

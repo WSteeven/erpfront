@@ -12,7 +12,7 @@ export const useEmpleadoStore = defineStore('empleadoStore', () => {
   const infoEmpleado = ref(false)
   const empleado = reactive(new Empleado())
   const cargando = new StatusEssentialLoading()
-
+  const empleadosSubordinados = ref<number[]>([])
   async function getEmpleado() {
     const { result } = await new EmpleadoController().listar({
       id: idEmpleado.value
@@ -84,5 +84,6 @@ export const useEmpleadoStore = defineStore('empleadoStore', () => {
     tieneVisitaDomiciliaria,
     obtenerUltimaFichaSocieconomica,
     obtenerUltimaVisitaDomiciliaria,
+    empleadosSubordinados
   }
 })

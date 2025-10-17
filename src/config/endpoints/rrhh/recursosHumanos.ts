@@ -102,6 +102,9 @@ export const recursosHumanos = {
   finalizar_rol_pago: new Endpoint('recursos-humanos/finalizar-rol-pago'),
   activar_rol_pago: new Endpoint('recursos-humanos/activar-rol-pago/'),
   habilitar_empleado: new Endpoint('recursos-humanos/habilitar-empleado'),
+  desvincular_empleado: new Endpoint('recursos-humanos/desvincular-empleado'),
+  empleado_tiene_subordinados: new Endpoint('recursos-humanos/empleado-tiene-subordinados/'),
+  reasignar_empleados_subordinados: new Endpoint('recursos-humanos/reasignar-empleados-subordinados'),
   generar_username: new Endpoint('recursos-humanos/generar-username'),
 
 

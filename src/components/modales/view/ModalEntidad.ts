@@ -10,41 +10,44 @@ export default defineComponent({
   props: {
     comportamiento: {
       type: Object as () => ComportamientoModales<any>,
-      required: true,
+      required: true
     },
     accion: {
       type: Function,
-      required: false,
+      required: false
+    },
+    mostrarBotonCerrarModal: {
+      type: Boolean,
+      default: true
     },
     confirmarCerrar: {
       type: Boolean,
-      default: true,
+      default: true
     },
     mixinModal: {
       type: Object as () => ContenedorSimpleMixin<any>,
-      required: false,
+      required: false
     },
     persistente: {
       type: Boolean,
-      default: true,
+      default: true
     },
     fullWidth: {
       type: Boolean,
-      default: true,
+      default: true
     },
     fullHeight: {
       type: Boolean,
-      default: true,
+      default: true
     },
     maximized: {
       type: Boolean,
-      default: true,
+      default: true
     },
     mostrarListado: {
       type: Boolean,
-      default: true,
+      default: true
     }
-
   },
   // emits: ['seleccionar', 'accion1'],
   emits: ['guardado', 'modificado', 'cerrado'],
@@ -54,16 +57,18 @@ export default defineComponent({
      **********/
     const configuracionGeneralStore = useConfiguracionGeneralStore()
 
-    const { componente, titulo, abierto, propsData } = props.comportamiento.useModal()
+    const { componente, titulo, abierto, propsData } =
+      props.comportamiento.useModal()
+
     // const { confirmar } = useNotificaciones()
     function cerrarModalEntidad() {
-    // function cerrarModalEntidad(confirmarCerrar = props.confirmarCerrar) {
+      // function cerrarModalEntidad(confirmarCerrar = props.confirmarCerrar) {
       /* if (confirmarCerrar) {
-        confirmar('¿Está seguro de que desea cerrar?', () => {
-          abierto.value = false
-          emit('cerrado')
-        })
-      } else { */
+              confirmar('¿Está seguro de que desea cerrar?', () => {
+                abierto.value = false
+                emit('cerrado')
+              })
+            } else { */
       abierto.value = false
       emit('cerrado')
       // }
@@ -77,15 +82,19 @@ export default defineComponent({
     )
 
     return {
-      logoClaro: computed(() => configuracionGeneralStore.configuracion?.logo_claro),
-      logoOscuro: computed(() => configuracionGeneralStore.configuracion?.logo_oscuro),
+      logoClaro: computed(
+        () => configuracionGeneralStore.configuracion?.logo_claro
+      ),
+      logoOscuro: computed(
+        () => configuracionGeneralStore.configuracion?.logo_oscuro
+      ),
       componente,
       titulo,
       cerrarModalEntidad,
       duracion,
       abierto,
       propsData,
-      emit,
+      emit
     }
-  },
+  }
 })

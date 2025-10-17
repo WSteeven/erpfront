@@ -9,7 +9,8 @@
     :accion1Header="btnImprimirEmpleados"
     :accion1="btnHabilitarEmpleado"
     :accion2="btnDesHabilitarEmpleado"
-    :accion3="btnPlanVacaciones"
+    :accion3="btnDesvincular"
+    :accion4="btnPlanVacaciones"
     :puedeFiltrar="false"
     :puedeExportar="true"
     :forzarListar="false"
@@ -1551,8 +1552,11 @@
     </template>
   </tab-layout-filter-tabs2>
   <modales-entidad
+      :mostrar-boton-cerrar-modal="mostrarBotonCerrarModal"
     :comportamiento="modales"
+    :mixin-modal="mixin"
     :persistente="false"
+    @guardado="guardado"
   ></modales-entidad>
 </template>
 

@@ -107,7 +107,7 @@ export default defineComponent({
     useCargandoStore().setQuasar(useQuasar())
     const { notificarCorrecto, confirmar } = useNotificaciones()
     const cargando = new StatusEssentialLoading()
-
+    const mostrarBotonCerrarModal = ref(true)
     /***********
      * Mixin
      ************/
@@ -161,6 +161,7 @@ export default defineComponent({
     /************
      * Variables
      ************/
+    const axios = AxiosHttpRepository.getInstance()
     const tabDefecto = ref('1')
     const configuracionColumnasTipoDiscapacidadPorcentajeReactive = reactive(
       configuracionColumnasTipoDiscapacidadPorcentaje
@@ -453,8 +454,6 @@ export default defineComponent({
     }
 
     async function generar_reporte_general(): Promise<void> {
-      // console.log('generar_reporte_general')
-      const axios = AxiosHttpRepository.getInstance()
       const filename = 'empleados'
       const url_pdf =
         apiConfig.URL_BASE +
@@ -473,6 +472,25 @@ export default defineComponent({
       accion: ({ entidad, posicion }) => {
         HabilitarEmpleado(entidad.id, true)
         listado.value.splice(posicion, 1)
+      }
+    }
+    const btnDesvincular: CustomActionTable<Empleado> = {
+      titulo: 'Desvincular',
+      icono: 'bi-person-x',
+      color: 'negative',
+      tooltip: 'Desvincular Empleado',
+      visible: ({ entidad }) =>
+        // entidad.estado && store.can('puede.desvincular.empleados'),
+        entidad.estado || store.can('puede.desvincular.empleados'),
+      accion: ({ entidad }) => {
+        empleadoStore.empleado.hydrate(entidad)
+        empleadoStore.idEmpleado = entidad.id
+        confirmar(
+          '¿Está seguro de desvincular al empleado?, se cerraran todas las operaciones abiertas y te enviaremos un correo con el resumen de operaciones abiertas que necesitan supervision',
+          async () => {
+            modales.abrirModalEntidad('DesvincularEmpleadoPage')
+          }
+        )
       }
     }
     const btnDesHabilitarEmpleado: CustomActionTable = {
@@ -551,7 +569,6 @@ export default defineComponent({
     }
 
     async function generarUsename(sobreescribir = false) {
-      const axios = AxiosHttpRepository.getInstance()
       const ruta = axios.getEndpoint(endpoints.generar_username)
       const datos = {
         nombres: empleado.nombres,
@@ -567,8 +584,48 @@ export default defineComponent({
       empleado.email = username.value + '@' + sitio_web
     }
 
+    async function guardado(form: string) {
+      console.log(form)
+      switch (form) {
+        case 'DesvincularEmpleadoPage':
+          const hay_subordinados = await revisarEmpleadoTieneSubordinados(
+              empleadoStore.idEmpleado
+          )
+          if (hay_subordinados)
+            modales.abrirModalEntidad('ReasignarSubordinadosPage', {
+              empleado_id: empleadoStore.idEmpleado
+            })
+          await filtrarListadoEmpleados(tabDefecto.value)
+          break
+        case 'ReasignarSubordinadosPage':
+          console.log('se reasignaron los subordinados')
+          break
+        default:
+          break
+      }
+    }
+
+    async function revisarEmpleadoTieneSubordinados(empleado_id: number) {
+      const ruta =
+        axios.getEndpoint(endpoints.empleado_tiene_subordinados) + empleado_id
+      const response: AxiosResponse = await axios.get(ruta)
+      if (response.data.tiene_subordinados)
+        empleadoStore.empleadosSubordinados =
+          response.data.empleados_subordinados
+      else empleadoStore.empleadosSubordinados = []
+
+      return response.data.tiene_subordinados
+    }
+
+
+    async function desvincular_oldEmpleado(empleado_id: number) {
+      const ruta = axios.getEndpoint(endpoints.desvincular_empleado)
+      const response = await axios.post(ruta, { empleado_id: empleado_id })
+      console.log(response)
+      notificarCorrecto('Empleado desvinculado correctamente')
+    }
+
     async function HabilitarEmpleado(id: number, estado: boolean) {
-      const axios = AxiosHttpRepository.getInstance()
       const ruta = axios.getEndpoint(endpoints.habilitar_empleado, {
         id: id,
         estado: estado
@@ -612,7 +669,6 @@ export default defineComponent({
 
     async function obtenerUsuarioExterno() {
       cargando.activar()
-      const axios = AxiosHttpRepository.getInstance()
       const ruta =
         axios.getEndpoint(endpoints.usuarios_externos) +
         '/' +
@@ -685,6 +741,7 @@ export default defineComponent({
       btnImprimirEmpleados,
       btnHabilitarEmpleado,
       btnDesHabilitarEmpleado,
+      btnDesvincular,
       btnEliminarDiscapacidad,
       btnPlanVacaciones,
       modales,
@@ -707,7 +764,9 @@ export default defineComponent({
       construccionConfiguracionColumnas,
       habilitarBotonAgregarFamiliares,
       autoidentificaciones_etnicas,
-      removeTildes
+      removeTildes,
+      guardado,
+      mostrarBotonCerrarModal
     }
   }
 })

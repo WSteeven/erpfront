@@ -10,9 +10,8 @@ import { sso } from './endpoints/sso'
 import { seguridad } from './endpoints/seguridad'
 import { fondosRotativos } from 'config/endpoints/fondosRotativos'
 import { controlPersonal } from 'config/endpoints/rrhh/controlPersonal'
-import {ventasClaro} from 'config/endpoints/ventasClaro';
-import {appenate} from 'config/endpoints/appenate/telconet';
-import { plantillas } from './plantillas'
+import { ventasClaro } from 'config/endpoints/ventasClaro'
+import { appenate } from 'config/endpoints/appenate/telconet'
 
 export const apiConfig = {
   // URL_BASE: 'http://localhost:8000',
