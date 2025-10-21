@@ -88,7 +88,7 @@ export default defineComponent({
       mostrarAprobacion.value = true
     }
 
-    async function actualizarTransferencia(entidad, tipo_aprobacion: string) {
+    async function actualizarTransferencia(entidad:any, tipo_aprobacion: string) {
       switch (tipo_aprobacion) {
         case 'aprobar':
           try {

@@ -23,7 +23,6 @@ import {
   computed,
   defineComponent,
   onMounted,
-  onUnmounted,
   reactive,
   Ref,
   ref,
@@ -401,7 +400,7 @@ export default defineComponent({
       }, 1)
     })
 
-    function optionsFecha(date) {
+    function optionsFecha(date:any) {
       const hoy = convertir_fecha(new Date())
       return date <= hoy
     }
@@ -585,20 +584,22 @@ export default defineComponent({
     }
 
     async function guardado(form: string) {
-      console.log(form)
       switch (form) {
         case 'DesvincularEmpleadoPage':
           const hay_subordinados = await revisarEmpleadoTieneSubordinados(
-              empleadoStore.idEmpleado
+            empleadoStore.idEmpleado
           )
-          if (hay_subordinados)
+          if (hay_subordinados) {
+            mostrarBotonCerrarModal.value = false
             modales.abrirModalEntidad('ReasignarSubordinadosPage', {
               empleado_id: empleadoStore.idEmpleado
             })
+          }
+
           await filtrarListadoEmpleados(tabDefecto.value)
           break
         case 'ReasignarSubordinadosPage':
-          console.log('se reasignaron los subordinados')
+          mostrarBotonCerrarModal.value = true
           break
         default:
           break
@@ -615,14 +616,6 @@ export default defineComponent({
       else empleadoStore.empleadosSubordinados = []
 
       return response.data.tiene_subordinados
-    }
-
-
-    async function desvincular_oldEmpleado(empleado_id: number) {
-      const ruta = axios.getEndpoint(endpoints.desvincular_empleado)
-      const response = await axios.post(ruta, { empleado_id: empleado_id })
-      console.log(response)
-      notificarCorrecto('Empleado desvinculado correctamente')
     }
 
     async function HabilitarEmpleado(id: number, estado: boolean) {
@@ -682,12 +675,7 @@ export default defineComponent({
      * HOOKS
      */
     onMounted(() => {
-      // console.log('EmpleadoPage -> Montado')
       componenteCargado.value = true
-      // console.log(v$.value)
-    })
-    onUnmounted(() => {
-      // console.log('EmpleadoPage -> Desmontado')
     })
 
     return {

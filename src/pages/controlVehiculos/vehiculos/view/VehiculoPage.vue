@@ -3,7 +3,7 @@
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
     :ajustarCeldas="true"
-    titulo-pagina="Combustibles"
+    titulo-pagina="Vehiculos"
   >
     <template #formulario>
       <q-form @submit.prevent>

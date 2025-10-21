@@ -5,16 +5,16 @@ import { ApiError } from 'shared/error/domain/ApiError'
 import { Transferencia } from 'pages/fondosRotativos/transferencias/domain/Transferencia'
 
 export class AprobarTransferenciaController {
-  private axios
+  private  axios: AxiosHttpRepository
 
   constructor() {
     this.axios = AxiosHttpRepository.getInstance()
   }
 
-  async aprobarTransferencia(transferencia: Transferencia): Promise<void> {
+  async aprobarTransferencia(transferencia:any): Promise<void> {
     try {
       await this.axios.post(
-        this.axios.getEndpoint(endpoints.aprobar_trnasferencia),
+        this.axios.getEndpoint(endpoints.aprobar_transferencia),
         transferencia
       )
     } catch (error: unknown) {

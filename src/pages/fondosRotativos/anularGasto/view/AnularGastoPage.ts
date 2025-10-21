@@ -10,9 +10,10 @@ import { AprobarGastoController } from 'pages/fondosRotativos/autorizarGasto/inf
 import { GastoController } from 'pages/fondosRotativos/gasto/infrestructure/GastoController'
 import { Gasto } from 'pages/fondosRotativos/gasto/domain/Gasto'
 import { useNotificaciones } from 'shared/notificaciones'
+import ErrorComponent from 'components/ErrorComponent.vue';
 
 export default defineComponent({
-  components: { TabLayout },
+  components: { ErrorComponent, TabLayout },
   setup() {
     /*********
      * Stores
@@ -34,20 +35,19 @@ export default defineComponent({
      **************/
     const reglas = {
       id: {
-        required: true,
+        required: true
       },
       detalle_estado: {
-        required: true,
-      },
+        required: true
+      }
     }
     const v$ = useVuelidate(reglas, gasto)
     setValidador(v$.value)
 
-    async function anular(){
+    async function anular() {
       await aprobarController.anularGasto(gasto)
-      gasto.id=null;
-      gasto.detalle_estado=null
-      notificarAdvertencia('Se anulado Gasto Exitosamente')
+      gasto.id = null
+      gasto.detalle_estado = null
     }
 
     return {
@@ -56,7 +56,7 @@ export default defineComponent({
       disabled,
       accion,
       v$,
-      anular,
+      anular
     }
-  },
+  }
 })

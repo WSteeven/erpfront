@@ -1555,7 +1555,7 @@
       :mostrar-boton-cerrar-modal="mostrarBotonCerrarModal"
     :comportamiento="modales"
     :mixin-modal="mixin"
-    :persistente="false"
+    :persistente="!mostrarBotonCerrarModal"
     @guardado="guardado"
   ></modales-entidad>
 </template>

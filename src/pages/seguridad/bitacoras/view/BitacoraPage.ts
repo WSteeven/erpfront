@@ -12,7 +12,7 @@ import { useNotificacionStore } from 'stores/notificacion'
 import { useNotificaciones } from 'shared/notificaciones'
 import { jornadas } from 'pages/seguridad/config/utils'
 import { acciones, accionesTabla } from 'config/utils'
-import { computed, defineComponent, nextTick, onMounted, reactive, ref } from 'vue'
+import { computed, defineComponent, nextTick, reactive, ref, watch } from 'vue'
 import { required } from 'shared/i18n-validators'
 import useVuelidate from '@vuelidate/core'
 import { endpoints } from 'config/api'
@@ -20,7 +20,6 @@ import { iconos } from 'config/iconos'
 import { useQuasar } from 'quasar'
 
 import { requiredIf } from '@vuelidate/validators'
-import { watch } from 'vue'
 
 // Componentes
 import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
@@ -44,7 +43,6 @@ import { ActividadBitacora } from '../modules/actividadBitacora/domain/Actividad
 import { ZonaController } from 'pages/seguridad/zonas/infraestructure/ZonaController'
 import { BitacoraController } from '../infraestructure/BitacoraController'
 import { Bitacora } from '../doman/Bitacora'
-import { TabOption } from 'components/tables/domain/TabOption'
 
 export default defineComponent({
   components: {
@@ -475,7 +473,6 @@ export default defineComponent({
         criterioBusquedaConductor.value = ''
       }
     })
-
 
     /*******
      * Init

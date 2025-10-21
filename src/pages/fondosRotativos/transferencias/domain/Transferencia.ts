@@ -12,6 +12,10 @@ export class Transferencia extends EntidadAuditable {
   tarea:number|null
   tarea_info:string|null
   comprobante:string|null
+  estado:number|null
+  motivo_aprobacion_tercero:string|null
+  usuario_tercero_aprueba:string|null
+  usuario_tercero_aprueba_id:number|null
   estado_info:string|null
   es_devolucion: boolean
 
@@ -29,7 +33,11 @@ export class Transferencia extends EntidadAuditable {
     this.tarea=null
     this.tarea_info=null
     this.comprobante=null
+    this.estado=null
     this.estado_info=null
     this.es_devolucion = false
+    this.motivo_aprobacion_tercero = null
+    this.usuario_tercero_aprueba = null
+    this.usuario_tercero_aprueba_id = null
   }
 }

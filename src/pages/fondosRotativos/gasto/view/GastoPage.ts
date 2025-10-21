@@ -1,4 +1,4 @@
-import { computed, defineComponent, Ref, ref, watchEffect } from 'vue'
+import { computed, defineComponent, reactive, Ref, ref, watchEffect } from 'vue'
 import { Gasto } from '../domain/Gasto'
 
 // Componentes
@@ -42,6 +42,8 @@ import {
   encontrarUltimoIdListado,
   filtarJefeImediato,
   filtrarEmpleadosPorRoles,
+  isAxiosError,
+  notificarMensajesError,
   optionsFecha,
   ordenarLista
 } from 'shared/utils'
@@ -64,6 +66,10 @@ import { Proyecto } from 'proyectos/domain/Proyecto'
 import { cargarDesdeLocalStorage } from '../../../../utils/storage'
 import { ClienteController } from 'sistema/clientes/infraestructure/ClienteController'
 import { useNotificaciones } from 'shared/notificaciones'
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
+import { endpoints } from 'config/api'
+import { AxiosResponse } from 'axios'
 
 export default defineComponent({
   components: {
@@ -94,7 +100,14 @@ export default defineComponent({
     const { setValidador, obtenerListados, cargarVista, consultar, listar } =
       mixin.useComportamiento()
     const { onConsultado } = mixin.useHooks()
-    const { notificarAdvertencia } = useNotificaciones()
+    const {
+      prompt,
+      promptItems,
+      confirmar,
+      notificarError,
+      notificarCorrecto,
+      notificarAdvertencia
+    } = useNotificaciones()
     /*******
      * Init
      ******/
@@ -126,8 +139,8 @@ export default defineComponent({
     const visualizarAutorizador = computed(() => {
       return store.can('puede.ver.campo.autorizador')
       /*return usuario.roles.findIndex((rol) => rol === 'TECNICO') > -1
-                                                                                      ? true
-                                                                                      : false*/
+                                                                                                  ? true
+                                                                                                  : false*/
     })
 
     onConsultado(async () => {
@@ -627,7 +640,7 @@ export default defineComponent({
       color: 'positive',
       tooltip: 'Agregar registro de valija',
       accion: () => {
-        if(!comprobarDatosEnvioValija()) return
+        if (!comprobarDatosEnvioValija()) return
         const fila = new Valija()
         fila.empleado_id = store.user.id
         fila.empleado = store.nombreUsuario
@@ -656,7 +669,92 @@ export default defineComponent({
         consultar(entidad)
       }
     }
+    const cambiarAutorizador: CustomActionTable<Gasto> = {
+      titulo: 'Reasignar gasto',
+      icono: 'bi-arrow-left-right',
+      color: 'teal',
+      tooltip: 'Cambiar Autorizador',
+      visible: ({ entidad }) => {
+        return (
+          store.esContabilidad && entidad.estado === estadosGastos.PENDIENTE
+        )
+      },
+      accion: ({ entidad }) => {
+        console.log('Aqui escogemos al nuevo autorizador')
+        confirmar(
+          '¿Está seguro que desea reasignar el gasto a otro autorizador?',
+          () => {
+            const config: CustomActionPrompt = reactive({
+              mensaje: 'Seleccione el nuevo autorizador',
+              accion: async idNuevoAutorizador => {
+                try {
+                  //aqui se hace la peticion al backend para cambiar el autorizador
+                  const data: CustomActionPrompt = {
+                    titulo: 'Motivo del cambio de autorizador',
+                    mensaje: 'Ingrese el motivo por el que realiza este cambio',
+                    requerido: true,
+                    validacion: val => !!val,
+                    accion: async motivo => {
+                      await cambiarAutorizadorGasto(
+                        entidad.id,
+                        idNuevoAutorizador,
+                        motivo
+                      )
+                    }
+                  }
+                  prompt(data)
+                } catch (error: any) {
+                  if (isAxiosError(error)) {
+                    const mensajes: string[] = error.erroresValidacion
+                    await notificarMensajesError(mensajes, useNotificaciones())
+                  } else {
+                    notificarError(error.message)
+                  }
+                }
+              },
+              tipo: 'radio',
+              items: autorizaciones_especiales.value.map(empleado => {
+                return {
+                  value: empleado.id,
+                  label: empleado.nombres + ' ' + empleado.apellidos
+                }
+              })
+            })
+            promptItems(config)
+          }
+        )
+      }
+    }
+
     const tabActualGasto = ref(estadosGastos.PENDIENTE)
+
+    async function cambiarAutorizadorGasto(
+      gastoId: number,
+      idNuevoAutorizador: number,
+      motivoCambio: string
+    ) {
+      try {
+        cargando.activar()
+        const axios = AxiosHttpRepository.getInstance()
+        const ruta =
+          axios.getEndpoint(endpoints.cambiar_autorizador_gasto) + gastoId
+        const response: AxiosResponse = await axios.post(ruta, {
+          gasto_id: gastoId,
+          nuevo_autorizador_id: idNuevoAutorizador,
+          motivo_cambio: motivoCambio
+        })
+        console.log(response)
+
+        if (response.status == 200) {
+          filtrarGasto(tabActualGasto.value)
+          notificarCorrecto(response.data.mensaje)
+        }
+      } catch (error) {
+        notificarError(error.response.data.message)
+      } finally {
+        cargando.desactivar()
+      }
+    }
 
     function filtrarGasto(tabSeleccionado: number) {
       listar({ estado: tabSeleccionado, paginate: true }, false)
@@ -748,6 +846,7 @@ export default defineComponent({
       optionsFechaGasto: optionsFecha,
       recargar,
       editarGasto,
+      cambiarAutorizador,
       mascaraFactura,
       mascara_placa,
       beneficiarios,

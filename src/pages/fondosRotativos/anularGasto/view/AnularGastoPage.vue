@@ -5,7 +5,7 @@
         <q-card-section>
           <div class="row items-center no-wrap">
             <div class="col">
-              <div class="text-h6">Anuar Gastos por id</div>
+              <div class="text-h6">Anular Gastos por id</div>
             </div>
           </div>
         </q-card-section>
@@ -24,12 +24,11 @@
                 dense
               >
                 <template v-slot:error>
-                  <div v-for="error of v$.id.$errors" :key="error.$uid">
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
+                  <error-component clave="id" :v$="v$" />
                 </template>
               </q-input>
             </div>
+
             <!-- Descripcion -->
             <div class="col-12 col-md-8">
               <label class="q-mb-sm block">Motivo de Anulacion:</label>
@@ -44,9 +43,7 @@
                 dense
               >
                 <template v-slot:error>
-                  <div v-for="error of v$.detalle_estado.$errors" :key="error.$uid">
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
+                  <error-component clave="detalle_estado" :v$="v$" />
                 </template>
               </q-input>
             </div>
@@ -57,12 +54,16 @@
 
         <q-card-actions align="around">
           <q-btn color="negative" @click="anular()">
-            <q-icon name="bi-file-earmark-excel-fill" size="xs" class="q-mr-sm"></q-icon
-            >Anular</q-btn
-          >
+            <q-icon
+              name="bi-file-earmark-excel-fill"
+              size="xs"
+              class="q-mr-sm"
+            ></q-icon>
+            Anular
+          </q-btn>
         </q-card-actions>
       </q-card>
     </q-page>
   </div>
 </template>
-<script src="./AnularGastoPage"></script>
+<script src="./AnularGastoPage.ts" />

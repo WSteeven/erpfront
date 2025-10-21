@@ -96,8 +96,9 @@
       <button-submits
         :accion="acciones.nuevo"
         @guardar="guardar"
-        @cancelar="cancelar"
+        :permitirCancelar="false"
       />
+<!--        @cancelar="cancelar"-->
     </div>
   </q-card>
 </template>

@@ -26,6 +26,11 @@ import { optionsFecha, ordenarLista } from 'shared/utils'
 import NoOptionComponent from 'components/NoOptionComponent.vue'
 import ErrorComponent from 'components/ErrorComponent.vue'
 import { maskFecha } from 'config/utils'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { AprobarTransferenciaController } from 'pages/fondosRotativos/autorizarTransferencia/infrestructure/AprobarTransferenciaController'
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
+import { useNotificaciones } from 'shared/notificaciones'
+import {useFiltrosListadosSelects} from 'shared/filtrosListadosGenerales';
 
 export default defineComponent({
   components: { ErrorComponent, NoOptionComponent, TabLayout, SelectorImagen },
@@ -37,6 +42,8 @@ export default defineComponent({
      *********/
     useNotificacionStore().setQuasar(useQuasar())
     const store = useAuthenticationStore()
+    const { prompt, notificarCorrecto, notificarAdvertencia, confirmar } =
+      useNotificaciones()
     const usuario = store.user
     const transferenciaSaldoStore = useTransferenciaSaldoStore()
     /***********
@@ -54,11 +61,10 @@ export default defineComponent({
     } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista, consultar } =
       mixin.useComportamiento()
-    const usuarios = ref([])
-    const tareas = ref([])
     const mostrarListado = ref(true)
     const mostrarAprobacion = ref(false)
     const empleados_delegadores = ref([])
+    const {empleados, filtrarEmpleados, tareas, filtrarTareas} = useFiltrosListadosSelects(listadosAuxiliares)
     /*************
      * Validaciones
      **************/
@@ -95,10 +101,10 @@ export default defineComponent({
     setValidador(v$.value)
 
     /* Checking if the id_transferencia is not null, if it is not null, it is going to consult the
-       transfer with the id_transferencia, it is going to set the value of mostrarListado to false and
-       the value of mostrarAprobacion to true, and it is going to set the value of esDevolucion to true
-       if the user_recibe is not null, if it is null, it is going to set the value of esDevolucion to
-       false. */
+                   transfer with the id_transferencia, it is going to set the value of mostrarListado to false and
+                   the value of mostrarAprobacion to true, and it is going to set the value of esDevolucion to true
+                   if the user_recibe is not null, if it is null, it is going to set the value of esDevolucion to
+                   false. */
     if (transferenciaSaldoStore.id_transferencia) {
       consultar({ id: transferenciaSaldoStore.id_transferencia })
       mostrarListado.value = false
@@ -109,7 +115,7 @@ export default defineComponent({
     //Obtener el listado de las cantones
     cargarVista(async () => {
       await obtenerListados({
-        usuarios: {
+        empleados: {
           controller: new EmpleadoController(),
           params: { campos: 'id,nombres,apellidos', estado: 1 }
         },
@@ -129,7 +135,7 @@ export default defineComponent({
         codigo_tarea: ' '
       })
       tareas.value = listadosAuxiliares.tareas
-      usuarios.value = listadosAuxiliares.usuarios
+      empleados.value = listadosAuxiliares.empleados
 
       if (store.can('puede.registrar.fondos_terceros')) {
         await obtenerEmpleadosDelegadores()
@@ -146,41 +152,8 @@ export default defineComponent({
       empleados_delegadores.value = response.result
     }
 
-    function filtrarUsuarios(val, update) {
-      if (val === '') {
-        update(() => {
-          usuarios.value = listadosAuxiliares.usuarios
-        })
-        return
-      }
-      update(() => {
-        const needle = val.toLowerCase()
-        usuarios.value = listadosAuxiliares.usuarios.filter(
-          v =>
-            v.nombres.toLowerCase().indexOf(needle) > -1 ||
-            v.apellidos.toLowerCase().indexOf(needle) > -1
-        )
-      })
-    }
 
-    /**Filtro de Tareas */
-    function filtrarTareas(val, update) {
-      if (val === '') {
-        update(() => {
-          tareas.value = listadosAuxiliares.tareas
-        })
-        return
-      }
-      update(() => {
-        const needle = val.toLowerCase()
 
-        tareas.value = listadosAuxiliares.tareas.filter(
-          v =>
-            v.codigo_tarea.toLowerCase().indexOf(needle) > -1 ||
-            v.titulo.toLowerCase().indexOf(needle) > -1
-        )
-      })
-    }
 
     /**
      * It checks if the value of the checkbox is true, if it is, it sets the value of the user_recibe to
@@ -198,6 +171,48 @@ export default defineComponent({
       }
     }
 
+    async function aprobarTransferenciaForzado(data:any) {
+      try {
+        const aprobarTransferenciaController =
+          new AprobarTransferenciaController()
+        await aprobarTransferenciaController.aprobarTransferencia(data)
+        notificarCorrecto('Transferencia aprobada con éxito')
+      } catch (error) {
+        notificarAdvertencia(
+          'Ha ocurrido un error al intentar aprobar la transferencia'
+        )
+      }
+    }
+
+    /**********************
+     * BOTONES DE TABLA
+     *********************/
+    const btnAprobarTransferenciaForzado: CustomActionTable<Transferencia> = {
+      titulo: 'Aprobar Fzd',
+      tooltip: 'Aprobar transferencia forzada',
+      icono: 'bi-check-square',
+      color: 'warning',
+      accion: ({ entidad }) => {
+        confirmar(
+          '¿Está seguro que desea aprobar la transferencia de este empleado?',
+          () => {
+            const data: CustomActionPrompt = {
+              titulo: 'Motivo de la interferencia',
+              mensaje:
+                'Ingrese el motivo por el que desea aprobar la transferencia de alguien más',
+              requerido: true,
+              validacion: val => !!val,
+              accion: async motivo => {
+                entidad.motivo_aprobacion_tercero = motivo
+                await aprobarTransferenciaForzado(entidad)
+              }
+            }
+            prompt(data)
+          }
+        )
+      },
+      visible: ({ entidad }) => store.esContabilidad && entidad.estado == 3
+    }
     return {
       mixin,
       transferencia,
@@ -208,15 +223,13 @@ export default defineComponent({
       store,
       empleados_delegadores,
       optionsFecha,
-      usuarios,
       usuario,
-      tareas,
       ordenarLista,
-      filtrarUsuarios,
-      filtrarTareas,
       existeDevolucion,
       mostrarListado,
-      configuracionColumnas: configuracionColumnasTransferencia
+      btnAprobarTransferenciaForzado,
+      configuracionColumnas: configuracionColumnasTransferencia,
+      empleados, filtrarEmpleados, tareas, filtrarTareas,
     }
   }
 })

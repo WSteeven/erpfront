@@ -11,6 +11,7 @@
     tabDefecto="3"
     :forzarListar="true"
     :accion1="editarGasto"
+    :accion2="cambiarAutorizador"
     :puede-exportar="true"
     ajustar-celdas
     paginate
@@ -577,6 +578,7 @@
               </template>
             </q-select>
           </div>
+<!--          {{autorizaciones_especiales}}-->
           <!-- Autorizacion -->
           <div class="col-12 col-md-3" v-if="visualizarAutorizador">
             <label class="q-mb-sm block">Autorización Especial</label>
