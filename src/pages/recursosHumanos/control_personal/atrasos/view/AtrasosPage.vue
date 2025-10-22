@@ -3,10 +3,11 @@
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
     titulo-pagina="Atrasos de Empleados"
+    :initial-search="searchTable"
     :tab-options="tabOptions"
-    :tabDefecto="tabDefecto"
+    :tabDefecto="tabActual"
     :filtrar="filtrarListadoAtrasos"
-    :permitir-editar="tabDefecto == '0'"
+    :permitir-editar="tabActual == '0'"
     :accion1="btnVerMarcaciones"
     ajustar-celdas
   >

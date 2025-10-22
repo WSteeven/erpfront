@@ -10,7 +10,7 @@ import {
 } from 'config/utils'
 import { estadosCalificacionProveedor } from 'config/utils_compras_proveedores'
 // import { VisibleModal } from '../application/VisibleModal'
-import { computed, defineComponent, ref, Ref, watch } from 'vue'
+import {computed, defineComponent, onMounted, ref, Ref, watch} from 'vue'
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import { Instanciable } from 'shared/entidad/domain/instanciable'
 import { CustomActionTable } from '../domain/CustomActionTable'
@@ -51,6 +51,10 @@ export default defineComponent({
     entidad: {
       type: Object as Instanciable,
       required: false
+    },
+    initialSearch:{
+      type:String,
+      default:'',
     },
     mixin: {
       type: Object as () => ContenedorSimpleMixin<EntidadAuditable>,
@@ -454,10 +458,11 @@ export default defineComponent({
       loading.value = false
     }
 
-    /* onMounted(() => {
+     onMounted(() => {
       // get initial data from server (1st page)
-      refTable.value.requestServerInteraction()
-    }) */
+      // refTable.value.requestServerInteraction()
+       filter.value = props.initialSearch
+     })
 
     function resaltar(valor: string) {
       const tiposTrabajos = ['EMERGENCIA'] //, 'ASISTENCIA NODO CLIENTE', 'ASISTENCIA NODO NEDETEL']

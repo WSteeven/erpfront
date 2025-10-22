@@ -16,6 +16,7 @@ import {
   computed,
   defineComponent,
   nextTick,
+  onMounted,
   ref,
   Ref,
   watch,
@@ -44,7 +45,7 @@ import { VisibleModal } from '../application/VisibleModal'
 import CampoBoleano from './partials/CampoBoleano.vue'
 import EstadosPostulaciones from './EstadosPostulaciones.vue'
 import ErrorComponent from 'components/ErrorComponent.vue'
-import SelectorImagen from 'components/SelectorImagen.vue';
+import SelectorImagen from 'components/SelectorImagen.vue'
 
 export default defineComponent({
   components: {
@@ -71,6 +72,10 @@ export default defineComponent({
     entidad: {
       type: Object as Instanciable,
       required: false
+    },
+    initialSearch: {
+      type: String,
+      default: ''
     },
     titulo: {
       type: String,
@@ -306,17 +311,17 @@ export default defineComponent({
      ************/
     watchEffect(() => (listado.value = props.datos))
     /* watchEffect(() => {
-      // const total = props.datos.length; // Cantidad total de elementos
-      
-
-      console.log(listado.value)
-      
-      listado.value = props.datos.map((item, index) => ({
-        ...listado.value[index],
-        table_index: index // Asigna un índice numérico a cada elemento
-      }));
-      console.log(listado.value)
-    }) */
+          // const total = props.datos.length; // Cantidad total de elementos
+          
+    
+          console.log(listado.value)
+          
+          listado.value = props.datos.map((item, index) => ({
+            ...listado.value[index],
+            table_index: index // Asigna un índice numérico a cada elemento
+          }));
+          console.log(listado.value)
+        }) */
 
     const seleccionar = () => {
       emit('selected', selected.value)
@@ -332,10 +337,14 @@ export default defineComponent({
     }
 
     /*const emitSelectedChange = () => {
-      emit('update:selected', selected.value);
-    };*/
+          emit('update:selected', selected.value);
+        };*/
 
     const visibleModalVisorArchivos = new VisibleModal()
+
+    onMounted(() => {
+      filter.value = props.initialSearch
+    })
 
     /************
      * Funciones
@@ -577,10 +586,10 @@ export default defineComponent({
 
       if (status !== true) {
         /*$q.notify({
-          message: 'Browser denied file download...',
-          color: 'negative',
-          icon: 'warning'
-        })*/
+                  message: 'Browser denied file download...',
+                  color: 'negative',
+                  icon: 'warning'
+                })*/
         console.log('No se puede descargar...')
       }
     }

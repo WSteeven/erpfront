@@ -20,6 +20,10 @@ export default defineComponent({
       type: Object as () => ContenedorSimpleMixin<EntidadAuditable>,
       required: true,
     },
+    initialSearch:{
+      type:String,
+      default:'',
+    },
     mostrarButtonSubmits: {
       type: Boolean,
       default: true,

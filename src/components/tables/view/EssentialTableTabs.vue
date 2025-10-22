@@ -52,6 +52,7 @@
       <essential-table-pagination
         v-if="paginate"
         ref="refTabla"
+        :initial-search="initialSearch"
         :titulo="titulo"
         :configuracionColumnas="configuracionColumnas"
         :datos="datos"
@@ -111,6 +112,7 @@
       <essential-table
         v-else
         ref="refTabla"
+        :initial-search="initialSearch"
         :titulo="titulo"
         :configuracionColumnas="configuracionColumnas"
         :datos="datos"
@@ -192,6 +194,10 @@ export default defineComponent({
     mixin: {
       type: Object as () => ContenedorSimpleMixin<EntidadAuditable>,
       required: false
+    },
+    initialSearch:{
+      type:String,
+      default:'',
     },
     titulo: {
       type: String,

@@ -1,4 +1,4 @@
-import { computed, defineComponent, ref } from 'vue'
+import {computed, defineComponent, onMounted, ref, watch} from 'vue'
 import { configuracionColumnasAtrasos } from '../domain/configuracionColumnasAtrasos'
 import { useVuelidate } from '@vuelidate/core'
 import { apiConfig, endpoints } from 'config/api'
@@ -26,6 +26,8 @@ import { ComportamientoModalesAtrasos } from 'controlPersonal/atrasos/applicatio
 import { useNotificaciones } from 'shared/notificaciones'
 import MarcacionPage from 'controlPersonal/asistencia/view/MarcacionPage.vue'
 import { useAuthenticationStore } from 'stores/authentication'
+import {useRoute} from 'vue-router';
+import {biWatch} from '@quasar/extras/bootstrap-icons';
 
 export default defineComponent({
   name: 'JustificacionPage',
@@ -46,15 +48,20 @@ export default defineComponent({
       accion,
       listado,
       listadosAuxiliares,
-      disabled
+      disabled, tabs
     } = mixin.useReferencias()
     const { setValidador, listar, cargarVista, obtenerListados } =
       mixin.useComportamiento()
     const { onBeforeConsultar, onConsultado, onModificado } = mixin.useHooks()
-    const tabDefecto = ref('0') // Por defecto "Justificados"
     const { notificarCorrecto } = useNotificaciones()
-    const modales = new ComportamientoModalesAtrasos()
     const store = useAuthenticationStore()
+
+    const route = useRoute()
+    const searchTable = ref<string|string[]|null>(null)
+    const modelAction = ref<string|null>(null)
+
+    const tabActual = ref('0') // Por defecto "Justificados"
+    const modales = new ComportamientoModalesAtrasos()
 
     const esRecursosHumanos = computed(() => store.esRecursosHumanos)
     const esJefeInmediato = computed(() => store.user.id == atraso.jefe)
@@ -92,6 +99,20 @@ export default defineComponent({
     /**
      * HOOKS
      */
+    onMounted(()=>{
+      if(route.query.mainTab)tabs.value = route.query.mainTab as string
+      if(route.query.tab) tabActual.value = route.query.tab as string
+      if(route.query.searchTable) searchTable.value = route.query.searchTable
+      if(route.query.action) modelAction.value = route.query.action as string
+    })
+
+    watch(()=>route.query, (q)=>{
+      if(q.mainTab)tabs.value = route.query.mainTab as string
+      if(q.tab) tabActual.value = route.query.tab as string
+      if(q.searchTable) searchTable.value = route.query.searchTable
+      if(q.action) modelAction.value = route.query.action as string
+    })
+
     onBeforeConsultar(async () => {
       mostrarMarcacionPage.value = false
     })
@@ -107,8 +128,11 @@ export default defineComponent({
       { value: '1', label: 'Justificados' }
     ]
 
+    /**
+     * FUNCIONES
+     */
     async function filtrarListadoAtrasos(tab: string) {
-      tabDefecto.value = tab
+      tabActual.value = tab
       await listar({ justificado: tab })
     }
 
@@ -153,7 +177,7 @@ export default defineComponent({
       accion,
       acciones,
       configuracionColumnas: configuracionColumnasAtrasos,
-      tabDefecto,
+      tabActual,
       tabOptions,
       maskFecha,
       puedeJustificar,
@@ -169,7 +193,7 @@ export default defineComponent({
       //funciones
       filtrarListadoAtrasos,
       ordenarLista,
-
+      searchTable,
       //botones de tabla
       btnVerMarcaciones
     }

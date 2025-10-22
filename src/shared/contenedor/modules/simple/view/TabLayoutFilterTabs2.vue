@@ -100,6 +100,7 @@
       <!-- Listado -->
       <q-tab-panel name="listado" class="q-pa-none">
         <essential-table-tabs
+          :initial-search="initialSearch"
           :titulo="tituloTabla"
           :configuracionColumnas="columnas"
           :datos="listado"

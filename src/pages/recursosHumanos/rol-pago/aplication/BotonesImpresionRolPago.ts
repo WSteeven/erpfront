@@ -1,9 +1,8 @@
-import {imprimirArchivo} from 'shared/utils'
+import { imprimirArchivo } from 'shared/utils'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useAuthenticationStore } from 'stores/authentication'
 import { useNotificaciones } from 'shared/notificaciones'
-import {estadosRolPago } from 'config/utils'
 import { RolPago } from 'pages/recursosHumanos/rol-pago/domain/RolPago'
 import { reactive } from 'vue'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
@@ -22,20 +21,20 @@ export const useBotonesImpresionTablaRolPago = (rolPago: RolPagoMes) => {
    ************/
   const lista_tipo_reporte = [
     { id: 'pdf', name: 'PDF' },
-    { id: 'xlsx', name: 'EXCEL' },
+    { id: 'xlsx', name: 'EXCEL' }
   ]
   const btnImprimir: CustomActionTable = {
     titulo: ' ',
     icono: 'bi-printer',
     color: 'primary',
+    tooltip: 'Imprimir Rol de Pago',
     visible: ({ entidad }) =>
-      [estadosRolPago.EJECUTANDO, estadosRolPago.REALIZADO].includes(
-        entidad.estado
-      ) && authenticationStore.esRecursosHumanos && !entidad.es_quincena,
+      authenticationStore.esRecursosHumanos && !entidad.es_quincena,
     accion: ({ entidad }) => {
       generar_reporte(entidad)
-    },
+    }
   }
+
   async function generar_reporte(valor: RolPago): Promise<void> {
     const axios = AxiosHttpRepository.getInstance()
     const filename = 'rol_pago'
@@ -54,10 +53,13 @@ export const useBotonesImpresionTablaRolPago = (rolPago: RolPagoMes) => {
       apiConfig.URL_BASE +
       '/' +
       axios.getEndpoint(endpoints.imprimir_rol_pago_general) +
-      rolPago.id + '?tipo=' + tipo
+      rolPago.id +
+      '?tipo=' +
+      tipo
 
     await imprimirArchivo(url_pdf, 'GET', 'blob', tipo, filename, null)
   }
+
   const btnGenerarReporte: CustomActionTable = {
     titulo: 'Generar Reporte',
     icono: 'bi-file-earmark-ruled',
@@ -66,27 +68,27 @@ export const useBotonesImpresionTablaRolPago = (rolPago: RolPagoMes) => {
     accion: () => {
       const config: CustomActionPrompt = reactive({
         mensaje: 'Confirme el tipo de reporte',
-        accion: (tipo) => {
+        accion: tipo => {
           generar_reporte_general(tipo)
         },
         requerido: false,
         defecto: 'EXCEL',
         tipo: 'radio',
-        items: lista_tipo_reporte.map((tipo) => {
+        items: lista_tipo_reporte.map(tipo => {
           return {
             label: tipo.name,
-            value: tipo.id,
+            value: tipo.id
           }
-        }),
+        })
       })
       promptItems(config)
       //generar_reporte_general()
-    },
+    }
   }
 
   return {
     btnImprimir,
-    btnGenerarReporte,
+    btnGenerarReporte
   }
 }
 // function confirmarFinalizar(arg0: {
