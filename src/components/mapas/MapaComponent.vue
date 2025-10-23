@@ -3,15 +3,13 @@
     ref="mapRef"
     :zoom="zoom"
     :center="center"
-    style="height: 400px; width: 100%"
+    :style="{ height: height, width: width }"
   >
-    <!--      style="height: 100%; width: 100%"-->
     <l-tile-layer
       url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       attribution="&copy; OpenStreetMap contributors"
     />
 
-    <!-- Si es una lista de puntos -->
     <l-marker
       v-for="(punto, index) in puntosNormalizados"
       :key="index"
@@ -29,10 +27,11 @@
 </template>
 
 <script setup>
-import { computed, onMounted, watch, ref } from 'vue'
-import { LMap, LTileLayer, LMarker, LPopup } from '@vue-leaflet/vue-leaflet'
-import 'leaflet/dist/leaflet.css'
+import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
+import { LMap, LMarker, LPopup, LTileLayer } from '@vue-leaflet/vue-leaflet'
 import L from 'leaflet'
+import 'leaflet/dist/leaflet.css'
+
 import iconUrl from 'leaflet/dist/images/marker-icon.png'
 import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png'
 import shadowUrl from 'leaflet/dist/images/marker-shadow.png'
@@ -41,61 +40,85 @@ delete L.Icon.Default.prototype._getIconUrl
 L.Icon.Default.mergeOptions({ iconRetinaUrl, iconUrl, shadowUrl })
 
 const props = defineProps({
-  puntos: {
-    type: Array,
-    default: () => []
-  },
-  zoom: {
-    type: Number,
-    default: 15
-  },
-  autoFit: {
-    type: Boolean,
-    default: true
-  }
+  puntos: { type: Array, default: () => [] },
+  zoom: { type: Number, default: 15 },
+  autoFit: { type: Boolean, default: true },
+  height: { type: String, default: '300px' },
+  width: { type: String, default: '100%' }
 })
 
 const mapRef = ref()
+let map
+const messageShown = ref(false)
 
-// Normalizar (acepta un solo punto o varios)
-const puntosNormalizados = computed(() => {
-  return Array.isArray(props.puntos) ? props.puntos : [props.puntos]
-})
+const puntosNormalizados = computed(() =>
+  Array.isArray(props.puntos) ? props.puntos : [props.puntos]
+)
 
-// Centro inicial (primer punto o un default)
 const center = computed(() => {
   if (puntosNormalizados.value.length === 0) return [0, 0]
   return [puntosNormalizados.value[0].lat, puntosNormalizados.value[0].lng]
 })
 
-/*onMounted(() => {
-  if (puntosNormalizados.value.length) {
-    center.value = [
-      puntosNormalizados.value[0].lat,
-      puntosNormalizados.value[0].lng
-    ]
+// Desactivar zoom con la rueda a menos que se presione Ctrl
+const handleWheel = e => {
+  // Si se mantiene presionado Ctrl → permitir zoom solo en el mapa, no en la página
+  if (e.ctrlKey) {
+    e.stopPropagation()
+    e.preventDefault() // Evita el zoom global del navegador
+    map.scrollWheelZoom.enable()
+    return
   }
 
-  // Si se quiere ajustar el mapa a todos los puntos
-  if (props.autoFit && mapRef.value && puntosNormalizados.value.length > 1) {
-    const bounds = puntosNormalizados.value.map(p => [p.lat, p.lng])
-    mapRef.value.leafletObject.fitBounds(bounds, { padding: [20, 20] })
+  // Si NO se presiona Ctrl → bloquear el zoom y mostrar mensaje
+  e.preventDefault()
+  if (!messageShown.value) {
+    alert('Mantén presionada la tecla Ctrl + rueda del ratón para hacer zoom.')
+    messageShown.value = true
+    setTimeout(() => (messageShown.value = false), 1000)
   }
-})*/
+  map.scrollWheelZoom.disable()
+}
 
-// 🗺️ Si hay varios puntos → ajustar mapa automáticamente
+
+onMounted(() => {
+  // console.log('MapaComponent montado', mapRef.value)
+  // Esperar 1 segundo antes de bloquear el zoom con la rueda
+  setTimeout(() => {
+    map = mapRef.value?.leafletObject
+    if (map) {
+      map.scrollWheelZoom.disable()
+      // console.log('Zoom con rueda deshabilitado después de 1s')
+      map
+        .getContainer()
+        .addEventListener('wheel', handleWheel, { passive: false })
+    // } else {
+    //   console.warn('No se encontró el objeto del mapa')
+    }
+  }, 1000)
+
+})
+
+onBeforeUnmount(() => {
+  const map = mapRef.value?.leafletObject
+  if (map) {
+    map.getContainer().removeEventListener('wheel', handleWheel)
+  }
+})
+
+// Ajustar el mapa a los puntos
 watch(
-    () => puntosNormalizados.value,
-    (val) => {
-      const map = mapRef.value?.leafletObject
-      if (map && val.length > 1) {
-        const bounds = L.latLngBounds(val.map(p => [p.lat, p.lng]))
-        map.fitBounds(bounds, { padding: [30, 30] })
-      } else if (map && val.length === 1) {
-        map.setView([val[0].lat, val[0].lng], props.zoom)
-      }
-    },
-    { immediate: true }
+  () => puntosNormalizados.value,
+  val => {
+    const map = mapRef.value?.leafletObject
+    if (map && val.length > 1) {
+      const bounds = L.latLngBounds(val.map(p => [p.lat, p.lng]))
+      map.fitBounds(bounds, { padding: [30, 30] })
+    } else if (map && val.length === 1) {
+      map.setView([val[0].lat, val[0].lng], props.zoom)
+    }
+  },
+  { immediate: true }
 )
 </script>
 

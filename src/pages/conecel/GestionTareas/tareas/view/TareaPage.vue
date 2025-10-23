@@ -3,10 +3,50 @@
     :configuracion-columnas="configuracionColumnas"
     :mixin="mixin"
     :permitirEliminar="false"
+    :tab-options="tabOptions"
+    :tabDefecto="currentTab"
+    :filtrar="filtrarListadoTareas"
   >
     <template #formulario>
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-py-none">
+          <!-- Fecha  -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Fecha</label>
+            <q-input
+              v-model="tarea.fecha"
+              placeholder="Obligatorio"
+              disable
+              outlined
+              dense
+            >
+              <template v-slot:append>
+                <q-icon name="event" class="cursor-pointer">
+                  <q-popup-proxy
+                    cover
+                    transition-show="scale"
+                    transition-hide="scale"
+                  >
+                    <q-date
+                      v-model="empleado.fecha_nacimiento"
+                      :mask="maskFecha"
+                      today-btn
+                    >
+                      <div class="row items-center justify-end">
+                        <q-btn
+                          v-close-popup
+                          label="Cerrar"
+                          color="primary"
+                          flat
+                        />
+                      </div>
+                    </q-date>
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
+            </q-input>
+          </div>
+
           <!--Tipo de Actividad -->
           <div class="col-12 col-md-4">
             <label class="q-mb-sm block">Tipo de Actividad</label>
@@ -51,7 +91,7 @@
 
           <!-- Grupo -->
           <div v-if="tarea.asignada || tarea.grupo" class="col-12 col-md-4">
-            <label class="q-mb-sm block">Grupo</label>
+            <label class="q-mb-sm block">Cuadrilla asignada</label>
             <q-select
               v-model="tarea.grupo"
               :options="grupos"
@@ -209,6 +249,83 @@
                   descripcion: tarea.nombre_cliente ?? 'Machala LED'
                 }
               ]"
+              height="400px"
+            />
+          </div>
+
+          <div class="col-12">
+            <hr />
+          </div>
+          <div class="col-12">
+            <essential-table
+              :datos="tarea.telefonos"
+              :configuracion-columnas="[
+                {
+                  name: 'id',
+                  field: 'id',
+                  label: 'N°',
+                  align: 'left',
+                  editable: false,
+                  visible: false
+                },
+                {
+                  name: 'telefono',
+                  field: 'telefono',
+                  label: 'Teléfono',
+                  type:'number',
+                  align: 'left',
+                  editable: true
+                },
+                accionesTabla
+              ]"
+              :v$="v$"
+              key-error="telefonos"
+              :titulo="null"
+              :alto-fijo="false"
+              :permitirBuscar="false"
+              :permitir-eliminar="false"
+              :permitir-editar="false"
+              :permitir-consultar="false"
+              permitirEditarModal
+              :mostrarCantidadElementos="true"
+              :accion1-header="btnAgregarFilaTelefono"
+              :accion1="btnEliminarDefault(tarea.telefonos)"
+              :permitirEditarCeldas="true"
+            />
+          </div>
+          <div class="col-12">
+            <hr />
+          </div>
+          <!-- Manejo de archivos -->
+          <div class="col-12 q-mb-md">
+            <gestor-archivos
+              ref="refArchivo"
+              label="Imagenes o archivos adjunt@s"
+              :mixin="mixin"
+              :disable="disabled"
+              :listarAlGuardar="false"
+              :permitir-eliminar="
+                accion == acciones.nuevo || accion == acciones.editar
+              "
+              :idModelo="idTarea"
+            >
+            </gestor-archivos>
+          </div>
+
+          <div class="col-12">
+            <q-separator />
+          </div>
+          <!-- Observacion -->
+          <div class="col-12">
+            <label class="q-mb-sm block">Observación</label>
+            <q-input
+              v-model="tarea.observacion"
+              type="textarea"
+              placeholder="Opcional"
+              hint="Utilice este campo para documentar cambios importantes o motivos de eliminación"
+              :disable="disabled"
+              outlined
+              dense
             />
           </div>
         </div>

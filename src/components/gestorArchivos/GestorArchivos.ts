@@ -5,23 +5,21 @@
  *
  */
 // Dependencias
-import {
-  configuracionColumnasArchivoSubtarea
-} from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/domain/configuracionColumnasArchivoSubtarea'
-import {CustomActionTable} from 'components/tables/domain/CustomActionTable'
-import {descargarArchivoUrl} from 'shared/utils'
-import {useNotificaciones} from 'shared/notificaciones'
-import {AxiosError, AxiosResponse} from 'axios'
-import {accionesTabla} from 'config/utils'
-import {defineComponent, onMounted, ref} from 'vue'
+import { configuracionColumnasArchivoSubtarea } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/domain/configuracionColumnasArchivoSubtarea'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { descargarArchivoUrl } from 'shared/utils'
+import { useNotificaciones } from 'shared/notificaciones'
+import { AxiosError, AxiosResponse } from 'axios'
+import { accionesTabla } from 'config/utils'
+import { defineComponent, onBeforeUnmount, onMounted, ref } from 'vue'
 
 // Componentes
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
 // Logica y controladores
-import {ContenedorSimpleMixin} from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import {ParamsType} from 'config/types'
-import {useRejectedFiles} from '../../composables/useRejectedFiles';
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { ParamsType } from 'config/types'
+import { useRejectedFiles } from '../../composables/useRejectedFiles'
 
 export default defineComponent({
   components: {
@@ -30,35 +28,35 @@ export default defineComponent({
   props: {
     mixin: {
       type: Object as () => ContenedorSimpleMixin<any>,
-      required: true,
+      required: true
     },
     permitirEliminar: {
       type: Boolean,
-      default: true,
+      default: true
     },
     listarAlGuardar: {
       type: Boolean,
-      default: true,
+      default: true
     },
     disable: {
       type: Boolean,
-      default: false,
+      default: false
     },
     permitirSubir: {
       type: Boolean,
-      default: true,
+      default: true
     },
     quieroSubirArchivos: {
       type: Boolean,
-      default: false,
+      default: false
     },
     idModelo: {
       type: Number,
-      required: false,
+      required: false
     },
     label: {
       type: String,
-      required: false,
+      required: false
     },
     formato: {
       type: String,
@@ -77,13 +75,20 @@ export default defineComponent({
   setup(props, { emit }) {
     /********
      * Mixin
-    *********/
-    const {listadoArchivos, entidad, } = props.mixin.useReferencias()
-    const { eliminarArchivo, listarArchivos, guardarArchivos } = props.mixin.useComportamiento()
+     *********/
+    const { listadoArchivos, entidad } = props.mixin.useReferencias()
+    const { eliminarArchivo, listarArchivos, guardarArchivos } =
+      props.mixin.useComportamiento()
 
-    const { notificarError, notificarAdvertencia, notificarInformacion, confirmar } = useNotificaciones()
+    const {
+      notificarError,
+      notificarAdvertencia,
+      notificarInformacion,
+      confirmar
+    } = useNotificaciones()
 
-    async function listarArchivosAlmacenados(id: number, params: string) {//ParamsType) {
+    async function listarArchivosAlmacenados(id: number, params: string) {
+      //ParamsType) {
       await listarArchivos(id, params)
     }
 
@@ -92,16 +97,19 @@ export default defineComponent({
     let paramsForm
 
     /***************
-    * Botones tabla
-    ***************/
+     * Botones tabla
+     ***************/
     const btnEliminar: CustomActionTable = {
       titulo: 'Eliminar',
       icono: 'bi-trash3',
       color: 'negative',
       visible: () => props.permitirEliminar,
       accion: async ({ entidad }) => {
-        confirmar('Esta operación es irreversible. El archivo se eliminará de forma instantánea.', () => eliminarArchivo(entidad))
-        entidad.isComponentFilesModified=true
+        confirmar(
+          'Esta operación es irreversible. El archivo se eliminará de forma instantánea.',
+          () => eliminarArchivo(entidad)
+        )
+        entidad.isComponentFilesModified = true
       }
     }
 
@@ -116,14 +124,38 @@ export default defineComponent({
     }
 
     const refGestor = ref()
-
+    let handlePaste
     onMounted(() => {
       emit('inicializado')
+      console.log(refGestor.value)
+      // const uploaderEl = uploaderRef.value.$el
+
+      handlePaste = e => {
+        const items = e.clipboardData?.items
+        if (!items) return
+
+        for (const item of items) {
+          if (item.kind === 'file') {
+            const file = item.getAsFile()
+            if (file && file.type.startsWith('image/')) {
+              // Agregar la imagen pegada al uploader
+              refGestor.value.addFiles([file])
+              console.log('Imagen pegada:', file.name)
+            }
+          }
+        }
+      }
+
+      document.addEventListener('paste', handlePaste)
+      console.log('Habilitado Ctrl+V para pegar imágenes')
     })
 
+    onBeforeUnmount(() => {
+      document.removeEventListener('paste', handlePaste)
+    })
     /************
-    * Funciones
-    *************/
+     * Funciones
+     *************/
     const quiero_subir_archivos = ref(props.quieroSubirArchivos)
 
     async function factoryFn(files) {
@@ -132,23 +164,26 @@ export default defineComponent({
 
       for (const key in paramsForm) {
         fd.append(key, paramsForm[key])
-
       }
 
       try {
-        const response: AxiosResponse = await guardarArchivos(props.idModelo!, fd)
+        const response: AxiosResponse = await guardarArchivos(
+          props.idModelo!,
+          fd
+        )
         // console.log(response.data.modelo)
         // console.log(listadoArchivos.value)
 
         files.value = []
-        if (props.listarAlGuardar) listadoArchivos.value.push(response.data.modelo)
+        if (props.listarAlGuardar)
+          listadoArchivos.value.push(response.data.modelo)
         // notificarCorrecto(response.data.mensaje)
         // console.log(response.data.mensaje)
         quiero_subir_archivos.value = false
       } catch (error: unknown) {
         // console.log('err',error)
         const axiosError = error as AxiosError
-        notificarError(axiosError.response?.data?.message??'error')
+        notificarError(axiosError.response?.data?.message ?? 'error')
       }
     }
 
@@ -163,7 +198,7 @@ export default defineComponent({
       }
     }
 
-    const {onRejected} = useRejectedFiles(props)
+    const { onRejected } = useRejectedFiles(props)
     // function onRejected(rejectedEntries) {
     //   rejectedEntries.forEach(element => {
     //     switch (element.failedPropValidation) {
@@ -186,7 +221,6 @@ export default defineComponent({
     //   });
     // }
 
-
     function limpiarListado() {
       listadoArchivos.value = []
       // console.log('limpiado...')
@@ -198,23 +232,25 @@ export default defineComponent({
       }
       tamanioListado.value += obtenerSumatoriaTamanio(files)
       // props.mixin.useReferencias().
-      entidad.isComponentFilesModified=true
+      entidad.isComponentFilesModified = true
     }
+
     function onFileRemoved(file) {
       cantElementos.value -= 1
       tamanioListado.value -= obtenerSumatoriaTamanio(file)
-      entidad.isComponentFilesModified=true
+      entidad.isComponentFilesModified = true
     }
+
     function obtenerSumatoriaTamanio(files) {
       return files.reduce((total, file) => total + file.size, 0)
     }
 
     function bytesToMB(bytes) {
-      if (bytes === 0) return '0 MB';
+      if (bytes === 0) return '0 MB'
 
-      const megabytes = bytes / (1024 * 1024);
-      return megabytes.toFixed(2) + ' MB';
-  }
+      const megabytes = bytes / (1024 * 1024)
+      return megabytes.toFixed(2) + ' MB'
+    }
 
     return {
       listadoArchivos,
@@ -234,7 +270,7 @@ export default defineComponent({
       subir,
       limpiarListado,
       listarArchivosAlmacenados,
-      bytesToMB,
+      bytesToMB
     }
   }
 })

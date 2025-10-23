@@ -1,6 +1,7 @@
 <template>
   <q-file
     v-if="mostrarCampo && !isNative"
+    ref="fileRef"
     v-model="img"
     dense
     outlined
@@ -23,8 +24,8 @@
       <slot name="error" v-else>
         <div>
           <div class="error-msg">Imagen requerida</div>
-        </div></slot
-      >
+        </div>
+      </slot>
     </template>
   </q-file>
 
@@ -77,7 +78,14 @@
 
 <script lang="ts" setup>
 import VisorImagen from 'components/VisorImagen.vue'
-import { computed, getCurrentInstance, onMounted, ref, watch } from 'vue'
+import {
+  computed,
+  getCurrentInstance,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  watch
+} from 'vue'
 import { Capacitor } from '@capacitor/core'
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera'
 
@@ -106,10 +114,63 @@ const props = defineProps({
 })
 const emit = defineEmits(['update:modelValue'])
 const instance = getCurrentInstance()
+const isHovering = ref(false)
 const slots = instance?.slots
+const fileRef = ref()
+
+const handlePaste = async (event: ClipboardEvent) => {
+  if (!isHovering.value) return // solo cuando el mouse está sobre el componente
+  const items = event.clipboardData?.items
+  if (!items) return
+
+  for (const item of items) {
+    if (item.kind === 'file') {
+      const file = item.getAsFile()
+      if (file && file.type.startsWith('image/')) {
+        // Si tienes compresión activada, respétala
+        const finalFile = props.comprimir ? await compressImage(file) : file
+
+        // Convertir a Base64 igual que en tu setBase64
+        const reader = new FileReader()
+        reader.readAsDataURL(finalFile)
+        reader.onload = () => {
+          emit('update:modelValue', reader.result)
+        }
+
+        // Opcional: mostrar feedback visual
+        // console.log('📋 Imagen pegada desde portapapeles:', file.name)
+      }
+    }
+  }
+}
+const onMouseOver = () => {
+  console.log('onEnter capturado')
+  isHovering.value = true
+}
+const onMouseOut = () => (isHovering.value = false)
 
 onMounted(() => {
   slotUsado.value = !!slots?.error
+
+  const el = fileRef.value?.$el ?? fileRef.value // depende de cómo Quasar expone el DOM
+  if (!el) {
+    console.log('entro en no el')
+    return
+  } else console.log('si hay el')
+
+  el.addEventListener('mouseenter', onMouseOver)
+  el.addEventListener('mouseleave', onMouseOut)
+
+  document.addEventListener('paste', handlePaste)
+})
+
+onBeforeUnmount(() => {
+  const el = fileRef.value?.$el ?? fileRef.value
+  if (el) {
+    el.removeEventListener('mouseover', onMouseOver)
+    el.removeEventListener('mouseout', onMouseOut)
+  }
+  document.removeEventListener('paste', handlePaste)
 })
 
 const refVisorImagen = ref()

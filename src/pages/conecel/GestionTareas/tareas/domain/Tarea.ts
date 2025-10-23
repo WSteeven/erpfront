@@ -1,6 +1,7 @@
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 
 export class Tarea extends EntidadAuditable {
+  fecha: string | null
   tipo_actividad: string | null
   asignada: boolean
   grupo: string | null
@@ -14,14 +15,14 @@ export class Tarea extends EntidadAuditable {
   coordenadas: []
   observacion: string | null
   comentario_anulacion: string | null
-  celulares: string[]
+  telefonos: string[]
 
   constructor() {
     super()
     this.tipo_actividad = null
     this.asignada = true
     this.comentario_anulacion = null
-    this.celulares = []
+    this.telefonos = []
     this.coordenadas = []
 
   }
