@@ -12,6 +12,7 @@ import ventasClaro from 'stores/menus/claro/ventasClaro';
 import telconet from 'stores/menus/appenate/telconet';
 import menuBodega from 'stores/menus/bodega/menuBodega';
 import menuFondosRotativos from 'stores/menus/fondosRotativos/menuFondosRotativos';
+import menuConecel from 'stores/menus/claro/menuConecel';
 
 export const useMenuStore = defineStore('menu', () => {
   const store = useAuthenticationStore()
@@ -150,6 +151,10 @@ export const useMenuStore = defineStore('menu', () => {
         }
       ]
     },
+    /********************
+     * Modulo de conecel
+     ********************/
+      ...menuConecel.value,
     /********************
      * Modulo de tickets
      ********************/
@@ -687,6 +692,10 @@ export const useMenuStore = defineStore('menu', () => {
      * Modulo de ventas de claro
      *********************************************************/
       ...ventasClaro.value,
+
+    /*********************************************************
+     * Modulo de Administración
+     *********************************************************/
     {
       header: 'Administración',
       can: false // store.can('puede.acceder.modulo_administracion') && store.esActivosFijos,
@@ -923,30 +932,7 @@ export const useMenuStore = defineStore('menu', () => {
       ]
     }
 
-    /* {
-          header: 'Sistema',
-        },
-        {
-          title: 'Perfil',
-          icon: 'bi-person',
-          link: 'perfil',
-        },
-        {
-          title: 'Configuración',
-          icon: 'bi-gear',
-          children: [
-            {
-              title: 'Imprimir / Exportar',
-              link: 'tareas',
-              icon: 'bi-app',
-            },
-            {
-              title: 'Empresa',
-              link: 'control-progresivas',
-              icon: 'bi-app',
-            },
-          ],
-        }, */
+
   ])
 
   return {

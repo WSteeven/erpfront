@@ -13,10 +13,11 @@ const CCLEDARE = process.env.VUE_APP_ID == empresas.CCLEDARE */
 import rutasFondosRotativos from './rutasFondosRotativos'
 import rutasVehiculos from './rutasVehiculos'
 import rutasSeguridad from './rutasSeguridad'
-import rutasComprasProveedores from './rutasComprasProveedores';
-import rutasVentasClaro from './rutasVentasClaro';
-import rutasAppenate from './rutasAppenate';
+import rutasComprasProveedores from './rutasComprasProveedores'
+import rutasVentasClaro from './rutasVentasClaro'
+import rutasAppenate from './rutasAppenate'
 import rutasBodega from './rutasBodega'
+import rutasConecel from './conecel/rutasConecel'
 
 console.log(process.env.VUE_APP_ID)
 const routes: RouteRecordRaw[] = [
@@ -706,6 +707,10 @@ const routes: RouteRecordRaw[] = [
       },
       ///
 
+      /*********************************************
+       * VENTAS CLARO
+       *********************************************/
+        ...rutasConecel,
       /*********************************************
        * VENTAS CLARO
        *********************************************/

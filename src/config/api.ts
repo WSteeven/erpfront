@@ -1,6 +1,7 @@
 import { Endpoint } from 'shared/http/domain/Endpoint'
 import { medico } from './endpoints/medico'
 import { tareas } from './endpoints/tareas'
+import { tareas as tareasConecel } from './endpoints/conecel/tareas'
 import { tickets } from './endpoints/tickets'
 import { recursosHumanos } from './endpoints/rrhh/recursosHumanos'
 import { activosFijos } from './endpoints/activosFijos'
@@ -156,6 +157,11 @@ export const endpoints = {
    * Modulo de tareas
    ********************/
   ...tareas,
+
+ /********************
+   * Modulo de conecel
+   ********************/
+  ...tareasConecel,
 
   /***************
    * Modulo medico
