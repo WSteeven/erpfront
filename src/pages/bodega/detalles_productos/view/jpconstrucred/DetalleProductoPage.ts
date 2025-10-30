@@ -3,7 +3,7 @@ import { configuracionColumnasDetallesProductos } from '../../domain/configuraci
 import { configuracionColumnasSerialesDetalles } from '../../domain/configuracionColumnasSerialesDetalles'
 import { numeric, required, requiredIf } from 'shared/i18n-validators'
 import { useVuelidate } from '@vuelidate/core'
-import {computed, defineComponent, ref, watch} from 'vue'
+import { computed, defineComponent, ref, watch } from 'vue'
 
 //Componentes
 import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
@@ -33,8 +33,8 @@ import { encontrarUltimoIdListado } from 'shared/utils'
 import { useDetalleStore } from 'stores/detalle'
 import { useAuthenticationStore } from 'stores/authentication'
 import { tabOptionsProveedoresInternacionales } from 'config/utils_compras_proveedores'
-import ErrorComponent from 'components/ErrorComponent.vue';
-import NoOptionComponent from 'components/NoOptionComponent.vue';
+import ErrorComponent from 'components/ErrorComponent.vue'
+import NoOptionComponent from 'components/NoOptionComponent.vue'
 
 export default defineComponent({
   components: {
@@ -239,21 +239,83 @@ export default defineComponent({
       // rowsNumber: xx if getting data from a server
     })
     const opciones_tipos = ['HOMBRE', 'MUJER']
-    const esEPP = computed(()=>detalle.categoria ==='EPP')
+    const esEPP = computed(() => detalle.categoria === 'EPP')
     const categoria_var = ref('')
 
     async function filtrarDetalles(tab: string) {
       tabDefecto.value = tab
       await listar({ activo: tab })
     }
-    watch(categoria_var, () => {
+
+    // ============================================
+    // WATCHERS PARA LIMPIAR CAMPOS
+    // ============================================
+
+    // Watch para categoría
+    watch(categoria_var, nuevaCategoria => {
       listadoBackup.value = listado.value
-      limpiarCamposInformatica()
-      limpiarCamposAdicionales()
-      if (detalle.categoria === 'EPP') {
+      // Limpiar según la categoría
+      if (nuevaCategoria !== 'INFORMATICA') {
+        limpiarCamposInformatica()
+      }
+      if (nuevaCategoria !== 'EPP') {
+        limpiarCamposAdicionales()
+        detalle.vida_util = null
+      }
+      if (nuevaCategoria === 'EPP') {
         detalle.tiene_adicionales = true
       }
     })
+
+    // Watch para tiene_serial
+    watch(() => detalle.tiene_serial,nuevoValor => {
+        if (!nuevoValor) {
+          detalle.serial = null
+        }
+      }
+    )
+
+    // Watch para es_fibra
+    watch(
+      () => detalle.es_fibra,
+      nuevoValor => {
+        if (!nuevoValor) {
+          limpiarCamposFibra()
+        }
+      }
+    )
+
+    // Watch para tiene_adicionales
+    watch(
+      () => detalle.tiene_adicionales,
+      nuevoValor => {
+        if (!nuevoValor) {
+          detalle.color = ''
+          detalle.talla = ''
+          detalle.tipo = ''
+        }
+      }
+    )
+
+    // Watch para varios_items
+    watch(
+      () => detalle.varios_items,
+      nuevoValor => {
+        if (!nuevoValor) {
+          detalle.seriales = []
+        }
+      }
+    )
+
+    // Watch para esActivo
+    watch(
+      () => detalle.esActivo,
+      nuevoValor => {
+        if (!nuevoValor) {
+          detalle.codigo_activo_fijo = null
+        }
+      }
+    )
 
     async function cargarDetalle(id) {
       const { result } = await new DetalleProductoController().consultar(id)
