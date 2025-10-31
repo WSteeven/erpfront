@@ -5,7 +5,7 @@ import { descargarArchivoUrl, formatBytes } from 'shared/utils'
 import { useNotificaciones } from 'shared/notificaciones'
 import { AxiosError, AxiosResponse } from 'axios'
 import { accionesTabla } from 'config/utils'
-import { defineComponent, ref } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
 import { apiConfig } from 'config/api'
 
 // Componentes
@@ -17,7 +17,7 @@ import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import { Endpoint } from 'shared/http/domain/Endpoint'
 import { ParamsType } from 'config/types'
 import { configuracionColumnasDocumento } from '../domain/configuracionColumnasDocumento'
-import {useRejectedFiles} from '../../../composables/useRejectedFiles';
+import { useRejectedFiles } from '../../../composables/useRejectedFiles'
 
 export default defineComponent({
   components: {
@@ -73,11 +73,8 @@ export default defineComponent({
     const { listado, entidad } = props.mixin.useReferencias()
     const { eliminar, listar } = props.mixin.useComportamiento()
 
-    const {
-      notificarCorrecto,
-      notificarError,
-      confirmar
-    } = useNotificaciones()
+    const { notificarCorrecto, notificarError, confirmar } = useNotificaciones()
+
     function listarArchivos(params: ParamsType) {
       listar(params)
     }
@@ -112,13 +109,16 @@ export default defineComponent({
     const axios = AxiosHttpRepository.getInstance()
     const tamanioListado = ref(0)
 
-    const ruta = `${apiConfig.URL_BASE}/${axios.getEndpoint(props.endpoint)}`
+    const ruta = computed(
+      () => `${apiConfig.URL_BASE}/${axios.getEndpoint(props.endpoint)}`
+    )
 
     /************
      * Funciones
      *************/
     const quiero_subir_archivos = ref(props.esObligatorio)
     const esConsultado = ref(false)
+
     async function factoryFn(files) {
       const fd = new FormData()
       fd.append('file', files[0])
@@ -128,7 +128,7 @@ export default defineComponent({
       }
 
       try {
-        const response: AxiosResponse = await axios.post(ruta, fd)
+        const response: AxiosResponse = await axios.post(ruta.value, fd)
         files.value = []
         if (props.listarAlGuardar) listado.value.push(response.data.modelo)
         notificarCorrecto(response.data.mensaje)
@@ -139,9 +139,10 @@ export default defineComponent({
         console.log('error en el catch', error)
         const axiosError = error as AxiosError
         console.log(axiosError)
-        notificarError(axiosError.response?.data?.message??'error')
+        notificarError(axiosError.response?.data?.message ?? 'error')
       }
     }
+
     async function subir(params: ParamsType) {
       try {
         paramsForm = params
@@ -156,53 +157,28 @@ export default defineComponent({
       }
     }
 
-    const {onRejected} = useRejectedFiles(props)
+    const { onRejected } = useRejectedFiles(props)
 
-    // function onRejected(rejectedEntries) {
-    //   rejectedEntries.forEach(element => {
-    //     switch (element.failedPropValidation) {
-    //       case 'accept':
-    //         notificarError(
-    //           `El archivo ${element.file.name}  debe ser de un formato válido.`
-    //         )
-    //         notificarInformacion(`Formato/s aceptado/s ${props.formato}`)
-    //         break
-    //       case 'duplicate':
-    //         notificarError(`El archivo ${element.file.name} ya está adjuntado.`)
-    //         break
-    //       case 'max-files':
-    //         notificarError(
-    //           `No se pudo agregar el archivo ${element.file.name} porque solo se permite un máximo de ${props.maxFiles} archivo/s.`
-    //         )
-    //         break
-    //       case 'max-total-size':
-    //         notificarError(
-    //           `El archivo ${element.file.name} excede el tamaño máximo permitido.`
-    //         )
-    //         break
-    //       default:
-    //         notificarAdvertencia(
-    //           'El tamaño total de los archivos no debe exceder los 10mb.'
-    //         )
-    //     }
-    //   })
-    // }
     function onFileAdded(file) {
       tamanioListado.value += obtenerSumatoriaTamanio(file)
 
       entidad.isComponentFilesModified = true
     }
+
     function onFileRemoved(file) {
       tamanioListado.value -= obtenerSumatoriaTamanio(file)
 
       entidad.isComponentFilesModified = true
     }
+
     function obtenerSumatoriaTamanio(files) {
       return files.reduce((total, file) => total + file.size, 0)
     }
+
     function limpiarListado() {
       listado.value = []
     }
+
     // watchEffect(() => (quiero_subir_archivos.value = props.esObligatorio))
     return {
       listado,

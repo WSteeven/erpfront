@@ -25,6 +25,12 @@ const menuConecel: Ref<MenuOption[]> = computed(() => {
           can: store.can('puede.acceder.tareas_conecel')
         },
         {
+          title: 'Cuadrillas',
+          link: 'cuadrillas-tareas-conecel',
+          icon: 'bi-box-seam',
+          can: store.can('puede.acceder.tareas_conecel')
+        },
+        {
           title: 'Configuracion',
           icon: 'bi-gear',
           can: store.can('puede.acceder.configuracion_modulo_gestion_conecel'),

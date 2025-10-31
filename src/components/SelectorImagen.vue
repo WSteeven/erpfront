@@ -143,20 +143,14 @@ const handlePaste = async (event: ClipboardEvent) => {
     }
   }
 }
-const onMouseOver = () => {
-  console.log('onEnter capturado')
-  isHovering.value = true
-}
+const onMouseOver = () => (isHovering.value = true)
 const onMouseOut = () => (isHovering.value = false)
 
 onMounted(() => {
   slotUsado.value = !!slots?.error
 
   const el = fileRef.value?.$el ?? fileRef.value // depende de cómo Quasar expone el DOM
-  if (!el) {
-    console.log('entro en no el')
-    return
-  } else console.log('si hay el')
+  if (!el) return
 
   el.addEventListener('mouseenter', onMouseOver)
   el.addEventListener('mouseleave', onMouseOut)
@@ -167,8 +161,8 @@ onMounted(() => {
 onBeforeUnmount(() => {
   const el = fileRef.value?.$el ?? fileRef.value
   if (el) {
-    el.removeEventListener('mouseover', onMouseOver)
-    el.removeEventListener('mouseout', onMouseOut)
+    el.removeEventListener('mouseenter', onMouseOver)
+    el.removeEventListener('mouseleave', onMouseOut)
   }
   document.removeEventListener('paste', handlePaste)
 })

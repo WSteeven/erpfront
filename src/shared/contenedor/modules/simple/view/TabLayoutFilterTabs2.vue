@@ -134,7 +134,14 @@
           :paginate="paginate"
           :permitirFiltrar="permitirFiltrar"
           @filtrar="filtrarTodos"
-        ></essential-table-tabs>
+        >
+          <template #header-tabla-listado>
+            <slot name="header"></slot>
+          </template>
+          <template #header>
+            <slot name="header-tabla-listado"></slot>
+          </template>
+        </essential-table-tabs>
         <!-- :tab-defecto="tabDefecto" -->
       </q-tab-panel>
 

@@ -5,21 +5,23 @@
  *
  */
 // Dependencias
-import { configuracionColumnasArchivoSubtarea } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/domain/configuracionColumnasArchivoSubtarea'
-import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { descargarArchivoUrl } from 'shared/utils'
-import { useNotificaciones } from 'shared/notificaciones'
-import { AxiosError, AxiosResponse } from 'axios'
-import { accionesTabla } from 'config/utils'
-import { defineComponent, onBeforeUnmount, onMounted, ref } from 'vue'
+import {
+  configuracionColumnasArchivoSubtarea
+} from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/domain/configuracionColumnasArchivoSubtarea'
+import {CustomActionTable} from 'components/tables/domain/CustomActionTable'
+import {descargarArchivoUrl} from 'shared/utils'
+import {useNotificaciones} from 'shared/notificaciones'
+import {AxiosError, AxiosResponse} from 'axios'
+import {accionesTabla} from 'config/utils'
+import {defineComponent, onBeforeUnmount, onMounted, ref} from 'vue'
 
 // Componentes
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
 // Logica y controladores
-import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { ParamsType } from 'config/types'
-import { useRejectedFiles } from '../../composables/useRejectedFiles'
+import {ContenedorSimpleMixin} from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import {ParamsType} from 'config/types'
+import {useRejectedFiles} from '../../composables/useRejectedFiles'
 
 export default defineComponent({
   components: {
@@ -82,8 +84,6 @@ export default defineComponent({
 
     const {
       notificarError,
-      notificarAdvertencia,
-      notificarInformacion,
       confirmar
     } = useNotificaciones()
 
@@ -118,36 +118,41 @@ export default defineComponent({
       icono: 'bi-eye',
       color: 'positive',
       accion: ({ entidad }) => {
-        // console.log(entidad)
         descargarArchivoUrl(entidad.ruta)
       }
     }
 
     const refGestor = ref()
-    let handlePaste
-    onMounted(() => {
-      emit('inicializado')
-      console.log(refGestor.value)
-      // const uploaderEl = uploaderRef.value.$el
+    const dropZone = ref<HTMLElement>()
+    const isHovering = ref(false)
+    const hasFocus = ref(false)
+    const handlePaste: (e: ClipboardEvent) => void = async e => {
+      if (!isHovering.value && !hasFocus.value) return // 🔒 no pegar si no está sobre o enfocado
 
-      handlePaste = e => {
-        const items = e.clipboardData?.items
-        if (!items) return
+      const items = e.clipboardData?.items
+      if (!items) return
 
-        for (const item of items) {
-          if (item.kind === 'file') {
-            const file = item.getAsFile()
-            if (file && file.type.startsWith('image/')) {
-              // Agregar la imagen pegada al uploader
-              refGestor.value.addFiles([file])
-              console.log('Imagen pegada:', file.name)
-            }
+      for (const item of items) {
+        if (item.kind === 'file') {
+          const file = item.getAsFile()
+          if (file) {
+            refGestor.value.addFiles([file])
+            // console.log('Archivo pegado:', file.name)
           }
+          // if (file && file.type.startsWith('image/')) {
+          //   // Agregar la imagen pegada al uploader
+          //   refGestor.value.addFiles([file])
+          //   console.log('Imagen pegada:', file.name)
+          // }
         }
       }
+    }
+
+    onMounted(() => {
+      emit('inicializado')
+
 
       document.addEventListener('paste', handlePaste)
-      console.log('Habilitado Ctrl+V para pegar imágenes')
     })
 
     onBeforeUnmount(() => {
@@ -171,24 +176,20 @@ export default defineComponent({
           props.idModelo!,
           fd
         )
-        // console.log(response.data.modelo)
-        // console.log(listadoArchivos.value)
 
         files.value = []
         if (props.listarAlGuardar)
           listadoArchivos.value.push(response.data.modelo)
         // notificarCorrecto(response.data.mensaje)
-        // console.log(response.data.mensaje)
         quiero_subir_archivos.value = false
       } catch (error: unknown) {
-        // console.log('err',error)
         const axiosError = error as AxiosError
         notificarError(axiosError.response?.data?.message ?? 'error')
       }
     }
 
     async function subir(params: ParamsType) {
-      console.log('subiendo...')
+      // console.log('subiendo...')
       paramsForm = params
       if (refGestor.value) {
         await refGestor.value.upload()
@@ -199,31 +200,9 @@ export default defineComponent({
     }
 
     const { onRejected } = useRejectedFiles(props)
-    // function onRejected(rejectedEntries) {
-    //   rejectedEntries.forEach(element => {
-    //     switch (element.failedPropValidation) {
-    //       case 'accept':
-    //         notificarError(`El archivo ${element.file.name}  debe ser de un formato válido.`)
-    //         notificarInformacion(`Formato/s aceptado/s ${props.formato}`)
-    //         break
-    //       case 'duplicate':
-    //         notificarError(`El archivo ${element.file.name} ya está adjuntado.`)
-    //         break
-    //       case 'max-files':
-    //         notificarError(`No se pudo agregar el archivo ${element.file.name} porque solo se permite un máximo de ${props.maxFiles} archivo/s.`);
-    //         break
-    //       case 'max-total-size':
-    //         notificarError(`El archivo ${element.file.name} excede el tamaño máximo permitido.`)
-    //         break
-    //       default:
-    //         notificarAdvertencia('El tamaño total de los archivos no debe exceder los 10mb.')
-    //     }
-    //   });
-    // }
 
     function limpiarListado() {
       listadoArchivos.value = []
-      // console.log('limpiado...')
     }
 
     function onFileAdded(files) {
@@ -255,8 +234,9 @@ export default defineComponent({
     return {
       listadoArchivos,
       refGestor,
-      // extraerExtension: (nombre: string) => nombre.split('.').at(-1),
-      // formatBytes,
+      dropZone,
+      isHovering,
+      hasFocus,
       quiero_subir_archivos,
       columnas: [...configuracionColumnasArchivoSubtarea, accionesTabla],
       onRejected,

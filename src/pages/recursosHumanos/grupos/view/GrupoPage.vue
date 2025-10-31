@@ -7,12 +7,12 @@
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-py-md">
           <!-- Nombre -->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-4">
             <label class="q-mb-sm block">Nombre del grupo</label>
             <q-input
               v-model="grupo.nombre"
               placeholder="Obligatorio"
-              @update:model-value="(v) => (grupo.nombre = v.toUpperCase())"
+              @update:model-value="v => (grupo.nombre = v.toUpperCase())"
               :disable="disabled"
               autofocus
               outlined
@@ -20,13 +20,28 @@
               :error="!!v$.nombre.$errors.length"
             >
               <template v-slot:error>
-                <error-component clave="nombre" :v$="v$"/>
-                </template>
+                <error-component clave="nombre" :v$="v$" />
+              </template>
             </q-input>
+          </div>
+          <!-- Nombre alternativo -->
+          <div class="col-12 col-md-4" >
+            <label class="q-mb-sm block"
+              >Nombre alternativo
+              <q-tooltip>Alias o nombre externo </q-tooltip>
+            </label>
+            <q-input
+              v-model="grupo.nombre_alternativo"
+              placeholder="Opcional"
+              :disable="disabled"
+              autofocus
+              outlined
+              dense
+            />
           </div>
 
           <!-- Región -->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-4">
             <label class="q-mb-sm block">Región</label>
             <q-select
               v-model="grupo.region"
@@ -58,18 +73,18 @@
               :error="!!v$.coordinador.$errors.length"
               @blur="v$.coordinador.$touch"
               @filter="filtrarEmpleados"
-              @popup-show="ordenarEmpleados(empleados)"
-              :option-label="(v) => v.apellidos + ' ' + v.nombres"
-              :option-value="(v) => v.id"
+              @popup-show="ordenarLista(empleados, 'apellidos')"
+              :option-label="v => v.apellidos + ' ' + v.nombres"
+              :option-value="v => v.id"
               emit-value
               map-options
             >
               <template v-slot:no-option>
-                <no-option-component/>
+                <no-option-component />
               </template>
 
               <template v-slot:error>
-                <error-component clave="coordinador" :v$="v$"/>
+                <error-component clave="coordinador" :v$="v$" />
               </template>
             </q-select>
           </div>

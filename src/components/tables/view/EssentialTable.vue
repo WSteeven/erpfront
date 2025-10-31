@@ -1076,10 +1076,13 @@
                   "
                   class="ellipsis-3-lines"
                   :class="{
-                      'text-negative text-bold':!!v$[keyError]?.$each?.$response.$errors[props.rowIndex][col.name]?.length
+                    'text-negative text-bold':
+                      !!v$[keyError]?.$each?.$response.$errors[props.rowIndex][
+                        col.name
+                      ]?.length
                   }"
                 >
-<!--                  Se modifica para que en la tabla vista movil se muestren los campos requeridos que tienen errores -->
+                  <!--                  Se modifica para que en la tabla vista movil se muestren los campos requeridos que tienen errores -->
                   <error-component
                     v-if="
                       !!v$[keyError]?.$each?.$response.$errors[props.rowIndex][
@@ -1626,30 +1629,30 @@
     </template>
 
     <template #body-cell-estado="props">
-        <!-- estado activo -->
+      <!-- estado activo -->
       <q-td :props="props">
         <q-chip
-            v-if="props.value === 'ACTIVO'"
-            :class="{ 'bg-green-1': !$q.dark.isActive }"
+          v-if="props.value === 'ACTIVO'"
+          :class="{ 'bg-green-1': !$q.dark.isActive }"
         >
           <q-icon
-              name="bi-circle-fill"
-              color="positive"
-              class="q-mr-xs"
+            name="bi-circle-fill"
+            color="positive"
+            class="q-mr-xs"
           ></q-icon>
           ACTIVO
         </q-chip>
 
         <!-- estado inactivo -->
         <q-chip
-            v-if="props.value === 'INACTIVO'"
-            :class="{ 'bg-red-1': !$q.dark.isActive }"
+          v-if="props.value === 'INACTIVO'"
+          :class="{ 'bg-red-1': !$q.dark.isActive }"
         >
           <!-- One of primary, secondary, accent, dark, positive, negative, info, warning -->
           <q-icon
-              name="bi-circle-fill"
-              color="negative"
-              class="q-mr-xs"
+            name="bi-circle-fill"
+            color="negative"
+            class="q-mr-xs"
           ></q-icon>
           INACTIVO
         </q-chip>
@@ -1869,11 +1872,22 @@
         <campo-boleano :propsTable="props" />
       </q-td>
     </template> -->
+    <template #body-cell-estado_tarea="props">
+      <q-td :props="props">
+        <campo-estado-tarea :propsTable="props" />
+      </q-td>
+    </template>
+    <template #body-cell-asignada="props">
+      <q-td :props="props">
+        <campo-boleano :propsTable="props" />
+      </q-td>
+    </template>
     <template #body-cell-es_principal="props">
       <q-td :props="props">
         <campo-boleano :propsTable="props" />
       </q-td>
-    </template><template #body-cell-gestionada="props">
+    </template>
+    <template #body-cell-gestionada="props">
       <q-td :props="props">
         <campo-boleano :propsTable="props" />
       </q-td>

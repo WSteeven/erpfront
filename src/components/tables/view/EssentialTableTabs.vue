@@ -107,7 +107,12 @@
         @selected="seleccionado"
         :mixin="mixin"
         :mostrarColumnasVisibles="!$q.screen.xs"
-      ></essential-table-pagination>
+      >
+        <template #header-tabla-listado
+        >
+          <slot name="header"></slot>
+        </template>
+      </essential-table-pagination>
 
       <essential-table
         v-else
@@ -166,7 +171,11 @@
         :tipoSeleccion="tipoSeleccion"
         @selected="seleccionado"
         :mostrarColumnasVisibles="!$q.screen.xs"
-      ></essential-table>
+      >
+        <template #header>
+          <slot name="header"></slot>
+        </template>
+      </essential-table>
     </div>
   </div>
 </template>

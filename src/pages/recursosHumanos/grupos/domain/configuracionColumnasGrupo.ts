@@ -10,6 +10,13 @@ export const configuracionColumnasGrupo: ColumnConfig<Grupo>[] = [
     sortable: true,
   },
   {
+    name: 'nombre_alternativo',
+    field: 'nombre_alternativo',
+    label: 'Alias',
+    align: 'left',
+    sortable: true,
+  },
+  {
     name: 'region',
     field: 'region',
     label: 'Región',

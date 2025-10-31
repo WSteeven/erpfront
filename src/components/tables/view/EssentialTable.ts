@@ -46,9 +46,11 @@ import CampoBoleano from './partials/CampoBoleano.vue'
 import EstadosPostulaciones from './EstadosPostulaciones.vue'
 import ErrorComponent from 'components/ErrorComponent.vue'
 import SelectorImagen from 'components/SelectorImagen.vue'
+import CampoEstadoTarea from 'components/tables/view/partials/CampoEstadoTarea.vue';
 
 export default defineComponent({
   components: {
+    CampoEstadoTarea,
     SelectorImagen,
     ErrorComponent,
     PrevisualizarTablaPdf,

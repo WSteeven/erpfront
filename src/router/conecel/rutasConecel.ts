@@ -9,6 +9,13 @@ const rutasConecel: RouteRecordRaw[] = [
     meta: { requiresAuth: true }
   },
   {
+    path: '/cuadrillas-tareas-conecel',
+    name: 'cuadrillas_tareas_conecel',
+    component: () =>
+      import('pages/conecel/GestionTareas/cuadrillaTarea/view/CuadrillaPage.vue'),
+    meta: { requiresAuth: true, permissionRequired:false  }
+  },
+  {
     path: '/tipos-actividades-conecel',
     name: 'tipos_actividades_conecel',
     component: () =>

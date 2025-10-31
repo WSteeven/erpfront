@@ -58,18 +58,18 @@ export const configuracionColumnasTarea: ColumnConfig<Tarea>[] = [
     align: 'left',
     sortable: true
   },
-  {
-    name: 'coordenadas',
-    field: 'coordenadas',
-    label: 'Coordenadas',
-    align: 'left',
-    sortable: true
-  },
-  {
-    name: 'telefonos',
-    field: 'telefonos',
-    label: 'Telefonos',
-    align: 'left',
-    sortable: true
-  }
+  // {
+  //   name: 'coordenadas',
+  //   field: 'coordenadas',
+  //   label: 'Coordenadas',
+  //   align: 'left',
+  //   sortable: true
+  // },
+  // {
+  //   name: 'telefonos',
+  //   field: 'telefonos',
+  //   label: 'Telefonos',
+  //   align: 'left',
+  //   sortable: true
+  // }
 ]

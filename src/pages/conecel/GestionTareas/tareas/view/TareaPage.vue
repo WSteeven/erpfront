@@ -5,13 +5,63 @@
     :permitirEliminar="false"
     :tab-options="tabOptions"
     :tabDefecto="currentTab"
+    :mostrar-formulario="false"
     :filtrar="filtrarListadoTareas"
+    :custom-panel1="mapaTabPanel"
+    :permitir-editar="false"
+    :mostrarButtonSubmits="tipoCarga === INDIVIDUAL"
   >
+    <!--    :accion1="btnMarcarRiesgoPerderse"-->
+    <!--    :accion2="btnCambiarCuadrilla"-->
+    <template #header-tabla-listado>
+      <q-select
+        v-model="fechaSeleccionada"
+        :options="fechas"
+        label="Selecciona una fecha para filtrar"
+        transition-show="scale"
+        transition-hide="scale"
+        style="width: 300px"
+        options-dense
+        dense
+        clearable
+        outlined
+      >
+        <template v-slot:no-option>
+          <no-option-component />
+        </template>
+      </q-select>
+    </template>
+
     <template #formulario>
       <q-form @submit.prevent>
-        <div class="row q-col-gutter-sm q-py-none">
+        <div
+          class="row q-col-gutter-sm q-mb-md q-py-sm"
+          v-if="accion === acciones.nuevo"
+        >
+          <div class="col-12">
+            <label class="q-mb-sm block">
+              <strong style="color: red">*</strong> Si deseas registrar varias
+              tareas al mismo tiempo selecciona la opción 'POR LOTES'</label
+            >
+
+            <q-btn-toggle
+              v-model="tipoCarga"
+              class="toggle-button-primary"
+              spread
+              no-caps
+              rounded
+              toggle-color="primary"
+              unelevated
+              :options="tiposCarga"
+            />
+          </div>
+        </div>
+        <div
+          class="row q-col-gutter-sm q-py-none"
+          v-if="tipoCarga == INDIVIDUAL"
+        >
           <!-- Fecha  -->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-4">
             <label class="q-mb-sm block">Fecha</label>
             <q-input
               v-model="tarea.fecha"
@@ -240,17 +290,7 @@
           <!-- Mapa -->
           <div class="col-12 col-md-12">
             <label class="q-mb-sm block">Mapa</label>
-            <mapa-component
-              :puntos="[
-                {
-                  lat: tarea.latitud ?? '-3.2621743954237297',
-                  lng: tarea.longitud ?? '-79.95758902883551',
-                  titulo: tarea.orden_trabajo ?? 'OT-000',
-                  descripcion: tarea.nombre_cliente ?? 'Machala LED'
-                }
-              ]"
-              height="400px"
-            />
+            <mapa-component :puntos="tarea.coordenadas" height="400px" />
           </div>
 
           <div class="col-12">
@@ -272,7 +312,7 @@
                   name: 'telefono',
                   field: 'telefono',
                   label: 'Teléfono',
-                  type:'number',
+                  type: 'number',
                   align: 'left',
                   editable: true
                 },
@@ -328,6 +368,186 @@
               dense
             />
           </div>
+        </div>
+        <div class="row q-col-gutter-sm q-mb-md" v-else>
+          <div class="col-12 col-md-6">
+            <label class="q-mb-sm block"
+              >Reporte del sistema de CONECEL Claro
+              <i class="bi bi-info-circle"></i>
+              <q-tooltip class="bg-light-blue-7"
+                >Suba el reporte emitido al exportar las tareas en el sistema de
+                CONECEL Claro
+              </q-tooltip>
+            </label>
+          </div>
+          <!-- Grupo -->
+          <div class="col-12 col-md-6">
+            <label class="q-mb-sm block">Cuadrilla asignada</label>
+            <q-select
+              v-model="grupo"
+              :options="grupos"
+              transition-show="jump-up"
+              transition-hide="jump-down"
+              :disable="disabled"
+              options-dense
+              dense
+              outlined
+              clearable
+              use-input
+              input-debounce="0"
+              @filter="filtrarGrupos"
+              @popup-show="ordenarLista(grupos, 'nombre')"
+              :option-value="v => v.id"
+              :option-label="v => v.nombre"
+              emit-value
+              map-options
+            >
+              <template v-slot:no-option>
+                <no-option-component />
+              </template>
+            </q-select>
+          </div>
+
+          <!-- Documento -->
+          <div class="col-12 col-md-12" v-if="accion == acciones.nuevo">
+            <gestor-documentos
+              ref="refArchivoLotes"
+              :mixin="mixin2"
+              :endpoint="endpoint"
+              :disable="disabled"
+              :permitir-eliminar="false"
+              :mostrar-listado="false"
+              :listar-al-guardar="false"
+              :esMultiple="false"
+            >
+              <template #boton-subir>
+                <q-btn
+                  v-if="refArchivoLotes?.quiero_subir_archivos"
+                  color="positive"
+                  push
+                  no-caps
+                  class="full-width q-mb-lg"
+                  @click="subirArchivos()"
+                >
+                  <q-icon name="bi-upload" class="q-mr-sm" size="xs"></q-icon>
+                  Subir archivos seleccionados
+                </q-btn>
+              </template>
+            </gestor-documentos>
+          </div>
+        </div>
+      </q-form>
+    </template>
+    <template v-slot:Mapa>
+      <q-form @submit.prevent>
+        <div class="row rounded-borders q-py-none">
+          <div
+            class="col-12 col-md-12 rounded-card q-ma-sm q-py-sm text-center bg-light-blue-1"
+          >
+            <div>
+              <q-icon
+                name="bi-info-circle-fill"
+                class="q-mr-xs q-ml-xs"
+                size="1em"
+              />
+              <b> Información </b>Las opciones se marcan con colores:
+            </div>
+            <div>
+              <q-radio
+                v-model="accepted"
+                checked-icon="bi-check-circle-fill"
+                :color="estadoColorMap[estadosTareasString.pendiente]"
+                disable
+                val="1"
+                :label="estadosTareasString.pendiente"
+              />
+              <q-radio
+                v-model="accepted"
+                checked-icon="bi-check-circle-fill"
+                :color="estadoColorMap[estadosTareasString.finalizada]"
+                disable
+                val="1"
+                :label="estadosTareasString.finalizada"
+              />
+              <q-radio
+                v-model="accepted"
+                checked-icon="bi-check-circle-fill"
+                :color="estadoColorMap[estadosTareasString.iniciada]"
+                disable
+                val="1"
+                :label="estadosTareasString.iniciada"
+              />
+              <q-radio
+                v-model="accepted"
+                checked-icon="bi-check-circle-fill"
+                :color="estadoColorMap[estadosTareasString.cancelada]"
+                disable
+                val="1"
+                :label="estadosTareasString.cancelada"
+              /><q-radio
+                v-model="accepted"
+                checked-icon="bi-check-circle-fill"
+                :color="estadoColorMap[estadosTareasString.riesgo_perderse]"
+                disable
+                val="1"
+                :label="estadosTareasString.riesgo_perderse"
+              />
+            </div>
+          </div>
+          <!-- Mapa -->
+          <div class="col-8">
+            <label class="q-mb-sm block">Mapa</label>
+            <mapa-component
+              ref="refMapa"
+              :puntos="puntosMapa"
+              :punto-seleccionado="puntoSeleccionado"
+              :height="alturaMapa"
+              @punto-click="seleccionarTarea"
+            />
+          </div>
+          <!-- Longitud -->
+          <div class="col-4">
+            <label class="q-mb-xs block text-caption">Listado de tareas</label>
+            <q-card flat bordered>
+              <q-card-section class="q-pa-xs">
+                <q-scroll-area :style="{ height: alturaMapa }">
+                  <div class="q-pa-none">
+                    <q-item
+                        clickable
+                        dense
+                        v-for="(tarea, index) in listado"
+                        :key="index"
+                        @click="seleccionarTarea(tarea)"
+                        :class="{ 'bg-grey-3': puntoSeleccionado === tarea.id }"
+                        class="q-py-xs q-px-sm"
+                    >
+                      <q-item-section avatar class="q-pa-none">
+                        <q-avatar
+                            size="24px"
+                            :color="estadoColorMap[tarea.estado_tarea] ?? 'blue'"
+                            text-color="white"
+                            class="text-caption"
+                        >
+                          {{ tarea.estado_tarea.charAt(0) }}
+                        </q-avatar>
+                      </q-item-section>
+
+                      <q-item-section class="q-pa-none">
+                        <div class="text-caption q-mb-xs">
+                          {{ tarea.orden_trabajo }} - {{ tarea.tipo_actividad }}
+                        </div>
+                        <div class="text-caption text-grey q-mb-xs">
+                          {{ tarea.direccion }} - {{ tarea.nombre_cliente }}
+                        </div>
+                        <hr class="q-mt-none q-mb-none" style="border-top: 1px solid #ccc; width: 100%" />
+                      </q-item-section>
+                    </q-item>
+                  </div>
+                </q-scroll-area>
+              </q-card-section>
+            </q-card>
+          </div>
+
         </div>
       </q-form>
     </template>

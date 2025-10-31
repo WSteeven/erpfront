@@ -1,4 +1,5 @@
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
+import {reactive} from 'vue';
 
 export class Tarea extends EntidadAuditable {
   fecha: string | null
@@ -14,8 +15,8 @@ export class Tarea extends EntidadAuditable {
   longitud: number | null
   coordenadas: []
   observacion: string | null
-  comentario_anulacion: string | null
   telefonos: string[]
+  comentario_anulacion: string | null //no se usa
 
   constructor() {
     super()
@@ -23,7 +24,7 @@ export class Tarea extends EntidadAuditable {
     this.asignada = true
     this.comentario_anulacion = null
     this.telefonos = []
-    this.coordenadas = []
+    this.coordenadas = reactive([])
 
   }
 }

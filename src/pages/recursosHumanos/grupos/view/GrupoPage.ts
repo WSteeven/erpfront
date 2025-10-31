@@ -3,7 +3,7 @@ import { configuracionColumnasGrupo } from '../domain/configuracionColumnasGrupo
 import { useNotificacionStore } from 'stores/notificacion'
 import { required } from 'shared/i18n-validators'
 import useVuelidate from '@vuelidate/core'
-import { defineComponent, ref } from 'vue'
+import { defineComponent } from 'vue'
 import { useQuasar } from 'quasar'
 
 // Componentes
@@ -16,11 +16,11 @@ import { GrupoController } from '../infraestructure/GrupoController'
 import { Grupo } from '../domain/Grupo'
 import { regiones } from 'config/utils'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
-import { ordernarListaString } from 'shared/utils'
-import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
+import { ordenarLista } from 'shared/utils'
 import { configuracionColumnasEmpleadosLite } from 'pages/recursosHumanos/empleados/domain/configuracionColumnasEmpleadosLite'
-import ErrorComponent from 'components/ErrorComponent.vue';
-import NoOptionComponent from 'components/NoOptionComponent.vue';
+import ErrorComponent from 'components/ErrorComponent.vue'
+import NoOptionComponent from 'components/NoOptionComponent.vue'
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 
 export default defineComponent({
   components: {
@@ -40,6 +40,7 @@ export default defineComponent({
     const { setValidador, cargarVista, obtenerListados } =
       mixin.useComportamiento()
 
+    const {empleados, filtrarEmpleados} = useFiltrosListadosSelects(listadosAuxiliares)
     cargarVista(async () => {
       await obtenerListados({
         empleados: {
@@ -54,27 +55,7 @@ export default defineComponent({
       empleados.value = listadosAuxiliares.grupos
     })
 
-    const empleados = ref([])
-
-    function filtrarEmpleados(val, update) {
-      if (val === '')
-        update(
-          () =>
-            (empleados.value = listadosAuxiliares.empleados.sort((a, b) =>
-              ordernarListaString(a.nombres, b.nombres)
-            ))
-        )
-
-      update(() => {
-        const needle = val.toLowerCase()
-        empleados.value = listadosAuxiliares.empleados.filter(
-          v =>
-            v.nombres.toLowerCase().indexOf(needle) > -1 ||
-            v.apellidos.toLowerCase().indexOf(needle) > -1
-        )
-      })
-    }
-
+    
     const rules = {
       nombre: { required },
       coordinador: { required }
@@ -85,11 +66,7 @@ export default defineComponent({
     const v$ = useVuelidate(rules, grupo)
     setValidador(v$.value)
 
-    function ordenarEmpleados() {
-      empleados.value.sort((a: Empleado, b: Empleado) =>
-        ordernarListaString(a.apellidos!, b.apellidos!)
-      )
-    }
+    
 
     return {
       // mixin
@@ -103,7 +80,7 @@ export default defineComponent({
       regiones,
       filtrarEmpleados,
       empleados,
-      ordenarEmpleados
+      ordenarLista,
     }
   }
 })
