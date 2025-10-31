@@ -107,6 +107,34 @@ export default defineComponent({
     } = mixin.useHooks()
     const { confirmar, prompt } = useNotificaciones()
 
+    const seleccionarProductoValidado = (productos: any[]) => {
+      const productosConSerial = productos.filter(
+        p => p.tiene_serial || p.requiere_serial
+      )
+
+      if (productosConSerial.length > 0) {
+        // Verificar si algún producto con serial ya existe en la lista
+        const productosExistentes = transaccion.listadoProductosTransaccion
+
+        for (const producto of productosConSerial) {
+          const yaExiste = productosExistentes.some(
+            (p: any) =>
+              p.producto_id === producto.producto_id || p.id === producto.id
+          )
+
+          if (yaExiste) {
+            useNotificaciones().notificarAdvertencia(
+              `El producto "${ producto.nombre || producto.descripcion }" con serial: "${ producto.serial }" ya está en la lista. No se puede agregar duplicados de productos con serial.`
+            )
+            return // No continuar con la selección
+          }
+        }
+      }
+
+      // Si pasa la validación, proceder con la selección normal
+      seleccionarProducto(productos)
+    }
+
     //modales
     const modales = new ComportamientoModalesTransaccionIngreso()
     //stores
@@ -236,10 +264,20 @@ export default defineComponent({
     const reglas = {
       justificacion: { required },
       sucursal: { required },
-      num_comprobante: { required: requiredIf(()=>esVisibleComprobante.value) },
-      fecha_compra: { required: requiredIf(()=>esVisibleComprobante.value) },
-      proveedor_id: { required: requiredIf(()=>esVisibleComprobante.value && transaccion.modo_seleccion ) },
-      proveedor: { required: requiredIf(()=>esVisibleComprobante.value && !transaccion.modo_seleccion ) },
+      num_comprobante: {
+        required: requiredIf(() => esVisibleComprobante.value)
+      },
+      fecha_compra: { required: requiredIf(() => esVisibleComprobante.value) },
+      proveedor_id: {
+        required: requiredIf(
+          () => esVisibleComprobante.value && transaccion.modo_seleccion
+        )
+      },
+      proveedor: {
+        required: requiredIf(
+          () => esVisibleComprobante.value && !transaccion.modo_seleccion
+        )
+      },
       motivo: { requiredIfRol: requiredIf(store.esBodeguero) },
       estado: { requiredIfRol: requiredIf(accion.value === acciones.editar) },
       observacion_est: {
@@ -324,10 +362,12 @@ export default defineComponent({
       ]
       listadoDevolucion.value.sort((v, w) => v.id - w.id) //ordena el listado de devolucion
       //copiar el listado de devolución al listado de la tabla
-      transaccion.listadoProductosTransaccion = listadoDevolucion.value.map(item=>({
-        ...item,
-        cantidad :item.pendiente
-      }))
+      transaccion.listadoProductosTransaccion = listadoDevolucion.value.map(
+        item => ({
+          ...item,
+          cantidad: item.pendiente
+        })
+      )
       // aqui depuramos las cantidades que se va a devolver para que se reste devuelto a cantidad y no de problemas en una devolucion parcial
       //ej: se tiene en cantidad=3 y en devuelto=2, la nueva cantidad debe ser 1
       if (devolucionStore.devolucion.tarea) {
@@ -538,7 +578,7 @@ export default defineComponent({
 
     async function recargarSucursales() {
       const sucursales_obtenidas = (
-        await new SucursalController().listar({ campos: 'id,lugar', activo:1 })
+        await new SucursalController().listar({ campos: 'id,lugar', activo: 1 })
       ).result
       LocalStorage.set('sucursales', JSON.stringify(sucursales_obtenidas))
       sucursales.value = JSON.parse(
@@ -656,7 +696,7 @@ export default defineComponent({
       listadoProductos,
       listarProductos,
       limpiarProducto,
-      seleccionarProducto,
+      seleccionarProducto: seleccionarProductoValidado,
       configuracionColumnasProductos,
 
       //rol
@@ -696,7 +736,7 @@ export default defineComponent({
       },
       ordenarLista,
       proveedores,
-      filtrarProveedores
+      filtrarProveedores,
     }
   }
 })
