@@ -264,7 +264,7 @@
 
         <ButtonSubmits
           :accion="accion"
-          @guardar="guardar"
+          @guardar="guardar(entrevista)"
           @editar="editar(entrevista)"
           @cancelar="reestablecer"
         />
