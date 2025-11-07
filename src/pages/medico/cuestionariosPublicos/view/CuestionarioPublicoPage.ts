@@ -6,7 +6,7 @@ import { SelectOption } from 'components/tables/domain/SelectOption'
 import { computed, defineComponent, ref, watchEffect } from 'vue'
 import { opcionesTiposCuestionarios } from 'config/utils/medico'
 import { useNotificaciones } from 'shared/notificaciones'
-import { isAxiosError } from 'shared/utils'
+import { isApiError } from 'shared/utils'
 import useVuelidate from '@vuelidate/core'
 
 // Componentes
@@ -92,7 +92,7 @@ export default defineComponent({
                 })
                 cuestionarioPublico.formulario_cuestionario = result
             } catch (e) {
-                if (isAxiosError(e)) {
+                if (isApiError(e)) {
                     const mensajes: string[] = e.erroresValidacion
                     mensaje.value = mensajes[0]
                 }
@@ -208,7 +208,7 @@ export default defineComponent({
                         cuestionarioPublico.cuestionario = []
                         establecerNombreEmpresa()
                     } catch (e) {
-                        if (isAxiosError(e)) {
+                        if (isApiError(e)) {
                             const mensajes: string[] = e.erroresValidacion
                             console.log(mensajes)
                         }

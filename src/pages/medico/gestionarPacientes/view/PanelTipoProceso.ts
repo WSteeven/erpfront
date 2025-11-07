@@ -5,7 +5,7 @@ import { estadosSolicitudesExamenes, tiposProcesosExamenes } from 'config/utils/
 import { useBotonesSolicitudExamen } from '../application/UseBotonesSolicitudExamen'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
-import { isAxiosError, notificarMensajesError } from 'shared/utils'
+import { isApiError, notificarMensajesError } from 'shared/utils'
 import { useNotificaciones } from 'shared/notificaciones'
 import { useExamenes } from '../application/UseExamenes'
 import { computed, defineComponent, ref, } from 'vue'
@@ -107,7 +107,7 @@ export default defineComponent({
             if (empleado.value.id) guardarRegistro(motivo, empleado.value.id, props.tipoProceso)
             notificaciones.notificarCorrecto('Registro agregado exitosamente!')
           } catch (error: any) {
-            if (isAxiosError(error)) {
+            if (isApiError(error)) {
               const mensajes: string[] = error.erroresValidacion
               notificarMensajesError(mensajes, notificaciones)
             } else {

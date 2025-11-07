@@ -9,7 +9,7 @@ import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 //Logica y controladores
 import { ConfiguracionCuestionarioEmpleado } from '../domain/ConfiguracionCuestionarioEmpleado'
 import {
-  isAxiosError,
+  isApiError,
   notificarMensajesError,
   removeAccents
 } from 'shared/utils'
@@ -52,7 +52,7 @@ export default defineComponent({
     // configuracion.hydrate(response.data.modelo)
 
   } catch (error: any) {
-    if (isAxiosError(error)) {
+    if (isApiError(error)) {
       const mensajes: string[] = error.erroresValidacion
       await notificarMensajesError(mensajes, notificaciones)
     }

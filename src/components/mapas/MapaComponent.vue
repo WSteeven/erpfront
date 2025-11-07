@@ -39,14 +39,7 @@
 </template>
 
 <script setup>
-import {
-  ref,
-  computed,
-  watch,
-  onMounted,
-  onBeforeUnmount,
-  onBeforeMount
-} from 'vue'
+import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
 import { LMap, LMarker, LPopup, LTileLayer } from '@vue-leaflet/vue-leaflet'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
@@ -61,6 +54,7 @@ L.Icon.Default.mergeOptions({ iconRetinaUrl, iconUrl, shadowUrl })
 
 const props = defineProps({
   puntos: { type: Array, default: () => [] },
+  rutas: { type: Array, default: () => [] },
   puntoSeleccionado: { type: [String, Number, Object], default: null },
   zoom: { type: Number, default: 15 },
   autoFit: { type: Boolean, default: true },
@@ -75,6 +69,7 @@ const mapRef = ref()
 let map
 // let map: L.Map
 const messageShown = ref(false)
+let rutasDibujadas = []
 
 /***************************************
  * 🔹 CÁLCULOS
@@ -91,6 +86,63 @@ const center = computed(() => {
 /***************************************
  * 🎯 FUNCIONES
  ***************************************/
+
+function renderizarRutas() {
+  if (!map) return
+
+  // Limpiar rutas anteriores
+  rutasDibujadas.forEach(r => map.removeLayer(r))
+  rutasDibujadas = []
+
+  // Dibujar rutas nuevas
+  props.rutas.forEach(ruta => {
+    if (!ruta.puntos?.length) return
+
+    const puntosLatLng = ruta.puntos.map(p => [p.lat, p.lng])
+
+    //Dibujar la línea
+    const polyline = L.polyline(puntosLatLng, {
+      color: ruta.color,
+      weight: 4,
+      opacity: 0.9
+    }).addTo(map)
+
+    rutasDibujadas.push(polyline)
+
+    // Dibujar los puntos de la ruta (si quieres que aparezcan)
+    ruta.puntos.forEach(punto => {
+      const marker = L.marker([punto.lat, punto.lng], {
+        icon: L.divIcon({
+          className: 'custom-marker',
+          html: `<i class="bi bi-geo-alt-fill" style="color: ${
+            ruta.color || 'blue'
+          }; font-size: 22px;"></i>`,
+          iconSize: [24, 24],
+          iconAnchor: [12, 24]
+        })
+      }).addTo(map)
+
+      if (punto.titulo || punto.descripcion) {
+        marker.bindPopup(`
+          <div class="text-body2">
+            <strong>${punto.titulo || 'Punto'}</strong><br>
+            <span>${punto.descripcion || ''}</span>
+          </div>
+        `)
+      }
+
+      rutasDibujadas.push(marker)
+    })
+  })
+
+  // 🔹 Auto-fit si hay puntos
+  const todosPuntos = props.rutas.flatMap(r => r.puntos || [])
+  if (props.autoFit && todosPuntos.length > 1) {
+    const bounds = L.latLngBounds(todosPuntos.map(p => [p.lat, p.lng]))
+    map.fitBounds(bounds, { padding: [30, 30] })
+  }
+}
+
 function getIcon(punto) {
   const isSelected =
     props.puntoSeleccionado &&
@@ -99,7 +151,9 @@ function getIcon(punto) {
 
   return L.divIcon({
     className: 'custom-marker',
-    html: `<i class="bi bi-geo-alt-fill" style="font-size: 24px; color: ${color};"></i>`,
+    html: `<i class="${
+      punto.icono ?? 'bi bi-geo-alt-fill'
+    }" style="font-size: 24px; color: ${color};"></i>`,
     iconSize: [24, 24],
     iconAnchor: [12, 24]
   })
@@ -159,6 +213,8 @@ onMounted(() => {
         .getContainer()
         .addEventListener('wheel', handleWheel, { passive: false })
     }
+
+    renderizarRutas()
   }, 1000)
 })
 
@@ -183,6 +239,11 @@ watch(
     }
   },
   { deep: true, immediate: true }
+)
+watch(
+  () => props.tareas,
+  () => renderizarRutas(),
+  { deep: true }
 )
 
 watch(

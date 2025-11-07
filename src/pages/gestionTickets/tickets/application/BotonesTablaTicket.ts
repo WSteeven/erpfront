@@ -4,7 +4,7 @@ import { MotivoPausaTicket } from 'pages/gestionTickets/motivosPausasTickets/dom
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { ComportamientoModalesTicket } from './ComportamientoModalesTicket'
-import { isAxiosError, notificarMensajesError } from 'shared/utils'
+import { isApiError, notificarMensajesError } from 'shared/utils'
 import { useAuthenticationStore } from 'stores/authentication'
 import { CambiarEstadoTicket } from './CambiarEstadoTicket'
 import { useNotificaciones } from 'shared/notificaciones'
@@ -76,7 +76,7 @@ export const useBotonesTablaTicket = (mixin: ContenedorSimpleMixin<Ticket | any>
               filtrarTickets(estadosTickets.PAUSADO)
               notificarCorrecto('Ticket pausado exitosamente!')
             } catch (error: any) {
-              if (isAxiosError(error)) {
+              if (isApiError(error)) {
                 const mensajes: string[] = error.erroresValidacion
                 notificarMensajesError(mensajes, notificaciones)
               } else {
@@ -130,7 +130,7 @@ export const useBotonesTablaTicket = (mixin: ContenedorSimpleMixin<Ticket | any>
               eliminarElemento(posicion)
               notificarCorrecto('Ticket finalizado exitosamente!')
             } catch (error: any) {
-              if (isAxiosError(error)) {
+              if (isApiError(error)) {
                 const mensajes: string[] = error.erroresValidacion
                 notificarMensajesError(mensajes, notificaciones)
               } else {
@@ -149,7 +149,7 @@ export const useBotonesTablaTicket = (mixin: ContenedorSimpleMixin<Ticket | any>
                   eliminarElemento(posicion)
                   notificarCorrecto('Ticket finalizado exitosamente!')
                 } catch (error: any) {
-                  if (isAxiosError(error)) {
+                  if (isApiError(error)) {
                     const mensajes: string[] = error.erroresValidacion
                     notificarMensajesError(mensajes, notificaciones)
                   } else {

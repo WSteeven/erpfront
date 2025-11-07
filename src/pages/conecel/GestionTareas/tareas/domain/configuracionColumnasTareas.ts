@@ -3,6 +3,12 @@ import { Tarea } from 'pages/conecel/GestionTareas/tareas/domain/Tarea'
 
 export const configuracionColumnasTarea: ColumnConfig<Tarea>[] = [
   {
+    name: 'id',
+    field: 'id',
+    label: 'N°',
+    align: 'left',
+    sortable: true
+  },{
     name: 'fecha',
     field: 'fecha',
     label: 'Fecha',

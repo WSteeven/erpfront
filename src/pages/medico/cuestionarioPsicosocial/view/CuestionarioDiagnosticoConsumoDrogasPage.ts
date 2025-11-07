@@ -18,7 +18,7 @@ import { StatusEssentialLoading } from 'components/loading/application/StatusEss
 import { RespuestaCuestionarioEmpleado } from '../domain/RespuestaCuestionarioEmpleado'
 import { ValidarCuestionarioLleno } from '../application/ValidarCuestionarioLleno'
 import { Cuestionario } from '../domain/Cuestionario'
-import { isAxiosError } from 'shared/utils'
+import { isApiError } from 'shared/utils'
 
 export default defineComponent({
   components: { TabLayout, ButtonSubmits },
@@ -110,7 +110,7 @@ export default defineComponent({
         const { result } = await preguntaController.listar({ 'tipo_cuestionario_id': 2 })
         listadosAuxiliares.preguntas = result
       } catch (e) {
-        if (isAxiosError(e)) {
+        if (isApiError(e)) {
           const mensajes: string[] = e.erroresValidacion
           mensaje.value = mensajes[0]
         }

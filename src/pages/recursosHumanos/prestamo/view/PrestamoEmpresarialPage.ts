@@ -36,7 +36,7 @@ import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpReposi
 import { endpoints } from 'config/api'
 import { AxiosError, AxiosResponse } from 'axios'
 import {
-  isAxiosError,
+  isApiError,
   notificarMensajesError,
   obtenerFechaActual
 } from 'shared/utils'
@@ -217,7 +217,7 @@ export default defineComponent({
         }
       } catch (e) {
         const axiosError = e as AxiosError
-        if (isAxiosError(axiosError)) {
+        if (isApiError(axiosError)) {
           const mensajes: string[] = error.erroresValidacion
           await notificarMensajesError(mensajes, this.notificaciones)
         }
@@ -266,7 +266,7 @@ export default defineComponent({
         }
       } catch (e) {
         const axiosError = e as AxiosError
-        if (isAxiosError(axiosError)) {
+        if (isApiError(axiosError)) {
           const mensajes: string[] = error.erroresValidacion
           await notificarMensajesError(mensajes, this.notificaciones)
         }
@@ -406,7 +406,7 @@ export default defineComponent({
 
         } catch (e) {
             const axiosError = e as AxiosError
-            if (isAxiosError(axiosError)) {
+            if (isApiError(axiosError)) {
             const mensajes: string[] = error.erroresValidacion
             await notificarMensajesError(mensajes, this.notificaciones)
             }

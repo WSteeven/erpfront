@@ -1,14 +1,9 @@
-import { computed, defineComponent, onBeforeUnmount, onMounted, ref } from 'vue'
+import {computed, defineComponent, onBeforeUnmount, onMounted, ref} from 'vue'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { endpoints } from 'config/api'
 import MapaComponent from 'components/mapas/MapaComponent.vue'
-import {
-  GrupoMapa,
-  Tarea as TareaInterface,
-  GrupoRuta,
-  PuntoMapa
-} from 'components/mapas/types/mapa'
+import {GrupoMapa, PuntoMapa} from 'components/mapas/types/mapa'
 import { AxiosResponse } from 'axios'
 import { PosicionHunter } from 'pages/conecel/GestionTareas/cuadrillaTarea/domain/PosicionHunter'
 import { obtenerFechaActual } from 'shared/utils'
@@ -26,15 +21,12 @@ import { useNotificaciones } from 'shared/notificaciones'
 import { Tarea } from 'pages/conecel/GestionTareas/tareas/domain/Tarea'
 import { GrupoController } from 'recursosHumanos/grupos/infraestructure/GrupoController'
 import { Grupo } from 'recursosHumanos/grupos/domain/Grupo'
-import RutasMapa from 'components/mapas/RutasMapa.vue'
-import MapaBase from 'components/mapas/MapaBase.vue'
-import RutasDinamicas from 'pages/conecel/GestionTareas/cuadrillaTarea/application/mapas/RutasDinamicas.vue'
-import MapaRutas from 'components/mapas/MapaRutas.vue'
-import { useOptimizadorRutas } from 'components/mapas/useOptimizadorRutas'
+import RutasMapa from 'components/mapas/RutasMapa.vue';
+import MapaBase from 'components/mapas/MapaBase.vue';
+import RutasDinamicas from 'pages/conecel/GestionTareas/cuadrillaTarea/application/mapas/RutasDinamicas.vue';
 
 export default defineComponent({
   components: {
-    MapaRutas,
     RutasDinamicas,
     MapaBase,
     RutasMapa,
@@ -47,8 +39,6 @@ export default defineComponent({
     const axios = AxiosHttpRepository.getInstance()
     const cargando = new StatusEssentialLoading()
     const refMapa = ref()
-    const { optimizar } = useOptimizadorRutas()
-    const gruposOptimizados = ref<GrupoRuta[]>([])
     const posicionesVehiculos = ref<any[]>([])
     const puntosMapa = ref<PuntoMapa[]>([])
     const puntoSeleccionado = ref<number | null>(null)
@@ -59,128 +49,23 @@ export default defineComponent({
     const grupos = ref<Grupo[]>()
     // Mapa para mantener consistencia entre renderizados
     const mapaColoresGrupos = ref<Record<number, string>>({})
-    // Datos falsos actualizados – TODO dentro de la ciudad
-    const tareasSinGrupo = ref<TareaInterface[]>([
-      {
-        id: 999,
-        titulo: 'Instalación fibra - Urdesa',
-        coordenadas: { lat: -2.17, lng: -79.91 } // Norte - Cerca de Urdesa
-      },
-      {
-        id: 1000,
-        titulo: 'Revisión nodo - Malecón',
-        coordenadas: { lat: -2.181, lng: -79.891 } // Centro - Malecón 2000
-      },
-      {
-        id: 1001,
-        titulo: 'Cambio de equipo - Samborondón',
-        coordenadas: { lat: -2.15, lng: -79.893 } // Norte - Entrada a Samborondón
-      },
-      {
-        id: 1002,
-        titulo: 'Revisión nodo - MALECÓN (LEJOS)',
-        coordenadas: { lat: -2.22, lng: -79.94 } // ¡AHORA ESTÁ EN SUR OESTE!
-      }
-    ])
-    const gruposFalsos = ref<GrupoRuta[]>([
-      {
-        id: 1,
-        nombre: 'Grupo A - Norte',
-        color: '#e6194b',
-        vehiculo: {
-          placa: 'ABC-123',
-          coordenadas: { lat: -2.17, lng: -79.905 }
-        }, // Norte
-        tareas: [
-          {
-            id: 1,
-            titulo: 'Instalación fibra',
-            coordenadas: { lat: -2.175, lng: -79.91 }
-          },
-          {
-            id: 2,
-            titulo: 'Reparación nodo',
-            coordenadas: { lat: -2.18, lng: -79.915 }
-          }
-        ]
-      },
-      {
-        id: 2,
-        nombre: 'Grupo B - Centro',
-        color: '#3cb44b',
-        vehiculo: {
-          placa: 'XYZ-789',
-          coordenadas: { lat: -2.195, lng: -79.885 }
-        }, // Centro
-        tareas: [
-          {
-            id: 3,
-            titulo: 'Mantenimiento',
-            coordenadas: { lat: -2.2, lng: -79.89 }
-          },
-          {
-            id: 4,
-            titulo: 'Nueva conexión',
-            coordenadas: { lat: -2.205, lng: -79.88 }
-          },
-          {
-            id: 5,
-            titulo: 'Revisión',
-            coordenadas: { lat: -2.19, lng: -79.875 }
-          }
-        ]
-      },
-      {
-        id: 3,
-        nombre: 'Grupo C - Sur Oeste',
-        color: '#4363d8',
-        vehiculo: {
-          placa: 'LMN-456',
-          coordenadas: { lat: -2.21, lng: -79.925 }
-        }, // Sur Oeste - DENTRO DE LA CIUDAD
-        tareas: [
-          {
-            id: 6,
-            titulo: 'Instalación',
-            coordenadas: { lat: -2.215, lng: -79.93 }
-          },
-          {
-            id: 7,
-            titulo: 'Soporte',
-            coordenadas: { lat: -2.22, lng: -79.935 }
-          },
-          {
-            id: 8,
-            titulo: 'Pruebas',
-            coordenadas: { lat: -2.225, lng: -79.94 }
-          },
-          { id: 9, titulo: 'Cierre', coordenadas: { lat: -2.23, lng: -79.945 } }
-        ]
-      }
-    ])
+
     const mapaRef = ref()
     const map = ref<L.Map>()
     const gruposConVehiculos = computed<GrupoMapa[]>(() => {
-      return grupos.value
-        ?.map(grupo => {
-          const vehiculo = posicionesVehiculos.value.find(
-            v => v.placa === grupo.placa
-          )
-          return {
-            ...grupo,
-            vehiculo,
-            tareas: tareas.value.filter(
-              t => t.grupo === grupo.nombre_alternativo
-            )
-          }
-        })
-        .filter(g => g.activo)
+      return grupos.value?.map(grupo => {
+        const vehiculo = posicionesVehiculos.value.find(v => v.placa === grupo.placa)
+        return {
+          ...grupo,
+          vehiculo,
+          tareas: tareas.value.filter(t => t.grupo === grupo.nombre_alternativo)
+        }
+      }).filter(g => g.activo)
     })
     /*************
      * HOOKS
      *************/
     onMounted(async () => {
-      gruposOptimizados.value = [...gruposFalsos.value]
       await obtenerUbicacionesGPSVehiculos()
       iniciarPolling()
       document.addEventListener('visibilitychange', onVisibilityChange)
@@ -220,40 +105,6 @@ export default defineComponent({
     /*************
      * FUNCTIONS
      *************/
-    const kmAntes = ref(0)
-    const kmDespues = ref(0)
-
-    const calcularKM = (grupos: GrupoRuta[]) => {
-      let total = 0
-      grupos.forEach(g => {
-        if (!g.vehiculo || g.tareas.length === 0) return
-        const v = L.latLng(
-          g.vehiculo.coordenadas.lat,
-          g.vehiculo.coordenadas.lng
-        )
-        g.tareas.forEach(t => {
-          const p = L.latLng(t.coordenadas.lat, t.coordenadas.lng)
-          total += v.distanceTo(p) / 1000
-        })
-      })
-      return total
-    }
-
-    const optimizarRutas = () => {
-      kmAntes.value = calcularKM(gruposFalsos.value)
-      const { gruposOptimizados: opt } = optimizar(
-        gruposFalsos.value,
-        tareasSinGrupo.value
-      )
-      kmDespues.value = calcularKM(opt)
-      gruposOptimizados.value = opt
-      tareasSinGrupo.value = [] // Ya asignadas
-      console.log('¡Rutas optimizadas! Se redujo el recorrido total.', kmAntes.value, kmDespues.value)
-      alert(
-        `Ahorraste ${(kmAntes.value - kmDespues.value).toFixed(2)} km`
-      )
-    }
-
     function obtenerColorGrupo(grupoId: number): string {
       if (!mapaColoresGrupos.value[grupoId]) {
         // Asigna un color de la paleta o genera uno aleatorio si se acaban
@@ -383,11 +234,7 @@ export default defineComponent({
       rutas,
       mapaRef,
       map,
-      gruposConVehiculos,
-      onMapReady,
-      gruposFalsos,
-      tareasSinGrupo,
-      optimizarRutas
+      gruposConVehiculos,onMapReady,
     }
   }
 })

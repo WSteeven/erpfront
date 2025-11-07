@@ -1,5 +1,5 @@
 // Dependencias
-import { isAxiosError, notificarMensajesError } from 'shared/utils'
+import { isApiError, notificarMensajesError } from 'shared/utils'
 import {
   computed,
   defineComponent,
@@ -59,7 +59,7 @@ export default defineComponent({
       } catch (error: any) {
         console.log('montar errror', error)
 
-        if (isAxiosError(error)) {
+        if (isApiError(error)) {
           // const mensajes: string[] = error.erroresValidacion
           console.log('montar errror', error.mensaje)
           //notificarMensajesError(mensajes, notificaciones)
@@ -78,7 +78,7 @@ export default defineComponent({
             'Bienvenido a ' + nombreEmpresa.value
           )
         } catch (error: any) {
-          if (isAxiosError(error)) {
+          if (isApiError(error)) {
             const mensajes: string[] = error.erroresValidacion
             await notificarMensajesError(mensajes, notificaciones)
           }
@@ -104,7 +104,7 @@ export default defineComponent({
             'Bienvenido a ' + nombreEmpresa.value
           )
         } catch (error: any) {
-          if (isAxiosError(error)) {
+          if (isApiError(error)) {
             const mensajes: string[] = error.erroresValidacion
             await notificarMensajesError(mensajes, notificaciones)
           }

@@ -12,6 +12,7 @@ import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 import OptionGroupComponent from 'components/optionGroup/view/OptionGroupComponent.vue'
 import ErrorComponent from 'components/ErrorComponent.vue'
 import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
+import { isApiError } from 'shared/utils'
 
 export default defineComponent({
   components: { ButtonSubmits, ErrorComponent, OptionGroupComponent },
@@ -28,10 +29,15 @@ export default defineComponent({
       accion,
       listadosAuxiliares
     } = mixin.useReferencias()
-    const { cargarVista, obtenerListados, guardar, editar, reestablecer, setValidador } =
-      mixin.useComportamiento()
+    const {
+      cargarVista,
+      obtenerListados,
+      guardar,
+      editar,
+      reestablecer,
+      setValidador
+    } = mixin.useComportamiento()
     const { onGuardado, onModificado, onReestablecer } = mixin.useHooks()
-
     const postulacionStore = usePostulacionStore()
     const direccionDefault =
       'Machala - El Oro - Ecuador. Napoleón Mera y 8.ª Norte, portón plomo (a la vuelta de mueblería/carpintería Daquilema).'
@@ -77,7 +83,7 @@ export default defineComponent({
      * HOOKS
      ***************************************************************************/
     onGuardado((_, response) => {
-      console.log(response_data)
+      console.log(response)
       emit('cerrar-modal', false)
       emit('guardado', {
         formulario: 'EntrevistarPage',
@@ -99,14 +105,19 @@ export default defineComponent({
      * FUNCIONES
      ***************************************************************************/
     async function obtenerEntrevista(postulacion_id: number) {
-      const { result } = await new EntrevistaController().consultar(
-        postulacion_id
-      )
-      console.log(result)
-      if (result) {
-        entrevista.hydrate(result)
-      } else {
-        accion.value = acciones.consultar
+      try {
+        const { result } = await new EntrevistaController().consultar(
+          postulacion_id
+        )
+        console.log(result)
+        if (result) {
+          entrevista.hydrate(result)
+        } else {
+          accion.value = acciones.consultar
+        }
+      } catch (error) {
+        if (isApiError(error)) console.log(error.mensaje)
+        else console.log(error.response.data.mensaje)
       }
     }
 
@@ -138,7 +149,6 @@ export default defineComponent({
       //listados
       cantones,
       filtrarCantones
-
     }
   }
 })

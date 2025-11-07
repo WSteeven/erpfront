@@ -33,7 +33,7 @@ import GestorDocumentos from 'components/documentos/view/GestorDocumentos.vue'
 import CalloutComponent from 'components/CalloutComponent.vue'
 import { endpoints } from 'config/api'
 import { Endpoint } from 'shared/http/domain/Endpoint'
-import { PuntoMapa } from 'components/mapas/PuntoMapa'
+import { PuntoMapa } from 'components/mapas/types/mapa'
 
 export default defineComponent({
   components: {
@@ -57,7 +57,7 @@ export default defineComponent({
       tabs,
       listado
     } = mixin.useReferencias()
-    const { setValidador, obtenerListados, cargarVista, listar, editar } =
+    const { setValidador, obtenerListados, cargarVista, listar } =
       mixin.useComportamiento()
     const { onReestablecer, onConsultado } = mixin.useHooks()
     const refArchivo = ref()
@@ -260,34 +260,6 @@ export default defineComponent({
       },
       visible: () => [acciones.nuevo, acciones.editar].includes(accion.value)
     }
-    const btnMarcarRiesgoPerderse: CustomActionTable<Tarea> = {
-      titulo: 'Marcar como Riesgo de Perderse',
-      icono: 'bi-exclamation-triangle-fill',
-      color: 'warning',
-      tooltip: 'Marcar esta tarea como Riesgo de Perderse',
-      accion: async ({ entidad }) => {
-        console.log('btnMarcarRiesgoPerderse', entidad)
-        entidad.estado_tarea = estadosTareas.riesgo_perderse
-        await editar(entidad)
-      },
-      visible: ({ entidad }) =>
-        ![
-          estadosTareas.riesgo_perderse,
-          estadosTareas.cancelada,
-          estadosTareas.finalizada
-        ].includes(entidad.estado_tarea)
-    }
-    const btnCambiarCuadrilla: CustomActionTable<Tarea> = {
-      titulo: 'Cambiar Cuadrilla',
-      icono: 'bi-arrow-left-right',
-      color: 'teal',
-      tooltip: 'Cambiar o Asignar Cuadrilla',
-      visible: ({ entidad }) =>
-        entidad.estado_tarea === estadosTareas.pendiente,
-      accion: ({ entidad }) => {
-        console.log('Aqui escogemos a la nueva cuadrilla', entidad)
-      }
-    }
 
     return {
       mixin,
@@ -322,8 +294,6 @@ export default defineComponent({
       tiposCarga,
       INDIVIDUAL,
       btnAgregarFilaTelefono,
-      btnMarcarRiesgoPerderse,
-      btnCambiarCuadrilla,
       subirArchivos,
       btnEliminarDefault,
       filtrarListadoTareas,
@@ -338,7 +308,7 @@ export default defineComponent({
       fechaSeleccionada,
       fechas,
       accepted: ref('1'),
-      alturaMapa:'500px'
+      alturaMapa: '500px'
     }
   }
 })

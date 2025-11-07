@@ -125,7 +125,7 @@
           </div>
           <!-- Monto  -->
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Monto:</label>
+            <label class="q-mb-sm block">Monto</label>
             <q-input
               v-model="transferencia.monto"
               placeholder="Obligatorio"
@@ -143,7 +143,7 @@
           </div>
           <!-- cuenta bancarea-->
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Cuenta:</label>
+            <label class="q-mb-sm block"># Comprobante</label>
             <q-input
               v-model="transferencia.cuenta"
               placeholder="Obligatorio"

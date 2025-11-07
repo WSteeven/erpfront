@@ -12,6 +12,7 @@
 
 <script setup>
 import { computed } from 'vue'
+import {obtenerColorEstado} from 'pages/conecel/conecel.utils';
 
 const props = defineProps({
   propsTable: {
@@ -26,22 +27,7 @@ const estado = computed(() =>
 )
 
 // Definir color según el estado
-const colorEstado = computed(() => {
-  switch (estado.value) {
-    case 'INICIADA':
-      return 'info' // azul
-    case 'FINALIZADA':
-      return 'positive' // verde
-    case 'PENDIENTE':
-      return 'warning' // amarillo
-    case 'CANCELADA':
-    case 'NO REALIZADA':
-    case 'RIESGO DE PERDERSE':
-      return 'negative' // rojo
-    default:
-      return 'grey' // por si llega un estado desconocido
-  }
-})
+const colorEstado = computed(() => obtenerColorEstado(estado.value))
 
 // Ícono según el estado (opcionalmente puedes personalizarlo más)
 const iconoEstado = computed(() => {

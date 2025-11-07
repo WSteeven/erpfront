@@ -6,7 +6,7 @@ import { StatusEssentialLoading } from 'components/loading/application/StatusEss
 import { UserLogin } from 'pages/sistema/authentication/login/domain/UserLogin'
 import { LoginController } from '../infraestructure/LoginController'
 import { useNotificaciones } from 'shared/notificaciones'
-import { isAxiosError, notificarMensajesError } from 'shared/utils'
+import { isApiError, notificarMensajesError } from 'shared/utils'
 import { useRouter } from 'vue-router';
 import { useConfiguracionGeneralStore } from 'stores/configuracion_general'
 /* import { useCargandoStore } from 'stores/cargando' */
@@ -45,7 +45,7 @@ export default defineComponent({
           notificaciones.notificarInformacion('Bienvenido a ' + nombreEmpresa.value)
 
         } catch (error: any) {
-          if (isAxiosError(error)) {
+          if (isApiError(error)) {
             const mensajes: string[] = error.erroresValidacion
             await notificarMensajesError(mensajes, notificaciones)
           }

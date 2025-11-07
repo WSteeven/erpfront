@@ -18,7 +18,7 @@ import { RutaTareaController } from '../infraestructure/RutaTareaController'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useNotificaciones } from 'shared/notificaciones'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
-import { isAxiosError, notificarMensajesError } from 'shared/utils'
+import { isApiError, notificarMensajesError } from 'shared/utils'
 
 export default defineComponent({
   components: {
@@ -80,7 +80,7 @@ export default defineComponent({
             listado.value.splice(posicion, 1, result)
             notificaciones.notificarCorrecto(response.data.mensaje)
           } catch (e: any) {
-            if (isAxiosError(e)) {
+            if (isApiError(e)) {
               const mensajes: string[] = e.erroresValidacion
               notificarMensajesError(mensajes, notificaciones)
             } else {

@@ -7,7 +7,7 @@ import { useVuelidate } from '@vuelidate/core'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { apiConfig, endpoints } from 'config/api'
-import { isAxiosError, notificarMensajesError } from 'shared/utils'
+import { isApiError, notificarMensajesError } from 'shared/utils'
 
 import {
   filtarVisualizacionEmpleadosSaldos,
@@ -190,7 +190,7 @@ export default defineComponent({
         await cortar_saldo.listar()
         router.push('acreditacion-semana')
       } catch (error) {
-        if (isAxiosError(error)) {
+        if (isApiError(error)) {
           const mensajes: string[] = error.erroresValidacion
           await notificarMensajesError(mensajes, notificaciones)
         }

@@ -2,7 +2,7 @@ import { TransaccionSimpleController } from 'shared/contenedor/modules/simple/in
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import {
   downloadFile,
-  isAxiosError,
+  isApiError,
   notificarMensajesError
 } from 'shared/utils'
 import { Contenedor } from '../../../application/contenedor.mixin'
@@ -125,7 +125,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
 
     } catch (error) {
         console.log('error en consultar', error)
-      if (isAxiosError(error)) {
+      if (isApiError(error)) {
         const mensajes: string[] = error.erroresValidacion
         await notificarMensajesError(mensajes, this.notificaciones)
       }
@@ -169,7 +169,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
       this.refs.pagination.value.total = meta?.total
     } catch (error) {
       // console.error(error)
-      if (isAxiosError(error)) {
+      if (isApiError(error)) {
         const mensajes: string[] = error.erroresValidacion
         await notificarMensajesError(mensajes, this.notificaciones)
       }else
@@ -250,7 +250,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
       await this.reestablecer() // antes estaba arriba de onGuardado, no ha dado error asi que se deja aqui
       return copiaEntidad
     } catch (error: any) {
-      if (isAxiosError(error)) {
+      if (isApiError(error)) {
         const mensajes: string[] = error.erroresValidacion
         await notificarMensajesError(mensajes, this.notificaciones)
       }
@@ -278,7 +278,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
         // this.reestablecer()
         if (callback) callback()
       }).catch((error) => {
-        if (isAxiosError(error)) {
+        if (isApiError(error)) {
           const mensajes: string[] = error.erroresValidacion
           notificarMensajesError(mensajes, this.notificaciones)
         } else {
@@ -295,7 +295,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
         response.data.results ? this.refs.listado.value = response.data.results : null // devuelve lo que queda despues de eliminar (opcional)
         this.notificaciones.notificarCorrecto(response.data.mensaje)
       }).catch((error) => {
-        if (isAxiosError(error)) {
+        if (isApiError(error)) {
           const mensajes: string[] = error.erroresValidacion
           notificarMensajesError(mensajes, this.notificaciones)
         } else {
@@ -353,7 +353,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
 
       return response
     } catch (error: any) {
-      if (isAxiosError(error)) {
+      if (isApiError(error)) {
         const mensajes: string[] = error.erroresValidacion
         await notificarMensajesError(mensajes, this.notificaciones)
       }
@@ -371,7 +371,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
 
       return response
     } catch (error) {
-      if (isAxiosError(error)) {
+      if (isApiError(error)) {
         const mensajes: string[] = error.erroresValidacion
         await notificarMensajesError(mensajes, this.notificaciones)
       }
@@ -388,7 +388,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
       this.notificaciones.notificarCorrecto(response.data.mensaje)
       return response
     } catch (error) {
-      if (isAxiosError(error)) {
+      if (isApiError(error)) {
         const mensajes: string[] = error.erroresValidacion
         await notificarMensajesError(mensajes, this.notificaciones)
       }
@@ -445,7 +445,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
         if (resetOnUpdated) await this.reestablecer()
 
       } catch (error: any) {
-        if (isAxiosError(error)) {
+        if (isApiError(error)) {
           const mensajes: string[] = error.erroresValidacion
           await notificarMensajesError(mensajes, this.notificaciones)
         } else {
@@ -485,7 +485,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
         this.hooks.onModificado(id, response.data)
 
       } catch (error: any) {
-        if (isAxiosError(error)) {
+        if (isApiError(error)) {
           const mensajes: string[] = error.erroresValidacion
           await notificarMensajesError(mensajes, this.notificaciones)
         } else {
@@ -517,7 +517,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
           if (callback) callback()
         })
         .catch((error) => {
-          if (isAxiosError(error)) {
+          if (isApiError(error)) {
             const mensajes: string[] = error.erroresValidacion
             notificarMensajesError(mensajes, this.notificaciones)
           } else

@@ -7,7 +7,7 @@ import { useNotificacionStore } from 'stores/notificacion'
 import { useNotificaciones } from 'shared/notificaciones'
 import { required } from 'shared/i18n-validators'
 import { Ref, defineComponent, ref } from 'vue'
-import { isAxiosError } from 'shared/utils'
+import { isApiError } from 'shared/utils'
 import useVuelidate from '@vuelidate/core'
 import { useQuasar } from 'quasar'
 
@@ -145,7 +145,7 @@ export default defineComponent({
         })
         listadosAuxiliares.preguntas = result
       } catch (e) {
-        if (isAxiosError(e)) {
+        if (isApiError(e)) {
           const mensajes: string[] = e.erroresValidacion
           mensaje.value = mensajes[0]
         }

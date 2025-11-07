@@ -22,7 +22,7 @@ import { useFiltrosListadosTickets } from 'pages/gestionTickets/tickets/applicat
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { Departamento } from 'pages/recursosHumanos/departamentos/domain/Departamento'
 import { TipoTicketController } from '../infraestructure/TipoTicketController'
-import { isAxiosError, notificarMensajesError } from 'shared/utils'
+import { isApiError, notificarMensajesError } from 'shared/utils'
 import { useAuthenticationStore } from 'stores/authentication'
 import { useNotificaciones } from 'shared/notificaciones'
 import { TipoTicket } from '../domain/TipoTicket'
@@ -96,7 +96,7 @@ export default defineComponent({
             listado.value.splice(posicion, 1, result)
             notificaciones.notificarCorrecto(response.data.mensaje)
           } catch (e: any) {
-            if (isAxiosError(e)) {
+            if (isApiError(e)) {
               const mensajes: string[] = e.erroresValidacion
               notificarMensajesError(mensajes, notificaciones)
             } else {

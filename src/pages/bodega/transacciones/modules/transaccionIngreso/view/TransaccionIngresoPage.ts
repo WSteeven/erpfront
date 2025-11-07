@@ -1,5 +1,5 @@
 import {
-  isAxiosError,
+  isApiError,
   limpiarListado,
   notificarMensajesError,
   ordenarClientesPorBodeguero,
@@ -452,7 +452,7 @@ export default defineComponent({
                 { fecha_compra }
               )
             } catch (error) {
-              if (isAxiosError(error)) {
+              if (isApiError(error)) {
                 const mensajes: string[] = error.erroresValidacion
                 await notificarMensajesError(mensajes, useNotificaciones())
               }

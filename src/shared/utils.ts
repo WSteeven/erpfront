@@ -226,8 +226,11 @@ export function construirNumeroDocumento(
 export function sleep(ms: number): Promise<void> {
   return new Promise(res => setTimeout(res, ms))
 }
-
-export function isAxiosError(candidate: any): candidate is ApiError {
+export function isAxiosError(candidate: any): candidate is AxiosError {
+  return candidate instanceof AxiosError
+  // return candidate.isAxiosError === true
+}
+export function isApiError(candidate: any): candidate is ApiError {
   return candidate instanceof ApiError
 }
 
@@ -1047,7 +1050,7 @@ export function filtarJefeImediato(empleados) {
 export async function notificarErrores(err) {
   const axiosError = err as AxiosError
   const error = new ApiError(axiosError)
-  if (isAxiosError(error)) {
+  if (isApiError(error)) {
     const mensajes: string[] = error.erroresValidacion
     await notificarMensajesError(mensajes, useNotificaciones())
   } else {

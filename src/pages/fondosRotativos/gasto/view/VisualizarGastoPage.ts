@@ -35,7 +35,7 @@ import { SubDetalleFondoController } from 'pages/fondosRotativos/subDetalleFondo
 import { DetalleFondoController } from 'pages/fondosRotativos/detalleFondo/infrestructure/DetalleFondoController'
 import { Gasto } from '../domain/Gasto'
 import { GastoController } from '../infrestructure/GastoController'
-import { isAxiosError, notificarMensajesError } from 'shared/utils'
+import { isApiError, notificarMensajesError } from 'shared/utils'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import NoOptionComponent from 'components/NoOptionComponent.vue';
 import ErrorComponent from 'components/ErrorComponent.vue';
@@ -589,7 +589,7 @@ export default defineComponent({
               emit('guardado')
             }
           } catch (error: any) {
-            if (isAxiosError(error)) {
+            if (isApiError(error)) {
               const mensajes: string[] = error.erroresValidacion
               await notificarMensajesError(mensajes, notificaciones)
               cargando.desactivar()
@@ -609,7 +609,7 @@ export default defineComponent({
                 emit('guardado')
               }
             } catch (error: any) {
-              if (isAxiosError(error)) {
+              if (isApiError(error)) {
                 const mensajes: string[] = error.erroresValidacion
                 await notificarMensajesError(mensajes, notificaciones)
                 cargando.desactivar()
@@ -629,7 +629,7 @@ export default defineComponent({
                 cargando.desactivar()
                 emit('guardado')
               } catch (error: any) {
-                if (isAxiosError(error)) {
+                if (isApiError(error)) {
                   const mensajes: string[] = error.erroresValidacion
                   await notificarMensajesError(mensajes, notificaciones)
                   cargando.desactivar()

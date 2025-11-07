@@ -42,7 +42,7 @@ import {
   encontrarUltimoIdListado,
   filtarJefeImediato,
   filtrarEmpleadosPorRoles,
-  isAxiosError,
+  isApiError,
   notificarMensajesError,
   optionsFecha,
   ordenarLista
@@ -704,7 +704,7 @@ export default defineComponent({
                   }
                   prompt(data)
                 } catch (error: any) {
-                  if (isAxiosError(error)) {
+                  if (isApiError(error)) {
                     const mensajes: string[] = error.erroresValidacion
                     await notificarMensajesError(mensajes, useNotificaciones())
                   } else {

@@ -2,7 +2,7 @@
 import { configuracionColumnasCategoriaTipoTicket } from '../domain/configuracionColumnasCategoriaTipoTicket'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { isAxiosError, notificarMensajesError } from 'shared/utils'
+import { isApiError, notificarMensajesError } from 'shared/utils'
 import { useAuthenticationStore } from 'stores/authentication'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useNotificaciones } from 'shared/notificaciones'
@@ -101,7 +101,7 @@ export default defineComponent({
             listado.value.splice(posicion, 1, result)
             notificaciones.notificarCorrecto(response.data.mensaje)
           } catch (e: any) {
-            if (isAxiosError(e)) {
+            if (isApiError(e)) {
               const mensajes: string[] = e.erroresValidacion
               notificarMensajesError(mensajes, notificaciones)
             } else {

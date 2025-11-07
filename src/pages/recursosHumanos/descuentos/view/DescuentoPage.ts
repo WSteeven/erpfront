@@ -15,7 +15,7 @@ import { configuracionColumnasCuotasDescuento } from 'recursosHumanos/descuentos
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { CuotaDescuento } from 'recursosHumanos/descuentos/domain/CuotaDescuento'
 import {
-  isAxiosError,
+  isApiError,
   notificarMensajesError,
   ordenarLista
 } from 'shared/utils'
@@ -126,7 +126,7 @@ export default defineComponent({
         descuento.cuotas = response.data.cuotas
       } catch (e) {
         const axiosError = e as AxiosError
-        if (isAxiosError(axiosError)) {
+        if (isApiError(axiosError)) {
           const mensajes: string[] = error.erroresValidacion
           await notificarMensajesError(mensajes, this.notificaciones)
         }
@@ -151,7 +151,7 @@ export default defineComponent({
         }
       } catch (e) {
         const axiosError = e as AxiosError
-        if (isAxiosError(axiosError)) {
+        if (isApiError(axiosError)) {
           const mensajes: string[] = error.erroresValidacion
           await notificarMensajesError(mensajes, this.notificaciones)
         }

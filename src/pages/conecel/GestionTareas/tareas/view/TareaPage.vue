@@ -11,8 +11,6 @@
     :permitir-editar="false"
     :mostrarButtonSubmits="tipoCarga === INDIVIDUAL"
   >
-    <!--    :accion1="btnMarcarRiesgoPerderse"-->
-    <!--    :accion2="btnCambiarCuadrilla"-->
     <template #header-tabla-listado>
       <q-select
         v-model="fechaSeleccionada"

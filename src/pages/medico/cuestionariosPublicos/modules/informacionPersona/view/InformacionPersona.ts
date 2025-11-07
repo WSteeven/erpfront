@@ -15,7 +15,7 @@ import { Persona } from '../domain/Persona'
 import { ValidarCedulaController } from 'shared/validadores/infraestructure/ValidarCedulaController'
 import { ValidarCuestionarioPublicoLlenoController } from 'shared/validadores/infraestructure/ValidarCuestionarioPublicoLlenoController'
 import { useNotificaciones } from 'shared/notificaciones'
-import { isAxiosError, notificarMensajesError } from 'shared/utils'
+import { isApiError, notificarMensajesError } from 'shared/utils'
 
 export default defineComponent({
     props: {
@@ -78,7 +78,7 @@ export default defineComponent({
                 const validarCuestionarioPublicoLlenoController = new ValidarCuestionarioPublicoLlenoController()
                 await validarCuestionarioPublicoLlenoController.guardar({ identificacion: cedula, tipo_cuestionario_id: props.tipoCuestionario })
             } catch (error) {
-                if (isAxiosError(error)) {
+                if (isApiError(error)) {
                     const mensajes: string[] = error.erroresValidacion
                     await notificarMensajesError(mensajes, notificaciones)
                 }

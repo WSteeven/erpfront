@@ -17,7 +17,7 @@ import { useBotonesTablaDesignacionSubtarea } from 'pages/gestionTrabajos/subtar
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { SubtareaController } from 'pages/gestionTrabajos/subtareas/infraestructure/SubtareaController'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
-import { extraerRol, isAxiosError, notificarMensajesError, ordernarListaString } from 'shared/utils'
+import { extraerRol, isApiError, notificarMensajesError, ordernarListaString } from 'shared/utils'
 import { GrupoController } from 'pages/recursosHumanos/grupos/infraestructure/GrupoController'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { EmpleadoGrupo } from 'pages/gestionTrabajos/subtareas/domain/EmpleadoGrupo'
@@ -175,7 +175,7 @@ export default defineComponent({
         const { result } = await empleadoController.listar({ grupo_id: grupo_id, estado: 1 })
         empleadosGrupo.value = mapearResponsable(result)
       } catch (error) {
-        if (isAxiosError(error)) {
+        if (isApiError(error)) {
           const mensajes: string[] = error.erroresValidacion
           await notificarMensajesError(mensajes, notificaciones)
         }

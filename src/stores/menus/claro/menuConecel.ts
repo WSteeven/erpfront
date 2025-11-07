@@ -27,8 +27,14 @@ const menuConecel: Ref<MenuOption[]> = computed(() => {
         {
           title: 'Cuadrillas',
           link: 'cuadrillas-tareas-conecel',
-          icon: 'bi-box-seam',
+          icon: 'fa-solid fa-users-line',
           can: store.can('puede.acceder.tareas_conecel')
+        },
+        {
+          title: 'Vehiculos Cuadrillas',
+          link: 'vehiculos-cuadrillas-conecel',
+          icon: 'bi-car-front',
+          can: store.can('puede.acceder.vehiculos_cuadrillas_conecel')
         },
         {
           title: 'Configuracion',

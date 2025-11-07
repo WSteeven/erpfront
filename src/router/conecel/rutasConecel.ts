@@ -16,6 +16,13 @@ const rutasConecel: RouteRecordRaw[] = [
     meta: { requiresAuth: true, permissionRequired:false  }
   },
   {
+    path: '/vehiculos-cuadrillas-conecel',
+    name: 'vehiculos_cuadrillas_conecel',
+    component: () =>
+      import('pages/conecel/GestionTareas/vehiculoGrupo/view/VehiculoGrupo.vue'),
+    meta: { requiresAuth: true  }
+  },
+  {
     path: '/tipos-actividades-conecel',
     name: 'tipos_actividades_conecel',
     component: () =>

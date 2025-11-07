@@ -7,7 +7,7 @@ import { StatusEssentialLoading } from 'components/loading/application/StatusEss
 import { useNotificaciones } from 'shared/notificaciones'
 import { ResetPassword } from '../domain/ResetPassword'
 import { ResetPasswordController } from '../infraestructure/resetPassword.controller'
-import { isAxiosError, notificarMensajesError } from 'shared/utils'
+import { isApiError, notificarMensajesError } from 'shared/utils'
 import { useAuthenticationStore } from 'stores/authentication'
 import { useRouter } from 'vue-router'
 import { useConfiguracionGeneralStore } from 'stores/configuracion_general'
@@ -91,7 +91,7 @@ export default defineComponent({
         await resetPasswordController.actualizarContrasena(resetPassword)
         notificaciones.notificarCorrecto('Contraseña actualizada correctamente')
       } catch (error: any) {
-        if (isAxiosError(error)) {
+        if (isApiError(error)) {
           const mensajes: string[] = error.erroresValidacion
           await notificarMensajesError(mensajes, notificaciones)
         }

@@ -8,7 +8,7 @@ import { StatusEssentialLoading } from 'components/loading/application/StatusEss
 import { useNotificaciones } from 'shared/notificaciones'
 import { ForgotPasswordController } from '../infraestructure/forgotPassword.controller'
 import { ForgotPassword } from '../domain/ForgotPassword'
-import { isAxiosError, notificarMensajesError, validarEmail } from 'shared/utils'
+import { isApiError, notificarMensajesError, validarEmail } from 'shared/utils'
 import { useConfiguracionGeneralStore } from 'stores/configuracion_general'
 import { AxiosResponse } from 'axios'
 import { useRouter } from 'vue-router'
@@ -51,7 +51,7 @@ export default defineComponent({
           enviando.value = true
         } else notificaciones.notificarError(response.data.mensaje)
       } catch (error: any) {
-        if (isAxiosError(error)) {
+        if (isApiError(error)) {
           const mensajes: string[] = error.erroresValidacion
           await notificarMensajesError(mensajes, notificaciones)
         }
@@ -70,7 +70,7 @@ export default defineComponent({
           await router.replace('/login')
         }
       } catch (error: any) {
-        if (isAxiosError(error)) {
+        if (isApiError(error)) {
           const mensajes: string[] = error.erroresValidacion
           await notificarMensajesError(mensajes, notificaciones)
         }

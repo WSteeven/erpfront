@@ -14,7 +14,7 @@ import useVuelidate from '@vuelidate/core'
 import { required } from 'shared/i18n-validators'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { useNotificaciones } from 'shared/notificaciones'
-import { isAxiosError, notificarMensajesError } from 'shared/utils'
+import { isApiError, notificarMensajesError } from 'shared/utils'
 
 export default defineComponent({
   components: { TabLayout, SelectorImagen },
@@ -55,7 +55,7 @@ export default defineComponent({
         // configuracion.hydrate(response.data.modelo)
 
       } catch (error: any) {
-        if (isAxiosError(error)) {
+        if (isApiError(error)) {
           const mensajes: string[] = error.erroresValidacion
           await notificarMensajesError(mensajes, notificaciones)
         }

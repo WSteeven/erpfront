@@ -1,5 +1,5 @@
 // Dependencias
-import { isAxiosError, notificarMensajesError } from 'shared/utils'
+import { isApiError, notificarMensajesError } from 'shared/utils'
 import { computed, defineComponent, reactive, ref, watchEffect } from 'vue'
 import { useQuasar } from 'quasar'
 
@@ -60,7 +60,7 @@ export default defineComponent({
             )
           }
         } catch (error: any) {
-          if (isAxiosError(error)) {
+          if (isApiError(error)) {
             const mensajes: string[] = error.erroresValidacion
             await notificarMensajesError(mensajes, notificaciones)
           }

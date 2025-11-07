@@ -5,30 +5,30 @@
         <!-- Fecha  -->
         <div class="col-12 col-md-4">
           <label class="q-mb-sm block"
-          >Selecciona una fecha para mostrar las coordenadas de las tareas en
+            >Selecciona una fecha para mostrar las coordenadas de las tareas en
             el mapa</label
           >
           <q-input
-              v-model="fecha"
-              placeholder="Obligatorio"
-              readonly
-              outlined
-              dense
+            v-model="fecha"
+            placeholder="Obligatorio"
+            readonly
+            outlined
+            dense
           >
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
                 <q-popup-proxy
-                    cover
-                    transition-show="scale"
-                    transition-hide="scale"
+                  cover
+                  transition-show="scale"
+                  transition-hide="scale"
                 >
                   <q-date v-model="fecha" :mask="maskFecha" today-btn>
                     <div class="row items-center justify-end">
                       <q-btn
-                          v-close-popup
-                          label="Cerrar"
-                          color="primary"
-                          flat
+                        v-close-popup
+                        label="Cerrar"
+                        color="primary"
+                        flat
                       />
                     </div>
                   </q-date>
@@ -41,18 +41,18 @@
         <div class="col-12 col-md-4">
           <label class="q-mb-sm block">Estado de tarea</label>
           <q-select
-              v-model="estado_tarea"
-              :options="estados_tareas"
-              options-dense
-              dense
-              outlined
-              multiple
-              use-chips
-              hint="Obligatorio"
-              :option-value="v => v.value"
-              :option-label="v => v.label"
-              emit-value
-              map-options
+            v-model="estado_tarea"
+            :options="estados_tareas"
+            options-dense
+            dense
+            outlined
+            multiple
+            use-chips
+            hint="Obligatorio"
+            :option-value="v => v.value"
+            :option-label="v => v.label"
+            emit-value
+            map-options
           >
             <template v-slot:no-option>
               <no-option-component />
@@ -63,19 +63,19 @@
         <div class="col-12 col-md-2 ">
           <label class="q-mb-sm block">&nbsp;</label>
           <q-btn
-              class="full-width"
-              color="primary"
-              label="Consultar"
-              icon="search"
-              @click="consultarTareas"
+            class="full-width"
+            color="primary"
+            label="Consultar"
+            icon="search"
+            @click="consultarTareas"
           />
         </div>
         <div class="col-12 col-md-2 rounded-borders border-grey " >
           <label class="q-mb-sm block">Representación de colores según estado</label>
           <q-item
-              v-for="estado in estado_tarea"
-              :key="estado"
-              class="q-pa-none"
+            v-for="estado in estado_tarea"
+            :key="estado"
+            class="q-pa-none"
           >
             <q-item-section><q-chip :color="obtenerColorEstado(estado)">{{estado}}</q-chip> </q-item-section>
           </q-item>
@@ -103,16 +103,29 @@
     </q-card-section>
 <!--    {{rutas}}-->
 <!--      {{JSON.stringify(gruposConVehiculos, null, 2)}}-->
-<!--      {{gruposConVehiculos}}-->
+      {{gruposConVehiculos}}
     <q-card-section>
-      <h5 class="q-my-none">Mapa de Rutas - Prueba</h5>
-      <q-btn color="primary" label="Optimizar Rutas" @click="optimizarRutas" />
+      <mapa-base ref="mapaRef" height="600px" @map-ready="onMapReady" />
+      <rutas-dinamicas :map="map" :grupos="gruposConVehiculos" />
     </q-card-section>
-    <q-card-section>
-      <mapa-rutas :grupos="gruposFalsos" :tareas-sin-grupo="tareasSinGrupo" height="900px" />
+    <q-card-section v-if="false">
+      <div class="row rounded-borders q-py-none">
+        <rutas-mapa :rutas="rutas" />
+        <!-- Mapa -->
+        <div class="col-12">
+          <label class="q-mb-sm block">Mapa</label>
+          <mapa-component
+            ref="refMapa"
+            :autoFit="false"
+            :puntos="puntosMapa"
+            :rutas="rutas"
+            :height="alturaMapa"
+            @punto-click="seleccionarPunto"
+            :punto-seleccionado="puntoSeleccionado"
+          />
+        </div>
+      </div>
     </q-card-section>
-    <q-card-section></q-card-section>
-    <hr/>
   </q-card>
 </template>
 <script src="./CuadrillaPage.ts" />

@@ -11,7 +11,7 @@ import { Examen } from 'pages/medico/examenes/domain/Examen'
 import { SolicitudExamen } from 'pages/medico/solicitudesExamenes/domain/SolicitudExamen'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { useNotificaciones } from 'shared/notificaciones'
-import { isAxiosError, notificarMensajesError } from 'shared/utils'
+import { isApiError, notificarMensajesError } from 'shared/utils'
 import { useExamenes } from './UseExamenes'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { estadosSolicitudesExamenes } from 'config/utils/medico'
@@ -97,7 +97,7 @@ export function useTiposProcesosExamenes(tabTipoProceso: Ref<string>, tabRegistr
           if (empleado.id) guardarRegistro(motivo, empleado.id, tabTipoProceso.value)
           notificaciones.notificarCorrecto('Registro agregado exitosamente!')
         } catch (error: any) {
-          if (isAxiosError(error)) {
+          if (isApiError(error)) {
             const mensajes: string[] = error.erroresValidacion
             notificarMensajesError(mensajes, notificaciones)
           } else {

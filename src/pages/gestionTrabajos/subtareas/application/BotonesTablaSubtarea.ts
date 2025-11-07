@@ -1,6 +1,6 @@
 import { CausaIntervencion } from 'pages/gestionTrabajos/causasIntervenciones/domain/CausaIntervencion'
 import { MotivoSuspendido } from 'pages/gestionTrabajos/motivosSuspendidos/domain/MotivoSuspendido'
-import { isAxiosError, notificarMensajesError, obtenerUbicacion } from 'shared/utils'
+import { isApiError, notificarMensajesError, obtenerUbicacion } from 'shared/utils'
 import { MotivoPausa } from 'pages/gestionTrabajos/motivosPausas/domain/MotivoPausa'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
@@ -73,7 +73,7 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: Compo
           notificarCorrecto('Trabajo ejecutado exitosamente!')
           movilizacionSubtareaStore.getSubtareaDestino(authenticationStore.user.id)
         } catch (error: unknown) {
-          if (isAxiosError(error)) {
+          if (isApiError(error)) {
             const mensajes: string[] = error.erroresValidacion
             await notificarMensajesError(mensajes, useNotificaciones())
           }
@@ -202,7 +202,7 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: Compo
         movilizacionSubtareaStore.getSubtareaDestino(authenticationStore.user.id)
         notificarCorrecto('La subtarea se ha realizado exitosamente!')
       } catch (error: unknown) {
-        if (isAxiosError(error)) {
+        if (isApiError(error)) {
           const mensajes: string[] = error.erroresValidacion
           notificarMensajesError(mensajes, notificaciones)
         }
@@ -334,7 +334,7 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: Compo
 
           notificarCorrecto('Trabajo finalizada exitosamente!')
         } catch (error: unknown) {
-          if (isAxiosError(error)) {
+          if (isApiError(error)) {
             const mensajes: string[] = error.erroresValidacion
             notificarMensajesError(mensajes, notificaciones)
           }
