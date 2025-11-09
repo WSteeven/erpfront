@@ -15,6 +15,7 @@
     ajustar-celdas
     paginate
     permitir-filtrar
+    :puedeExportar="true"
   >
     <!-- :forzarListar="true" -->
     <!-- :labelGuardar="tarea.tiene_subtareas ? 'Guardar' : 'Guardar y agendar'" -->
@@ -775,6 +776,7 @@
             :permitirEditar="false"
             :permitirEliminar="false"
             :mostrar-botones="false"
+            :mostrarExportar="true"
             ajustar-celdas
             mostrar-footer
             :permitirFiltrar="false"
