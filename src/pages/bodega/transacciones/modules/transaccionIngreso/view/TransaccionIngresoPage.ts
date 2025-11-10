@@ -113,20 +113,23 @@ export default defineComponent({
       )
 
       if (productosConSerial.length > 0) {
-        // Verificar si algún producto con serial ya existe en la lista
         const productosExistentes = transaccion.listadoProductosTransaccion
 
         for (const producto of productosConSerial) {
           const yaExiste = productosExistentes.some(
             (p: any) =>
-              p.producto_id === producto.producto_id || p.id === producto.id
+              p.serial && producto.serial && p.serial === producto.serial
           )
 
           if (yaExiste) {
             useNotificaciones().notificarAdvertencia(
-              `El producto "${ producto.nombre || producto.descripcion }" con serial: "${ producto.serial }" ya está en la lista. No se puede agregar duplicados de productos con serial.`
+              `El producto "${
+                producto.nombre || producto.descripcion
+              }" con serial: "${
+                producto.serial
+              }" ya está en la lista. No se puede agregar duplicados de productos con serial.`
             )
-            return // No continuar con la selección
+            return
           }
         }
       }
@@ -736,7 +739,7 @@ export default defineComponent({
       },
       ordenarLista,
       proveedores,
-      filtrarProveedores,
+      filtrarProveedores
     }
   }
 })
