@@ -225,7 +225,7 @@
                   </q-btn>
                   <!-- Boton PDF -->
                   <q-btn
-                    v-if="false"
+                    v-if="true"
                     color="negative"
                     class="full-width"
                     no-caps
