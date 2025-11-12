@@ -22,15 +22,7 @@ const rutasConecel: RouteRecordRaw[] = [
       import('pages/conecel/GestionTareas/vehiculoGrupo/view/VehiculoGrupo.vue'),
     meta: { requiresAuth: true  }
   },
-  {
-    path: '/tipos-actividades-conecel',
-    name: 'tipos_actividades_conecel',
-    component: () =>
-      import(
-        'pages/conecel/GestionTareas/tiposActividades/view/TipoActividadPage.vue'
-      ),
-    meta: { requiresAuth: true }
-  }
+
 ]
 
 export default rutasConecel

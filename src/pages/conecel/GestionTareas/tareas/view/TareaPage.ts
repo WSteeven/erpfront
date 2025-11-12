@@ -1,38 +1,26 @@
-import { computed, defineComponent, reactive, ref, watch } from 'vue'
+import { computed, defineComponent, ref, watch } from 'vue'
 import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { Tarea } from 'pages/conecel/GestionTareas/tareas/domain/Tarea'
 import { TareaController } from 'pages/conecel/GestionTareas/tareas/infraestructure/TareaController'
-import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 import useVuelidate from '@vuelidate/core'
 import { configuracionColumnasTarea } from 'pages/conecel/GestionTareas/tareas/domain/configuracionColumnasTareas'
-import { TipoActividadController } from 'pages/conecel/GestionTareas/tiposActividades/infraestructure/TipoActividadController'
 import ErrorComponent from 'components/ErrorComponent.vue'
 import NoOptionComponent from 'components/NoOptionComponent.vue'
 import {
   estadosTareas,
   estadosTareasConecel,
-  tabOptionsTareasConecel,
-  tiposCarga
+  tabOptionsTareasConecel
 } from 'pages/conecel/conecel.utils'
 import { required, requiredIf } from 'shared/i18n-validators'
 import { GrupoController } from 'recursosHumanos/grupos/infraestructure/GrupoController'
-import {
-  btnEliminarDefault,
-  encontrarUltimoIdListado,
-  obtenerFechaActual,
-  obtenerUbicacion,
-  ordenarLista
-} from 'shared/utils'
+import { obtenerFechaActual, obtenerUbicacion } from 'shared/utils'
 import MapaComponent from 'components/mapas/MapaComponent.vue'
 import { acciones, accionesTabla, maskFecha } from 'config/utils'
 import GestorArchivos from 'components/gestorArchivos/GestorArchivos.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
-import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import GestorDocumentos from 'components/documentos/view/GestorDocumentos.vue'
 import CalloutComponent from 'components/CalloutComponent.vue'
-import { endpoints } from 'config/api'
-import { Endpoint } from 'shared/http/domain/Endpoint'
 import { PuntoMapa } from 'components/mapas/types/mapa'
 
 export default defineComponent({
@@ -48,10 +36,8 @@ export default defineComponent({
   },
   setup() {
     const mixin = new ContenedorSimpleMixin(Tarea, new TareaController())
-    const mixin2 = new ContenedorSimpleMixin(Tarea, new TareaController())
     const {
       entidad: tarea,
-      listadosAuxiliares,
       accion,
       disabled,
       tabs,
@@ -61,7 +47,6 @@ export default defineComponent({
       mixin.useComportamiento()
     const { onReestablecer, onConsultado } = mixin.useHooks()
     const refArchivo = ref()
-    const refArchivoLotes = ref()
     const refMapa = ref()
     const listadoOriginal = ref()
     const puntosMapa = ref<PuntoMapa[]>([])
@@ -76,26 +61,15 @@ export default defineComponent({
 
     const idTarea = ref()
     const currentTab = ref('TODAS')
-    const tipos_actividades = ref([])
-    const INDIVIDUAL = 'INDIVIDUAL'
-    const tipoCarga = ref(INDIVIDUAL)
-    const grupo = ref(null)
-    const { grupos, filtrarGrupos } =
-      useFiltrosListadosSelects(listadosAuxiliares)
 
     cargarVista(async () => {
       await obtenerListados({
-        tipos_actividades: {
-          controller: new TipoActividadController(),
-          params: { activo: 1 }
-        },
         grupos: {
           controller: new GrupoController(),
           params: { 'nombre[like]': '%INST%', activo: 1 }
         }
       })
 
-      tipos_actividades.value = listadosAuxiliares.tipos_actividades
 
       // Datos por defecto
       cargarDatosDefecto()
@@ -129,10 +103,6 @@ export default defineComponent({
      * Funciones
      **********/
     function cargarDatosDefecto() {
-      if (tipos_actividades.value.length == 1) {
-        tarea.tipo_actividad = tipos_actividades.value[0].id
-        tarea.estado_tarea = estadosTareasConecel[0].value
-      }
       tarea.fecha = obtenerFechaActual(maskFecha)
       obtenerCoordenadas()
     }
@@ -159,23 +129,6 @@ export default defineComponent({
       await listar({ astatus: tab })
       listadoOriginal.value = new Set(listado.value)
       fechaSeleccionada.value = null
-    }
-
-    async function subirArchivos() {
-      try {
-        await refArchivoLotes.value.subir()
-
-        refArchivoLotes.value.quiero_subir_archivos = false
-
-        // retrasar la ejecucion de esta funcion
-        setTimeout(async () => {
-          refArchivo.value?.limpiarListado()
-          tabs.value = 'listado'
-          await filtrarListadoTareas(currentTab.value)
-        }, 1000)
-      } catch (error) {
-        console.error(`Error es: ${error}`)
-      }
     }
 
     const todasFechas = computed(() => listado.value.map((t: Tarea) => t.fecha))
@@ -238,64 +191,23 @@ export default defineComponent({
         }
       }
     )
-
-    /********************************
-     * BOTONES DE TABLA
-     *******************************/
-    const btnAgregarFilaTelefono: CustomActionTable = {
-      titulo: 'Agregar Teléfono',
-      icono: 'bi-arrow-bar-down',
-      color: 'positive',
-      tooltip: 'Agregar teléfono',
-      accion: () => {
-        const telefono = reactive({
-          id: '',
-          telefono: ''
-        })
-        telefono.id = tarea.telefonos.length
-          ? encontrarUltimoIdListado(tarea.telefonos) + 1
-          : 1
-
-        tarea.telefonos.push(telefono)
-      },
-      visible: () => [acciones.nuevo, acciones.editar].includes(accion.value)
-    }
-
     return {
       mixin,
-      mixin2,
       tarea,
       v$,
       accion,
       disabled,
       refArchivo,
-      refArchivoLotes,
       currentTab,
-      grupo,
       acciones,
-      endpoint: computed(
-        () =>
-          new Endpoint(
-            `${endpoints.tareas_conecel_lotes.accessor}/${grupo.value ?? '0'}`
-          )
-      ),
       configuracionColumnas: configuracionColumnasTarea,
       estados_tareas: estadosTareasConecel,
       estadosTareasString: estadosTareas,
-      tipos_actividades,
-      grupos,
-      filtrarGrupos,
-      ordenarLista,
+
       accionesTabla,
       maskFecha,
       tabOptions: tabOptionsTareasConecel,
       idTarea,
-      tipoCarga,
-      tiposCarga,
-      INDIVIDUAL,
-      btnAgregarFilaTelefono,
-      subirArchivos,
-      btnEliminarDefault,
       filtrarListadoTareas,
       mapaTabPanel,
       listado,
@@ -304,7 +216,6 @@ export default defineComponent({
       seleccionarTarea,
       refMapa,
       estadoColorMap,
-      todasFechas,
       fechaSeleccionada,
       fechas,
       accepted: ref('1'),
