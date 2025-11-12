@@ -5,5 +5,6 @@ export const tareas = {
   tareas_conecel_lotes: new Endpoint('tareas-conecel/subir-tareas-lotes'),
   tipos_actividades_conecel: new Endpoint('tareas-conecel/tipos-actividades'),
   ubicaciones_gps: new Endpoint('tareas-conecel/ubicaciones-gps'),
+  ubicaciones_gps_tareas: new Endpoint('tareas-conecel/ubicaciones-gps-tareas'),
 
 }

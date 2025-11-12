@@ -1,187 +1,42 @@
-import { computed, defineComponent, onBeforeUnmount, onMounted, ref } from 'vue'
+import { defineComponent, onBeforeUnmount, onMounted, ref } from 'vue'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { endpoints } from 'config/api'
-import MapaComponent from 'components/mapas/MapaComponent.vue'
-import {
-  GrupoMapa,
-  Tarea as TareaInterface,
-  GrupoRuta,
-  PuntoMapa
-} from 'components/mapas/types/mapa'
 import { AxiosResponse } from 'axios'
-import { PosicionHunter } from 'pages/conecel/GestionTareas/cuadrillaTarea/domain/PosicionHunter'
 import { obtenerFechaActual } from 'shared/utils'
 import { maskFecha } from 'config/utils'
-import ErrorComponent from 'components/ErrorComponent.vue'
 import NoOptionComponent from 'components/NoOptionComponent.vue'
 import {
-  coloresBase,
   estadosTareasConecel,
   obtenerColorEstado
 } from 'pages/conecel/conecel.utils'
-import L from 'leaflet'
-import { TareaController } from 'pages/conecel/GestionTareas/tareas/infraestructure/TareaController'
-import { useNotificaciones } from 'shared/notificaciones'
-import { Tarea } from 'pages/conecel/GestionTareas/tareas/domain/Tarea'
-import { GrupoController } from 'recursosHumanos/grupos/infraestructure/GrupoController'
-import { Grupo } from 'recursosHumanos/grupos/domain/Grupo'
-import RutasMapa from 'components/mapas/RutasMapa.vue'
-import MapaBase from 'components/mapas/MapaBase.vue'
-import RutasDinamicas from 'pages/conecel/GestionTareas/cuadrillaTarea/application/mapas/RutasDinamicas.vue'
 import MapaRutas from 'components/mapas/MapaRutas.vue'
-import { useOptimizadorRutas } from 'components/mapas/useOptimizadorRutas'
+import { ComportamientoModalesMapaCuadrilla } from 'pages/conecel/GestionTareas/cuadrillaTarea/application/ComportamientoModalesMapaCuadrilla'
+import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 
 export default defineComponent({
   components: {
+    ModalesEntidad,
     MapaRutas,
-    RutasDinamicas,
-    MapaBase,
-    RutasMapa,
-    NoOptionComponent,
-    ErrorComponent,
-    MapaComponent
+    NoOptionComponent
   },
   setup() {
-    const { notificarAdvertencia } = useNotificaciones()
     const axios = AxiosHttpRepository.getInstance()
     const cargando = new StatusEssentialLoading()
-    const refMapa = ref()
-    const { optimizar } = useOptimizadorRutas()
-    const gruposOptimizados = ref<GrupoRuta[]>([])
-    const posicionesVehiculos = ref<any[]>([])
-    const puntosMapa = ref<PuntoMapa[]>([])
-    const puntoSeleccionado = ref<number | null>(null)
+    const modales = new ComportamientoModalesMapaCuadrilla()
     let intervalo: number | null = null
     const fecha = ref(null)
     const estado_tarea = ref()
-    const tareas = ref()
-    const grupos = ref<Grupo[]>()
     // Mapa para mantener consistencia entre renderizados
-    const mapaColoresGrupos = ref<Record<number, string>>({})
+
     // Datos falsos actualizados – TODO dentro de la ciudad
-    const tareasSinGrupo = ref<TareaInterface[]>([
-      {
-        id: 999,
-        titulo: 'Instalación fibra - Urdesa',
-        coordenadas: { lat: -2.17, lng: -79.91 } // Norte - Cerca de Urdesa
-      },
-      {
-        id: 1000,
-        titulo: 'Revisión nodo - Malecón',
-        coordenadas: { lat: -2.181, lng: -79.891 } // Centro - Malecón 2000
-      },
-      {
-        id: 1001,
-        titulo: 'Cambio de equipo - Samborondón',
-        coordenadas: { lat: -2.15, lng: -79.893 } // Norte - Entrada a Samborondón
-      },
-      {
-        id: 1002,
-        titulo: 'Revisión nodo - MALECÓN (LEJOS)',
-        coordenadas: { lat: -2.22, lng: -79.94 } // ¡AHORA ESTÁ EN SUR OESTE!
-      }
-    ])
-    const gruposFalsos = ref<GrupoRuta[]>([
-      {
-        id: 1,
-        nombre: 'Grupo A - Norte',
-        color: '#e6194b',
-        vehiculo: {
-          placa: 'ABC-123',
-          coordenadas: { lat: -2.17, lng: -79.905 }
-        }, // Norte
-        tareas: [
-          {
-            id: 1,
-            titulo: 'Instalación fibra',
-            coordenadas: { lat: -2.175, lng: -79.91 }
-          },
-          {
-            id: 2,
-            titulo: 'Reparación nodo',
-            coordenadas: { lat: -2.18, lng: -79.915 }
-          }
-        ]
-      },
-      {
-        id: 2,
-        nombre: 'Grupo B - Centro',
-        color: '#3cb44b',
-        vehiculo: {
-          placa: 'XYZ-789',
-          coordenadas: { lat: -2.195, lng: -79.885 }
-        }, // Centro
-        tareas: [
-          {
-            id: 3,
-            titulo: 'Mantenimiento',
-            coordenadas: { lat: -2.2, lng: -79.89 }
-          },
-          {
-            id: 4,
-            titulo: 'Nueva conexión',
-            coordenadas: { lat: -2.205, lng: -79.88 }
-          },
-          {
-            id: 5,
-            titulo: 'Revisión',
-            coordenadas: { lat: -2.19, lng: -79.875 }
-          }
-        ]
-      },
-      {
-        id: 3,
-        nombre: 'Grupo C - Sur Oeste',
-        color: '#4363d8',
-        vehiculo: {
-          placa: 'LMN-456',
-          coordenadas: { lat: -2.21, lng: -79.925 }
-        }, // Sur Oeste - DENTRO DE LA CIUDAD
-        tareas: [
-          {
-            id: 6,
-            titulo: 'Instalación',
-            coordenadas: { lat: -2.215, lng: -79.93 }
-          },
-          {
-            id: 7,
-            titulo: 'Soporte',
-            coordenadas: { lat: -2.22, lng: -79.935 }
-          },
-          {
-            id: 8,
-            titulo: 'Pruebas',
-            coordenadas: { lat: -2.225, lng: -79.94 }
-          },
-          { id: 9, titulo: 'Cierre', coordenadas: { lat: -2.23, lng: -79.945 } }
-        ]
-      }
-    ])
-    const mapaRef = ref()
-    const map = ref<L.Map>()
-    const gruposConVehiculos = computed<GrupoMapa[]>(() => {
-      return grupos.value
-        ?.map(grupo => {
-          const vehiculo = posicionesVehiculos.value.find(
-            v => v.placa === grupo.placa
-          )
-          return {
-            ...grupo,
-            vehiculo,
-            tareas: tareas.value.filter(
-              t => t.grupo === grupo.nombre_alternativo
-            )
-          }
-        })
-        .filter(g => g.activo)
-    })
+    const tareasSinGrupo = ref([])
+    const gruposTareas = ref([])
+
     /*************
      * HOOKS
      *************/
     onMounted(async () => {
-      gruposOptimizados.value = [...gruposFalsos.value]
-      await obtenerUbicacionesGPSVehiculos()
       iniciarPolling()
       document.addEventListener('visibilitychange', onVisibilityChange)
       fecha.value = obtenerFechaActual(maskFecha)
@@ -194,136 +49,32 @@ export default defineComponent({
       document.removeEventListener('visibilitychange', onVisibilityChange)
     })
 
-    const rutas = computed(() => {
-      if (!grupos.value || !tareas.value) return []
-
-      return grupos.value.map(grupo => {
-        if (!grupo.activo) return
-        const tareasGrupo = tareas.value.filter(
-          (t: Tarea) => t.grupo === grupo.nombre_alternativo
-        )
-        const puntos = tareasGrupo.map(t => ({
-          lat: t.coordenadas.lat,
-          lng: t.coordenadas.lng,
-          titulo: t.nombre,
-          descripcion: t.descripcion
-        }))
-
-        return {
-          nombre: grupo.nombre_alternativo,
-          color: obtenerColorGrupo(grupo.id), // asignado antes con getColorForGroup
-          puntos
-        }
-      })
-    })
-
     /*************
      * FUNCTIONS
      *************/
-    const kmAntes = ref(0)
-    const kmDespues = ref(0)
 
-    const calcularKM = (grupos: GrupoRuta[]) => {
-      let total = 0
-      grupos.forEach(g => {
-        if (!g.vehiculo || g.tareas.length === 0) return
-        const v = L.latLng(
-          g.vehiculo.coordenadas.lat,
-          g.vehiculo.coordenadas.lng
-        )
-        g.tareas.forEach(t => {
-          const p = L.latLng(t.coordenadas.lat, t.coordenadas.lng)
-          total += v.distanceTo(p) / 1000
-        })
-      })
-      return total
-    }
-
-    const optimizarRutas = () => {
-      kmAntes.value = calcularKM(gruposFalsos.value)
-      const { gruposOptimizados: opt } = optimizar(
-        gruposFalsos.value,
-        tareasSinGrupo.value
-      )
-      kmDespues.value = calcularKM(opt)
-      gruposOptimizados.value = opt
-      tareasSinGrupo.value = [] // Ya asignadas
-      console.log('¡Rutas optimizadas! Se redujo el recorrido total.', kmAntes.value, kmDespues.value)
-      alert(
-        `Ahorraste ${(kmAntes.value - kmDespues.value).toFixed(2)} km`
-      )
-    }
-
-    function obtenerColorGrupo(grupoId: number): string {
-      if (!mapaColoresGrupos.value[grupoId]) {
-        // Asigna un color de la paleta o genera uno aleatorio si se acaban
-        const indice =
-          Object.keys(mapaColoresGrupos.value).length % coloresBase.length
-        mapaColoresGrupos.value[grupoId] =
-          coloresBase[indice] || generarColorAleatorio()
-      }
-      return mapaColoresGrupos.value[grupoId]
-    }
-
-    function generarColorAleatorio(): string {
-      return '#' + Math.floor(Math.random() * 16777215).toString(16)
-    }
-
-    function mapearEstadosSeleccionados() {
-      return estado_tarea.value.join('&astatus[]=')
-    }
+    // function mapearEstadosSeleccionados() {
+    //   return estado_tarea.value.join('&astatus[]=')
+    // }
 
     async function consultarTareas() {
-      // Lógica para consultar tareas según la fecha y estado seleccionados
-      const { result } = await new TareaController().listar({
-        'astatus[]': mapearEstadosSeleccionados(),
-        raw_data: fecha.value
-      })
-      console.log(result)
-      tareas.value = result
-
-      // puntosMapa.value = [
-      //   ...puntosMapa.value,
-      //   ...tareas.value.map((tarea: Tarea) => tarea.coordenadas)
-      // ]
-      if (result.length === 0)
-        notificarAdvertencia(
-          'No se encontraron tareas para los filtros seleccionados.'
-        )
-      await consultarGrupos()
+      await obtenerUbicacionesGPSVehiculosTareas()
     }
 
-    async function consultarGrupos() {
-      const ids_tareas = tareas.value.map((tarea: Tarea) => tarea.id)
-      const { result } = await new GrupoController().listar({
-        ids_tareas: ids_tareas
-      })
-      console.log('Grupos asociados a las tareas', result)
-      grupos.value = result
-    }
-
-    async function obtenerUbicacionesGPSVehiculos() {
+    async function obtenerUbicacionesGPSVehiculosTareas() {
       try {
         cargando.activar()
-        const ruta = axios.getEndpoint(endpoints.ubicaciones_gps)
-        const response: AxiosResponse = await axios.get(ruta)
-        // console.log('Respuesta es', response)
-        posicionesVehiculos.value = response.data.results
-        console.log('Posiciones de vehículos', posicionesVehiculos.value)
-        puntosMapa.value = response.data.results.map((v: PosicionHunter) => ({
-          lat: Number(v.coordenadas.lat),
-          lng: Number(v.coordenadas.lng),
-          titulo: v.coordenadas.titulo,
-          descripcion: v.coordenadas.descripcion,
-          icono: 'bi bi-car-front-fill',
-          color: v.encendido ? 'green' : 'red'
-        }))
-        if (tareas.value?.length > 0) {
-          puntosMapa.value = [
-            ...puntosMapa.value,
-            ...tareas.value.map((tarea: Tarea) => tarea.coordenadas)
-          ]
-        }
+        const ruta = axios.getEndpoint(endpoints.ubicaciones_gps_tareas)
+        const response: AxiosResponse = await axios.get(ruta, {
+          params: {
+            astatus: estado_tarea.value,
+            raw_data: fecha.value
+          }
+        })
+        // console.log('obtenerUbicacionesGPSVehiculosTareas :: Respuesta es',response)
+
+        gruposTareas.value = response.data.gruposMapeados
+        tareasSinGrupo.value = response.data.tareasSinGrupo
       } catch (e) {
         console.error('error al consultar', e)
       } finally {
@@ -331,18 +82,13 @@ export default defineComponent({
       }
     }
 
-    function onMapReady(m: L.Map) {
-      console.log('Mapa listo', m)
-      map.value = m
-    }
-
     function iniciarPolling() {
       if (intervalo) clearInterval(intervalo)
 
       intervalo = window.setInterval(() => {
         if (document.visibilityState === 'visible')
-          obtenerUbicacionesGPSVehiculos()
-      }, 30000) //cada 30 segundos
+          obtenerUbicacionesGPSVehiculosTareas()
+      }, 1000 * 60) //cada 60 segundos
     }
 
     function detenerPolling() {
@@ -355,39 +101,41 @@ export default defineComponent({
     function onVisibilityChange() {
       if (document.visibilityState === 'visible') {
         iniciarPolling()
-        obtenerUbicacionesGPSVehiculos() // refresca al volver
+        obtenerUbicacionesGPSVehiculosTareas() // refresca al volver
       } else {
         detenerPolling()
       }
     }
 
-    function seleccionarPunto(punto) {
-      console.log('Diste clic en ', punto)
+    const crearSubtarea = (data: any) => {
+      modales.abrirModalEntidad('SeleccionarTareaSubtareaModalPage', {
+        tarea: data.tareaId,
+        grupo: data.grupoId,
+        grupos: gruposTareas
+      })
     }
 
+    // function guardado(data) {
+    //   console.log('Guardado:', data)
+    // }
+
     return {
-      refMapa,
-      puntosMapa,
-      puntoSeleccionado,
-      alturaMapa: '500px',
-      seleccionarPunto,
       fecha,
       estado_tarea,
       maskFecha,
       estados_tareas: estadosTareasConecel,
       consultarTareas,
-      tareas,
       obtenerColorEstado,
-      grupos,
-      obtenerColorGrupo,
-      rutas,
-      mapaRef,
-      map,
-      gruposConVehiculos,
-      onMapReady,
-      gruposFalsos,
+      gruposTareas,
       tareasSinGrupo,
-      optimizarRutas
+      crearSubtarea,
+      modales
+      // guardado
     }
   }
 })
+// aid=7 longitud
+//appt_number=14 longitud
+// ejmplo
+// 4399200
+// 20004495150473

@@ -51,8 +51,8 @@ export const configuracionColumnasTarea: ColumnConfig<Tarea>[] = [
     sortable: true
   },
   {
-    name: 'fecha',
-    field: 'fecha',
+    name: 'nombre_cliente',
+    field: 'nombre_cliente',
     label: 'Nombre Cliente',
     align: 'left',
     sortable: true

@@ -12,22 +12,22 @@ const menuConecel: Ref<MenuOption[]> = computed(() => {
       can: store.can('puede.acceder.modulo_gestion_conecel'),
       module: true,
       children: [
-        {
-          title: 'Dashboard',
-          link: 'dashboard-tareas-conecel',
-          icon: 'bi-bar-chart',
-          can: store.can('puede.acceder.dashboard_tareas_conecel')
-        },
+        // {
+        //   title: 'Dashboard',
+        //   link: 'dashboard-tareas-conecel',
+        //   icon: 'bi-bar-chart',
+        //   can: store.can('puede.acceder.dashboard_tareas_conecel')
+        // },
         {
           title: 'Tareas',
           link: 'tareas-conecel',
-          icon: 'bi-box-seam',
+          icon: 'bi-list-task',
           can: store.can('puede.acceder.tareas_conecel')
         },
         {
-          title: 'Cuadrillas',
+          title: 'Mapa de Cuadrillas',
           link: 'cuadrillas-tareas-conecel',
-          icon: 'fa-solid fa-users-line',
+          icon: 'bi-pin-map-fill',
           can: store.can('puede.acceder.tareas_conecel')
         },
         {
@@ -35,31 +35,6 @@ const menuConecel: Ref<MenuOption[]> = computed(() => {
           link: 'vehiculos-cuadrillas-conecel',
           icon: 'bi-car-front',
           can: store.can('puede.acceder.vehiculos_cuadrillas_conecel')
-        },
-        {
-          title: 'Configuracion',
-          icon: 'bi-gear',
-          can: store.can('puede.acceder.configuracion_modulo_gestion_conecel'),
-          children: [
-            {
-              title: 'Tipos de actividades',
-              link: 'tipos-actividades-conecel',
-              icon: 'bi-plus-circle',
-              can: store.can('puede.acceder.tipos_actividades_conecel')
-            },
-            {
-              title: 'Estados de tareas',
-              link: 'estados-tareas-conecel',
-              icon: 'bi-dash-circle',
-              can: store.can('puede.acceder.estados_tareas_conecel')
-            },
-            // {
-            //   title: 'Estados de tareas',
-            //   link: 'estados-tareas-conecel',
-            //   icon: 'bi-dash-circle',
-            //   can: store.can('puede.acceder.estados_tareas_conecel')
-            // }
-          ]
         }
       ]
     }

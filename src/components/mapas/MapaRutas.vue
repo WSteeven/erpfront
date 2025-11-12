@@ -12,15 +12,27 @@ import { useMapaRutas } from './useMapaRutas'
 import type { Tarea, GrupoRuta } from './types/mapa'
 
 const props = defineProps<{
-  grupos: GrupoRuta[],
-  tareasSinGrupo: Tarea[],
+  grupos: GrupoRuta[]
+  tareasSinGrupo: Tarea[]
   height?: string
   width?: string
+  onCrearSubtarea?: (data: {
+    tareaId: any
+    grupoId: number
+    latLng: L.LatLng
+  }) => void // ← NUEVA PROP
+}>()
+
+const emit = defineEmits<{
+  (e: 'crear-subtarea', data: { tareaId: any; grupoId: number; latLng: L.LatLng }): void
 }>()
 
 const mapContainer = ref<HTMLElement>()
 let map: L.Map | null = null
-const { renderizarGrupos } = useMapaRutas()
+const { renderizarGrupos } = useMapaRutas((tareaId: any, grupoId: number, latLng: L.LatLng) => {
+    // Emitimos el evento Vue
+    emit('crear-subtarea', { tareaId, grupoId, latLng })
+})
 
 onMounted(() => {
   map = L.map(mapContainer.value!).setView([-2.17, -79.92], 12)
@@ -28,11 +40,18 @@ onMounted(() => {
   renderizarGrupos(map!, props.grupos, props.tareasSinGrupo)
 })
 
-watch(() => props.grupos, (nuevos) => {
-  if (map) renderizarGrupos(map, nuevos, props.tareasSinGrupo)
-}, { deep: true })
+watch(
+  () => props.grupos,
+  nuevos => {
+    if (map) renderizarGrupos(map, nuevos, props.tareasSinGrupo)
+  },
+  { deep: true }
+)
 </script>
 
 <style>
-.custom-icon { background: transparent; border: none; }
+.custom-icon {
+  background: transparent;
+  border: none;
+}
 </style>
