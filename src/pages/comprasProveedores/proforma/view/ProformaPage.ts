@@ -92,14 +92,17 @@ export default defineComponent({
         )
         .toFixed(2)
     )
-    const subtotal_con_impuestos = computed(() =>
-      proforma.listadoProductos
-        .reduce(
-          (prev, curr) => prev + calcularSubtotalConImpuestosLista(curr),
-          0
-        )
-        .toFixed(2)
-    )
+    const subtotal_con_impuestos = computed(() => {
+      let subtotal = proforma.listadoProductos.reduce(
+        (prev, curr) => prev + calcularSubtotalConImpuestosLista(curr),
+        0
+      )
+
+      if (proforma.descuento_general > 0) {
+        subtotal -= proforma.descuento_general
+      }
+      return subtotal.toFixed(2)
+    })
     const subtotal = computed(() =>
       proforma.listadoProductos
         .reduce((prev, curr) => prev + parseFloat(curr.subtotal), 0)
@@ -183,13 +186,15 @@ export default defineComponent({
     /*****************************************************************************************
      * Hooks
      ****************************************************************************************/
-    watchEffect(() => (proforma.iva =  configuracionGeneralStore.configuracion?.iva))
+    watchEffect(
+      () => (proforma.iva = configuracionGeneralStore.configuracion?.iva)
+    )
 
     onReestablecer(() => {
       proforma.created_at = formatearFecha(
         new Date().getDate().toLocaleString()
       )
-      proforma.iva =  configuracionGeneralStore.configuracion?.iva
+      proforma.iva = configuracionGeneralStore.configuracion?.iva
       proforma.solicitante = store.user.id
       soloLectura.value = false
       proforma.autorizacion = 1
@@ -429,6 +434,16 @@ export default defineComponent({
       // console.log('modificacion')
       // console.log(refItems.value)
     })
+    
+    watch(
+      () => proforma.modificar_descuento,
+      nuevoValor => {
+        if (!nuevoValor) {
+          proforma.descuento_general = 0
+          actualizarDescuento() // para recalcular totales
+        }
+      }
+    )
 
     // configurar los listados
     empleados.value = listadosAuxiliares.empleados

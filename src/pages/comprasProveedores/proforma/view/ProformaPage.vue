@@ -42,8 +42,8 @@
               outlined
               :disable="true"
               :readonly="disabled || soloLectura"
-              :option-label="(v) => v.apellidos + ' ' + v.nombres"
-              :option-value="(v) => v.id"
+              :option-label="v => v.apellidos + ' ' + v.nombres"
+              :option-value="v => v.id"
               emit-value
               map-options
             >
@@ -113,8 +113,8 @@
                 soloLectura ||
                 proforma.autorizador === store.user.id
               "
-              :option-label="(v) => v.nombres + ' ' + v.apellidos"
-              :option-value="(v) => v.id"
+              :option-label="v => v.nombres + ' ' + v.apellidos"
+              :option-value="v => v.id"
               emit-value
               map-options
               ><template v-slot:no-option>
@@ -141,8 +141,8 @@
               error-message="Debes seleccionar una autorizacion"
               @blur="v$.autorizacion.$touch"
               :disable="disabled || proforma.autorizador !== store.user.id"
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.nombre"
+              :option-value="v => v.id"
+              :option-label="v => v.nombre"
               emit-value
               map-options
             >
@@ -210,8 +210,8 @@
                 soloLectura ||
                 proforma.autorizador === store.user.id
               "
-              :option-label="(v) => v.razon_social"
-              :option-value="(v) => v.id"
+              :option-label="v => v.razon_social"
+              :option-value="v => v.id"
               emit-value
               map-options
               ><template v-slot:no-option>
@@ -266,8 +266,8 @@
                 soloLectura ||
                 proforma.autorizador === store.user.id
               "
-              :option-label="(v) => v.label"
-              :option-value="(v) => v.value"
+              :option-label="v => v.label"
+              :option-value="v => v.value"
               emit-value
               map-options
             >
@@ -303,8 +303,8 @@
                 proforma.autorizador === store.user.id
               "
               :readonly="disabled || soloLectura"
-              :option-label="(v) => v.label"
-              :option-value="(v) => v.value"
+              :option-label="v => v.label"
+              :option-value="v => v.value"
               emit-value
               map-options
             >
@@ -338,8 +338,8 @@
               dense
               outlined
               disable
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.nombre"
+              :option-value="v => v.id"
+              :option-label="v => v.nombre"
               emit-value
               map-options
             >
@@ -470,6 +470,11 @@
                   }}</q-item-section>
                 </q-item>
                 <q-item>
+                  <q-item-section class="q-mr-md">Descuento: </q-item-section>
+                  <q-separator vertical></q-separator>
+                  <q-item-section avatar>{{ descuento }}</q-item-section>
+                </q-item>
+                <q-item>
                   <q-item-section
                     >Subtotal ({{ proforma.iva }} %):
                   </q-item-section>
@@ -477,12 +482,6 @@
                   <q-item-section avatar>{{
                     subtotal_con_impuestos
                   }}</q-item-section>
-                </q-item>
-
-                <q-item>
-                  <q-item-section class="q-mr-md">Descuento: </q-item-section>
-                  <q-separator vertical></q-separator>
-                  <q-item-section avatar>{{ descuento }}</q-item-section>
                 </q-item>
 
                 <q-item>
