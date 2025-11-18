@@ -15,7 +15,14 @@
     ></q-toggle>
   </div>
 
-  <div v-if="quiero_subir_archivos" class="col-12 q-mb-sm">
+  <div v-if="quiero_subir_archivos"
+  class="col-12 q-mb-sm q-uploader-drop-zone"
+  ref="dropZone"
+   @mouseenter="isHovering = true"
+    @mouseleave="isHovering = false"
+    @focusin="hasFocus = true"
+    @focusout="hasFocus = false"
+  >
     <q-uploader
       ref="refGestor"
       label="Selecciona o arrastra tus archivos aquí (Máximo 10mb)"
@@ -53,3 +60,17 @@
 </template>
 
 <script src="./ArchivoSeguimiento.ts"></script>
+<style scoped>
+.q-uploader-drop-zone {
+  border: 2px dashed #ccc;
+  border-radius: 12px;
+  padding: 8px;
+  outline: none;
+}
+
+.q-uploader-drop-zone:focus,
+.q-uploader-drop-zone:hover {
+  border-color: #21ba45; /* color positivo Quasar */
+  background-color: rgba(33, 186, 69, 0.05);
+}
+</style>
