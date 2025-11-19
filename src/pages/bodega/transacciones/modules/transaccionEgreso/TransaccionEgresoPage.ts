@@ -4,12 +4,9 @@ import { required, requiredIf } from 'shared/i18n-validators'
 import { useVuelidate } from '@vuelidate/core'
 import { defineComponent, Ref, ref, watchEffect } from 'vue'
 import { configuracionColumnasInventarios } from 'pages/bodega/inventario/domain/configuracionColumnasInventarios'
-import { configuracionColumnasItemsSeleccionados } from 'pages/bodega/traspasos/domain/configuracionColumnasItemsSeleccionados'
 import { configuracionColumnasListadoProductosSeleccionados } from '../transaccionContent/domain/configuracionColumnasListadoProductosSeleccionados'
 import { configuracionColumnasProductosSeleccionados } from './domain/configuracionColumnasProductosSeleccionados'
-import { configuracionColumnasProductos } from 'pages/bodega/productos/domain/configuracionColumnasProductos'
 import { useOrquestadorSelectorItemsEgreso } from './application/OrquestadorSelectorInventario'
-import { configuracionColumnasDetallesProductos } from 'pages/bodega/detalles_productos/domain/configuracionColumnasDetallesProductos'
 import {
   acciones,
   accionesTabla,
@@ -72,11 +69,15 @@ import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
 import { Inventario } from 'pages/bodega/inventario/domain/Inventario'
 import { Condicion } from 'pages/administracion/condiciones/domain/Condicion'
 import { Motivo } from 'pages/administracion/motivos/domain/Motivo'
-import { Tarea } from 'tareas/domain/Tarea'
+import {Tarea} from 'tareas/domain/Tarea'
+import NoOptionComponent from 'components/NoOptionComponent.vue';
+import ErrorComponent from 'components/ErrorComponent.vue';
 
 export default defineComponent({
   name: 'EgresoPage',
   components: {
+    ErrorComponent,
+    NoOptionComponent,
     TabLayoutFilterTabs2,
     EssentialTable,
     EssentialSelectableTable,
@@ -129,7 +130,6 @@ export default defineComponent({
       seleccionar: seleccionarProducto
     } = useOrquestadorSelectorItemsEgreso(transaccion, 'inventarios')
 
-    const paginate = true
     const usuarioLogueado = store.user
     const esBodeguero = store.esBodeguero
     const esCoordinador = store.esCoordinador
@@ -284,7 +284,7 @@ export default defineComponent({
 
     function filtrarTransacciones(tab: string) {
       tabDefecto.value = tab
-      listar({ estado: tab, paginate: paginate })
+      listar({ estado: tab, paginate: true })
 
       filtros.fields = { estado: tab }
     }
@@ -377,14 +377,15 @@ export default defineComponent({
           motivosTransaccionesBodega.destruccion,
           // motivosTransaccionesBodega.egresoTransferenciaBodegas,
           motivosTransaccionesBodega.egresoLiquidacionMateriales,
-            motivosTransaccionesBodega.egresoAjusteRegularizacion,
+          motivosTransaccionesBodega.egresoAjusteRegularizacion,
           motivosTransaccionesBodega.robo
         ]
         return (
           store.can('puede.anular.egresos') &&
-          ((entidad.estado === estadosTransacciones.completa && entidad.estado_comprobante == estadosTransacciones.pendiente) || //false
-            (entidad.estado === estadosTransacciones.completa && motivosQueNoTienenResponsable.includes(entidad.motivo))
-          )
+          ((entidad.estado === estadosTransacciones.completa &&
+            entidad.estado_comprobante == estadosTransacciones.pendiente) || //false
+            (entidad.estado === estadosTransacciones.completa &&
+              motivosQueNoTienenResponsable.includes(entidad.motivo)))
         )
       }
     }
@@ -535,7 +536,7 @@ export default defineComponent({
           if (cantidadPendiente <= v.cantidad) {
             v.cantidad = cantidadPendiente
             // console.log('hay más en inventario')
-          // } else {
+            // } else {
             // console.log('hay menos en inventario', v.detalle_id, v.cantidad)
           }
         }
@@ -695,7 +696,10 @@ export default defineComponent({
 
     async function recargarSucursales() {
       const sucursales_obtenidas = (
-        await new SucursalController().listar({ campos: 'id,lugar,cliente_id' , activo:1})
+        await new SucursalController().listar({
+          campos: 'id,lugar,cliente_id',
+          activo: 1
+        })
       ).result
       LocalStorage.set('sucursales', JSON.stringify(sucursales_obtenidas))
       listadosAuxiliares.sucursales = sucursales_obtenidas
@@ -758,7 +762,6 @@ export default defineComponent({
       filtrarSucursales: filtrarSucursalesPorBodeguero,
 
       //stores
-      pedidoStore,
       transferenciaStore,
 
       listadoPedido,
@@ -829,9 +832,7 @@ export default defineComponent({
 
       //tabla
       configuracionColumnasInventarios,
-      configuracionColumnasItemsSeleccionados,
       configuracionColumnasProductosSeleccionados,
-      configuracionColumnasDetallesProductos,
       botonEditarCantidad,
       botonEliminar,
       botonImprimir,
@@ -848,17 +849,15 @@ export default defineComponent({
       limpiarProducto,
       seleccionarProducto,
       seleccionarClientePropietario,
-      configuracionColumnasProductos,
 
       //rol
       esBodeguero,
       esBodegueroTelconet: store.esBodegueroTelconet,
       store,
-      paginate,
+
       esCoordinador,
 
       llenarTransaccion,
-      limpiarTransaccion,
 
       //transferencia
       llenarTransferencia,
