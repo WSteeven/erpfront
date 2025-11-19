@@ -21,7 +21,7 @@ import EssentialTable from 'components/tables/view/EssentialTable.vue'
 // Logica y controladores
 import {ContenedorSimpleMixin} from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import {ParamsType} from 'config/types'
-import {useRejectedFiles} from '../../composables/useRejectedFiles'
+import {isDuplicate, useRejectedFiles} from '../../composables/useRejectedFiles'
 
 export default defineComponent({
   components: {
@@ -136,6 +136,10 @@ export default defineComponent({
         if (item.kind === 'file') {
           const file = item.getAsFile()
           if (file) {
+            if(isDuplicate(refGestor, file)) {
+                notificarError(`El archivo ${file.name} ya está adjuntado.`)
+                continue
+            }
             refGestor.value.addFiles([file])
             // console.log('Archivo pegado:', file.name)
           }

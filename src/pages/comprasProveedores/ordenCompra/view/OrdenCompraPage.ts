@@ -234,6 +234,7 @@ export default defineComponent({
       orden.iva =  configuracionGeneralStore.configuracion?.iva
 
       refArchivo.value.limpiarListado()
+      refArchivo.value.quiero_subir_archivos=false
       obtenerTareas(false)
     })
     onConsultado(() => {

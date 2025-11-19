@@ -38,3 +38,10 @@ export function useRejectedFiles(props) {
 
   return { onRejected }
 }
+
+export function isDuplicate(refGestor, file: File) {
+  if (!refGestor.value) return false
+  return refGestor.value.queuedFiles.some((f: File) => {
+    return f.name === file.name && f.size === file.size
+  })
+}
