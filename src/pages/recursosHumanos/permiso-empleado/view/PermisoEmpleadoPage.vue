@@ -36,16 +36,10 @@
               map-options
             >
               <template v-slot:error>
-                <div v-for="error of v$.tipo_permiso.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="tipo_permiso" :v$="v$" />
               </template>
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
+                <no-option-component />
               </template>
             </q-select>
           </div>
@@ -100,12 +94,7 @@
               </template>
 
               <template v-slot:error>
-                <div
-                  v-for="error of v$.fecha_hora_inicio.$errors"
-                  :key="error.$uid"
-                >
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="fecha_hora_inicio" :v$="v$" />
               </template>
             </q-input>
           </div>
@@ -159,12 +148,7 @@
                 </q-icon>
               </template>
               <template v-slot:error>
-                <div
-                  v-for="error of v$.fecha_hora_fin.$errors"
-                  :key="error.$uid"
-                >
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="fecha_hora_fin" :v$="v$" />
               </template>
             </q-input>
             <div class="q-gutter-md row items-start"></div>
@@ -269,12 +253,7 @@
               dense
             >
               <template v-slot:error>
-                <div
-                  v-for="error of v$.justificacion.$errors"
-                  :key="error.$uid"
-                >
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="justificacion" :v$="v$" />
               </template>
             </q-input>
           </div>
@@ -333,9 +312,7 @@
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.observacion.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="observacion" :v$="v$" />
               </template>
             </q-input>
           </div>
@@ -438,12 +415,7 @@
               </template>
 
               <template v-slot:error>
-                <div
-                  v-for="error of v$.fecha_recuperacion.$errors"
-                  :key="error.$uid"
-                >
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="fecha_recuperacion" :v$="v$" />
               </template>
             </q-input>
           </div>
@@ -465,12 +437,7 @@
               dense
             >
               <template v-slot:error>
-                <div
-                  v-for="error of v$.hora_recuperacion.$errors"
-                  :key="error.$uid"
-                >
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="hora_recuperacion" :v$="v$" />
               </template>
             </q-input>
           </div>
@@ -486,14 +453,46 @@
               dense
             ></q-checkbox>
           </div>
+
+          <!-- Cargo a descuento -->
+          <div
+            class="col-12 col-md-3"
+            v-if="
+              [acciones.editar, acciones.consultar].includes(accion) &&
+              esRecursosHumanos
+            "
+          >
+            <q-checkbox
+              class="q-mt-lg q-pt-md"
+              v-model="permiso.cargo_descuento"
+              @update:model-value="checkCargoDescuento"
+              label="Cargo a Descuento"
+              :disable="disabled"
+              outlined
+              dense
+            ></q-checkbox>
+          </div>
+
           <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">¿Está descontado?</label>
+            <q-toggle
+                :label="permiso.descontado ? 'SI' : 'NO'"
+                v-model="permiso.descontado"
+                color="primary"
+                keep-color
+                icon="bi-check2-circle"
+                unchecked-icon="clear"
+                disable
+            />
+
+          </div> <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Dias de permiso</label>
             <q-input
               v-model="dias_permiso"
               placeholder="Obligatorio"
               disable
               outlined
-              dense
+              dense m
             >
             </q-input>
           </div>

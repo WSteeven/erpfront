@@ -45,7 +45,8 @@ export default defineComponent({
           controller: new GrupoController(),
           params: {
             activo: 1,
-            nombre_alternativo: 'nombre_alternativo'
+            'nombre_alternativo[operator]': '<>'
+            ,'nombre_alternativo[value]': 'null'
           }
         },
         vehiculos: {

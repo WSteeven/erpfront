@@ -288,19 +288,6 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
-        path: '/perchas',
-        name: 'perchas',
-        component: () =>
-          import('pages/administracion/perchas/view/PerchaPage.vue'),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: '/pisos',
-        name: 'pisos',
-        component: () => import('pages/administracion/pisos/view/PisoPage.vue'),
-        meta: { requiresAuth: true },
-      },
-      {
         path: '/sucursales',
         name: 'sucursales',
         component: () =>
@@ -330,13 +317,7 @@ const routes: RouteRecordRaw[] = [
           import('pages/administracion/motivos/view/MotivoPage.vue'),
         meta: { requiresAuth: true },
       },
-      {
-        path: '/ubicaciones',
-        name: 'ubicaciones',
-        component: () =>
-          import('pages/administracion/ubicaciones/view/UbicacionPage.vue'),
-        meta: { requiresAuth: true },
-      },
+
       {
         path: '/subtarea-asignada',
         name: 'subtarea_asignada',

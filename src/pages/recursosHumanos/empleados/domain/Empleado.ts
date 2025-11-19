@@ -55,6 +55,7 @@ export class Empleado extends EntidadAuditable {
   observacion: string | null
   nivel_academico: string | null
   titulo: string | null
+  horas_pendientes: string | null
   grupo_id: number | null
   responsable_departamento: boolean
   supa: number | null

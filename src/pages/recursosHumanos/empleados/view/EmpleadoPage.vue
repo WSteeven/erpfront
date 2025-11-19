@@ -1175,6 +1175,24 @@
               </q-input>
             </div>
 
+            <!-- Horas pendientes de  -->
+            <div
+              class="col-12 col-md-3 col-sm-3"
+            >
+              <label class="q-mb-sm block"
+                >Horas pendientes de recuperación o descuento en
+                ROL</label
+              >
+              <q-input
+                v-model="empleado.horas_pendientes"
+                placeholder="TITULO ACADEMICO"
+                disable
+                outlined
+                dense
+              >
+              </q-input>
+            </div>
+
             <!-- Fecha Ingreso -->
             <div class="col-12 col-md-3 col-sm-3">
               <label class="q-mb-sm block">Fecha de Ingreso</label>
@@ -1552,7 +1570,7 @@
     </template>
   </tab-layout-filter-tabs2>
   <modales-entidad
-      :mostrar-boton-cerrar-modal="mostrarBotonCerrarModal"
+    :mostrar-boton-cerrar-modal="mostrarBotonCerrarModal"
     :comportamiento="modales"
     :mixin-modal="mixin"
     :persistente="!mostrarBotonCerrarModal"

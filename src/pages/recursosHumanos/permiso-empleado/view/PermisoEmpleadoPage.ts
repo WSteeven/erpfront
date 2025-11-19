@@ -4,7 +4,6 @@ import { useVuelidate } from '@vuelidate/core'
 import { computed, defineComponent, ref, watchEffect } from 'vue'
 
 // Componentes
-import ArchivoSeguimiento from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/view/ArchivoSeguimiento.vue'
 import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
 import GestorDocumentos from 'components/documentos/view/GestorDocumentos.vue'
 
@@ -32,15 +31,19 @@ import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { AutorizacionController } from 'pages/administracion/autorizaciones/infraestructure/AutorizacionController'
 import { addDay, format, parse } from '@formkit/tempo'
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
+import ErrorComponent from 'components/ErrorComponent.vue'
+import NoOptionComponent from 'components/NoOptionComponent.vue'
+import { Autorizacion } from 'pages/administracion/autorizaciones/domain/Autorizacion'
+import { useNotificaciones } from 'shared/notificaciones'
 
 export default defineComponent({
   components: {
+    NoOptionComponent,
+    ErrorComponent,
     TabLayoutFilterTabs2,
-    GestorDocumentos,
-    ArchivoSeguimiento
+    GestorDocumentos
   },
-  emits: ['cerrar-modal'],
-  setup(props, { emit }) {
+  setup() {
     const mixin = new ContenedorSimpleMixin(
       PermisoEmpleado,
       new PermisoEmpleadoController()
@@ -66,7 +69,7 @@ export default defineComponent({
       onReestablecer
     } = mixin.useHooks()
     const store = useAuthenticationStore()
-
+    const { confirmar, notificarCorrecto } = useNotificaciones()
     const tipos_permisos = ref([])
     const { empleados, filtrarEmpleados } =
       useFiltrosListadosSelects(listadosAuxiliares)
@@ -191,8 +194,8 @@ export default defineComponent({
       }
     })
 
-    watchEffect(()=>{
-      permiso.cargo_vacaciones = dias_permiso.value==1
+    watchEffect(() => {
+      permiso.cargo_vacaciones = dias_permiso.value == 1
     })
 
     onBeforeGuardar(() => {
@@ -207,7 +210,6 @@ export default defineComponent({
     })
     onGuardado((id: number) => {
       subirArchivos(id)
-      emit('cerrar-modal')
     })
 
     async function subirArchivos(id: number) {
@@ -262,11 +264,11 @@ export default defineComponent({
       empleados.value = listadosAuxiliares.empleados
       tipos_permisos.value = listadosAuxiliares.tipos_permisos
       autorizaciones.value = listadosAuxiliares.autorizaciones.filter(
-        v => v.id !== autorizacionesId.VALIDADO
+        (v: Autorizacion) => v.id !== autorizacionesId.VALIDADO
       )
     })
 
-    function optionsFechaInicio(date) {
+    function optionsFechaInicio(date: string) {
       const currentDateString = sumarFechas(
         obtenerFechaActual(),
         0,
@@ -281,7 +283,7 @@ export default defineComponent({
       )
     }
 
-    function optionsFecha(date) {
+    function optionsFecha(date: string) {
       const fecha_hora_inicio = format(
         new Date(convertir_fecha_hora(permiso.fecha_hora_inicio)),
         'YYYY/MM/DD'
@@ -306,7 +308,7 @@ export default defineComponent({
      * `dias_permiso.value` y `numDiaSemana`. Si se cumplen todas las condiciones, la función devuelve
      * 'verdadero', de lo contrario devuelve falso
      */
-    function optionsFechaRecuperacion(date) {
+    function optionsFechaRecuperacion(date: string) {
       const fecha_hora_fin = permiso.suguiere_fecha
         ? new Date(permiso.fecha_hora_reagendamiento || Date.now())
         : new Date(
@@ -328,7 +330,7 @@ export default defineComponent({
       )
     }
 
-    function optionsFechaSugerida(date) {
+    function optionsFechaSugerida(date: string) {
       const partes = permiso.fecha_hora_fin?.split(' ')
       return date > format(partes[0], 'YYYY/MM/DD')
     }
@@ -399,6 +401,22 @@ export default defineComponent({
       }
     }
 
+    const checkCargoDescuento = (val: boolean) => {
+      if (val) {
+        confirmar(
+          'Se sumarán las horas para un descuento en rol de pagos. ¿Está seguro de continuar?',
+          () => {
+            notificarCorrecto(
+              'Configuración realizada, ¡por favor guarda los cambios!'
+            )
+          },
+          () => {
+            permiso.cargo_descuento = false
+          }
+        )
+      }
+    }
+
     return {
       removeAccents,
       mixin,
@@ -411,6 +429,7 @@ export default defineComponent({
       optionsFechaRecuperacion,
       optionsFechaSugerida,
       cambiar_fecha,
+      checkCargoDescuento,
       editarPermiso,
       esAutorizador,
       esRecursosHumanos,
@@ -424,7 +443,8 @@ export default defineComponent({
       horas_permisos,
       empleados,
       autorizaciones,
-      accion, acciones,
+      accion,
+      acciones,
       maskFecha,
       store,
       v$,

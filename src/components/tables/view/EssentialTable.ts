@@ -452,7 +452,7 @@ export default defineComponent({
       limpiarFila()
     }
 
-    const rows = computed(() => listado.value?.length - 1 ?? 0)
+    const rows = computed(() => listado.value?.length? listado.value?.length - 1 : 0)
 
     const loading = ref(false)
 
@@ -479,7 +479,7 @@ export default defineComponent({
           posicion: propsTable.rowIndex
         })
       } else {
-        return accion !== undefined ?? false
+        return accion !== undefined
       }
     }
 
@@ -493,7 +493,7 @@ export default defineComponent({
           posicion: propsTable.rowIndex
         })
       } else {
-        return accion !== undefined ?? false
+        return accion !== undefined
       }
     }
 

@@ -98,13 +98,7 @@ const rutasBodega: RouteRecordRaw[] = [
     component: () => import('pages/bodega/inventario/view/InventarioPage.vue'),
     meta: { requiresAuth: false }
   },
-  {
-    path: '/productos-perchas',
-    name: 'productos_perchas',
-    component: () =>
-      import('pages/bodega/productos_en_perchas/view/ProductosPerchaPage.vue'),
-    meta: { requiresAuth: true }
-  },
+
   {
     path: '/pedidos',
     name: 'pedidos',
@@ -151,12 +145,7 @@ const rutasBodega: RouteRecordRaw[] = [
       ),
     meta: { requiresAuth: true }
   },
-  {
-    path: '/traspasos',
-    name: 'traspasos',
-    component: () => import('pages/bodega/traspasos/view/TraspasoPage.vue'),
-    meta: { requiresAuth: true }
-  },
+
   {
     path: '/transferencias',
     name: 'transferencias',

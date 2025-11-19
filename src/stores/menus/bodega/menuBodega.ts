@@ -87,13 +87,7 @@ const menuBodega: Ref<MenuOption[]> = computed(() => {
             store.esRecursosHumanos ||
             store.esTecnicoLider
         },
-        {
-          title: 'Productos en Perchas',
-          link: 'productos-perchas',
-          icon: 'bi-boxes',
-          // can: store.can('puede.acceder.productos_perchas'),
-          can: false
-        },
+
         {
           title: 'Devoluciones',
           link: 'devoluciones',
@@ -134,12 +128,6 @@ const menuBodega: Ref<MenuOption[]> = computed(() => {
           title: 'Transferencias',
           link: 'transferencias',
           can: store.can('puede.acceder.transferencias') || store.esBodeguero,
-          icon: 'bi-arrow-left-right'
-        },
-        {
-          title: 'Traspasos',
-          link: 'traspasos',
-          can: store.can('puede.acceder.traspasos'),
           icon: 'bi-arrow-left-right'
         },
         {

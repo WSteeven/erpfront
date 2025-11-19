@@ -1,7 +1,7 @@
 // Dependencias
 import { configuracionColumnasPrestamoQuirorafario } from '../domain/configuracionColumnasPrestamoQuirorafario'
 import { useVuelidate } from '@vuelidate/core'
-import { computed, defineComponent, reactive, ref, watchEffect } from 'vue'
+import { computed, defineComponent, ref, watchEffect } from 'vue'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
@@ -21,12 +21,12 @@ import { useAuthenticationStore } from 'stores/authentication'
 import GestorDocumentos from 'components/documentos/view/GestorDocumentos.vue'
 import { useNotificaciones } from 'shared/notificaciones'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import ErrorComponent from 'components/ErrorComponent.vue';
+import ErrorComponent from 'components/ErrorComponent.vue'
 
 export default defineComponent({
   components: { ErrorComponent, TabLayout, SelectorImagen, GestorDocumentos },
   emits: ['cerrar-modal'],
-  setup(props, { emit }) {
+  setup() {
     const mixin = new ContenedorSimpleMixin(
       PrestamoQuirorafario,
       new PrestamoQuirorafarioController()
@@ -53,20 +53,9 @@ export default defineComponent({
     })
     const auxmes = ref()
 
-    function convertir_fecha(fecha) {
-      const dateParts = fecha.split('-') // Dividir el string en partes usando el guión como separador
-      let tiempo = dateParts[2]
-      tiempo = tiempo.split(' ')
-      tiempo = tiempo[1].split(':')
-      const dia = parseInt(dateParts[0], 10) // Obtener el día como entero
-      const mes = parseInt(dateParts[1], 10) - 1 // Obtener el mes como entero (restar 1 porque en JavaScript los meses comienzan desde 0)
-      const anio = parseInt(dateParts[2], 10)
-      const fecha_convert = new Date(anio, mes, dia, tiempo[0], tiempo[1], 0)
-      return fecha_convert
-    }
     onBeforeGuardar(() => {
       prestamo.tieneDocumento =
-        refArchivoPrestamoQuirorafario.value.tamanioListado > 0 ? true : false
+        refArchivoPrestamoQuirorafario.value.tamanioListado > 0
       if (!prestamo.tieneDocumento) {
         notificarAdvertencia('Debe seleccionar al menos un archivo.')
       }
@@ -75,11 +64,11 @@ export default defineComponent({
     onBeforeModificar(() => {
       prestamo.tieneDocumento = true
     })
-    onGuardado((id: number) => {
+    onGuardado(() => {
       subirArchivos()
       listar()
-      // emit('cerrar-modal')
     })
+
     async function subirArchivos() {
       await refArchivoPrestamoQuirorafario.value.subir({ mes: auxmes.value })
     }
@@ -99,11 +88,12 @@ export default defineComponent({
       setTimeout(limpiarArchivoPrestamoQuirorafario, 50)
     })
 
-    //Reglas de validacion
-    const reglas = {
-      mes: { required }
-    }
-    const v$ = useVuelidate(reglas, prestamo)
+    const v$ = useVuelidate(
+      {
+        mes: { required }
+      },
+      prestamo
+    )
     setValidador(v$.value)
 
     const editarPermiso: CustomActionTable = {
@@ -117,9 +107,10 @@ export default defineComponent({
         consultar(entidad)
       }
     }
+
     /**Verifica si es un mes */
-    function checkValue(val, reason, details) {
-      is_month.value = reason === 'month' ? false : true
+    function checkValue(_, reason) {
+      is_month.value = reason !== 'month'
     }
 
     return {

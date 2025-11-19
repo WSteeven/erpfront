@@ -175,7 +175,7 @@ export function useMapaRutas(onCrearSubtarea?: (tareaId: any, grupoId: number, l
           tarea.coordenadas,
           `<div style="background:${
             tarea.color
-          };color:white;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:15px;border:3px solid white;">${
+          };color:black;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:10px;border:3px solid white;">${
             tarea.orden_trabajo ?? i + 1
           }</div>`,
           `<b>${grupo.nombre} - OT ${tarea.id}</b><br>${

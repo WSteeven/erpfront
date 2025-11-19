@@ -49,6 +49,15 @@ const rutasRecursosHumanos: RouteRecordRaw[] = [
     meta: { requiresAuth: true }
   },
   {
+    path: '/horas-pendientes',
+    name: 'horas_pendientes',
+    component: () =>
+      import(
+        'pages/recursosHumanos/permiso-empleado/modules/horasPendientes/view/HoraPendientePage.vue'
+      ),
+    meta: { requiresAuth: true, permissionRequired:false }
+  },
+  {
     path: '/prestamo-empresarial',
     name: 'prestamo_empresarial',
     component: () =>

@@ -1,7 +1,6 @@
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable';
 
 export class PermisoEmpleado extends EntidadAuditable {
-  id: number | null
   empleado: number | null
   empleado_info: string | null
   tipo_permiso: string | null
@@ -25,10 +24,11 @@ export class PermisoEmpleado extends EntidadAuditable {
   recupero: boolean | null
   tieneDocumento: boolean | null
   cargo_vacaciones: boolean
+  cargo_descuento: boolean
+  descontado: boolean
   aceptar_sugerencia: boolean | null
   constructor() {
     super()
-    this.id = null
     this.empleado = null
     this.empleado_info = null
     this.tipo_permiso = null
@@ -52,6 +52,8 @@ export class PermisoEmpleado extends EntidadAuditable {
     this.suguiere_fecha = false
     this.tieneDocumento = null
     this.cargo_vacaciones = false
+    this.cargo_descuento = false
+    this.descontado = false
     this.aceptar_sugerencia = false
   }
 }

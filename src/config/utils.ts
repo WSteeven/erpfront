@@ -73,18 +73,6 @@ export const tabOptionsSolicitudesViaticos: TabOption[] = [
   { label: 'Anuladas', value: '4' } //estado ANULADO
 ]
 
-export const tabOptionsTransaccionesIngresos: TabOption[] = [
-  { label: 'Todo', value: 'TODO' },
-  { label: 'Pendiente', value: 'PENDIENTE' },
-  { label: 'Parcial', value: 'PARCIAL' },
-  { label: 'Completa', value: 'COMPLETA' }
-]
-export const tabOptionsDevoluciones: TabOption[] = [
-  { label: 'Por autorizar', value: 'PENDIENTE' },
-  { label: 'Aprobados', value: 'APROBADO' },
-  { label: 'Cancelados', value: 'CANCELADO' },
-  { label: 'Anuladas', value: 'ANULADA' }
-]
 export const tabOptionsTransferencias: TabOption[] = [
   { label: 'Pendientes', value: 'PENDIENTE' },
   { label: 'Tránsito', value: 'TRANSITO' },
@@ -123,17 +111,6 @@ export const tabOptionsPermiso: TabOption[] = [
   { label: 'Cancelados', value: '3' },
   { label: 'Recuperados', value: '4' }
 ]
-export const tabOptionsTraspasos: TabOption[] = [
-  { label: 'Pendientes', value: '0' },
-  { label: 'Devueltas', value: '1' }
-]
-export const tabOptionsTransacciones: TabOption[] = [
-  { label: 'Todo', value: 'TODO' },
-  /* { label: 'En espera', value: 'ESPERA' }, */
-  { label: 'Pendiente', value: 'PENDIENTE' },
-  { label: 'Parcial', value: 'PARCIAL' },
-  { label: 'Completa', value: 'COMPLETA' }
-]
 export const tabAutorizarGasto: TabOption[] = [
   { label: 'Aprobada', value: '1' },
   { label: 'Rechazada', value: '2' },
@@ -169,12 +146,6 @@ export const accionesTabla = {
   align: 'center'
   // style: 'width: 1000px'
 }
-
-export const tiposTrabajosEstaticos = {
-  tendido: 'TENDIDO',
-  hincado: 'HINCADO'
-}
-
 export const motivos = {
   venta: 'VENTA',
   compraProveedor: 'COMPRA A PROVEEDOR',
@@ -288,10 +259,6 @@ export const sistemasCoordenadas = ['DMS', 'UTM']
 
 export const bobinasSolicitadas = ['DS564', 'DSFDS564']
 
-export const estadosDevoluciones = {
-  CREADA: 'CREADA',
-  ANULADA: 'ANULADA'
-}
 export const estadosTrabajos = {
   CREADO: 'CREADO',
   ASIGNADO: 'ASIGNADO',
@@ -421,18 +388,7 @@ export const rolesSistema = {
   sso: 'SEGURIDAD Y SALUD OCUPACIONAL'
 }
 
-export const cargosSistema = {
-  tecnico_lider: 'TECNICO LIDER DE GRUPO',
-  tecnico_secretario: 'TECNICO SECRETARIO'
-}
-
 export const tiposJornadas = ['INICIO DE JORNADA', 'FIN DE JORNADA']
-
-export const tiposMovimientos = {
-  ingreso: 'INGRESO',
-  egreso: 'EGRESO'
-}
-
 export const opcionesTiposMovimientos = [
   { value: 'Ingreso', label: 'INGRESO' },
   { value: 'Egreso', label: 'EGRESO' }
@@ -451,13 +407,6 @@ export const tiposProductos = [
   { value: 'BIEN', label: 'BIEN' },
   { value: 'SERVICIO', label: 'SERVICIO' }
 ]
-
-export const opcionesTipoContribuyente = [
-  { value: 'NATURAL', label: 'NATURAL' },
-  { value: 'PRIVADA', label: 'PRIVADA' },
-  { value: 'PUBLICA', label: 'PUBLICA' }
-]
-
 export const opcionesReportesIngresos = [
   { value: 0, label: 'POR SOLICITANTE' },
   { value: 1, label: 'POR BODEGUERO' }, //PERSONA QUE ATIENDE
@@ -486,17 +435,6 @@ export const numDiaSemana = {
   viernes: 5,
   sabado: 6
 }
-
-export const optionsDias = [
-  { label: 'Lunes', value: 'lunes' },
-  { label: 'Martes', value: 'martes' },
-  { label: 'Miércoles', value: 'miercoles' },
-  { label: 'Jueves', value: 'jueves' },
-  { label: 'Viernes', value: 'viernes' },
-  { label: 'Sábado', value: 'sabado' },
-  { label: 'Domingo', value: 'domingo' }
-]
-
 export const opcionesReportesEgresos = [
   { value: 0, label: 'POR SOLICITANTE' },
   { value: 1, label: 'POR PERSONA QUE AUTORIZA' },
@@ -526,22 +464,6 @@ export const tiposReportesEgresos = {
   transferencia: 10,
   categorias: 11
 }
-
-export const opcionesDepartamentos = {
-  xtrim_cuenca: 'XTRIM CUENCA',
-  medico: 'MEDICO',
-  activos_fijos: 'ACTIVOS FIJOS',
-  gerencia: 'GERENCIA',
-  proyectos: 'PROYECTOS',
-  recursos_humanos: 'RECURSOS HUMANOS',
-  tecnico: 'TECNICO',
-  contabilidad: 'CONTABILIDAD',
-  informatica: 'INFORMATICA',
-  bodega: 'BODEGA',
-  sso: 'SSO',
-  vehiculos: 'VEHICULOS',
-  comercial: 'COMERCIAL'
-}
 export const opcionesUnidadesMedidas = [
   { value: 1, label: 'UNIDAD' },
   { value: 2, label: 'KILOGRAMO' },
@@ -563,7 +485,7 @@ export function convertir_fecha(fecha: Date) {
   return year + '/' + month + '/' + day
 }
 
-export function convertir_fecha_hora(fecha) {
+export function convertir_fecha_hora(fecha:any) {
   const dateParts = fecha.split('-') // Dividir el string en partes usando el guión como separador
   let tiempo = dateParts[2]
   tiempo = tiempo.split(' ')
@@ -571,8 +493,7 @@ export function convertir_fecha_hora(fecha) {
   const dia = parseInt(dateParts[0], 10) // Obtener el día como entero
   const mes = parseInt(dateParts[1], 10) - 1 // Obtener el mes como entero (restar 1 porque en JavaScript los meses comienzan desde 0)
   const anio = parseInt(dateParts[2], 10)
-  const fecha_convert = new Date(anio, mes, dia, tiempo[0], tiempo[1], 0)
-  return fecha_convert
+  return new Date(anio, mes, dia, tiempo[0], tiempo[1], 0)
 }
 
 export const tiposDocumentosIdentificaciones = [
@@ -633,11 +554,6 @@ export const estados_activaciones = [
   { id: 2, nombre: 'Activado', abreviatura: 'ACT' },
   { id: 3, nombre: 'Rechazada', abreviatura: 'RECH' }
 ]
-export const estadosVentas = {
-  APROBADO: 'APROBADO',
-  RECHAZADO: 'RECHAZADO',
-  PENDIENTE: 'PENDIENTE' // Se usa en vez de ASIGNADO en el dashboard
-}
 export const autorizacionesId = {
   PENDIENTE: 1,
   APROBADO: 2,
@@ -700,6 +616,3 @@ export const tipoAutenticacion = {
   empleado: 'private',
   usuario_externo: 'external'
 }
-
-/**JPCUSTODY */
-export const tipoJornadaBitacora = ['DIURNA', 'NOCTURNA']

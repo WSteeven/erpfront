@@ -409,6 +409,12 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-calendar2-plus',
           can: store.can('puede.acceder.permiso_nomina')
         },
+          {
+          title: 'Horas Pendientes de Descuento',
+          link: 'horas-pendientes',
+          icon: 'bi-clock-history',
+          can: true
+        },
         {
           title: 'Descuentos a Empleados',
           link: 'descuentos',
@@ -851,29 +857,12 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-arrows-collapse',
           can: store.can('puede.acceder.tipos_transacciones') && false
         },
-        {
-          title: 'Perchas',
-          link: 'perchas',
-          icon: 'bi-box',
-          can: store.can('puede.acceder.perchas')
-        },
-        {
-          title: 'Pisos',
-          link: 'pisos',
-          icon: 'bi-box',
-          can: store.can('puede.acceder.pisos')
-        },
+
         {
           title: 'Sucursales',
           link: 'sucursales',
           icon: 'bi-building',
           can: store.can('puede.acceder.sucursales') || store.esActivosFijos
-        },
-        {
-          title: 'Ubicaciones',
-          link: 'ubicaciones',
-          icon: 'bi-map',
-          can: store.can('puede.acceder.ubicaciones')
         },
         {
           title: 'Unidades de medida',

@@ -5,6 +5,7 @@ import { capacitacionPersonal } from 'config/endpoints/rrhh/capacitacionPersonal
 
 export const recursosHumanos = {
   empleados: new Endpoint('empleados'),
+  empleados_con_tiempo_pendiente: new Endpoint('recursos-humanos/empleados-con-tiempo-pendiente'),
   obtener_empleados_prestamos_empresariales: new Endpoint('obtener-empleados-prestamos-empresariales'),
   empleados_delegados: new Endpoint('recursos-humanos/empleados-delegados'),
   departamentos: new Endpoint('recursos-humanos/departamentos'),
@@ -30,6 +31,7 @@ export const recursosHumanos = {
   descuentos_generales: new Endpoint('recursos-humanos/descuentos_generales'),
   descuentos_ley: new Endpoint('recursos-humanos/descuentos_ley'),
   descuentos: new Endpoint('recursos-humanos/descuentos'),
+  guardarDescuentoHorasNoRecuperadasEmpleado: new Endpoint('recursos-humanos/descuento-horas-no-recuperadas-empleado'),
   multa: new Endpoint('recursos-humanos/multa'),
   prestamos_quirorafario_empleado: new Endpoint(
     'recursos-humanos/prestamos_quirorafario_empleado'
