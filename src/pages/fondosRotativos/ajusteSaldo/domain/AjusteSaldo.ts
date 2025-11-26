@@ -8,6 +8,7 @@ export class AjusteSaldo extends EntidadAuditable {
     descripcion: string | null
     monto: number | null
     tipo: string | null
+    fecha: string | null
 
     constructor() {
         super()

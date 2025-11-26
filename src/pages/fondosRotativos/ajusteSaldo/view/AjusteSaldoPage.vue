@@ -3,6 +3,7 @@
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
     titulo-pagina="Ajustes de Saldos"
+    ajustar-celdas
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -30,16 +31,10 @@
               map-options
             >
               <template v-slot:error>
-                <div v-for="error of v$.destinatario.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="destinatario" :v$="v$"/>
               </template>
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
+                <no-option-component/>
               </template>
             </q-select>
           </div>
@@ -49,16 +44,14 @@
             <label class="q-mb-sm block">Motivo</label>
             <q-input
               v-model="ajuste.motivo"
-              placeholder="Obligatorio"
+              placeholder="Obligatorio" autogrow
               :disable="disabled"
               :error="!!v$.motivo.$errors.length"
               outlined
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.motivo.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="motivo" :v$="v$"/>
               </template>
             </q-input>
           </div>
@@ -76,9 +69,7 @@
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.descripcion.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="descripcion" :v$="v$"/>
               </template>
             </q-input>
           </div>
@@ -103,9 +94,7 @@
               map-options
             >
               <template v-slot:error>
-                <div v-for="error of v$.tipo.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="tipo" :v$="v$"/>
               </template>
             </q-select>
           </div>
@@ -123,9 +112,7 @@
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.descripcion.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="descripcion" :v$="v$"/>
               </template>
             </q-input>
           </div>

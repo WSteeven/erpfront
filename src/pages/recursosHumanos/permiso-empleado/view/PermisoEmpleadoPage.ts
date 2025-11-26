@@ -276,11 +276,7 @@ export default defineComponent({
         -15,
         'YYYY/MM/DD'
       )
-      return (
-        date >= currentDateString &&
-        new Date(date).getDay() < numDiaSemana.sabado &&
-        new Date(date).getDay() > numDiaSemana.domingo
-      )
+      return date >= currentDateString
     }
 
     function optionsFecha(date: string) {
@@ -288,11 +284,7 @@ export default defineComponent({
         new Date(convertir_fecha_hora(permiso.fecha_hora_inicio)),
         'YYYY/MM/DD'
       )
-      return (
-        date >= fecha_hora_inicio &&
-        new Date(date).getDay() < numDiaSemana.sabado &&
-        new Date(date).getDay() > numDiaSemana.domingo
-      )
+      return date >= fecha_hora_inicio
     }
 
     /**
@@ -360,9 +352,8 @@ export default defineComponent({
           listar({ estado_permiso_id: tabSeleccionado })
           break
         case '2': //aprobados
-          listar({ estado_permiso_id: tabSeleccionado, recupero: 0 })
-          break
         case '3': //cancelados o anulados
+        case '6':
           listar({ estado_permiso_id: tabSeleccionado, recupero: 0 })
           break
         default: // recuperados

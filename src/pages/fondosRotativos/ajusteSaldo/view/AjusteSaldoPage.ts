@@ -16,47 +16,56 @@ import { AjusteSaldoController } from '../infraestructure/AjusteSaldoController'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController';
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
 import { opcionesTiposMovimientos } from 'config/utils';
+import ErrorComponent from 'components/ErrorComponent.vue';
+import NoOptionComponent from 'components/NoOptionComponent.vue';
 
 
 export default defineComponent({
-    components: { TabLayout },
-    setup() {
-        const mixin = new ContenedorSimpleMixin(AjusteSaldo, new AjusteSaldoController())
-        const { entidad: ajuste, disabled, listadosAuxiliares } = mixin.useReferencias()
-        const { setValidador, cargarVista, obtenerListados } = mixin.useComportamiento()
+  components: { NoOptionComponent, ErrorComponent, TabLayout },
+  setup() {
+    const mixin = new ContenedorSimpleMixin(
+      AjusteSaldo,
+      new AjusteSaldoController()
+    )
+    const {
+      entidad: ajuste,
+      disabled,
+      listadosAuxiliares
+    } = mixin.useReferencias()
+    const { setValidador, cargarVista, obtenerListados } =
+      mixin.useComportamiento()
 
-        const { empleados, filtrarEmpleados } = useFiltrosListadosSelects(listadosAuxiliares)
+    const { empleados, filtrarEmpleados } =
+      useFiltrosListadosSelects(listadosAuxiliares)
 
-        cargarVista(async () => {
-            await obtenerListados({
-                empleados: new EmpleadoController(),
-            })
-            empleados.value = listadosAuxiliares.empleados
+    cargarVista(async () => {
+      await obtenerListados({
+        empleados: new EmpleadoController()
+      })
+      empleados.value = listadosAuxiliares.empleados
+    })
 
-        })
-
-        //Reglas de validacion
-        const reglas = {
-            destinatario: { required },
-            motivo: { required },
-            descripcion: { required },
-            monto: { required },
-            tipo: { required },
-        }
-        const v$ = useVuelidate(reglas, ajuste)
-        setValidador(v$.value)
-
-
-
-        return {
-            mixin, ajuste, v$, disabled,
-            configuracionColumnas: configuracionColumnasAjustesSaldos,
-
-            empleados, filtrarEmpleados,
-            opcionesTiposMovimientos,
-
-
-
-        }
+    //Reglas de validacion
+    const reglas = {
+      destinatario: { required },
+      motivo: { required },
+      descripcion: { required },
+      monto: { required },
+      tipo: { required }
     }
+    const v$ = useVuelidate(reglas, ajuste)
+    setValidador(v$.value)
+
+    return {
+      mixin,
+      ajuste,
+      v$,
+      disabled,
+      configuracionColumnas: configuracionColumnasAjustesSaldos,
+
+      empleados,
+      filtrarEmpleados,
+      opcionesTiposMovimientos
+    }
+  }
 })

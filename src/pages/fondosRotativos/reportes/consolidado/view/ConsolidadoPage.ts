@@ -1,4 +1,4 @@
-import { defineComponent, ref, watchEffect } from 'vue'
+import { defineComponent, ref } from 'vue'
 
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import { useNotificacionStore } from 'stores/notificacion'
@@ -11,15 +11,18 @@ import { apiConfig, endpoints } from 'config/api'
 import { imprimirArchivo, ordenarLista } from 'shared/utils'
 import { Consolidado } from '../domain/Consolidado'
 import { ConsolidadoController } from '../infrestructure/ConsolidadoController'
-import { maskFecha, tipoReportes, tipo_saldo, tipos_saldos } from 'config/utils'
+import { maskFecha, tipo_saldo, tipoReportes, tipos_saldos } from 'config/utils'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { useCargandoStore } from 'stores/cargando'
 import { required } from 'shared/i18n-validators'
-import  {addDay, format, monthStart } from '@formkit/tempo'
+import { addDay, format, monthStart } from '@formkit/tempo'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
+import { SelectOption } from 'components/tables/domain/SelectOption'
+import ErrorComponent from 'components/ErrorComponent.vue'
+import NoOptionComponent from 'components/NoOptionComponent.vue'
 
 export default defineComponent({
-  components: { TabLayout },
+  components: { NoOptionComponent, ErrorComponent, TabLayout },
   setup() {
     /*********
      * Stores
@@ -30,23 +33,31 @@ export default defineComponent({
     /***********
      * Mixin
      ************/
-    const mixin = new ContenedorSimpleMixin(Consolidado, new ConsolidadoController())
-    const { entidad: consolidado, disabled, accion, listadosAuxiliares, } = mixin.useReferencias()
-    const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
+    const mixin = new ContenedorSimpleMixin(
+      Consolidado,
+      new ConsolidadoController()
+    )
+    const {
+      entidad: consolidado,
+      disabled,
+      listadosAuxiliares
+    } = mixin.useReferencias()
+    const { setValidador, obtenerListados, cargarVista } =
+      mixin.useComportamiento()
 
     /*************
      * Validaciones
      **************/
     const reglas = {
       tipo_saldo: {
-        required,
+        required
       },
       fecha_inicio: {
-        required,
+        required
       },
       fecha_fin: {
-        required,
-      },
+        required
+      }
     }
 
     const is_all_empleados = ref(false)
@@ -66,13 +77,12 @@ export default defineComponent({
       await obtenerListados({
         usuarios: {
           controller: new EmpleadoController(),
-          params: { campos: 'id,nombres,apellidos', estado: 1 },
+          params: { campos: 'id,nombres,apellidos', estado: 1 }
         },
         tiposFondos: {
           controller: new TipoFondoController(),
-          params: { campos: 'id,descripcion' },
-        },
-
+          params: { campos: 'id,descripcion' }
+        }
       })
 
       usuarios.value = listadosAuxiliares.usuarios
@@ -85,13 +95,12 @@ export default defineComponent({
       tiposFondoRotativoFechas.value =
         listadosAuxiliares.tiposFondoRotativoFechas
 
+      const primerDiaMes = monthStart(new Date())
+      const ultimoDiaMesAnterior = addDay(primerDiaMes, -1)
+      const primerDiaMesAnterior = monthStart(ultimoDiaMesAnterior)
 
-        const primerDiaMes = monthStart(new Date())
-        const ultimoDiaMesAnterior = addDay(primerDiaMes, -1)
-        const primerDiaMesAnterior = monthStart(ultimoDiaMesAnterior)
-
-        consolidado.fecha_inicio =format(primerDiaMesAnterior, maskFecha)
-        consolidado.fecha_fin =format(ultimoDiaMesAnterior, maskFecha)
+      consolidado.fecha_inicio = format(primerDiaMesAnterior, maskFecha)
+      consolidado.fecha_fin = format(ultimoDiaMesAnterior, maskFecha)
     })
     /*********
      * Filtros
@@ -108,7 +117,7 @@ export default defineComponent({
       update(() => {
         const needle = val.toLowerCase()
         usuarios.value = listadosAuxiliares.usuarios.filter(
-          (v) =>
+          v =>
             v.nombres.toLowerCase().indexOf(needle) > -1 ||
             v.apellidos.toLowerCase().indexOf(needle) > -1
         )
@@ -124,45 +133,14 @@ export default defineComponent({
       update(() => {
         const needle = val.toLowerCase()
         usuariosInactivos.value = listadosAuxiliares.usuariosInactivos.filter(
-          (v) =>
+          v =>
             v.nombres.toLowerCase().indexOf(needle) > -1 ||
             v.apellidos.toLowerCase().indexOf(needle) > -1
         )
       })
     }
     // - Filtro TIPOS FONDOS
-    function filtrarTiposFondos(val, update) {
-      if (val === '') {
-        update(() => {
-          tiposFondos.value = listadosAuxiliares.tiposFondos
-        })
-        return
-      }
-      update(() => {
-        const needle = val.toLowerCase()
-        tiposFondos.value = listadosAuxiliares.tiposFondos.filter(
-          (v) => v.descripcion.toLowerCase().indexOf(needle) > -1
-        )
-      })
-    }
-
     // - Filtro TIPOS FONDOS
-    function filtrarTiposFondoRotativoFechas(val, update) {
-      if (val === '') {
-        update(() => {
-          tiposFondoRotativoFechas.value =
-            listadosAuxiliares.tiposFondoRotativoFechas
-        })
-        return
-      }
-      update(() => {
-        const needle = val.toLowerCase()
-        tiposFondoRotativoFechas.value =
-          listadosAuxiliares.tiposFondoRotativoFechas.filter(
-            (v) => v.descripcion.toLowerCase().indexOf(needle) > -1
-          )
-      })
-    }
     //Filtro tipos de reportes
     function filtarTiposSaldos(val, update) {
       if (val === '') {
@@ -175,13 +153,21 @@ export default defineComponent({
       update(() => {
         const needle = val.toLowerCase()
         tipos_saldos_consolidado.value = listadosAuxiliares.tipos_saldos.filter(
-          (v) => v.label.toLowerCase().indexOf(needle) > -1
+          v => v.label.toLowerCase().indexOf(needle) > -1
         )
       })
     }
-    function obtenerNombresEmpleadoSeleccionado(){
-      const empleadoEncontrado: Empleado = usuarios.value.filter((v:Empleado)=>v.id===consolidado.empleado)[0]
-      return empleadoEncontrado?.nombres+' '+empleadoEncontrado?.apellidos
+    function obtenerTipoReporte() {
+      const opReporte = tipos_saldos.filter(
+        (v: SelectOption) => v.value === consolidado.tipo_saldo
+      )[0]
+      return opReporte.label
+    }
+    function obtenerNombresEmpleadoSeleccionado() {
+      const empleadoEncontrado: Empleado = usuarios.value.filter(
+        (v: Empleado) => v.id === consolidado.empleado
+      )[0]
+      return empleadoEncontrado?.nombres + ' ' + empleadoEncontrado?.apellidos
     }
     async function generar_reporte(
       valor: Consolidado,
@@ -190,7 +176,11 @@ export default defineComponent({
       if (await v$.value.$validate()) {
         const axios = AxiosHttpRepository.getInstance()
         const filename =
-          'Reporte consolidado de '+obtenerNombresEmpleadoSeleccionado()+' del ' +
+          'Reporte ' +
+          obtenerTipoReporte() +
+          ' de ' +
+          obtenerNombresEmpleadoSeleccionado() +
+          ' del ' +
           valor.fecha_inicio +
           ' al ' +
           valor.fecha_fin
@@ -200,14 +190,14 @@ export default defineComponent({
               apiConfig.URL_BASE +
               '/' +
               axios.getEndpoint(endpoints.consolidado_excel)
-            imprimirArchivo(url_excel, 'POST', 'blob', 'xlsx', filename, valor)
+            await imprimirArchivo(url_excel, 'POST', 'blob', 'xlsx', filename, valor)
             break
           case tipoReportes.PDF:
             const url_pdf =
               apiConfig.URL_BASE +
               '/' +
               axios.getEndpoint(endpoints.consolidado_pdf)
-            imprimirArchivo(url_pdf, 'POST', 'blob', 'pdf', filename, valor)
+            await imprimirArchivo(url_pdf, 'POST', 'blob', 'pdf', filename, valor)
             break
           default:
             break
@@ -222,40 +212,25 @@ export default defineComponent({
       usuariosInactivos.value = (
         await new EmpleadoController().listar({
           campos: 'id,nombres,apellidos',
-          estado: 0,
+          estado: 0
         })
       ).result
       listadosAuxiliares.usuariosInactivos = usuariosInactivos.value
-      LocalStorage.set('usuariosInactivos', JSON.stringify(usuariosInactivos.value))
-    }
-    function optionsFechaInicio(date) {
-      const fecha_actual = format(new Date(), maskFecha)
-      return date <= fecha_actual
-    }
-    function optionsFechaFin(date) {
-      const fecha_actual = format(new Date(), maskFecha)
-      const fecha_inicio = format(
-        consolidado.fecha_inicio !== null
-          ? consolidado.fecha_inicio
-          : new Date(),
-          maskFecha
+      LocalStorage.set(
+        'usuariosInactivos',
+        JSON.stringify(usuariosInactivos.value)
       )
-      return date >= fecha_inicio && date <= fecha_actual
     }
     function limpiar() {
       is_all_empleados.value = false
     }
     return {
-      mixin,
       consolidado,
       disabled,
-      accion,
       v$,
       maskFecha,
       usuarios,
       usuariosInactivos,
-      tiposFondos,
-      tiposFondoRotativoFechas,
       tipos_saldos_consolidado,
       tipo_saldo,
       is_all_empleados,
@@ -266,15 +241,10 @@ export default defineComponent({
       generar_reporte,
       filtrarUsuarios,
       filtrarUsuariosInactivos,
-      filtrarTiposFondos,
-      filtrarTiposFondoRotativoFechas,
       filtarTiposSaldos,
       mostrarEmpleados,
-      watchEffect,
-      optionsFechaInicio,
-      optionsFechaFin,
       recargarEmpleadosInactivos,
-      limpiar,
+      limpiar
     }
-  },
+  }
 })

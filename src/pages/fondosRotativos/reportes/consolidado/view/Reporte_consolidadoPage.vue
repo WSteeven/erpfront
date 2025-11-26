@@ -37,16 +37,10 @@
             map-options
           >
             <template v-slot:error>
-              <div v-for="error of v$.tipo_saldo.$errors" :key="error.$uid">
-                <div class="error-msg">{{ error.$message }}</div>
-              </div>
+              <error-component clave="tipo_saldo" :v$="v$"/>
             </template>
             <template v-slot:no-option>
-              <q-item>
-                <q-item-section class="text-grey">
-                  No hay resultados
-                </q-item-section>
-              </q-item>
+              <no-option-component/>
             </template>
           </q-select>
         </div>
@@ -83,11 +77,7 @@
             map-options
           >
             <template v-slot:no-option>
-              <q-item>
-                <q-item-section class="text-grey">
-                  No hay resultados
-                </q-item-section>
-              </q-item>
+              <no-option-component/>
             </template>
           </q-select>
         </div>
@@ -124,11 +114,7 @@
             map-options
           >
             <template v-slot:no-option>
-              <q-item>
-                <q-item-section class="text-grey">
-                  No hay resultados
-                </q-item-section>
-              </q-item>
+              <no-option-component/>
             </template>
             <template v-slot:after>
               <q-btn color="positive" @click="recargarEmpleadosInactivos()">
@@ -174,9 +160,7 @@
             </template>
 
             <template v-slot:error>
-              <div v-for="error of v$.fecha_inicio.$errors" :key="error.$uid">
-                <div class="error-msg">{{ error.$message }}</div>
-              </div>
+              <error-component clave="fecha_inicio" :v$="v$"/>
             </template>
           </q-input>
         </div>
@@ -217,9 +201,7 @@
             </template>
 
             <template v-slot:error>
-              <div v-for="error of v$.fecha_fin.$errors" :key="error.$uid">
-                <div class="error-msg">{{ error.$message }}</div>
-              </div>
+              <error-component clave="fecha_fin" :v$="v$"/>
             </template>
           </q-input>
         </div>

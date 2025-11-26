@@ -109,7 +109,8 @@ export const tabOptionsPermiso: TabOption[] = [
   { label: 'Pendiente', value: '1' },
   { label: 'Aprobados', value: '2' },
   { label: 'Cancelados', value: '3' },
-  { label: 'Recuperados', value: '4' }
+  { label: 'Recuperados', value: '4' },
+  { label: 'Negados', value: '6' }
 ]
 export const tabAutorizarGasto: TabOption[] = [
   { label: 'Aprobada', value: '1' },
@@ -136,8 +137,6 @@ export const tabAutorizarTransferenciaSaldo: TabOption[] = [
   { label: 'Rechazada', value: '2' },
   { label: 'Pendiente', value: '3' }
 ]
-
-
 
 export const accionesTabla = {
   name: 'acciones',
@@ -325,8 +324,8 @@ export const tipo_filtro = {
   RUC: '7',
   SIN_FACTURA: '8',
   CIUDAD: '9',
-  GRUPO: '10'
-  ,CLIENTE: '11'
+  GRUPO: '10',
+  CLIENTE: '11'
 }
 export const tipo_saldo = {
   ACREDITACIONES: '1',
@@ -485,7 +484,7 @@ export function convertir_fecha(fecha: Date) {
   return year + '/' + month + '/' + day
 }
 
-export function convertir_fecha_hora(fecha:any) {
+export function convertir_fecha_hora(fecha: any) {
   const dateParts = fecha.split('-') // Dividir el string en partes usando el guión como separador
   let tiempo = dateParts[2]
   tiempo = tiempo.split(' ')

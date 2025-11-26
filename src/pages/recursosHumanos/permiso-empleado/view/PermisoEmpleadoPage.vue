@@ -511,7 +511,7 @@
           <!-- Autorizacion -->
           <div
             class="col-12 col-md-3"
-            v-if="accion == acciones.editar && esAutorizador"
+            v-if="accion == acciones.editar && (esAutorizador|| esRecursosHumanos)"
           >
             <label class="q-mb-sm block">Autorizacion</label>
             <q-select

@@ -3,6 +3,12 @@ import { AjusteSaldo } from './AjusteSaldo';
 
 export const configuracionColumnasAjustesSaldos: ColumnConfig<AjusteSaldo>[] = [
     {
+        name: 'fecha',
+        field: 'fecha',
+        label: 'Fecha',
+        align: 'left',
+        sortable: true
+    },{
         name: 'solicitante',
         field: 'solicitante',
         label: 'Realizado por',
