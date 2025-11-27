@@ -71,13 +71,13 @@ export class GuardableRepository<T> {
 // }
 
 
-import { AxiosHttpRepository } from '../../http/infraestructure/AxiosHttpRepository'
-import { HttpResponsePost } from '../../http/domain/HttpResponse'
-import { Endpoint } from 'shared/http/domain/Endpoint'
-import { ApiError } from '../../error/domain/ApiError'
-import { ResponseItem } from '../domain/ResponseItem'
-import {AxiosError, AxiosRequestConfig, AxiosResponse} from 'axios'
-import { ParamsType } from 'config/types'
+import {AxiosHttpRepository} from '../../http/infraestructure/AxiosHttpRepository'
+import {HttpResponsePost} from '../../http/domain/HttpResponse'
+import {Endpoint} from 'shared/http/domain/Endpoint'
+import {ApiError} from '../../error/domain/ApiError'
+import {ResponseItem} from '../domain/ResponseItem'
+import {AxiosRequestConfig, AxiosResponse} from 'axios'
+import {ParamsType} from 'config/types'
 
 export class GuardableRepository<T> {
   private readonly httpRepository = AxiosHttpRepository.getInstance()
@@ -101,7 +101,7 @@ export class GuardableRepository<T> {
         result: response.data.modelo,
       }
     } catch (error: unknown) {
-      const axiosError = error as AxiosError
+      const axiosError = error as ApiError
       throw new ApiError(axiosError)
     }
   }

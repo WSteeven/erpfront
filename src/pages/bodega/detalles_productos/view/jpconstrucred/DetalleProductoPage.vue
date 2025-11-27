@@ -11,6 +11,7 @@
     titulo-pagina="Detalles de productos"
     :accion1="botonActivarDetalle"
     :accion2="botonDesactivarDetalle"
+    :mostrar-button-submits="false"
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -573,6 +574,30 @@
               dense
             />
           </div>
+          <!-- Subida masiva con excel -->
+          <div class="col-12 col-md-4">
+            <br />
+            <q-checkbox
+              class="q-mb-lg"
+              v-model="detalle.subida_masiva"
+              @update:model-value="checkSubidaMasivaSeries"
+              label="Subir excel con Series"
+              outlined
+              dense
+            />
+          </div>
+          <div class="col-12 col-md-6" v-if="detalle.subida_masiva">
+            <label class="q-mb-sm block">Documento (.xlsx)</label>
+            <file-component
+                v-model="detalle.archivo"
+                clave="archivo"
+                :v$="v$"
+                formato=".xls,.xlsx,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                :disable="disabled"
+                :accion="accion"
+            />
+          </div>
+
           <!-- rows -->
           <!-- Aquí se ingresan varios detalles -->
           <div class="col-12 col-md-4 q-pa-md" v-if="detalle.varios_items">
@@ -590,9 +615,31 @@
               :altoFijo="false"
               @eliminar="eliminar"
             ></essential-table>
-            <!-- todo el detalle -->
           </div>
+
         </div>
+<!--          Botones submit -->
+          <div class="col-12">
+            <div class="row justify-end q-col-gutter-x-xs">
+              <span>
+                <slot name="custom-buttons"></slot>
+              </span>
+
+              <button-submits
+                  :accion="accion"
+                  :permitirGuardar="true"
+                  :disabled="cargando.estaCargando.value"
+                  @cancelar="reestablecer()"
+                  @editar="editar(detalle, true)"
+                  @eliminar="eliminarDetalle(detalle)"
+                  @guardar="guardar(detalle,true,{},{
+                    headers: { 'Content-Type': 'multipart/form-data'}
+                    }
+                  )
+                "
+              />
+            </div>
+          </div>
       </q-form>
     </template>
   </tab-layout-filter-tabs2>

@@ -2,7 +2,6 @@ import { PermisoArma } from 'pages/bodega/permisosArmas/domain/PermisoArma'
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 
 export class DetalleProducto extends EntidadAuditable {
-    id: number | null
     detalle_id: number | null
     categoria: string | null
     codigo: string | null
@@ -65,6 +64,9 @@ export class DetalleProducto extends EntidadAuditable {
     calco: boolean
 
     varios_items: boolean
+    archivo: string
+    subida_masiva: boolean
+    _method:string
     seriales: any[]
 
     unidad_medida: string | null
@@ -132,6 +134,7 @@ export class DetalleProducto extends EntidadAuditable {
         this.fecha_caducidad = null
         this.calco = false
         this.varios_items = false
+        this.subida_masiva = false
         this.seriales = []
 
         this.unidad_medida = null
@@ -141,5 +144,8 @@ export class DetalleProducto extends EntidadAuditable {
         this.fotografia = null
         this.fotografia_detallada = null
         this.codigo_activo_fijo = null
+
+        this.archivo = null
+        this._method = 'GET'
     }
 }

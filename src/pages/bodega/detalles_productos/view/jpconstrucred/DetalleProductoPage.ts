@@ -35,9 +35,15 @@ import { useAuthenticationStore } from 'stores/authentication'
 import { tabOptionsProveedoresInternacionales } from 'config/utils_compras_proveedores'
 import ErrorComponent from 'components/ErrorComponent.vue'
 import NoOptionComponent from 'components/NoOptionComponent.vue'
+import FileComponent from 'components/documentos/view/FileComponent.vue'
+import {acciones} from 'config/utils';
+import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue';
+import {StatusEssentialLoading} from 'components/loading/application/StatusEssentialLoading';
 
 export default defineComponent({
   components: {
+    ButtonSubmits,
+    FileComponent,
     NoOptionComponent,
     ErrorComponent,
     TabLayoutFilterTabs2,
@@ -55,14 +61,36 @@ export default defineComponent({
       listadosAuxiliares,
       listado
     } = mixin.useReferencias()
-    const { setValidador, obtenerListados, cargarVista, listar } =
-      mixin.useComportamiento()
-    const { onGuardado, onReestablecer } = mixin.useHooks()
+    const {
+      setValidador,
+      obtenerListados,
+      cargarVista,
+      listar,
+      guardar,
+      editar,
+      reestablecer,
+      eliminar: eliminarDetalle
+    } = mixin.useComportamiento()
+    const { onBeforeGuardar, onGuardado, onReestablecer } = mixin.useHooks()
     const { confirmar, notificarCorrecto, notificarError } = useNotificaciones()
 
     //stores
     const detalleStore = useDetalleStore()
     const store = useAuthenticationStore()
+    const cargando = new StatusEssentialLoading()
+
+    const metodo = computed(() => {
+      switch (accion.value) {
+        case acciones.nuevo:
+          return 'POST'
+        case acciones.editar:
+          return 'PUT'
+        case acciones.eliminar:
+          return 'DELETE'
+        default:
+          return 'GET'
+      }
+    })
 
     //variable aux
     const descripcion = ref()
@@ -124,6 +152,7 @@ export default defineComponent({
     })
 
     //Hooks
+    onBeforeGuardar(() => (detalle._method = metodo.value))
     onGuardado(() => (descripcion.value = null))
     onReestablecer(() => (descripcion.value = null))
 
@@ -133,6 +162,7 @@ export default defineComponent({
       descripcion: { required },
       marca: { required },
       modelo: { required },
+      archivo: { required: requiredIf(() => detalle.subida_masiva) },
       serial: {
         requiredIfSerial: requiredIf(function () {
           return detalle.tiene_serial ? detalle.tiene_serial : false
@@ -192,12 +222,14 @@ export default defineComponent({
       detalle.disco = ''
       detalle.imei = ''
     }
+
     function limpiarCamposAdicionales() {
       detalle.tiene_adicionales = false
       detalle.color = ''
       detalle.talla = ''
       detalle.tipo = ''
     }
+
     function limpiarCamposFibra() {
       detalle.serial = null
       detalle.span = null
@@ -268,7 +300,9 @@ export default defineComponent({
     })
 
     // Watch para tiene_serial
-    watch(() => detalle.tiene_serial,nuevoValor => {
+    watch(
+      () => detalle.tiene_serial,
+      nuevoValor => {
         if (!nuevoValor) {
           detalle.serial = null
         }
@@ -371,6 +405,7 @@ export default defineComponent({
         )
       }
     }
+
     function eliminar({ posicion }) {
       confirmar('¿Está seguro de continuar?', () =>
         detalle.seriales.splice(posicion, 1)
@@ -424,6 +459,12 @@ export default defineComponent({
       visible: ({ entidad }) =>
         !entidad.activo && store.can('puede.ver.btn.activar.detalles')
     }
+
+    const checkSubidaMasivaSeries = val => {
+      if (val) {
+        detalle._method = metodo.value
+      }
+    }
     return {
       mixin,
       detalle,
@@ -457,11 +498,9 @@ export default defineComponent({
       //filtros
       filtrarDetalles,
       seleccionarModelo(val) {
-        // console.log('seleccionar modelo: ', val)
         opciones_modelos.value = listadosAuxiliares.modelos.filter(
           v => v.marca_id === val
         )
-        // console.log(opciones_modelos.value)
         detalle.modelo = ''
         if (opciones_modelos.value.length < 1) {
           detalle.modelo = ''
@@ -472,10 +511,6 @@ export default defineComponent({
       },
       filtroModelos(val, update) {
         if (val === '') {
-          update(() => {
-            // opciones_modelos.modelos = listadosAuxiliares.modelos
-            // console.log('modelos recibidos', opciones_modelos.value)
-          })
           return
         }
         update(() => {
@@ -483,12 +518,10 @@ export default defineComponent({
           opciones_modelos.value = listadosAuxiliares.modelos.filter(
             v => v.nombre.toLowerCase().indexOf(needle) > -1
           )
-          // console.log(listadosAuxiliares.modelos.filter((v) => v.nombre.toLowerCase().indexOf(needle) > -1))
         })
       },
 
       seleccionarMarca(val) {
-        // console.log('seleccionar marca: ', val)
         const encontrado = listadosAuxiliares.modelos.filter(v => v.id === val)
         if (encontrado.length > 0) {
           opciones_marcas.value = listadosAuxiliares.marcas.filter(
@@ -578,7 +611,6 @@ export default defineComponent({
 
       actualizarCategoria(val) {
         const producto = listadosAuxiliares.productos.filter(v => v.id === val)
-        // console.log(producto[0])
         categoria_var.value = producto[0]['categoria']
         detalle.categoria = producto[0]['categoria']
         if (detalle.calco) {
@@ -587,14 +619,13 @@ export default defineComponent({
           )
         }
         /* if (producto[0]['categoria'] === 'INFORMATICA') {
-            limpiarCamposInformatica()
-        }
-        if (producto[0]['categoria'] === 'EPP') {
-            limpiarCamposInformatica()
-        } */
+                    limpiarCamposInformatica()
+                }
+                if (producto[0]['categoria'] === 'EPP') {
+                    limpiarCamposInformatica()
+                } */
       },
       filtroDetalles(val, update) {
-        // console.log('valor tipeado', val)
         if (val === '') {
           update(() => {
             listadoBackup.value = listado.value
@@ -624,9 +655,14 @@ export default defineComponent({
       columnas: configuracionColumnasSerialesDetalles,
       addRow,
       eliminar,
-
+      checkSubidaMasivaSeries,
       botonDesactivarDetalle,
-      botonActivarDetalle
+      botonActivarDetalle,
+      guardar,
+      editar,
+      reestablecer,
+      eliminarDetalle,cargando
+
     }
   }
 })

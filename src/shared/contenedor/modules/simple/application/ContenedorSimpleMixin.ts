@@ -205,7 +205,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
   // Guardar
   // @noImplicitAny: false
   private async guardar(data: T, agregarAlListado = true, params?: ParamsType, options?:AxiosRequestConfig): Promise<any> {
-    console.log('guardar')
+    // console.log('guardar')
     this.statusEssentialLoading.activar()
 
     // aqui estaba onbeforeguardar POR EL CUESTIONARIO PSICOSOCIAL PERO EL SISTEMA YA FUNCIONA CON EL OB BEFORE GUARDAR EN LA LINEA 204
@@ -217,7 +217,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
       this.statusEssentialLoading.desactivar()
       throw new Error('No se ha efectuado ningun cambio')
     }
-    console.log(this.refs.validador.value)
+    // console.log(this.refs.validador.value)
     if (this.refs.validador.value && !(await this.refs.validador.value.$validate()) || !(await this.ejecutarValidaciones())) {
       this.notificaciones.notificarAdvertencia('Verifique el formulario')
       this.statusEssentialLoading.desactivar()
