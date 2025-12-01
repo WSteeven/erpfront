@@ -36,9 +36,9 @@ import { tabOptionsProveedoresInternacionales } from 'config/utils_compras_prove
 import ErrorComponent from 'components/ErrorComponent.vue'
 import NoOptionComponent from 'components/NoOptionComponent.vue'
 import FileComponent from 'components/documentos/view/FileComponent.vue'
-import {acciones} from 'config/utils';
-import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue';
-import {StatusEssentialLoading} from 'components/loading/application/StatusEssentialLoading';
+import { acciones } from 'config/utils'
+import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 
 export default defineComponent({
   components: {
@@ -498,51 +498,66 @@ export default defineComponent({
       //filtros
       filtrarDetalles,
       seleccionarModelo(val) {
-        opciones_modelos.value = listadosAuxiliares.modelos.filter(
-          v => v.marca_id === val
+        const idMarca = Number(val)
+        const modelosDeMarca = listadosAuxiliares.modelos.filter(
+          m => Number(m.marca_id) === idMarca
         )
-        detalle.modelo = ''
-        if (opciones_modelos.value.length < 1) {
+        opciones_modelos.value = modelosDeMarca
+        if (modelosDeMarca.length === 1) {
+          detalle.modelo = modelosDeMarca[0].id
+        } else {
           detalle.modelo = ''
-        }
-        if (opciones_modelos.value.length === 1) {
-          detalle.modelo = opciones_modelos.value[0]['id']
         }
       },
       filtroModelos(val, update) {
-        if (val === '') {
-          return
-        }
+        const idMarca = Number(detalle.marca)
+        const base = listadosAuxiliares.modelos.filter(
+          m => Number(m.marca_id) === idMarca
+        )
         update(() => {
+          if (!val) {
+            opciones_modelos.value = base
+            return
+          }
           const needle = val.toLowerCase()
-          opciones_modelos.value = listadosAuxiliares.modelos.filter(
-            v => v.nombre.toLowerCase().indexOf(needle) > -1
+          opciones_modelos.value = base.filter(m =>
+            m.nombre.toLowerCase().includes(needle)
           )
         })
       },
 
       seleccionarMarca(val) {
-        const encontrado = listadosAuxiliares.modelos.filter(v => v.id === val)
-        if (encontrado.length > 0) {
+        const idModelo = Number(val)
+        const encontrado = listadosAuxiliares.modelos.find(
+          m => Number(m.id) === idModelo
+        )
+        if (encontrado) {
           opciones_marcas.value = listadosAuxiliares.marcas.filter(
-            v => v.id === encontrado[0]['marca_id']
+            v => Number(v.id) === Number(encontrado.marca_id)
           )
-          detalle.marca = encontrado[0]['marca_id']
+          detalle.marca = Number(encontrado.marca_id)
         }
-        // })
       },
+
+      // Filtro del select de MARCAS
       filtroMarcas(val, update) {
-        if (val === '') {
-          update(() => {
-            opciones_marcas.value = listadosAuxiliares.marcas
-            opciones_modelos.value = listadosAuxiliares.modelos
-          })
-          return
-        }
         update(() => {
+          if (!val) {
+            // Si no se escribió nada, mostramos todas las marcas
+            opciones_marcas.value = listadosAuxiliares.marcas
+
+            // Si ya hay una marca seleccionada, dejamos sus modelos cargados
+            const idMarca = Number(detalle.marca)
+            if (idMarca) {
+              opciones_modelos.value = listadosAuxiliares.modelos.filter(
+                m => Number(m.marca_id) === idMarca
+              )
+            }
+            return
+          }
           const needle = val.toLowerCase()
-          opciones_marcas.value = listadosAuxiliares.marcas.filter(
-            v => v.nombre.toLowerCase().indexOf(needle) > -1
+          opciones_marcas.value = listadosAuxiliares.marcas.filter(v =>
+            v.nombre.toLowerCase().includes(needle)
           )
         })
       },
@@ -661,8 +676,8 @@ export default defineComponent({
       guardar,
       editar,
       reestablecer,
-      eliminarDetalle,cargando
-
+      eliminarDetalle,
+      cargando
     }
   }
 })
