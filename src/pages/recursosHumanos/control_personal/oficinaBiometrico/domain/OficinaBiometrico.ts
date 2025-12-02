@@ -8,6 +8,7 @@ export class OficinaBiometrico extends EntidadAuditable {
   longitud: string | null
   direccion_ip: string | null
   puerto: string | null
+  clave_acceso: string | null
   canton: string | null
   activo: true
 
@@ -20,6 +21,7 @@ export class OficinaBiometrico extends EntidadAuditable {
     this.longitud = null
     this.direccion_ip = null
     this.puerto = null
+    this.clave_acceso = null
     this.canton = null
     this.activo = true
   }

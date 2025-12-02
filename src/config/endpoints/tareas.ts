@@ -62,7 +62,7 @@ export const tareas = {
   actualizar_cantidad_utilizada_historial: new Endpoint('tareas/actualizar-cantidad-utilizada-historial'),
   actualizar_cantidad_utilizada_historial_stock: new Endpoint('tareas/actualizar-cantidad-utilizada-historial-stock'),
   actualizar_cantidad_utilizada_tarea: new Endpoint('tareas/actualizar-cantidad-utilizada-tarea'),
-  actualizar_cantidad_utilizada_stock: new Endpoint('tareas/actualizar-cantidad-utilizada-stock'),
+    actualizar_cantidad_utilizada_stock: new Endpoint('tareas/actualizar-cantidad-utilizada-stock'),
   actividades_realizadas_seguimientos_subtareas: new Endpoint('tareas/actividades-realizadas-seguimientos-subtareas'),
   fechas_historial_materiales_usados: new Endpoint('tareas/obtener-fechas-historial-materiales-usados'),
   fechas_historial_materiales_stock_usados: new Endpoint('tareas/obtener-fechas-historial-materiales-stock-usados'),

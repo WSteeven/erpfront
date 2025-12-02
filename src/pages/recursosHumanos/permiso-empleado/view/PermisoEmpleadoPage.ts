@@ -195,6 +195,7 @@ export default defineComponent({
     })
 
     watchEffect(() => {
+      if ([acciones.consultar, acciones.editar].includes(accion.value)) return // se corrige para que no muestre cargo a vacaciones cuando en realidad no esta seleccionado
       permiso.cargo_vacaciones = dias_permiso.value == 1
     })
 

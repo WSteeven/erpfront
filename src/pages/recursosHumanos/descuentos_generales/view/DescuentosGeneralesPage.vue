@@ -2,7 +2,7 @@
   <tab-layout
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
-    titulo-pagina="Cargos"
+    titulo-pagina="Descuentos generales"
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -13,7 +13,7 @@
             <q-input
               v-model="descuentos_generales.nombre"
               @update:model-value="
-                (v) => (descuentos_generales.nombre = removeAccents(v))
+                v => (descuentos_generales.nombre = removeAccents(v))
               "
               placeholder="Obligatorio"
               :disable="disabled"
@@ -22,9 +22,7 @@
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.nombre.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="nombre" :v$="v$" />
               </template>
             </q-input>
           </div>
@@ -34,7 +32,7 @@
             <q-input
               v-model="descuentos_generales.abreviatura"
               @update:model-value="
-                (v) => (descuentos_generales.abreviatura = removeAccents(v))
+                v => (descuentos_generales.abreviatura = removeAccents(v))
               "
               placeholder="Obligatorio"
               :disable="disabled"
@@ -43,9 +41,7 @@
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.abreviatura.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="abreviatura" :v$="v$" />
               </template>
             </q-input>
           </div>

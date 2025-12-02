@@ -35,14 +35,14 @@ export default defineComponent({
   },
   setup() {
     /***********
-    * Stores
-    ***********/
+     * Stores
+     ***********/
     const ticketStore = useTicketStore()
     const authenticationStore = useAuthenticationStore()
 
     /*******
-    * Mixin
-    ********/
+     * Mixin
+     ********/
     const mixin = new ContenedorSimpleMixin(Ticket, new TicketController())
     const { listado, filtros } = mixin.useReferencias()
     const { listar, cargarVista, obtenerListados } = mixin.useComportamiento()
@@ -51,32 +51,38 @@ export default defineComponent({
       await obtenerListados({
         motivosPausas: {
           controller: new MotivoPausaTicketController(),
-          params: { activo: 1 },
-        },
+          params: { activo: 1 }
+        }
       })
     })
 
     /************
      * Variables
      ************/
-    const mostrarDialogPlantilla = ref(false)
     const modales = new ComportamientoModalesTicketAsignado()
     const tabActual = ref()
-    const { btnTransferir, btnEjecutar, btnPausar, btnReanudar, btnFinalizar, btnSeguimiento, setFiltrarTickets, btnRechazar, btnCalificarSolicitante, btnCalificarResponsable } = useBotonesTablaTicket(mixin, modales)
+    const {
+      btnTransferir,
+      btnEjecutar,
+      btnPausar,
+      btnReanudar,
+      btnFinalizar,
+      btnSeguimiento,
+      setFiltrarTickets,
+      btnRechazar,
+      btnCalificarResponsable
+    } = useBotonesTablaTicket(mixin, modales)
     setFiltrarTickets(filtrarTrabajoAsignado)
     const opcionesFiltrado = {
       listado: 'listado',
-      individual: 'individual',
+      individual: 'individual'
     }
     const tabsOpcionesFiltrado = ref(opcionesFiltrado.listado)
-    const imagenPerfil = authenticationStore.user.foto_url ?? `https://ui-avatars.com/api/?name=${authenticationStore.user.nombres.substr(0, 1)}+${authenticationStore.user.apellidos.substr(0, 1)}&bold=true&background=0879dc28&color=0879dc`
-
     /*********
      * Pusher
      *********/
-    // const puedeEjecutar = computed(() => tabActual.value === estadosTickets.ASIGNADO)
-
-    // const subtareaPusherEvent = new SubtareaListadoPusherEvent(filtrarTrabajoAsignado, puedeEjecutar)
+    const ticketPusherEvent = new TicketPusherEvent(filtrarTrabajoAsignado)
+    ticketPusherEvent.start()
 
     /***************
      * Botones tabla
@@ -87,46 +93,37 @@ export default defineComponent({
       accion: async ({ entidad }) => {
         ticketStore.filaTicket = entidad
         modales.abrirModalEntidad('DetalleTicketAsignadoPage')
-      },
+      }
     }
 
     /************
-    * Funciones
-    *************/
-    async function filtrarTrabajoAsignado(tabSeleccionado) {
-      await listar({ responsable_id: authenticationStore.user.id, estado: tabSeleccionado, paginate: true, para_mi: true })
+     * Funciones
+     *************/
+    async function filtrarTrabajoAsignado(tabSeleccionado: string) {
+      filtros.fields = {estado: tabSeleccionado, responsable_id: authenticationStore.user.id, para_mi: true}
+      await listar({responsable_id: authenticationStore.user.id, estado: tabSeleccionado, paginate: true, para_mi: true})
       tabActual.value = tabSeleccionado
-      filtros.fields = { estado: tabSeleccionado, responsable_id: authenticationStore.user.id, para_mi: true }
     }
 
     filtrarTrabajoAsignado(estadosTrabajos.ASIGNADO)
 
-    const ticketPusherEvent = new TicketPusherEvent(filtrarTrabajoAsignado)
-    ticketPusherEvent.start()
-
     async function guardado(paginaModal: keyof TicketModales) {
       switch (paginaModal) {
         case 'CalificarTicketPage':
-          filtrarTrabajoAsignado(tabActual.value)
+          await filtrarTrabajoAsignado(tabActual.value)
           break
       }
       modales.cerrarModalEntidad()
     }
 
-    function buscarIndividual() {
-      tabsOpcionesFiltrado.value = tabsOpcionesFiltrado.value === opcionesFiltrado.individual ? opcionesFiltrado.listado : opcionesFiltrado.individual
-    }
-
     return {
       mixin,
       listado,
-      imagenPerfil,
       configuracionColumnasTicketAsignado,
       tabOptionsEstadosTicketsAsignados,
       filtrarTrabajoAsignado,
       accionesTabla,
       modales,
-      mostrarDialogPlantilla,
       botonVer,
       btnTransferir,
       btnEjecutar,
@@ -135,16 +132,13 @@ export default defineComponent({
       btnSeguimiento,
       btnFinalizar,
       btnRechazar,
-      btnCalificarSolicitante,
       btnCalificarResponsable,
       tabActual,
       estadosTickets,
       fecha: date.formatDate(Date.now(), 'dddd, DD MMMM YYYY'),
-      authenticationStore,
       guardado,
       tabsOpcionesFiltrado,
-      opcionesFiltrado,
-      buscarIndividual,
+      opcionesFiltrado
     }
   }
 })

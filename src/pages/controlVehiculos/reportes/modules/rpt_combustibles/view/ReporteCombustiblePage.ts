@@ -1,27 +1,26 @@
 //Dependencies
-import { defineComponent, reactive, ref } from "vue"
-import { required } from "shared/i18n-validators"
-import { apiConfig, endpoints } from "config/api"
-import useVuelidate from "@vuelidate/core"
-import { AxiosResponse } from "axios"
+import { defineComponent, reactive, ref } from 'vue'
+import { required } from 'shared/i18n-validators'
+import { apiConfig, endpoints } from 'config/api'
+import useVuelidate from '@vuelidate/core'
+import { AxiosResponse } from 'axios'
 
 //Components
-import EssentialTable from "components/tables/view/EssentialTable.vue"
-import GraficoGenerico from "components/chartJS/GraficoGenerico.vue"
+import EssentialTable from 'components/tables/view/EssentialTable.vue'
+import GraficoGenerico from 'components/chartJS/GraficoGenerico.vue'
 
 //Logic and controllers
-import { maskFecha, opcionesGrafico } from "config/utils"
-import { imprimirArchivo, obtenerFechaActual } from "shared/utils"
-import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading"
-import { CombustibleController } from "pages/controlVehiculos/combustible/infraestructure/CombustibleController"
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin"
-import { Combustible } from "pages/controlVehiculos/combustible/domain/Combustible"
-import { useNotificaciones } from "shared/notificaciones"
-import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales"
-import { VehiculoController } from "pages/controlVehiculos/vehiculos/infraestructure/VehiculoController"
-import { AxiosHttpRepository } from "shared/http/infraestructure/AxiosHttpRepository"
-import { optionsPie } from "config/graficoGenerico"
-import { configuracionColumnasCombustibles } from '../../../../combustible/domain/configuracionColumnasCombustibles';
+import { maskFecha, opcionesGrafico } from 'config/utils'
+import { imprimirArchivo, obtenerFechaActual } from 'shared/utils'
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { CombustibleController } from 'pages/controlVehiculos/combustible/infraestructure/CombustibleController'
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { Combustible } from 'pages/controlVehiculos/combustible/domain/Combustible'
+import { useNotificaciones } from 'shared/notificaciones'
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
+import { VehiculoController } from 'pages/controlVehiculos/vehiculos/infraestructure/VehiculoController'
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
+import { optionsPie } from 'config/graficoGenerico'
 
 export default defineComponent({
   components: { EssentialTable, GraficoGenerico },
@@ -154,11 +153,11 @@ export default defineComponent({
           switch (accion) {
             case 'excel':
               data.accion = 'excel'
-              imprimirArchivo(url, 'POST', 'blob', 'xlsx', filename, data)
+              await imprimirArchivo(url, 'POST', 'blob', 'xlsx', filename, data)
               return listado
             case 'pdf':
               data.accion = 'pdf'
-              imprimirArchivo(url, 'POST', 'blob', 'pdf', filename, data)
+              await imprimirArchivo(url, 'POST', 'blob', 'pdf', filename, data)
               return listado
             default:
               data.accion = ''

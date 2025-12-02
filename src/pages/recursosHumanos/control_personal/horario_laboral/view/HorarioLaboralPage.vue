@@ -29,6 +29,28 @@
             </q-select>
           </div>
 
+          <!-- Dia -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Día</label>
+            <q-select
+                v-model="horarioLaboral.dia"
+                :options="optionsDias"
+                placeholder="Seleccionar"
+                :disable="disabled"
+                outlined
+                dense
+                options-dense
+                @update:model-value="tipoHorarioSeleccionado"
+                :error="!!v$.tipo.$errors.length"
+                emit-value
+                map-options
+            >
+              <template v-slot:error>
+                <error-component clave="tipo" :v$="v$" />
+              </template>
+            </q-select>
+          </div>
+          
           <!-- Nombre -->
           <div
             class="col-12 col-md-3"
@@ -49,27 +71,7 @@
             </q-input>
           </div>
 
-          <!-- Dia -->
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Día</label>
-            <q-select
-              v-model="horarioLaboral.dia"
-              :options="optionsDias"
-              placeholder="Seleccionar"
-              :disable="disabled"
-              outlined
-              dense
-              options-dense
-              @update:model-value="tipoHorarioSeleccionado"
-              :error="!!v$.tipo.$errors.length"
-              emit-value
-              map-options
-            >
-              <template v-slot:error>
-                <error-component clave="tipo" :v$="v$" />
-              </template>
-            </q-select>
-          </div>
+
 
           <!-- Hora de Entrada -->
           <div class="col-12 col-md-3">

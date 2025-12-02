@@ -16,7 +16,7 @@ import { reactive } from 'vue'
 export const useBotonesTablaTicket = (mixin: ContenedorSimpleMixin<Ticket | any>, modales: ComportamientoModalesTicket | any) => {
   const { confirmar, prompt, notificarCorrecto, promptItems } = useNotificaciones()
   const notificaciones = useNotificaciones()
-  const { entidad: ticket, listado, listadosAuxiliares } = mixin.useReferencias()
+  const {  listado, listadosAuxiliares } = mixin.useReferencias()
   const { editarParcial } = mixin.useComportamiento()
 
   const cambiarEstadoTicket = new CambiarEstadoTicket()
@@ -78,7 +78,7 @@ export const useBotonesTablaTicket = (mixin: ContenedorSimpleMixin<Ticket | any>
             } catch (error: any) {
               if (isApiError(error)) {
                 const mensajes: string[] = error.erroresValidacion
-                notificarMensajesError(mensajes, notificaciones)
+                await notificarMensajesError(mensajes, notificaciones)
               } else {
                 notificaciones.notificarError(error.message)
               }
@@ -132,7 +132,7 @@ export const useBotonesTablaTicket = (mixin: ContenedorSimpleMixin<Ticket | any>
             } catch (error: any) {
               if (isApiError(error)) {
                 const mensajes: string[] = error.erroresValidacion
-                notificarMensajesError(mensajes, notificaciones)
+                await notificarMensajesError(mensajes, notificaciones)
               } else {
                 notificaciones.notificarError(error.message)
               }
@@ -151,7 +151,7 @@ export const useBotonesTablaTicket = (mixin: ContenedorSimpleMixin<Ticket | any>
                 } catch (error: any) {
                   if (isApiError(error)) {
                     const mensajes: string[] = error.erroresValidacion
-                    notificarMensajesError(mensajes, notificaciones)
+                    await notificarMensajesError(mensajes, notificaciones)
                   } else {
                     notificaciones.notificarError(error.message)
                   }

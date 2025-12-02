@@ -41,6 +41,11 @@ const controlPersonal: Ref<MenuOption[]> = computed(() => {
               link: 'horario-laboral',
               icon: 'bi-clock',
               can: store.can('puede.acceder.horario_laboral')
+            },{
+              title: 'Biométricos',
+              link: 'oficinas-biometricos',
+              icon: 'bi-building',
+              can: store.can('puede.acceder.oficinas_biometricos')
             }
           ]
         }

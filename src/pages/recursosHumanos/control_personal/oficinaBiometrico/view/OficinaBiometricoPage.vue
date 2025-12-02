@@ -143,6 +143,18 @@
             />
           </div>
 
+          <!-- clave de acceso -->
+          <div class="col-12 ">
+            <label class="q-mb-sm block">Clave de acceso</label>
+            <q-input
+                v-model="oficina.clave_acceso"
+                placeholder="Opcional"
+                :disable="disabled"
+                autogrow
+                outlined
+                dense
+            />
+          </div>
 
         </div>
       </q-form>

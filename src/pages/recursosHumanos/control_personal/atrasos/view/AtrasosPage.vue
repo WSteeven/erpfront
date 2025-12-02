@@ -135,6 +135,25 @@
             />
           </div>
 
+          <!-- Justificador -->
+          <div class="col-12 col-md-3" v-if="atraso.justificador">
+            <label class="q-mb-sm block">Justificador</label>
+            <q-select
+                v-model="atraso.justificador"
+                :options="empleados"
+                transition-show="jump-up"
+                transition-hide="jump-down"
+                disable
+                options-dense
+                dense
+                outlined
+                :option-value="v => v.id"
+                :option-label="v => v.nombres + ' ' + v.apellidos"
+                emit-value
+                map-options
+            />
+          </div>
+
           <!-- Revisado -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">¿Revisado?</label>
