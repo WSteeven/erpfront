@@ -285,6 +285,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     return permisos.value?.indexOf(permiso) !== -1
   }
 
+/*
   async function listadoUsuarios() {
     try {
       const response = await axios.get<AxiosResponse>(
@@ -296,6 +297,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
       throw new ApiError(axiosError)
     }
   }
+*/
 
   // console.log(user);
 
@@ -342,6 +344,5 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     esSso,
     consultar_saldo_actual,
     extraerRol,
-    listadoUsuarios
   }
 })

@@ -12,7 +12,7 @@
             <label class="q-mb-sm block">Nombre del Cargo</label>
             <q-input
               v-model="cargo.nombre"
-              @update:model-value="(v) => (cargo.nombre = removeAccents(v))"
+              @update:model-value="v => (cargo.nombre = removeAccents(v))"
               placeholder="Obligatorio"
               :disable="disabled"
               :error="!!v$.nombre.$errors.length"
@@ -20,15 +20,37 @@
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.nombre.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="nombre" :v$="v$" />
               </template>
             </q-input>
           </div>
 
+          <!-- Area -->
+          <div class="col-12 col-md-6 q-mb-md">
+            <label class="q-mb-sm block">Area</label>
+            <q-select
+                v-model="cargo.area"
+                options-dense
+                hint="Selecciona o escribe una nueva y presiona enter"
+                :disable="disabled"
+                dense
+                outlined
+                use-input
+                use-chips
+                :error="!!v$.area.$errors.length"
+                input-debounce="0"
+                @new-value="crearArea"
+                :options="areas"
+                @filter="filtrarAreas"
+            >
+              <template v-slot:error>
+                <error-component clave="area" :v$="v$" />
+              </template>
+            </q-select>
+          </div>
+
           <!-- Estado -->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-6">
             <label class="q-mb-sm block">Estado</label>
             <q-toggle
               :label="cargo.estado ? 'ACTIVO' : 'INACTIVO'"
@@ -40,9 +62,9 @@
               :disable="disabled"
             />
           </div>
-          
+
           <!-- Aprobado RRHH -->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-6">
             <label class="q-mb-sm block">Aprobado</label>
             <q-toggle
               :label="cargo.aprobado_rrhh ? 'SI' : 'NO'"

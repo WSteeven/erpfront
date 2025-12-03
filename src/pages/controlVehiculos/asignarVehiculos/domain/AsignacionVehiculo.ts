@@ -4,6 +4,7 @@ export class AsignacionVehiculo extends EntidadAuditable {
     vehiculo: string | null
     vehiculo_id: number | null
     entrega: number | null
+    entrega_id: number | null
     responsable: number | null
     responsable_id: number | null
     observacion_recibe: string | null
@@ -25,6 +26,7 @@ export class AsignacionVehiculo extends EntidadAuditable {
         this.vehiculo = null
         this.vehiculo_id = null
         this.entrega = null
+        this.entrega_id = null
         this.responsable = null
         this.responsable_id = null
         this.observacion_entrega = null
