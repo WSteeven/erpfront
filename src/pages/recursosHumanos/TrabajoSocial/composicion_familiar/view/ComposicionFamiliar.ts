@@ -9,6 +9,7 @@ import { parentescos } from 'config/trabajoSocial.utils'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import { EstadoCivilController } from 'recursosHumanos/estado-civil/infraestructure/EstadoCivilController'
+import {EstadoCivil} from 'recursosHumanos/estado-civil/domain/EstadoCivil';
 
 export default defineComponent({
   components: { EssentialTable },
@@ -21,9 +22,9 @@ export default defineComponent({
       type: Array,
       required: true
     },
-    accion: { type: String as typeof acciones, default: acciones.nuevo }
+    accion: { type: typeof acciones, default: acciones.nuevo }
   },
-  setup(props) {
+  setup(props,{}) {
     const { listadosAuxiliares } = props.mixin.useReferencias()
     const { cargarVista, obtenerListados } = props.mixin.useComportamiento()
     const listado = ref()
@@ -37,7 +38,7 @@ export default defineComponent({
       configuracionColumnasFamiliares.find(
       // configuracionColumnas.value.find(
         item => item.field === 'estado_civil'
-      )!.options = listadosAuxiliares.estados_civiles.map(v => {
+      )!.options = listadosAuxiliares.estados_civiles.map((v:EstadoCivil) => {
         return { label: v.nombre, value: v.nombre }
       })
     })

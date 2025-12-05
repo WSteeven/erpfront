@@ -2,7 +2,7 @@
   <label class="q-mb-sm block">
     {{ label }}
     <a :id="label" class="pointer" v-bind="$attrs" v-on="$attrs">
-      <i class="bi bi-plus-circle" />
+      <i :class="icon" />
       <q-tooltip class="bg-dark">{{ 'Agregar' }}</q-tooltip>
     </a>
   </label>
@@ -13,7 +13,7 @@ import { defineComponent } from 'vue'
 
 export default defineComponent({
   name: 'LabelAbrirModal',
-  props: { label: String },
+  props: { label: String, icon: { type: String, default: 'bi bi-plus-circle' } }
 })
 </script>
 

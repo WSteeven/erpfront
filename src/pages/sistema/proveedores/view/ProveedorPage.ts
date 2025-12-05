@@ -54,6 +54,7 @@ import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { ValidarPropiedadesProveedor } from '../application/validaciones/ValidarPropiedadesProveedor'
 import { DatoBancarioController } from 'pages/comprasProveedores/datosBancariosProveedor/infraestructure/DatoBancarioController'
 import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller'
+import {EntidadAuditable} from 'shared/entidad/domain/entidadAuditable';
 
 export default defineComponent({
   components: {
@@ -150,7 +151,7 @@ export default defineComponent({
       obtenerEmpresa(proveedor.empresa).then(() =>
         refArchivo.value.listarArchivosAlmacenados(empresa.id)
       )
-      categorias.value = listadosAuxiliares.categorias.filter(v =>
+      categorias.value = listadosAuxiliares.categorias.filter((v:CategoriaOferta) =>
         proveedor.tipos_ofrece.includes(v.tipo_oferta_id)
       )
     })
@@ -335,7 +336,7 @@ export default defineComponent({
       },
       visible: ({ entidad }) => {
         const departamento_calificador = entidad.related_departamentos.filter(
-          v => v.id === store.user.departamento
+          (v:EntidadAuditable) => v.id === store.user.departamento
         )[0]
         if (departamento_calificador) {
           if (
@@ -367,12 +368,12 @@ export default defineComponent({
       visible: ({ entidad }) => {
         const calificaciones_departamento =
           entidad.related_departamentos.filter(
-            v => v.id === store.user.departamento
+            (v:EntidadAuditable) => v.id === store.user.departamento
           )
 
         if (calificaciones_departamento.length > 0) {
           const mas_reciente = calificaciones_departamento.reduce(
-            (latest, current) => {
+            (latest:any, current:any) => {
               //Comparamos las fechas de created_at para obtener el más reciente
               return new Date(current.pivot.created_at) >
                 new Date(latest.pivot.created_at)
@@ -411,7 +412,7 @@ export default defineComponent({
       },
       visible: ({ entidad }) => {
         const departamento_calificador = entidad.related_departamentos.filter(
-          v => v.id === store.user.departamento
+          (v:EntidadAuditable) => v.id === store.user.departamento
         )[0]
         if (departamento_calificador) {
           return departamento_calificador.pivot.calificacion !== null //aqui se muestra aunque de 0, corregir esta parte
@@ -481,7 +482,7 @@ export default defineComponent({
       }
     }
 
-    async function guardado(data) {
+    async function guardado(data:string) {
       switch (data) {
         case 'CategoriaOfertaPage':
           await consultarCategoriasOfertas()
@@ -528,7 +529,7 @@ export default defineComponent({
         detalleDepartamentoProveedor.value = result[0]
         if (recalificacion) {
           detalleDepartamentoProveedor.value = result.reduce(
-            (max, item) => (item.id > max.id ? item : max),
+            (max:any, item:any) => (item.id > max.id ? item : max),
             result[0]
           )
         }

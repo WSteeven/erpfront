@@ -32,6 +32,12 @@ const controlPersonal: Ref<MenuOption[]> = computed(() => {
           can:  store.can('puede.acceder.atrasos'),
         },
         {
+          title: 'Horarios Empleados',
+          link: 'horarios-empleados',
+          icon: 'bi-file-earmark-text',
+          can:  store.esAdministrador ||store.esRecursosHumanos
+        },
+        {
           title: 'Configuración',
           icon: 'bi-gear',
           can: true,

@@ -14,7 +14,7 @@ import { HorarioLaboral } from './../domain/HorarioLaboral'
 import ErrorComponent from 'components/ErrorComponent.vue'
 import { optionsDias, tiposHorariosOptions } from 'config/controlPersonal.utils'
 import OptionGroupComponent from 'components/optionGroup/view/OptionGroupComponent.vue'
-import {requiredIf} from 'shared/i18n-validators';
+import { requiredIf } from 'shared/i18n-validators'
 
 export default defineComponent({
   components: { OptionGroupComponent, ErrorComponent, TabLayout },
@@ -33,6 +33,7 @@ export default defineComponent({
       inicio_pausa: { required: requiredIf(()=>horarioLaboral.tiene_pausa) },
       fin_pausa: { required:requiredIf(()=>horarioLaboral.tiene_pausa) },
       nombre: { required },
+      dias: { required },
       tipo: { required }
     }
 
@@ -53,7 +54,6 @@ export default defineComponent({
       v$,
       disabled,
       configuracionColumnas: configuracionColumnasHorarioLaboral,
-
       // opciones
       tiposHorariosOptions,
       optionsDias,

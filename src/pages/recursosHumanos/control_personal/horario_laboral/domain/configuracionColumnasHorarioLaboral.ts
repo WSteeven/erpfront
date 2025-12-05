@@ -11,9 +11,9 @@ export const configuracionColumnasHorarioLaboral: ColumnConfig<HorarioLaboral>[]
       sortable: true
     },
     {
-      name: 'dia',
-      field: 'dia',
-      label: 'Día',
+      name: 'dias',
+      field: 'dias',
+      label: 'Días',
       align: 'left',
       sortable: true
     },
@@ -46,6 +46,11 @@ export const configuracionColumnasHorarioLaboral: ColumnConfig<HorarioLaboral>[]
       sortable: true
     },
     {
+      name: 'es_turno_de_noche',
+      field: 'es_turno_de_noche',
+      label: '¿Cruza medianoche?',
+      align: 'left',
+    },{
       name: 'activo',
       field: 'activo',
       label: '¿Activo?',

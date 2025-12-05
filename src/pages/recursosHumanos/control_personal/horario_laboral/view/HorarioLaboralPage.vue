@@ -8,7 +8,7 @@
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-py-md">
           <!-- Tipo de Horario -->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-4">
             <label class="q-mb-sm block">Tipo de Horario</label>
             <q-select
               v-model="horarioLaboral.tipo"
@@ -29,41 +29,19 @@
             </q-select>
           </div>
 
-          <!-- Dia -->
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Día</label>
-            <q-select
-                v-model="horarioLaboral.dia"
-                :options="optionsDias"
-                placeholder="Seleccionar"
-                :disable="disabled"
-                outlined
-                dense
-                options-dense
-                @update:model-value="tipoHorarioSeleccionado"
-                :error="!!v$.tipo.$errors.length"
-                emit-value
-                map-options
-            >
-              <template v-slot:error>
-                <error-component clave="tipo" :v$="v$" />
-              </template>
-            </q-select>
-          </div>
-          
           <!-- Nombre -->
           <div
-            class="col-12 col-md-3"
-            v-if="horarioLaboral.tipo == 'Personalizado'"
+              class="col-12 col-md-4"
+              v-if="horarioLaboral.tipo == 'PERSONALIZADO'"
           >
             <label class="q-mb-sm block">Nombre</label>
             <q-input
-              v-model="horarioLaboral.nombre"
-              placeholder="Obligatorio"
-              :disable="disabled"
-              :error="!!v$.nombre.$errors.length"
-              outlined
-              dense
+                v-model="horarioLaboral.nombre"
+                placeholder="Obligatorio"
+                :disable="disabled"
+                :error="!!v$.nombre.$errors.length"
+                outlined
+                dense
             >
               <template v-slot:error>
                 <error-component clave="nombre" :v$="v$" />
@@ -71,10 +49,33 @@
             </q-input>
           </div>
 
+          <!-- Dia -->
+          <div class="col-12 col-md-4">
+            <label class="q-mb-sm block">Días</label>
+            <q-select
+                v-model="horarioLaboral.dias"
+                :options="optionsDias"
+                placeholder="Seleccionar"
+                :disable="disabled"
+                outlined
+                dense
+                options-dense
+                use-chips
+                multiple
+                :error="!!v$.dias.$errors.length"
+                emit-value
+                map-options
+            >
+              <template v-slot:error>
+                <error-component clave="dias" :v$="v$" />
+              </template>
+            </q-select>
+          </div>
+          
 
 
           <!-- Hora de Entrada -->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-4">
             <label class="q-mb-sm block">Hora de Entrada</label>
             <q-input
               v-model="horarioLaboral.hora_entrada"
@@ -92,7 +93,7 @@
           </div>
 
           <!-- Hora de Salida -->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-4">
             <label class="q-mb-sm block">Hora de Salida</label>
             <q-input
               v-model="horarioLaboral.hora_salida"
@@ -110,7 +111,7 @@
           </div>
 
           <!--          Tiene pausas -->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-4">
             <label class="q-mb-sm block">¿Tiene Pausas?</label>
             <option-group-component
               v-model="horarioLaboral.tiene_pausa"
@@ -119,7 +120,7 @@
           </div>
 
           <!--Inicio de Pausa-->
-          <div class="col-12 col-md-3" v-if="horarioLaboral.tiene_pausa">
+          <div class="col-12 col-md-4" v-if="horarioLaboral.tiene_pausa">
             <label class="q-mb-sm block">Inicio de Pausa</label>
             <q-input
               v-model="horarioLaboral.inicio_pausa"
@@ -137,7 +138,7 @@
           </div>
 
           <!--Fin de Pausa-->
-          <div class="col-12 col-md-3" v-if="horarioLaboral.tiene_pausa">
+          <div class="col-12 col-md-4" v-if="horarioLaboral.tiene_pausa">
             <label class="q-mb-sm block">Fin de Pausa</label>
             <q-input
               v-model="horarioLaboral.fin_pausa"
@@ -153,8 +154,18 @@
               </template>
             </q-input>
           </div>
+
+          <!--          Tiene pausas -->
+          <div class="col-12 col-md-4">
+            <label class="q-mb-sm block">¿Es turno que cruza medianoche?</label>
+            <option-group-component
+                v-model="horarioLaboral.es_turno_de_noche"
+                :disable="disabled"
+            />
+          </div>
+
           <!-- Activo -->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-4">
             <label class="q-mb-sm block">Estado</label>
             <q-toggle
               :label="horarioLaboral.activo ? 'ACTIVO' : 'INACTIVO'"

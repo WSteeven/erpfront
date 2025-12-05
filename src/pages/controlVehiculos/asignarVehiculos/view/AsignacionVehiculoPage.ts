@@ -295,7 +295,7 @@ export default defineComponent({
           })
       }
     }
-    function optionsFecha(date) {
+    function optionsFecha(date:string) {
       const hoy = convertir_fecha(new Date())
       return date <= hoy
     }
@@ -329,7 +329,7 @@ export default defineComponent({
         cargando.desactivar()
       }
     }
-    function crearEstado(val, done) {
+    function crearEstado(val:string, done:(item:any, mode:string)=>void) {
       val = val.toUpperCase()
       if (val.length > 0) {
         if (!estadosDefault.includes(val)) {
@@ -339,7 +339,7 @@ export default defineComponent({
         }
       }
     }
-    function crearAccesorio(val, done) {
+    function crearAccesorio(val:string, done:(item:any, mode:string)=>void) {
       val = val.toUpperCase()
       if (val.length > 0) {
         if (!accesoriosDefault.includes(val)) {
@@ -352,7 +352,7 @@ export default defineComponent({
         }
       }
     }
-    function filtrarEstados(val, update) {
+    function filtrarEstados(val: string, update: (fn: () => void) => void) {
       val = val.toUpperCase()
       update(() => {
         if (val == '') estados.value = estadosDefault
@@ -363,7 +363,7 @@ export default defineComponent({
         }
       })
     }
-    function filtrarAccesorios(val, update) {
+    function filtrarAccesorios(val: string, update: (fn: () => void) => void) {
       val = val.toUpperCase()
       update(() => {
         if (val == '') accesorios.value = accesoriosDefault

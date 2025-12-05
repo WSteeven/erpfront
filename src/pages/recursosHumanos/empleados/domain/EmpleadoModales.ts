@@ -11,6 +11,7 @@ import ReasignarSubordinadosPage
     from 'recursosHumanos/empleados/modules/reasignarSubordinados/view/ReasignarSubordinadosPage.vue';
 import DesvincularEmpleadoPage
     from 'recursosHumanos/empleados/modules/desvincularEmpleado/view/DesvincularEmpleadoPage.vue';
+import HorarioEmpleadoPage from 'controlPersonal/horariosEmpleados/view/HorarioEmpleadoPage.vue';
 
 
 export class EmpleadoModales {
@@ -20,6 +21,7 @@ export class EmpleadoModales {
     PlanVacacionIndividualPage: ComponenteModal
     ReasignarSubordinadosPage: ComponenteModal
     DesvincularEmpleadoPage:ComponenteModal
+    HorarioEmpleadoPage: ComponenteModal
 
     constructor() {
         this.EmpleadoPage = markRaw(new ComponenteModal('Empleado', EmpleadoPage))
@@ -28,5 +30,6 @@ export class EmpleadoModales {
         this.PlanVacacionIndividualPage = markRaw(new ComponenteModal('Plan de Vacaciones', PlanVacacionIndividualPage))
         this.ReasignarSubordinadosPage = markRaw(new ComponenteModal('Reasignar Subordinados', ReasignarSubordinadosPage))
         this.DesvincularEmpleadoPage = markRaw(new ComponenteModal('Desvincular Empleado', DesvincularEmpleadoPage))
+        this.HorarioEmpleadoPage = markRaw(new ComponenteModal('Configuración de Horario de Empleado', HorarioEmpleadoPage))
     }
 }

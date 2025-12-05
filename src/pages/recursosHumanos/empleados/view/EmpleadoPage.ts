@@ -85,9 +85,12 @@ import { tabOptionsProveedoresInternacionales } from 'config/utils_compras_prove
 import { useEmpleadoStore } from 'stores/empleado'
 import NoOptionComponent from 'components/NoOptionComponent.vue'
 import ErrorComponent from 'components/ErrorComponent.vue'
+import LabelAbrirModal from 'components/modales/modules/LabelAbrirModal.vue'
+import { ValidarHorarioLaboral } from 'recursosHumanos/empleados/application/ValidarHorarioLaboral'
 
 export default defineComponent({
   components: {
+    LabelAbrirModal,
     ErrorComponent,
     NoOptionComponent,
     TabLayoutFilterTabs2,
@@ -120,10 +123,16 @@ export default defineComponent({
       disabled,
       accion,
       listadosAuxiliares,
-      listado
+      listado,
+      tabs
     } = mixin.useReferencias()
-    const { setValidador, cargarVista, obtenerListados, listar } =
-      mixin.useComportamiento()
+    const {
+      setValidador,
+      cargarVista,
+      obtenerListados,
+      listar,
+      editar
+    } = mixin.useComportamiento()
     const {
       onBeforeGuardar,
       onBeforeModificar,
@@ -162,6 +171,7 @@ export default defineComponent({
      ************/
     const axios = AxiosHttpRepository.getInstance()
     const tabDefecto = ref('1')
+    const searchTable = ref<string | string[] | null>(null)
     const configuracionColumnasTipoDiscapacidadPorcentajeReactive = reactive(
       configuracionColumnasTipoDiscapacidadPorcentaje
     )
@@ -330,6 +340,12 @@ export default defineComponent({
     const validarConductor = new ValidarChofer(empleado, conductor)
     mixin.agregarValidaciones(validarConductor)
 
+    const validarHorarioLaboral = new ValidarHorarioLaboral(
+      empleado,
+      accion.value
+    )
+    mixin.agregarValidaciones(validarHorarioLaboral)
+
     const configuracionStore = useConfiguracionGeneralStore()
     tipos_contrato.value = listadosAuxiliares.tipos_contrato
     opcionesDepartamentos.value = listadosAuxiliares.departamentos
@@ -400,7 +416,7 @@ export default defineComponent({
       }, 1)
     })
 
-    function optionsFecha(date:any) {
+    function optionsFecha(date: any) {
       const hoy = convertir_fecha(new Date())
       return date <= hoy
     }
@@ -598,6 +614,13 @@ export default defineComponent({
 
           await filtrarListadoEmpleados(tabDefecto.value)
           break
+        case 'HorarioEmpleadoPage':
+          searchTable.value = empleado.nombres
+          // await consultar(empleado)
+            empleado.tiene_horario_laboral=true
+          await editar(empleado)
+          tabs.value = 'listado'
+          break
         case 'ReasignarSubordinadosPage':
           mostrarBotonCerrarModal.value = true
           break
@@ -754,7 +777,8 @@ export default defineComponent({
       autoidentificaciones_etnicas,
       removeTildes,
       guardado,
-      mostrarBotonCerrarModal
+      mostrarBotonCerrarModal,
+      searchTable
     }
   }
 })

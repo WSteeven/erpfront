@@ -84,6 +84,9 @@ export class Empleado extends EntidadAuditable {
   //propiedad para almacenar la cantidad de archivos
   archivos: string | number | null
 
+  tiene_horario_laboral: boolean
+  horario_laboral: string | null
+
   constructor() {
     super()
     this.identificacion = null
@@ -164,7 +167,7 @@ export class Empleado extends EntidadAuditable {
     this.orientacion_sexual = null
     this.identidad_genero = null
     this.religion = null
-
     this.archivos = null
+    this.tiene_horario_laboral = false
   }
 }

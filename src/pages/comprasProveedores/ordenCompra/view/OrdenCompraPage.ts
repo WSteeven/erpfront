@@ -224,17 +224,19 @@ export default defineComponent({
     /*****************************************************************************************
      * Hooks
      ****************************************************************************************/
-    watchEffect(() => (orden.iva =  configuracionGeneralStore.configuracion?.iva))
+    watchEffect(
+      () => (orden.iva = configuracionGeneralStore.configuracion?.iva)
+    )
 
     onReestablecer(() => {
       orden.fecha = formatearFecha(new Date().getDate().toLocaleString())
       orden.solicitante = store.user.id
       soloLectura.value = false
       orden.autorizacion = 1
-      orden.iva =  configuracionGeneralStore.configuracion?.iva
+      orden.iva = configuracionGeneralStore.configuracion?.iva
 
       refArchivo.value.limpiarListado()
-      refArchivo.value.quiero_subir_archivos=false
+      refArchivo.value.quiero_subir_archivos = false
       obtenerTareas(false)
     })
     onConsultado(() => {
@@ -308,6 +310,7 @@ export default defineComponent({
     async function subirArchivos() {
       await refArchivo.value.subir()
     }
+
     function filtrarOrdenes(tab: string) {
       tabDefecto.value = tab
       tabSeleccionado.value = tab
@@ -374,6 +377,7 @@ export default defineComponent({
       listadosAuxiliares.tareas = response.result
       tareas.value = listadosAuxiliares.tareas
     }
+
     async function obtenerProveedoresInternacionales() {
       const response = await new ProveedorInternacionalController().listar({
         activo: 1
@@ -382,19 +386,23 @@ export default defineComponent({
       proveedores_internacionales.value =
         listadosAuxiliares.proveedores_internacionales
     }
+
     function eliminar({ posicion }) {
       confirmar('¿Está seguro de continuar?', () =>
         orden.listadoProductos.splice(posicion, 1)
       )
     }
+
     function actualizarPreorden() {
       if (!orden.preorden || orden.preorden === 0) limpiarOrden()
     }
+
     function guardarFilaEditada(fila: any) {
       console.log(fila)
       calcularValores(fila)
     }
-    function checkEsProveedorInternacional(val) {
+
+    function checkEsProveedorInternacional(val: any) {
       if (val) {
         orden.proveedor = null
         if (proveedores_internacionales.value.length === 0) {
@@ -402,7 +410,11 @@ export default defineComponent({
         }
       } else orden.proveedor_internacional = null
     }
-    function filtrarProveedoresInternacionales(val, update) {
+
+    function filtrarProveedoresInternacionales(
+      val: string,
+      update: (fn: () => void) => void
+    ) {
       return filtrarLista(
         val,
         update,
@@ -411,6 +423,7 @@ export default defineComponent({
         listadosAuxiliares.proveedores_internacionales
       )
     }
+
     /**
      * La función calcula los valores de iva, subtotal y total en función de los datos
      * proporcionados en la tabla de productos seleccionados.
@@ -476,6 +489,7 @@ export default defineComponent({
         item.descuento = 0
       })
     }
+
     /**
      * La función 'limpiarOrden' reinicia el objeto 'orden' reemplazándolo con una nueva instancia
      * de la clase 'OrdenCompra'.
@@ -529,6 +543,7 @@ export default defineComponent({
         // orden.categorias = []
       } else orden.hydrate(new OrdenCompra())
     }
+
     /*******************************************************************************************
      * Botones de tabla
      ******************************************************************************************/

@@ -1,4 +1,4 @@
-import {defineComponent, PropType, ref} from 'vue'
+import { defineComponent, ref } from 'vue'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { Empleado } from 'recursosHumanos/empleados/domain/Empleado'
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'

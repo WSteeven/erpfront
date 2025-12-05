@@ -90,16 +90,10 @@
               map-options
             >
               <template v-slot:error>
-                <div v-for="error of v$.usuario.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="usuario" :v$="v$"/>
               </template>
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
+                <no-option-component/>
               </template>
             </q-select>
           </div>
@@ -128,16 +122,10 @@
               map-options
             >
               <template v-slot:error>
-                <div v-for="error of v$.tipo_fondo.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="tipo_fondo" :v$="v$"/>
               </template>
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
+                <no-option-component/>
               </template>
             </q-select>
           </div>
@@ -166,16 +154,10 @@
               map-options
             >
               <template v-slot:error>
-                <div v-for="error of v$.tipo_saldo.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="tipo_saldo" :v$="v$"/>
               </template>
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
+                <no-option-component/>
               </template>
             </q-select>
           </div>
@@ -193,9 +175,7 @@
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.id_saldo.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="id_saldo" :v$="v$"/>
               </template>
             </q-input>
           </div>
@@ -212,12 +192,7 @@
               dense
             >
               <template v-slot:error>
-                <div
-                  v-for="error of v$.descripcion_acreditacion.$errors"
-                  :key="error.$uid"
-                >
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="descripcion_acreditacion" :v$="v$"/>
               </template>
             </q-input>
           </div>
@@ -248,9 +223,7 @@
               type="number"
             >
               <template v-slot:error>
-                <div v-for="error of v$.monto.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="monto" :v$="v$"/>
               </template>
             </q-input>
           </div>

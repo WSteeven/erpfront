@@ -11,6 +11,7 @@
     :accion2="btnDesHabilitarEmpleado"
     :accion3="btnDesvincular"
     :accion4="btnPlanVacaciones"
+    :initial-search="searchTable"
     :puedeFiltrar="false"
     :puedeExportar="true"
     :forzarListar="false"
@@ -1176,12 +1177,9 @@
             </div>
 
             <!-- Horas pendientes de  -->
-            <div
-              class="col-12 col-md-3 col-sm-3"
-            >
+            <div class="col-12 col-md-3 col-sm-3">
               <label class="q-mb-sm block"
-                >Horas pendientes de recuperación o descuento en
-                ROL</label
+                >Horas pendientes de recuperación o descuento en ROL</label
               >
               <q-input
                 v-model="empleado.horas_pendientes"
@@ -1466,6 +1464,31 @@
                 placeholder="opcional"
                 type="textarea"
                 :disable="disabled"
+                autogrow
+                outlined
+                dense
+              />
+            </div>
+
+            <!-- Conf. Horario Laboral -->
+            <div class="col-12 col-md-3 col-sm-3">
+              <label-abrir-modal
+                v-if="[acciones.nuevo, acciones.editar].includes(accion)"
+                label="Configuración horario laboral"
+                icon="bi bi-pencil-square"
+                @click="
+                  empleado.tiene_horario_laboral
+                    ? modales.abrirModalEntidad('HorarioEmpleadoPage', {
+                        empleado_id: empleado.id
+                      })
+                    : modales.abrirModalEntidad('HorarioEmpleadoPage')
+                "
+              />
+              <q-input
+                v-model="empleado.horario_laboral"
+                placeholder="Obligatorio"
+                type="textarea"
+                disable
                 autogrow
                 outlined
                 dense

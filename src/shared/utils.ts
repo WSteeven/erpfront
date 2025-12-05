@@ -686,8 +686,8 @@ export function ordenarClientesPorBodeguero(
     )
 }
 
-export function obtenerUbicacion(onUbicacionConcedida) {
-  const onErrorDeUbicacion = err => {
+export function obtenerUbicacion(onUbicacionConcedida: (pos:GeolocationPosition)=>void) {
+  const onErrorDeUbicacion = (err:GeolocationPositionError) => {
     console.log('Error obteniendo ubicación: ', err)
   }
 
@@ -1167,6 +1167,7 @@ export const filterWhereIn = (campo: string, valores: number[]) => {
  * PRECAUCION: no está verificado si funciona correctamente cuando se ordena el listado y se elimina un ítem.
  * @param listado el listado sobre el que se va a eliminar el registro.
  */
+// export const btnEliminarDefault = <T>(listado: T[]): CustomActionTable<T> => { //verificar si esta firma es correcta
 export const btnEliminarDefault: CustomActionTable<any> = (listado: T[]) => {
   const { confirmar } = useNotificaciones()
   return {

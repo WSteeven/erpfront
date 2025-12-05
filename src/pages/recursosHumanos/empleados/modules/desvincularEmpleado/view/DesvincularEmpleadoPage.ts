@@ -67,7 +67,7 @@ export default defineComponent({
       }
     }
 
-    function optionsFecha(date) {
+    function optionsFecha(date:string) {
       const hoy = convertir_fecha(new Date())
       return date <= hoy
     }

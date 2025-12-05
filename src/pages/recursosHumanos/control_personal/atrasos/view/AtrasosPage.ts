@@ -1,4 +1,4 @@
-import {computed, defineComponent, onMounted, ref, watch} from 'vue'
+import { computed, defineComponent, onMounted, ref, watch } from 'vue'
 import { configuracionColumnasAtrasos } from '../domain/configuracionColumnasAtrasos'
 import { useVuelidate } from '@vuelidate/core'
 import { apiConfig, endpoints } from 'config/api'
@@ -26,8 +26,7 @@ import { ComportamientoModalesAtrasos } from 'controlPersonal/atrasos/applicatio
 import { useNotificaciones } from 'shared/notificaciones'
 import MarcacionPage from 'controlPersonal/asistencia/view/MarcacionPage.vue'
 import { useAuthenticationStore } from 'stores/authentication'
-import {useRoute} from 'vue-router';
-import {biWatch} from '@quasar/extras/bootstrap-icons';
+import { useRoute } from 'vue-router'
 
 export default defineComponent({
   name: 'JustificacionPage',

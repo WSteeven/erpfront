@@ -26,9 +26,19 @@ import OptionGroupComponent from 'components/optionGroup/view/OptionGroupCompone
 import { OptionGroup } from 'components/optionGroup/domain/OptionGroup'
 import GestorDocumentos from 'components/documentos/view/GestorDocumentos.vue'
 import { endpoints } from 'config/api'
+import ErrorComponent from 'components/ErrorComponent.vue';
+import NoOptionComponent from 'components/NoOptionComponent.vue';
+import {TipoFondo} from 'pages/fondosRotativos/tipoFondo/domain/TipoFondo';
+import {TipoSaldo} from 'pages/fondosRotativos/tipo_saldo/domain/TipoSaldo';
 
 export default defineComponent({
-  components: { GestorDocumentos, OptionGroupComponent, TabLayoutFilterTabs2 },
+  components: {
+    NoOptionComponent,
+    ErrorComponent,
+    GestorDocumentos,
+    OptionGroupComponent,
+    TabLayoutFilterTabs2
+  },
   setup() {
     /*********
      * Stores
@@ -54,7 +64,8 @@ export default defineComponent({
       accion,
       listadosAuxiliares,
       listado,
-      tabs, filtros
+      tabs,
+      filtros
     } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista, listar } =
       mixin.useComportamiento()
@@ -114,7 +125,7 @@ export default defineComponent({
      * Filtros
      **********/
     // - Filtro TIPOS FONDOS
-    function filtrarTiposFondos(val, update) {
+    function filtrarTiposFondos(val: string, update: (fn: () => void) => void) {
       if (val === '') {
         update(() => {
           tiposFondos.value = listadosAuxiliares.tiposFondos
@@ -124,13 +135,13 @@ export default defineComponent({
       update(() => {
         const needle = val.toLowerCase()
         tiposFondos.value = listadosAuxiliares.tiposFondos.filter(
-          v => v.descripcion.toLowerCase().indexOf(needle) > -1
+          (v:TipoFondo) => v.descripcion.toLowerCase().indexOf(needle) > -1
         )
       })
     }
 
     // - Filtro TIPOS FONDOS
-    function filtrarTiposSaldos(val, update) {
+    function filtrarTiposSaldos(val: string, update: (fn: () => void) => void) {
       if (val === '') {
         update(() => {
           tiposSaldos.value = listadosAuxiliares.tiposSaldos
@@ -140,7 +151,7 @@ export default defineComponent({
       update(() => {
         const needle = val.toLowerCase()
         tiposSaldos.value = listadosAuxiliares.tiposSaldos.filter(
-          v => v.descripcion.toLowerCase().indexOf(needle) > -1
+          (v:TipoSaldo) => v.descripcion.toLowerCase().indexOf(needle) > -1
         )
       })
     }
@@ -155,7 +166,7 @@ export default defineComponent({
       }
     }
 
-    function anularAcreditacion(entidad) {
+    function anularAcreditacion(entidad:Acreditacion) {
       confirmar('¿Está seguro de anular la acreditacion?', () => {
         const data: CustomActionPrompt = {
           titulo: 'Anular Acreditacion',
@@ -183,7 +194,7 @@ export default defineComponent({
       })
     }
 
-    function optionsFecha(date) {
+    function optionsFecha(date:string) {
       const currentDate = sumarFechas(
         obtenerFechaActual(),
         0,

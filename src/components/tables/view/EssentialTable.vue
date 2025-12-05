@@ -1882,6 +1882,11 @@
         <campo-boleano :propsTable="props" />
       </q-td>
     </template>
+    <template #body-cell-es_turno_de_noche="props">
+      <q-td :props="props">
+        <campo-boleano :propsTable="props" />
+      </q-td>
+    </template>
     <template #body-cell-es_principal="props">
       <q-td :props="props">
         <campo-boleano :propsTable="props" />

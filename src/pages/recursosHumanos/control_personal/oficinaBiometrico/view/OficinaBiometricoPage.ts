@@ -3,18 +3,15 @@ import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayou
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { OficinaBiometrico } from 'controlPersonal/oficinaBiometrico/domain/OficinaBiometrico'
 import { OficinaBiometricoController } from 'controlPersonal/oficinaBiometrico/infraestructure/OficinaBiometricoController'
-import { useAuthenticationStore } from 'stores/authentication'
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller'
 import { ordenarLista } from 'shared/utils'
 import { required } from 'shared/i18n-validators'
 import { useVuelidate } from '@vuelidate/core'
 import { tabOptionsProveedoresInternacionales } from 'config/utils_compras_proveedores'
-import {
-  configuracionColumnasOficinasBiometrico
-} from 'controlPersonal/oficinaBiometrico/domain/configuracionColumnasOficinasBiometrico';
-import NoOptionComponent from 'components/NoOptionComponent.vue';
-import ErrorComponent from 'components/ErrorComponent.vue';
+import { configuracionColumnasOficinasBiometrico } from 'controlPersonal/oficinaBiometrico/domain/configuracionColumnasOficinasBiometrico'
+import NoOptionComponent from 'components/NoOptionComponent.vue'
+import ErrorComponent from 'components/ErrorComponent.vue'
 
 export default defineComponent({
   components: { ErrorComponent, NoOptionComponent, TabLayoutFilterTabs2 },
@@ -26,23 +23,12 @@ export default defineComponent({
     const {
       entidad: oficina,
       accion,
-      listado,
       listadosAuxiliares,
       disabled
     } = mixin.useReferencias()
     const { setValidador, listar, cargarVista, obtenerListados } =
       mixin.useComportamiento()
-    const {
-      onGuardado,
-      onConsultado,
-      onReestablecer,
-      onModificado,
-      onBeforeConsultar,
-      onBeforeModificar,
-      onBeforeGuardar
-    } = mixin.useHooks()
-
-    const store = useAuthenticationStore()
+    
     const tabDefecto = ref('1') // Por defecto "Activos"
 
     const { cantones, filtrarCantones } =

@@ -1,16 +1,16 @@
 export const tiposHorariosOptions = [
-  { label: 'Normal', value: 'Normal' },
-  { label: 'Nocturno', value: 'Nocturno' },
-  { label: 'Fin de semana', value: 'Fin de semana' },
-  { label: 'Personalizado', value: 'Personalizado' }
+  { label: 'Normal', value: 'NORMAL' },
+  { label: 'Nocturno', value: 'NOCTURNO' },
+  { label: 'Fin de semana', value: 'FIN DE SEMANA' },
+  { label: 'Personalizado', value: 'PERSONALIZADO' }
 ]
 
 export const optionsDias = [
-  { label: 'Lunes', value: 'lunes' },
-  { label: 'Martes', value: 'martes' },
-  { label: 'Miércoles', value: 'miercoles' },
-  { label: 'Jueves', value: 'jueves' },
-  { label: 'Viernes', value: 'viernes' },
-  { label: 'Sábado', value: 'sabado' },
-  { label: 'Domingo', value: 'domingo' }
+  { label: 'Lunes', value: 'LUNES' },
+  { label: 'Martes', value: 'MARTES' },
+  { label: 'Miércoles', value: 'MIERCOLES' },
+  { label: 'Jueves', value: 'JUEVES' },
+  { label: 'Viernes', value: 'VIERNES' },
+  { label: 'Sábado', value: 'SABADO' },
+  { label: 'Domingo', value: 'DOMINGO' }
 ]

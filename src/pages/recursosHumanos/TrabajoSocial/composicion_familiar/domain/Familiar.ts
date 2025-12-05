@@ -7,7 +7,7 @@ export class Familiar extends EntidadAuditable{
   estado_civil: string|null
   instruccion: string|null
   ocupacion: string|null // o profesion
-  discapacidad: string|null
+  discapacidad: string|number|null
   ingreso_mensual: number|null
 
 
