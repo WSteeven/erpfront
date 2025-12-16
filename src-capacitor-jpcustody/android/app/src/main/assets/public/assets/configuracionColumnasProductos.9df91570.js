@@ -1,1 +1,0 @@
-const e=[{name:"id",field:"id",label:"N\xB0",align:"left",sortable:!0},{name:"nombre",field:"nombre",label:"Producto",align:"left",sortable:!0},{name:"categoria",field:"categoria",label:"Categoria",align:"left",sortable:!0},{name:"unidad_medida",field:"unidad_medida",label:"U. Medida",align:"left",sortable:!0}];export{e as c};

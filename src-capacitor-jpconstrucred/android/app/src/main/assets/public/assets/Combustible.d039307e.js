@@ -1,1 +1,0 @@
-var t=Object.defineProperty;var i=(o,e,r)=>e in o?t(o,e,{enumerable:!0,configurable:!0,writable:!0,value:r}):o[e]=r;var s=(o,e,r)=>(i(o,typeof e!="symbol"?e+"":e,r),r);import{E as l}from"./entidadAuditable.75a46700.js";class a extends l{constructor(){super();s(this,"nombre");s(this,"precio");this.nombre=null,this.precio=null}}export{a as C};

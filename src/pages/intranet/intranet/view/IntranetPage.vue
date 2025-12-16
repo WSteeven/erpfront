@@ -1,42 +1,5 @@
 <template>
   <q-page>
-    <!-- <div class="row">
-      <div class="col-12 text-center q-mb-md">
-        <img
-          alt="Logo FIRSTRED"
-          :src="!$q.dark.isActive ? logoClaro : logoOscuro"
-          :height="$q.screen.xs ? 40 : 80"
-          class="custom-shadow"
-        />
-      </div>
-
-      <div class="col-12 text-center q-mx-auto q-mb-md">
-        <div class="text-h5 text-bold">Bienvenido</div>
-      </div>
-    </div> -->
-
-    <!-- <q-tabs
-      v-model="tabs"
-      no-caps
-      bordered
-      dense
-      active-class="tab-active-intranet"
-      indicator-color="transparent"
-      class="q-mb-none q-mx-xfl"
-      align="center"
-    >
-      <q-tab
-        v-for="opcion in tabsMenu"
-        :key="opcion"
-        :name="opcion + ''"
-        class="bordde rounded shadow-chip q-mb-xl bg-body q-pa-md q-mx-sm"
-        href="#mis_modulos"
-      >
-        <q-icon name="las la-newspaper" size="md" class="q-mb-md"></q-icon>
-        {{ opcion }}
-      </q-tab>
-    </q-tabs> -->
-
     <div class="row q-col-gutter-sm q-mx-md q-mb-md">
       <!-- SECCION DERECHA -->
       <div class="col-12">
@@ -1840,4 +1803,4 @@ h5 {
 }
 </style>
 
-<script src="./IntranetPageOriginal.ts"></script>
+<script src="./IntranetPage.ts"></script>

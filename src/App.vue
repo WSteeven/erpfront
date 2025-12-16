@@ -5,8 +5,8 @@
 </template>
 
 <script>
-import { LocalStorage, Notify, useQuasar } from 'quasar'
-import { computed, defineComponent, onMounted, onUnmounted } from 'vue'
+import { useQuasar } from 'quasar'
+import { computed, defineComponent } from 'vue'
 import { userIsAuthenticated } from 'shared/helpers/verifyAuthenticatedUser'
 
 // import Echo from 'laravel-echo'
@@ -25,8 +25,8 @@ export default defineComponent({
     }) */
 
     const $q = useQuasar()
-    let intervalId
-    let serverVersion
+    // let intervalId
+    // let serverVersion
 
     // Determina el layout basado en el estado de autenticación
     const { autenticado } = userIsAuthenticated()
@@ -48,7 +48,7 @@ export default defineComponent({
         )
     }
 
-    const checkVersion = () => {
+    /*const checkVersion = () => {
       serverVersion = process.env.APP_VERSION || import.meta.env.APP_VERSION
       const currentVersion = LocalStorage.getItem('app_version')
 
@@ -56,9 +56,9 @@ export default defineComponent({
       else if (currentVersion !== serverVersion) {
         showUpdateNotification()
       }
-    }
+    }*/
 
-    function showUpdateNotification() {
+    /*function showUpdateNotification() {
       Notify.create({
         message: 'Nueva versión disponible. Recarga para actualizar. 🚀 ',
         type: 'info',
@@ -83,14 +83,14 @@ export default defineComponent({
             color: 'red',
             round: true,
             handler: () => {
-                /** */
+                /!** *!/
             }
           }
         ]
       })
-    }
+    }*/
 
-    onMounted(() => {
+    /*onMounted(() => {
       // console.log('Component mounted.', process.env.APP_VERSION)
       checkVersion()
       //Revisar versión cada 5 minutos
@@ -98,7 +98,7 @@ export default defineComponent({
     })
     onUnmounted(() => {
       clearInterval(intervalId)
-    })
+    })*/
 
     return {
       layout

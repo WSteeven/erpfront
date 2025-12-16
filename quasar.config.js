@@ -21,7 +21,7 @@ export default configure(function (/* ctx */) {
   return {
     eslint: { warnings: true, errors: true },
 
-    boot: ['axios', 'global-variables', 'push', 'echarts'],
+    boot: ['axios',  'push', 'echarts'],
 
     css: ['app.scss'],
 

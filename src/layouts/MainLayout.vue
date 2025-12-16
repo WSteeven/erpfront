@@ -412,7 +412,7 @@
                 </div>
 
                 <div class="text-subtitle2 text-center q-mb-md">
-                  Saldo Actual: $ {{ saldo }}
+                  Mis Fondos Rotativos: $ {{ saldo }}
                 </div>
 
                 <!-- <div class=" text-center q-mb-md" v-if="ultimaConexion">

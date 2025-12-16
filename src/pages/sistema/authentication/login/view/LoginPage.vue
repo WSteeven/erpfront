@@ -82,19 +82,17 @@
             />
 
             <!-- Divisor con “o” centrada -->
-            <div class="or-divider q-my-md">
-              <span>o</span>
-            </div>
+
 
             <!-- Entrar como externo (outline) -->
-            <q-btn
+<!--            <q-btn
               color="secondary"
               label="¿Entrar como externo?"
               class="full-width q-mt-xs q-mb-md btn-primary-xl"
               no-caps
               unelevated
               :to="{ name: 'LoginPostulante' }"
-            />
+            />-->
 
             <!-- Link inferior -->
             <div

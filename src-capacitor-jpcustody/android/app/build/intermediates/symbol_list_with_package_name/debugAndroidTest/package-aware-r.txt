@@ -1,3 +1,0 @@
-org.firstred.jpcustody.com.test
-style WhiteBackgroundDialogTheme
-style WhiteBackgroundTheme
