@@ -2,7 +2,7 @@
   <tab-layout
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
-    titulo-pagina="Categorias"
+    titulo-pagina="Bancos"
   >
     <template #formulario>
       <q-form @submit.prevent>

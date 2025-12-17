@@ -340,11 +340,11 @@ export default defineComponent({
     const validarConductor = new ValidarChofer(empleado, conductor)
     mixin.agregarValidaciones(validarConductor)
 
-    const validarHorarioLaboral = new ValidarHorarioLaboral(
-      empleado,
-      accion.value
-    )
-    mixin.agregarValidaciones(validarHorarioLaboral)
+    // const validarHorarioLaboral = new ValidarHorarioLaboral(
+    //   empleado,
+    //   accion.value
+    // )
+    // mixin.agregarValidaciones(validarHorarioLaboral)
 
     const configuracionStore = useConfiguracionGeneralStore()
     tipos_contrato.value = listadosAuxiliares.tipos_contrato

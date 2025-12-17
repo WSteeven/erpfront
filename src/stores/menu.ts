@@ -154,7 +154,7 @@ export const useMenuStore = defineStore('menu', () => {
     /********************
      * Modulo de conecel
      ********************/
-      ...menuConecel.value,
+      // ...menuConecel.value,
     /********************
      * Modulo de tickets
      ********************/
@@ -212,157 +212,13 @@ export const useMenuStore = defineStore('menu', () => {
         }
       ]
     },
-    /********************
-     * Modulo medico
-     ********************/
-    {
-      title: 'Médico',
-      icon: 'bi-heart-pulse',
-      can: store.can('puede.acceder.modulo_medico'),
-      module: true,
-      children: [
-        {
-          title: 'Gestionar pacientes',
-          link: 'gestionar-pacientes',
-          icon: 'bi-person-hearts',
-          can: store.can('puede.acceder.gestionar_pacientes')
-        },
-        {
-          title: 'Cuestionarios',
-          link: 'cuestionarios',
-          icon: 'bi-file-earmark-text',
-          can: store.can('puede.acceder.cuestionarios')
-        },
-        {
-          title: 'Cita médica',
-          link: 'citas-medicas',
-          icon: 'bi-calendar-check',
-          can: store.can('puede.acceder.citas_medicas')
-        },
-        {
-          title: 'Solicitudes de exámenes',
-          link: 'solicitudes-examenes',
-          icon: 'bi-journal-medical',
-          can: store.can('puede.acceder.solicitudes_examenes')
-        },
-        {
-          title: 'Reportes cuestionarios',
-          link: 'reportes-cuestionarios',
-          icon: 'bi-file-earmark-bar-graph',
-          can: store.can('puede.acceder.reportes_cuestionarios')
-        },
-        {
-          title: 'CIE',
-          link: 'cie',
-          icon: 'bi-journal-bookmark',
-          can: store.can('puede.acceder.cies')
-        },
-        /* {
-                  title: 'Firmar fichas médicas',
-                  link: 'firmar-fichas-medicas',
-                  icon: 'bi-app',
-                }, */
-        {
-          title: 'Configuracion Cuestionario Empleado',
-          link: 'configuraciones-cuestionarios-empleados',
-          icon: 'bi-gear',
-          can: store.can(
-            'puede.acceder.configuraciones_cuestionarios_empleados'
-          )
-        },
-        {
-          title: 'Laboratorios clínicos',
-          link: 'laboratorios-clinicos',
-          icon: 'bi-app',
-            can: store.can('puede.acceder.laboratorios_clinicos')
-        }
-      ]
-    },
-    /********************
-     * Modulo Seguridad
-     ********************/
-    ...menuSeguridad.value,
-    /********************
-     * Modulo SSO
-     ********************/
-    {
-      title: 'SSO',
-      icon: 'bi-hospital',
-      can: store.can('puede.acceder.modulo_sso'),
-      module: true,
-      children: [
-        {
-          title: 'Incidentes',
-          link: 'incidentes',
-          icon: 'bi-person-hearts',
-          can: store.can('puede.acceder.incidentes')
-        },
-        {
-          title: 'Inspecciones',
-          link: 'inspecciones',
-          icon: 'bi-person-hearts',
-          can: store.can('puede.acceder.inspecciones')
-        },
-        {
-          title: 'Solicitud de descuento',
-          link: 'solicitudes-descuentos',
-          icon: 'bi-cash-stack',
-          can: store.can('puede.acceder.solicitudes_descuentos')
-        },
-        {
-          title: 'Accidentes',
-          link: 'accidentes',
-          icon: 'personal_injury',
-          can: store.can('puede.acceder.accidentes')
-        },
-        {
-          title: 'Certificaciones',
-          link: 'certificaciones',
-          icon: 'bi-patch-check',
-          can: store.can('puede.acceder.certificaciones')
-        },
-        {
-          title: 'Certificaciones empleados',
-          link: 'certificaciones-empleados',
-          icon: 'bi-patch-check',
-          can: store.can('puede.acceder.certificaciones_empleados')
-        }
-      ]
-    },
 
     /*****************************************************************************
      * MÓDULO DE BODEGA.
      * Toda la estructura de pedidos, devoluciones y despachos de materiales
      *****************************************************************************/
       ...menuBodega.value,
-    /*****************
-     * Activos fijos
-     *****************/
-    {
-      title: 'Activos fijos',
-      icon: 'bi-building-check',
-      can: store.can('puede.acceder.modulo_activos_fijos'),
-      children: [
-        {
-          title: 'Control de activos fijos',
-          link: 'control-activos-fijos',
-          can: store.can('puede.acceder.control_activos_fijos'),
-          icon: 'bi-app'
-        },
-        {
-          title: 'Seguimiento consumo de activos fijos',
-          link: 'seguimiento-consumo-activos-fijos',
-          can: store.can('puede.acceder.seguimiento_consumo_activos_fijos'),
-          icon: 'bi-app'
-        },
-        {
-          title: 'Transferencia de activos fijos',
-          link: 'transferencia-activos-fijos',
-          can: store.can('puede.acceder.transferencia_activos_fijos'),
-          icon: 'bi-app'
-        }
-      ]
-    },
+
     // Modulo Fondos Rotativos
       ...menuFondosRotativos.value,
 
@@ -398,306 +254,41 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.acceder.grupos')
         },
         {
-          title: 'Planificador',
-          link: 'planificadores',
-          icon: 'bi-calendar-check',
-          can: store.can('puede.acceder.planificadores')
-        },
-        {
-          title: 'Permiso',
-          link: 'permiso-nomina',
-          icon: 'bi-calendar2-plus',
-          can: store.can('puede.acceder.permiso_nomina')
-        },
-          {
-          title: 'Horas Pendientes de Descuento',
-          link: 'horas-pendientes',
-          icon: 'bi-clock-history',
-          can: true
-        },
-        {
-          title: 'Descuentos a Empleados',
-          link: 'descuentos',
-          icon: 'bi-emoji-frown',
-          can: store.can('puede.acceder.descuentos')
-        },
-        {
-          title: 'Nominas y prestamos',
-          icon: 'bi-people',
-          can: true,
-          children: [
-            {
-              title: 'Multas de Conductores',
-              link: 'multas-conductores',
-              icon: 'bi-exclamation-octagon',
-              can: store.can('puede.acceder.multas_conductores')
-            },
-            {
-              title: 'Rol de Pagos',
-              link: 'rol-pago-mes',
-              icon: 'bi-journal-check',
-              can: store.can('puede.acceder.rol_pago_mes')
-            },
-            {
-              title: 'Licencia Empleado',
-              link: 'licencia-empleado',
-              icon: 'bi-card-heading',
-              can: store.can('puede.acceder.licencia_empleado')
-            },
-            {
-              title: 'Valores para Roles',
-              link: 'valores-cargados-roles',
-              icon: 'bi-cash-coin',
-              can: store.can('puede.acceder.valores_cargados_roles')
-            },
-            {
-              title: 'Solicitud de Vacaciones',
-              link: 'solicitudes-vacaciones',
-              icon: 'bi-umbrella',
-              can: store.can('puede.acceder.solicitudes_vacaciones')
-            },
-            {
-              title: 'Registro de Vacaciones',
-              link: 'vacaciones',
-              icon: 'bi-umbrella',
-              can: store.can('puede.acceder.vacaciones')
-            },
-            {
-              title: 'Familiares',
-              link: 'familiares',
-              icon: 'bi-people',
-              can: store.can('puede.acceder.familiares')
-            },
-            {
-              title: 'Extension Conyugal',
-              link: 'extension-conyugal',
-              icon: 'bi-person-hearts',
-              can: store.can('puede.acceder.extension_conyugal')
-            },
-            {
-              title: 'Alimentacion',
-              icon: 'bi-shop-window',
-              can: store.can('puede.acceder.modulo_alimentacion'),
-              children: [
-                {
-                  title: 'Asignar Alimentacion',
-                  link: 'asignar-alimentaciones',
-                  icon: 'bi-card-checklist',
-                  can: store.can('puede.acceder.asignar_alimentaciones')
-                },
-                {
-                  title: 'Alimentacion',
-                  link: 'alimentaciones',
-                  icon: 'bi-shop',
-                  can: store.can('puede.acceder.alimentaciones')
-                }
-              ]
-            },
-            {
-              title: 'Prestamos',
-              icon: 'bi-wallet2',
-              can: store.can('puede.acceder.prestamos_empleados'),
-              children: [
-                {
-                  title: 'Prestamos Empresariales',
-                  link: 'prestamo-empresarial',
-                  icon: 'bi-building',
-                  can: store.can('puede.acceder.prestamo_empresarial')
-                },
-                {
-                  title: 'Prestamos Hipotecario',
-                  link: 'prestamo-hipotecario',
-                  icon: 'bi-house-door',
-                  can: store.can('puede.acceder.prestamo_hipotecario')
-                },
-                {
-                  title: 'Prestamos Quirografario',
-                  link: 'prestamos-quirografarios',
-                  icon: 'bi-handbag',
-                  can: store.can('puede.acceder.prestamos_quirografarios')
-                },
-                {
-                  title: 'Solicitud de Prestamos Empresariales',
-                  link: 'solicitud-prestamo-empresarial',
-                  icon: 'bi-file-earmark-check',
-                  can: store.can('puede.acceder.solicitud_prestamo_empresarial')
-                }
-              ]
-            }
-          ]
-        },
-        ...seleccionContratacionPersonal.value,
-        ...controlPersonal.value,
-        ...trabajoSocial.value,
-        {
           title: 'Configuracion',
           icon: 'bi-gear',
           can: store.can('puede.acceder.configuracion_modulo_rrhh'),
           children: [
             {
-              title: 'Conceptos de Ingresos',
-              link: 'concepto-ingreso',
-              icon: 'bi-plus-circle',
-              can: store.can('puede.acceder.concepto_ingreso')
-            },
-            {
-              title: 'Descuentos Generales',
-              link: 'descuentos-generales',
-              icon: 'bi-dash-circle',
-              can: store.can('puede.acceder.descuentos_generales')
-            },
-            {
-              title: 'Multas',
-              link: 'multa',
-              icon: 'bi-exclamation-octagon',
-              can: store.can('puede.acceder.multa')
-            },
-            {
-              title: 'Rubro',
-              link: 'rubro',
-              icon: 'bi-box',
-              can: store.can('puede.acceder.rubro')
-            },
-            {
               title: 'Tipos de licencias',
               link: 'tipos-licencias',
               icon: 'bi-box',
               can: store.can('puede.acceder.tipos_licencias')
-            }
-          ]
-        },
-        // Reportes del modulo empleados
-        {
-          title: 'Reportes',
-          icon: 'bi-graph-up-arrow',
-          can: store.can('puede.acceder.reportes_rrhh'),
-          children: [
-            {
-              title: 'Reporte de Vacaciones de Empleados',
-              link: 'reporte-vacaciones',
-              icon: 'bi-sunglasses',
-              can: store.can('puede.acceder.reportes_rrhh') || true
             },
             {
-              title: 'Reporte de Préstamos Empresariales',
-              link: 'reporte-prestamos-empresariales',
-              icon: 'bi-file',
-              can: store.can('puede.acceder.reportes_rrhh')
-            }
+              title: 'Bancos',
+              link: 'bancos',
+              icon: 'bi-bank',
+              can: store.can('puede.acceder.bancos') || store.esAdministrador
+            },
           ]
-        }
+        },
       ]
     },
 
     /*****************************************
      * MODULO DE INTRANET
      *****************************************/
-    {
-      title: 'Intranet',
-      icon: 'fa-solid fa-info',
-      can: store.esAdministrador || store.can('puede.acceder.modulo_intranet'),
-      module: true,
-      children: [
-        {
-          title: 'Noticias',
-          icon: 'fa-regular fa-newspaper',
-          link: '/blog',
-          can: store.can('puede.acceder.intra_noticias')
-        },
-        {
-          title: 'Eventos',
-          icon: 'bi-calendar-event',
-          link: 'eventos',
-          can: store.can('puede.acceder.intra_eventos')
-        },
-        {
-          title: 'Categorias',
-          link: 'categorias-noticias',
-          icon: 'bi-tags',
-          can: store.can('puede.acceder.intra_categorias')
-        },
-        {
-          title: 'Etiquetas',
-          link: 'etiquetas',
-          icon: 'bi-tag',
-          can: store.can('puede.acceder.intra_etiquetas')
-        },
-        {
-          title: 'Tipo de Evento',
-          link: 'tipos-eventos',
-          icon: 'bi-calendar2-event',
-          can: store.can('puede.acceder.intra_tipos_eventos')
-        }
-        /*         {
-                          title: 'Organigrama',
-                          icon: 'bi-diagram-3',
-                          link: 'organigrama',
-                          can: store.can('puede.acceder.intra_organigrama')
-                        }, */
-      ]
-    },
+
 
     /*****************************************
      * MODULO DE VEHICULOS
      *****************************************/
-    ...vehiculos.value,
+    // ...vehiculos.value,
 
     /*********************************************************
      * Modulo de compras y proveedores
      *********************************************************/
-    ...comprasProveedores.value,
-
-    /***********************
-     * Modulo de ventas JP
-     **********************/
-    {
-      title: 'Ventas',
-      icon: 'fa-solid fa-circle-dollar-to-slot',
-      can: store.can('puede.acceder.modulo_ventas') || store.esAdministrador,
-      module: true,
-      children: [
-        {
-          title: 'Dashboard',
-          link: 'dashboard-ventas',
-          icon: 'bi-bar-chart',
-          can:
-            store.can('puede.acceder.dashboard_ventas_empresa') ||
-            store.esAdministrador
-        },
-        {
-          title: 'Proformas',
-          link: 'proformas',
-          icon: 'bi-file-earmark-text',
-          can: store.can('puede.acceder.proformas') || store.esAdministrador
-        },
-        {
-          title: 'Prefacturas',
-          link: 'prefacturas',
-          icon: 'bi-file-earmark-text',
-          can: store.can('puede.acceder.prefacturas') || store.esAdministrador
-        },
-        {
-          title: 'Reportes',
-          icon: 'bi-graph-up-arrow',
-          can:
-            store.esAdministrador ||
-            store.esCompras ||
-            store.can('puede.acceder.reportes_modulo_ventas'),
-          children: [
-            {
-              title: 'Reporte de Prefacturas',
-              link: 'reporte-prefacturas',
-              icon: 'bi-journal-bar-graph',
-              can: true
-            }
-          ]
-        }
-      ]
-    },
-    /*********************************************************
-     * Modulo de ventas de claro
-     *********************************************************/
-      ...ventasClaro.value,
+    // ...comprasProveedores.value,
 
     /*********************************************************
      * Modulo de Administración
@@ -724,18 +315,18 @@ export const useMenuStore = defineStore('menu', () => {
               store.can('puede.acceder.configuracion_general') ||
               store.esAdministrador
         },
-        {
-          title: 'Plantillas Base',
-          link: 'plantillas-base',
-          icon: 'bi-card-list',
-          can: store.can('puede.acceder.plantillas_base')
-        },
-        {
-          title: 'Plantillas Capacitaciones',
-          link: 'plantillas-capacitaciones',
-          icon: 'bi-card-list',
-          can: store.can('puede.acceder.plantillas_capacitaciones')
-        }
+        // {
+        //   title: 'Plantillas Base',
+        //   link: 'plantillas-base',
+        //   icon: 'bi-card-list',
+        //   can: store.can('puede.acceder.plantillas_base')
+        // },
+        // {
+        //   title: 'Plantillas Capacitaciones',
+        //   link: 'plantillas-capacitaciones',
+        //   icon: 'bi-card-list',
+        //   can: store.can('puede.acceder.plantillas_capacitaciones')
+        // }
       ]
     },
     {

@@ -517,15 +517,15 @@
           alt="Logo"
           :src="!$q.dark.isActive ? logoClaro : logoOscuro"
           height="54"
-          class="block bg-solid q-pa-sm borde q-mr-sm"
-          style="border-radius: 8px"
+          class="block bg-solid q-pa-sm q-mr-sm"
         />
         <span class="column">
-          <b class="text-h4 text-primary text-weight-bold">
-            FIRST<span class="text-secondary">RED</span>
-          </b>
+            <b class="text-h4 text-primary text-weight-bold">SISTEMA</b>
+<!--          <b class="text-h4 text-primary text-weight-bold">-->
+<!--            FIRST<span class="text-secondary">RED</span>-->
+<!--          </b>-->
 
-          <small class="text-color">Enterprise Resource Planning</small>
+<!--          <small class="text-color">Enterprise Resource Planning</small>-->
         </span>
       </div>
 

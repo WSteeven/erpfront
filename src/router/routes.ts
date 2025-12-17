@@ -71,6 +71,12 @@ const routes: RouteRecordRaw[] = [
        * Módulo de RRHH
        *******************/
       ...rutasRecursosHumanos,
+      {
+        path: '/bancos',
+        name: 'bancos',
+        component: () => import('pages/recursosHumanos/banco/view/BancoPage.vue'),
+        meta: { requiresAuth: true }
+      },
 
       /*******************
        * Módulo de tareas
