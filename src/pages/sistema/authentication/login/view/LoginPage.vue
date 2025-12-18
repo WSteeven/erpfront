@@ -23,11 +23,10 @@
               class="top-logo lt-md"
             />
             <div class="brand-title">
-              <span class="text-primary">FIRST</span
-              ><span class="text-secondary">RED</span>
+              <span class="text-primary">{{ configuracion?.razon_social }}</span>
             </div>
             <div class="text-caption text-grey-7 q-mt-xs">
-              Enterprise Resource Planning
+              {{configuracion?.nombre_comercial}}
             </div>
           </div>
 

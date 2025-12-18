@@ -35,7 +35,7 @@ const menuBodega: Ref<MenuOption[]> = computed(() => {
         {
           title: 'Categorías',
           link: 'categorias',
-          can: store.esActivosFijos, //store.esBodeguero,//can('puede.acceder.categorias'),
+          can: store.esActivosFijos ||store.esBodeguero ||store.can('puede.acceder.categorias'),
           icon: 'bi-tags'
         },
         {

@@ -68,6 +68,7 @@ export default defineComponent({
       loginUser,
       logoClaro: computed(() => configuracionGeneralStore.configuracion?.logo_claro),
       logoOscuro: computed(() => configuracionGeneralStore.configuracion?.logo_oscuro),
+      configuracion: computed(()=>configuracionGeneralStore.configuracion),
       enableLoginButton,
       login,
       recuperarPassword,
