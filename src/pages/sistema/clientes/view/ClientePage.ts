@@ -20,6 +20,7 @@ import { CantonController } from 'sistema/ciudad/infraestructure/CantonControlle
 import { ParroquiaController } from 'sistema/parroquia/infraestructure/ParroquiaController';
 import { Parroquia } from 'sistema/parroquia/domain/Parroquia';
 import { ComportamientoModalesCliente } from '../application/ComportamientoModalesCliente';
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
 
 
 export default defineComponent({
@@ -33,10 +34,10 @@ export default defineComponent({
         const modales = new ComportamientoModalesCliente()
 
 
-        const opciones_empresas = ref([])
         const opciones_cantones = ref([])
         const opciones_parroquias = ref([])
         const parroquias = ref([])
+        const {empresas, filtrarEmpresas} = useFiltrosListadosSelects(listadosAuxiliares)
         cargarVista(async () => {
             obtenerListados({
                 empresas: new EmpresaController(),
@@ -59,11 +60,11 @@ export default defineComponent({
 
         async function guardado() {
             const { result } = await new EmpresaController().listar()
-            opciones_empresas.value = result
+            empresas.value = result
         }
 
         //llenar listados
-        opciones_empresas.value = listadosAuxiliares.empresas
+        empresas.value = listadosAuxiliares.empresas
         opciones_cantones.value = listadosAuxiliares.cantones
         opciones_parroquias.value = listadosAuxiliares.parroquias
 
@@ -72,7 +73,6 @@ export default defineComponent({
             configuracionColumnas: configuracionColumnasClientes,
 
             //listados
-            opciones_empresas,
             opciones_cantones,
             opciones_parroquias,
             opcionesEstados,
@@ -109,8 +109,8 @@ export default defineComponent({
                     opciones_parroquias.value = parroquias.value.filter((v: Parroquia) => v.parroquia.toLowerCase().indexOf(val.toLowerCase()) > -1)
                 })
             }
-
-
+,
+empresas, filtrarEmpresas
         }
     }
 })

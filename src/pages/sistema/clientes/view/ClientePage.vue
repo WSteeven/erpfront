@@ -17,18 +17,21 @@
             <label v-else class="q-mb-sm block">Empresa</label>
             <q-select
               v-model="cliente.empresa"
-              :options="opciones_empresas"
+              :options="empresas"
               transition-show="jump-up"
               transition-hide="jump-down"
               :disable="disabled"
               options-dense
               dense
               outlined
+              use-input
+              input-debounce="0"
               :error="!!v$.empresa.$errors.length"
               hint="Agrega elementos desde el panel de empresas"
               error-message="Debes seleccionar una empresa"
               :option-value="(v) => v.id"
               :option-label="(v) => v.razon_social"
+                              @filter="filtrarEmpresas"
               emit-value
               map-options
             >

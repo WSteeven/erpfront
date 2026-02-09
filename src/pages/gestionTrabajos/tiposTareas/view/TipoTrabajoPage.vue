@@ -1,10 +1,17 @@
 <template>
-  <tab-layout
+  <tab-layout-filter-tabs2
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnasTiposTrabajos"
-    titulo-pagina="Tipo de tareas"
+    titulo-pagina="Tipos de trabajos"
     :permitir-eliminar="false"
-    :permitir-consultar="false"
+    :permitir-editar="true"
+    :permitir-consultar="true"
+    :initial-search="searchTable"
+    :tab-options="tabOptions"
+    :tab-defecto="currentTab"
+    :filtrar="filtrarTiposTrabajos"
+        :mostrarButtonSubmits="false"
+
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -13,7 +20,7 @@
           <div class="col-12 col-md-6">
             <label class="q-mb-sm block">Cliente corporativo</label>
             <q-select
-              v-model="tipoTarea.cliente"
+              v-model="tipoTrabajo.cliente"
               :options="clientes"
               @filter="filtrarClientes"
               transition-show="scale"
@@ -22,8 +29,8 @@
               options-dense
               dense
               outlined
-              :option-label="(item) => item.razon_social"
-              :option-value="(item) => item.id"
+              :option-label="item => item.razon_social"
+              :option-value="item => item.id"
               use-input
               input-debounce="0"
               emit-value
@@ -31,29 +38,23 @@
               :error="!!v$.cliente.$errors.length"
             >
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
+                <no-option-component />
               </template>
 
               <template v-slot:error>
-                <div v-for="error of v$.cliente.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="cliente" :v$="v$" />
               </template>
             </q-select>
           </div>
 
           <!-- Nombre -->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-6">
             <label class="q-mb-sm block">Nombre del trabajo</label>
             <q-input
-              v-model="tipoTarea.descripcion"
+              v-model="tipoTrabajo.descripcion"
               placeholder="Obligatorio"
               @update:model-value="
-                (v) => (tipoTarea.descripcion = v.toUpperCase())
+                v => (tipoTrabajo.descripcion = v.toUpperCase())
               "
               :disable="disabled"
               autofocus
@@ -62,27 +63,69 @@
               :error="!!v$.descripcion.$errors.length"
             >
               <template v-slot:error>
-                <div v-for="error of v$.descripcion.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="descripcion" :v$="v$" />
               </template>
             </q-input>
           </div>
-
+          <div class="col-12 col-md-6">
+            <label class="q-mb-sm block">Plantilla</label>
+            <file-component
+              v-model="tipoTrabajo.url_plantilla"
+              clave="url_plantilla"
+              :v$="v$"
+              :disable="disabled"
+              :accion="accion"
+            />
+          </div>
           <div class="col-12 col-md-3">
             <br />
             <q-toggle
-              v-model="tipoTarea.activo"
+              v-model="tipoTrabajo.activo"
               checked-icon="check"
               :disable="disabled"
               label="Activo"
               color="positive"
             />
-          </div>
+        </div>
+    </div>
+        <div class="col-12">
+            <div class="row justify-end q-col-gutter-x-xs">
+              <button-submits
+                :accion="accion"
+                :permitirGuardar="true"
+                :disabled="cargando.estaCargando.value"
+                @cancelar="reestablecer()"
+                @editar="
+                  guardar(
+                    tipoTrabajo,
+                    false,
+                    {},
+                    {
+                      headers: {
+                        'Content-Type': 'multipart/form-data'
+                      }
+                    }
+                  )
+                "
+                @eliminar="eliminar(tipoTrabajo)"
+                @guardar="
+                  guardar(
+                    tipoTrabajo,
+                    true,
+                    {},
+                    {
+                      headers: {
+                        'Content-Type': 'multipart/form-data'
+                      }
+                    }
+                  )
+                "
+              />
+            </div>
         </div>
       </q-form>
     </template>
-  </tab-layout>
+  </tab-layout-filter-tabs2>
 </template>
 
 <script src="./TipoTrabajoPage.ts"></script>
