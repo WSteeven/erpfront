@@ -126,13 +126,8 @@ export default defineComponent({
       listado,
       tabs
     } = mixin.useReferencias()
-    const {
-      setValidador,
-      cargarVista,
-      obtenerListados,
-      listar,
-      editar
-    } = mixin.useComportamiento()
+    const { setValidador, cargarVista, obtenerListados, listar, editar } =
+      mixin.useComportamiento()
     const {
       onBeforeGuardar,
       onBeforeModificar,
@@ -439,8 +434,7 @@ export default defineComponent({
           empleado.nombres != null ? empleado.nombres[0] : ''
         const apellido =
           empleado.apellidos != null ? empleado.apellidos.split(' ')[0] : ''
-        const sitio_web =
-          configuracionStore.configuracion?.sitio_web?.split('WWW.')[1]
+        const sitio_web =configuracionStore.obtenerDominio()
         const username = inicial_nombre + apellido
         empleado.email = username + '@' + sitio_web
         empleado.usuario = username
@@ -593,8 +587,7 @@ export default defineComponent({
       }
       const response: AxiosResponse = await axios.post(ruta, datos)
       const username = ref(response.data.username)
-      const sitio_web =
-        configuracionStore.configuracion?.sitio_web?.split('WWW.')[1]
+      const sitio_web = configuracionStore.obtenerDominio()
       empleado.usuario = username.value
       empleado.email = username.value + '@' + sitio_web
     }
@@ -617,7 +610,7 @@ export default defineComponent({
         case 'HorarioEmpleadoPage':
           searchTable.value = empleado.nombres
           // await consultar(empleado)
-            empleado.tiene_horario_laboral=true
+          empleado.tiene_horario_laboral = true
           await editar(empleado)
           tabs.value = 'listado'
           break
@@ -654,7 +647,7 @@ export default defineComponent({
 
     async function filtrarListadoEmpleados(tab: string) {
       tabDefecto.value = tab
-      if (listado.value.length > 0) await listar({ estado: tab })
+      await listar({ estado: tab })
     }
 
     function verificarRolesSeleccionados() {
@@ -778,7 +771,7 @@ export default defineComponent({
       removeTildes,
       guardado,
       mostrarBotonCerrarModal,
-      searchTable
+      searchTable,configuracionStore
     }
   }
 })

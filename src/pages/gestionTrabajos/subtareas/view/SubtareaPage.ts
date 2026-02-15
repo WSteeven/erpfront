@@ -60,6 +60,7 @@ import { ClienteFinalController } from 'pages/gestionTrabajos/clientesFinales/in
 import { MovilizacionSubtareaController } from 'pages/gestionTrabajos/movilizacionSubtareas/infraestructure/MovilizacionSubtareaController'
 import { useCargandoStore } from 'stores/cargando'
 import { CausaIntervencionController } from 'pages/gestionTrabajos/causasIntervenciones/infraestructure/CausaIntervencionController'
+import { SubtareaController } from '../infraestructure/SubtareaController'
 
 export default defineComponent({
   components: { TabLayout, EssentialTable, ButtonSubmits, EssentialSelectableTable, LabelAbrirModal, ModalesEntidad, DesignarResponsableTrabajo, TiempoSubtarea, TablaSubtareaSuspendida, TablaSubtareaPausas },
@@ -140,6 +141,60 @@ export default defineComponent({
     subtarea.observacion = subtareaStore.observacionTarea
     subtarea.cliente = subtareaStore.idCliente
     accion.value = subtareaStore.accion
+
+    // Configuración de formulario dinámico
+    const configForm = ref(null)
+    const tipoTrabajoController = new TipoTrabajoController()
+    const subtareaController = new SubtareaController()
+
+    const cargarConfigForm = async (idTipoTrabajo: number) => {
+      if (!idTipoTrabajo) {
+        configForm.value = null
+        return
+      }
+      try {
+        const { data } = await tipoTrabajoController.getFormConfig(idTipoTrabajo)
+        configForm.value = data.form_config
+      } catch (error) {
+        console.error('Error cargando configuración de formulario:', error)
+      }
+    }
+
+    // Cargar config si ya tiene tipo de trabajo asignado
+    if (subtarea.tipo_trabajo) {
+      cargarConfigForm(subtarea.tipo_trabajo)
+    }
+
+    // Observar cambios en tipo_trabajo
+    watchEffect(() => {
+      if (subtarea.tipo_trabajo) {
+        cargarConfigForm(subtarea.tipo_trabajo)
+      }
+    })
+
+    const generarDocumento = async () => {
+      if (!subtarea.id) return
+      try {
+        useCargandoStore().mostrarCargando()
+        const response: any = await subtareaController.generateDocument(subtarea.id)
+
+        // Crear blob y descargar
+        const url = window.URL.createObjectURL(new Blob([response.data]))
+        const link = document.createElement('a')
+        link.href = url
+        link.setAttribute('download', `documento_${subtarea.codigo_subtarea}.docx`)
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+
+        notificarCorrecto('Documento generado exitosamente')
+      } catch (error) {
+        notificarError('Error al generar el documento')
+        console.error(error)
+      } finally {
+        useCargandoStore().ocultarCargando()
+      }
+    }
 
     const movilizacionController = new MovilizacionSubtareaController()
 
@@ -447,7 +502,10 @@ export default defineComponent({
       filtrarGrupos,
       empleados,
       filtrarEmpleados,
-      ats: computed(() => subtarea.codigo_subtarea?.replace('TR', 'ATS'))
+
+      ats: computed(() => subtarea.codigo_subtarea?.replace('TR', 'ATS')),
+      configForm,
+      generarDocumento
     }
   },
 })

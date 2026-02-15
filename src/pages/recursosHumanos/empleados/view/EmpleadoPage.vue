@@ -48,6 +48,7 @@
                 </template>
               </q-input>
             </div>
+            
             <!-- correo -->
             <div class="col-12 col-md-3 col-sm-3">
               <label class="q-mb-sm block">Correo</label>

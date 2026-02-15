@@ -14,6 +14,7 @@ export class Subtarea extends EntidadAuditable {
   fecha_solicitud: string | null
   estado: keyof typeof estadosTrabajos | null
   modo_asignacion_trabajo: string
+  form_data: any = {}
 
   // Tiempos
   fecha_hora_creacion: string | null

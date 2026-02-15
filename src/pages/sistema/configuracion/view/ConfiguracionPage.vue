@@ -2,9 +2,9 @@
   <q-page padding>
     <div class="text-right q-mb-md">
       <b class="block text-subtitle1 text-thin text-primary">
-        {{ 'Configuración General' }}</b
+        {{ "Configuración General" }}</b
       >
-      <small class="text-grey-9 text-bold">{{ 'SISTEMA' }}</small>
+      <small class="text-grey-9 text-bold">{{ "SISTEMA" }}</small>
     </div>
 
     <q-card class="rounded custom-shadow bg-desenfoque no-border">
@@ -46,10 +46,7 @@
                 dense
               >
                 <template v-slot:error>
-                  <div
-                    v-for="error of v$.tipo_contribuyente.$errors"
-                    :key="error.$uid"
-                  >
+                  <div v-for="error of v$.tipo_contribuyente.$errors" :key="error.$uid">
                     <div class="error-msg">{{ error.$message }}</div>
                   </div>
                 </template>
@@ -67,10 +64,7 @@
                 dense
               >
                 <template v-slot:error>
-                  <div
-                    v-for="error of v$.representante.$errors"
-                    :key="error.$uid"
-                  >
+                  <div v-for="error of v$.representante.$errors" :key="error.$uid">
                     <div class="error-msg">{{ error.$message }}</div>
                   </div>
                 </template>
@@ -87,10 +81,7 @@
                 dense
               >
                 <template v-slot:error>
-                  <div
-                    v-for="error of v$.ciiu.$errors"
-                    :key="error.$uid"
-                  >
+                  <div v-for="error of v$.ciiu.$errors" :key="error.$uid">
                     <div class="error-msg">{{ error.$message }}</div>
                   </div>
                 </template>
@@ -107,10 +98,7 @@
                 dense
               >
                 <template v-slot:error>
-                  <div
-                    v-for="error of v$.razon_social.$errors"
-                    :key="error.$uid"
-                  >
+                  <div v-for="error of v$.razon_social.$errors" :key="error.$uid">
                     <div class="error-msg">{{ error.$message }}</div>
                   </div>
                 </template>
@@ -253,13 +241,13 @@
             <div class="col-12 col-md-4">
               <label class="q-mb-sm block">Link de app móvil</label>
               <q-input
-                  v-model="configuracion.link_app_movil"
-                  autogrow
-                  type="url"
-                  hint="Ingresa un link que empiece con https://"
-                  placeholder="Opcional"
-                  outlined
-                  dense
+                v-model="configuracion.link_app_movil"
+                autogrow
+                type="url"
+                hint="Ingresa un link que empiece con https://"
+                placeholder="Opcional"
+                outlined
+                dense
               />
             </div>
 
@@ -303,7 +291,9 @@
             </div>
             <!-- IVA -->
             <div class="col-12 col-md-4">
-              <label class="q-mb-sm block">IVA % (Impuesto al valor agregado del Pais de Operaciones)</label>
+              <label class="q-mb-sm block"
+                >IVA % (Impuesto al valor agregado del Pais de Operaciones)</label
+              >
               <q-input
                 v-model="configuracion.iva"
                 autogrow
@@ -322,9 +312,7 @@
                 :imagen="configuracion.logo_claro"
                 :comprimir="false"
                 :alto="'400px'"
-                @update:model-value="
-                  (data) => (configuracion.logo_claro = data)
-                "
+                @update:model-value="(data) => (configuracion.logo_claro = data)"
               ></selector-imagen>
             </div>
 
@@ -336,9 +324,7 @@
                 :imagen="configuracion.logo_oscuro"
                 :comprimir="false"
                 :alto="'400px'"
-                @update:model-value="
-                  (data) => (configuracion.logo_oscuro = data)
-                "
+                @update:model-value="(data) => (configuracion.logo_oscuro = data)"
               ></selector-imagen>
             </div>
 
@@ -350,9 +336,7 @@
                 :imagen="configuracion.logo_marca_agua"
                 :comprimir="false"
                 :alto="'400px'"
-                @update:model-value="
-                  (data) => (configuracion.logo_marca_agua = data)
-                "
+                @update:model-value="(data) => (configuracion.logo_marca_agua = data)"
               ></selector-imagen>
             </div>
           </div>
@@ -368,7 +352,7 @@
             >
               <!-- :class="{ 'full-width': $q.screen.xs }" -->
               <q-icon name="bi-save" size="xs" class="q-pr-sm"></q-icon>
-              <span>{{ 'Actualizar configuración general' }}</span>
+              <span>{{ "Actualizar configuración general" }}</span>
             </q-btn>
           </div>
         </q-form>

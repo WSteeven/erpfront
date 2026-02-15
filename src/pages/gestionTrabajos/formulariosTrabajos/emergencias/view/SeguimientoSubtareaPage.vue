@@ -21,6 +21,30 @@
       </q-btn>
     </div>
 
+    <q-card v-if="configForm" class="rounded-card custom-shadow q-pa-md q-mb-md">
+      <div class="text-h6 q-mb-md text-primary">Información/Informe Técnico</div>
+      <dynamic-form
+        :config="configForm"
+        v-model="subtarea.form_data"
+      />
+      <div class="row justify-end q-gutter-sm q-mt-md">
+         <q-btn
+          color="primary"
+          icon="save"
+          label="Guardar Informe"
+          @click="guardarDatosTecnicos"
+          :loading="loading"
+         />
+         <q-btn
+          color="secondary"
+          icon="print"
+          label="Generar Documento"
+          @click="generarDocumento"
+          :loading="loading"
+         />
+      </div>
+    </q-card>
+
     <q-card class="rounded-card custom-shadow q-pa-md">
       <div class="row">
         <div class="col-12 q-mb-md">
@@ -38,33 +62,21 @@
         <div class="col-12 q-mb-md">
           <br />
           <q-toggle
-            v-model="mostrarSolicitudesAts"
-            label="Solicitudes de ATS"
+            v-model="capturarCoordenadas"
+            label="Capturar coordenadas de trabajo realizado"
             checked-icon="bi-eye"
             color="positive"
             dense
           ></q-toggle>
         </div>
 
-        <div v-if="mostrarSolicitudesAts" class="col-12">
-          <tabla-filas-dinamicas
-            titulo="Solicitudes  de ATS a través de tickets"
-            :configuracionColumnas="configuracionColumnasSolicitudAts"
-            :listado="ticketsAts"
-            :permitirConsultar="false"
-            :permitirEliminar="false"
-            :permitirEditar="false"
-            :mostrarBotones="false"
-            :alto-fijo="false"
-            :entidad="Ticket"
-            :consultarTiempo="false"
-            :accion1="btnSeguimiento"
-            :accion2="btnCancelar"
-            :mostrarAccion1Header="permitirSubir"
-            @guardarFila="(fila) => guardarFilaSolicitudAts(fila, subtarea.id)"
-          ></tabla-filas-dinamicas>
-        </div>
-
+<div class="col-12 q-mb-md" v-if="capturarCoordenadas">
+<essential-table
+:configuracionColumnas="[...configuracionColumnasCoordenadas, accionesTabla]"
+:datos="coordenadas"
+:accion1Header="btnObtenerCoordenadas"
+/>
+          </div>
         <div class="col-12 q-mb-md">
           <br />
           <q-toggle

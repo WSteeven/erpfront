@@ -5,6 +5,7 @@ export default class ActividadRealizadaSeguimientoSubtarea extends EntidadAudita
   trabajo_realizado: string | null
   fotografia: string | null
   subtarea: number | null
+  tipo_fotografia  : string | null
 
   constructor() {
     super()
@@ -12,5 +13,6 @@ export default class ActividadRealizadaSeguimientoSubtarea extends EntidadAudita
     this.trabajo_realizado = null
     this.fotografia = null
     this.subtarea = null
+    this.tipo_fotografia = null
   }
 }

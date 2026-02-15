@@ -48,7 +48,7 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: Compo
     titulo: 'Ejecutar',
     icono: 'bi-play-fill',
     color: 'positive',
-    visible: ({ entidad }) => [estadosTrabajos.AGENDADO, estadosTrabajos.REALIZADO].includes(entidad.estado) && entidad.puede_ejecutar && (entidad.es_responsable || authenticationStore.can('puede.ejecutar.subtareas')), //(authenticationStore.esJefeTecnico || authenticationStore.esCoordinador || authenticationStore.esAdministrador || entidad.es_responsable),
+    visible: ({ entidad }) => [estadosTrabajos.AGENDADO, estadosTrabajos.REALIZADO].includes(entidad.estado) && entidad.puede_ejecutar && (entidad.es_responsable || authenticationStore.can('puede.ejecutar.subtareas')),
     accion: ({ entidad, posicion }) => {
 
       obtenerCoordenadas(entidad)
@@ -214,7 +214,7 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: Compo
     titulo: 'Seguimiento',
     icono: 'bi-check2-square',
     color: 'indigo',
-    visible: ({ entidad }) => ![estadosTrabajos.AGENDADO, estadosTrabajos.CREADO].includes(entidad.estado) && (authenticationStore.esJefeTecnico || authenticationStore.esCoordinador || authenticationStore.esAdministrador || entidad.es_responsable),
+    visible: ({ entidad }) => ![estadosTrabajos.AGENDADO, estadosTrabajos.CREADO].includes(entidad.estado) && (authenticationStore.esJefeTecnico || authenticationStore.esCoordinador || authenticationStore.esAdministrador || entidad.es_responsable || entidad.es_miembro_grupo_responsable),
     accion: async ({ entidad }) => {
       // confirmar('¿Está seguro de abrir el formulario de seguimiento?', () => {
       trabajoAsignadoStore.idSubtareaSeleccionada = entidad.id

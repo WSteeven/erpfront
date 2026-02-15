@@ -22,6 +22,15 @@ export const configuracionColumnasTrabajoRealizado: ColumnConfig<ActividadRealiz
     requerido: true,
   },
   {
+    name: 'tipo_fotografia',
+    field: 'tipo_fotografia',
+    label: 'Tipo fotografia',
+    align: 'left',
+    type: 'select',
+    hint: 'Opcional',
+    requerido: false,
+  },
+  {
     name: 'fotografia',
     field: 'fotografia',
     label: 'Fotografia',

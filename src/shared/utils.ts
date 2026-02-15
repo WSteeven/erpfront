@@ -686,22 +686,24 @@ export function ordenarClientesPorBodeguero(
     )
 }
 
-export function obtenerUbicacion(onUbicacionConcedida: (pos:GeolocationPosition)=>void) {
-  const onErrorDeUbicacion = (err:GeolocationPositionError) => {
-    console.log('Error obteniendo ubicación: ', err)
-  }
+export function obtenerUbicacion(): Promise<GeolocationPosition> {
+  return new Promise((resolve, reject) => {
+    if (!navigator.geolocation) {
+      reject(new Error('Geolocation no soportado'));
+      return;
+    }
 
-  const opcionesDeSolicitud = {
+    const opcionesDeSolicitud = {
     enableHighAccuracy: true, // Alta precisión
     maximumAge: 0, // No queremos caché
     timeout: 5000 // Esperar solo 5 segundos
   }
 
-  navigator.geolocation.getCurrentPosition(
-    onUbicacionConcedida,
-    onErrorDeUbicacion,
-    opcionesDeSolicitud
-  )
+    navigator.geolocation.getCurrentPosition(
+      position => resolve(position),
+      error => reject(error), opcionesDeSolicitud
+    );
+  });
 }
 
 export function extraerRol(roles: string[], rolConsultar: string) {

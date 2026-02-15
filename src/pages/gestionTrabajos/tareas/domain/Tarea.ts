@@ -50,7 +50,7 @@ export class Tarea extends EntidadAuditable {
     this.codigo_tarea_cliente = null
     this.fecha_solicitud = null
     this.titulo = null
-    this.para_cliente_proyecto = destinosTareas.paraProyecto
+    this.para_cliente_proyecto = destinosTareas.paraClienteFinal
     this.ubicacion_trabajo = ubicacionesTrabajo.clienteFinal
     this.medio_notificacion = 'CORREO'
     this.tiene_subtareas = true
@@ -64,28 +64,19 @@ export class Tarea extends EntidadAuditable {
     this.cliente_id = null
 
     // Trabajo ----
-    this.codigo_tarea_cliente = null
-    this.titulo = null
     this.descripcion_completa = null
     this.observacion = null
     this.novedad = null
-    this.para_cliente_proyecto = destinosTareas.paraProyecto
-    this.fecha_solicitud = null
+
     this.estado = null
     this.etapa = null
     this.metraje_tendido = null
 
     // Foreign keys
     this.tipo_trabajo = null
-    this.cliente_final = null
-    this.coordinador = null
-    this.fiscalizador = null
-    this.proyecto = null
-    this.proyecto_id = null
-    this.cliente = null
+
     this.trabajo_padre = null
     this.trabajo_dependiente = null
-    this.centro_costo = null
 
     this.imagen_informe = null
 
@@ -95,7 +86,6 @@ export class Tarea extends EntidadAuditable {
     this.cantidad_subtareas = null
     this.finalizado = false
     this.ruta_tarea = null
-    this.no_lleva_centro_costo = false
 
     this.fecha_hora_finalizacion = null
   }

@@ -55,7 +55,8 @@ import { Tarea } from '../domain/Tarea'
 import { Proyecto } from 'pages/gestionTrabajos/proyectos/domain/Proyecto'
 import { Etapa } from '../../proyectos/modules/etapas/domain/Etapa'
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
-import { CentroCostoController } from 'pages/gestionTrabajos/centroCostos/infraestructure/CentroCostosController'
+import { EmpleadoRoleController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoRolesController'
+
 
 export default defineComponent({
   components: {
@@ -118,12 +119,12 @@ export default defineComponent({
           },
         },
         fiscalizadores: {
-          controller: new EmpleadoController(),
-          params: { rol: rolesSistema.fiscalizador, campos: 'id,nombres,apellidos' },
+          controller: new EmpleadoRoleController(),
+          params: { roles: [rolesSistema.fiscalizador]},
         },
         coordinadores: {
-          controller: new EmpleadoController(),
-          params: { rol: rolesSistema.coordinador, campos: 'id,nombres,apellidos' },
+          controller: new EmpleadoRoleController(),
+          params: { roles: [rolesSistema.coordinador], campos: 'id,nombres,apellidos' },
         },
         rutas: {
           controller: new RutaTareaController(),
@@ -169,8 +170,6 @@ export default defineComponent({
       proyecto: { required: requiredIf(() => paraProyecto.value) },
       coordinador: { required: requiredIf(() => (esCoordinadorBackup || authenticationStore.esJefeTecnico) && paraClienteFinal.value) },
       ruta_tarea: { required: requiredIf(() => paraClienteFinal.value && tarea.ubicacion_trabajo === ubicacionesTrabajo.ruta) },
-      centro_costo: { required: requiredIf(() => paraClienteFinal.value && centros_costos.value.length > 0) },
-      // tarea: { requiredIf: requiredIf(() => preingreso.etapa && centros_costos.value.length) },
       etapa: {
         requiredIf: requiredIf(() => { return paraProyecto.value && tarea.proyecto! > 0 && etapas.value.length > 0 })
       },
@@ -204,7 +203,6 @@ export default defineComponent({
       etapas,
       filtrarEtapas,
     } = useFiltrosListadosTarea(listadosAuxiliares, tarea)
-    const { centros_costos, filtrarCentrosCostos } = useFiltrosListadosSelects(listadosAuxiliares)
 
     /************
     * Funciones
@@ -218,9 +216,7 @@ export default defineComponent({
       tabActualTarea = tabSeleccionado
     }
 
-    function checkCentroCosto(val, evt) {
-      if (val) notificarAdvertencia('No se creará centro de costos ni se asociará la tarea a un centro de costos')
-    }
+
 
 
     async function obtenerClienteFinal(clienteFinalId: number) {
@@ -232,10 +228,8 @@ export default defineComponent({
     async function establecerCliente() {
       tareaStore.tarea.cliente = tarea.cliente
       tarea.tipo_trabajo = null
-      tarea.centro_costo = null
       await obtenerRutas()
-      //aqui se obtiene los centros de costos del cliente seleccionado
-      await obtenerCentrosCostos()
+
     }
 
     async function guardado(paginaModal: keyof TareaModales) {
@@ -270,12 +264,6 @@ export default defineComponent({
       cargando.desactivar()
     }
 
-    async function obtenerCentrosCostos() {
-      cargando.activar()
-      listadosAuxiliares.centros_costos = (await (new CentroCostoController().listar({ cliente_id: tarea.cliente, activo: 1 }))).result
-      centros_costos.value = listadosAuxiliares.centros_costos
-      cargando.desactivar()
-    }
 
     /************
     * Observers
@@ -364,8 +352,6 @@ export default defineComponent({
       proyectos.value = listadosAuxiliares.proyectos
       rutas.value = listadosAuxiliares.rutas
       if (tarea.proyecto_id && tarea.coordinador) obtenerEtapasProyecto(tarea.coordinador)
-      listadosAuxiliares.centros_costos = (await (new CentroCostoController().listar({ cliente_id: tarea.cliente }))).result
-      centros_costos.value = listadosAuxiliares.centros_costos
       cargando.desactivar()
     })
 
@@ -486,8 +472,6 @@ export default defineComponent({
       btnVerImagenInforme,
       obtenerEtapasProyecto,
       acciones,
-      centros_costos, filtrarCentrosCostos,
-      checkCentroCosto,
       guardadoModalesSubtarea,
       btnActivarTareaTemporalmente,
       btnDesactivarTarea,

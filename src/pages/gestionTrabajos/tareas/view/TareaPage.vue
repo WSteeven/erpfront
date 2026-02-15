@@ -74,13 +74,13 @@
                     unelevated
                     :options="[
                       {
+                        label: 'Tarea para cliente final y mantenimiento',
+                        value: destinosTareas.paraClienteFinal
+                      },{
                         label: 'Tarea para un proyecto',
                         value: destinosTareas.paraProyecto
                       },
-                      {
-                        label: 'Tarea para cliente final y mantenimiento',
-                        value: destinosTareas.paraClienteFinal
-                      }
+
                     ]"
                   />
                 </div>
@@ -140,7 +140,6 @@
                     outlined
                     :option-label="item => item.razon_social"
                     :option-value="item => item.id"
-                    :option-disable="item => (item.id === 1 ? true : false)"
                     use-input
                     input-debounce="0"
                     emit-value
@@ -409,66 +408,7 @@
                   </q-input>
                 </div>
 
-                <!-- Es para el cliente -->
-                <div class="col-12 col-md-3 q-mb-xl">
-                  <q-checkbox
-                    class="q-mt-lg q-pt-md"
-                    v-model="tarea.no_lleva_centro_costo"
-                    label="¿No lleva centro de costos?"
-                    :disable="disabled"
-                    @update:model-value="checkCentroCosto"
-                    outlined
-                    dense
-                  ></q-checkbox>
-                </div>
-
-                <!-- Select de centro de costos  -->
-                <div
-                  class="col-12 col-md-3"
-                  v-if="
-                    (tarea.cliente && !tarea.no_lleva_centro_costo) ||
-                    tarea.centro_costo
-                  "
-                >
-                  <label class="q-mb-sm block">Centro de Costos</label>
-                  <q-select
-                    v-model="tarea.centro_costo"
-                    :options="centros_costos"
-                    transition-show="scale"
-                    transition-hide="scale"
-                    use-input
-                    input-debounce="0"
-                    options-dense
-                    clearable
-                    dense
-                    outlined
-                    :disable="disabled"
-                    :option-label="item => item.nombre"
-                    :option-value="item => item.id"
-                    @filter="filtrarCentrosCostos"
-                    :error="!!v$.centro_costo.$errors.length"
-                    emit-value
-                    map-options
-                  >
-                    <template v-slot:error>
-                      <div
-                        v-for="error of v$.centro_costo.$errors"
-                        :key="error.$uid"
-                      >
-                        <div class="error-msg">{{ error.$message }}</div>
-                      </div>
-                    </template>
-                    <template v-slot:no-option>
-                      <q-item>
-                        <q-item-section class="text-italic text-grey">
-                          No hay datos, se creará un nuevo centro de costos
-                          asociado a la tarea
-                        </q-item-section>
-                      </q-item>
-                    </template>
-                  </q-select>
-                </div>
-
+                
                 <!-- Titulo -->
                 <div class="col-12">
                   <label class="q-mb-sm block">Título de la tarea</label>

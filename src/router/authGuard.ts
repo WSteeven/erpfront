@@ -56,7 +56,7 @@ async function checkInternal(
     loggedIn &&
     forbiddenRoutesWhenUserIsLoggedIn.includes(to.name?.toString() ?? '')
   ) {
-    next({ name: 'intranet' })
+    next({ name: 'tablero_personal' })
   } else {
     next()
   }

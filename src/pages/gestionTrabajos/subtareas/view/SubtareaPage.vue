@@ -365,6 +365,8 @@
       </div>
     </q-expansion-item>
 
+
+
     <q-expansion-item
       class="overflow-hidden q-mb-md expansion"
       label="Designación de trabajo"
