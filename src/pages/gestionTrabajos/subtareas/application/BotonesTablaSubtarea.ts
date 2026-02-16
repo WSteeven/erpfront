@@ -216,6 +216,8 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: Compo
     color: 'indigo',
     visible: ({ entidad }) => ![estadosTrabajos.AGENDADO, estadosTrabajos.CREADO].includes(entidad.estado) && (authenticationStore.esJefeTecnico || authenticationStore.esCoordinador || authenticationStore.esAdministrador || entidad.es_responsable || entidad.es_miembro_grupo_responsable),
     accion: async ({ entidad }) => {
+        console.log(entidad);
+
       // confirmar('¿Está seguro de abrir el formulario de seguimiento?', () => {
       trabajoAsignadoStore.idSubtareaSeleccionada = entidad.id
       trabajoAsignadoStore.idTareaSeleccionada = entidad.tarea_id

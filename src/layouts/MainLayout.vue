@@ -537,7 +537,7 @@
         <q-list>
           <div v-for="item in links" :key="item.title">
             <q-item-label
-              v-if="item.hasOwnProperty('header')"
+                v-if="item.hasOwnProperty('header') && item.can !== false"
               header
               class="text-color-drawer"
               >{{ item.header }}

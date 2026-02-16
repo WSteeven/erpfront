@@ -39,6 +39,7 @@ export class Subtarea extends EntidadAuditable {
 
   // Foreign keys
   tipo_trabajo: number | null
+  tipo_trabajo_id: number | null
   trabajo_padre: number | null
   cliente_final: number | null
   coordinador: number | null
@@ -120,6 +121,7 @@ export class Subtarea extends EntidadAuditable {
     this.causa_intervencion = null
     // Foreign keys
     this.tipo_trabajo = null
+    this.tipo_trabajo_id = null
     this.cliente_final = null
     this.coordinador = null
     this.coordinador_id = null

@@ -197,6 +197,18 @@ const rutasTareas: RouteRecordRaw[] = [
     component: () => import('pages/bodega/transacciones/modules/aceptarTransferenciaProducto/view/AceptarTransferenciaProductoPage.vue'),
     meta: { requiresAuth: true, permissionRequired: false },
   },
+  {
+    path: '/tipos-fotografias',
+    name: 'tipos_fotografias',
+    component: () => import('gestionTrabajos/tiposFotografias/view/TipoFotografiaPage.vue'),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/tipos-coordenadas',
+    name: 'tipos_coordenadas',
+    component: () => import('gestionTrabajos/tiposCoordenadas/view/TipoCoordenadaPage.vue'),
+    meta: { requiresAuth: true },
+  },
 
   /*{
     path: '/reporte-trabajos-realizados',

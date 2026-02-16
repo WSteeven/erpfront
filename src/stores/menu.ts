@@ -20,7 +20,7 @@ export const useMenuStore = defineStore('menu', () => {
   // State
   const links: Ref<MenuOption[]> = computed(() => [
     {
-      header: 'Modulos'
+      header: 'Modulos', can: true
     },
     {
       title: 'Inicio',
@@ -91,36 +91,22 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-people',
           can: store.can('puede.acceder.clientes_finales')
         },
-        ...telconet.value,
-        {
-          title: 'Centro de Costos',
-          icon: 'bi-wallet2',
-          can: store.can('puede.acceder.centros_costos'),
-          children: [
-            {
-              title: 'Centro de Costos',
-              link: 'centros-costos',
-              icon: 'bi-piggy-bank',
-              can: store.can('puede.acceder.centros_costos')
-            },
-            {
-              title: 'Subcentro de Costos',
-              link: 'subcentros-costos',
-              icon: 'bi-piggy-bank',
-              can: store.can('puede.acceder.subcentros_costos')
-            }
-          ]
-        },
         {
           title: 'Configuracion',
           icon: 'bi-gear',
           can: store.can('puede.acceder.configuracion_modulo_tareas'),
           children: [
             {
-              title: 'Nodos',
-              link: 'nodos',
+              title: 'Tipos Fotografias',
+              link: 'tipos-fotografias',
               icon: 'bi-plus-circle',
-              can: store.can('puede.acceder.nodos')
+              can: store.can('puede.acceder.tipos_fotografias')
+            }
+            ,{
+              title: 'Tipos Coordenadas',
+              link: 'tipos-coordenadas',
+              icon: 'bi-plus-circle',
+              can: store.can('puede.acceder.tipos_coordenadas')
             }
           ]
         },
@@ -295,7 +281,7 @@ export const useMenuStore = defineStore('menu', () => {
      *********************************************************/
     {
       header: 'Administración',
-      can: false // store.can('puede.acceder.modulo_administracion') && store.esActivosFijos,
+      can: store.can('puede.acceder.modulo_administracion'),
     },
     {
       title: 'Log de auditorías',
@@ -306,6 +292,7 @@ export const useMenuStore = defineStore('menu', () => {
     {
       title: 'Configuracion Sistema',
       icon: 'bi-gear',
+      can: store.can('puede.acceder.configuracion_general'),
       children: [
         {
           title: 'Configuracion General',

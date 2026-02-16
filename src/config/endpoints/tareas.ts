@@ -27,6 +27,8 @@ export const tareas = {
   control_cambios: new Endpoint('tareas/control-cambios'),
   tareas_empleado: new Endpoint('tareas/tareas-empleado'),
   tipos_elementos: new Endpoint('tareas/tipos-elementos'),
+  tipos_fotografias: new Endpoint('tareas/tipos-fotografias'),
+  tipos_coordenadas: new Endpoint('tareas/tipos-coordenadas'),
   clientes_finales: new Endpoint('tareas/clientes-finales'),
   tendidos: new Endpoint('tareas/tendidos'),
   designar_lider_grupo: new Endpoint('tareas/designar-lider-grupo'),

@@ -69,6 +69,8 @@ import { useQuasar } from 'quasar'
 import { PusherConnector } from 'laravel-echo/dist/connector'
 import { log } from 'console'
 import { configuracionColumnasCoordenadas } from '../domain/configuracionColumnasCoordenadas'
+import { TipoFotografiaController } from 'pages/gestionTrabajos/tiposFotografias/infraestructure/TipoFotografiaController'
+import { TipoFotografia } from 'pages/gestionTrabajos/tiposFotografias/domain/TipoFotografia'
 
 export default defineComponent({
   components: {
@@ -260,26 +262,10 @@ export default defineComponent({
 
     // Configuración de formulario dinámico
     const configForm = ref(null)
-    const tipoTrabajoController = new TipoTrabajoController()
+
     const subtareaController = new SubtareaController()
     const loading = ref(false)
     useCargandoStore().setQuasar(useQuasar())
-
-    const cargarConfigForm = async () => {
-      const idTipoTrabajo = trabajoAsignadoStore.subtarea.tipo_trabajo_id
-      if (!idTipoTrabajo) {
-        configForm.value = null
-        return
-      }
-      try {
-        const { data } = await tipoTrabajoController.getFormConfig(
-          idTipoTrabajo
-        )
-        configForm.value = data.form_config
-      } catch (error) {
-        console.error('Error cargando configuración de formulario:', error)
-      }
-    }
 
     const guardarDatosTecnicos = async () => {
       try {
@@ -359,19 +345,12 @@ export default defineComponent({
       }
     }
 
-    cargarConfigForm()
 
-    onMounted(() => {
+    onMounted(async () => {
+      await obtenerTiposFotografias()
       refArchivoSeguimiento.value.listarArchivos({
         subtarea_id: trabajoAsignadoStore.subtarea.id
       })
-      configuracionColumnasTrabajoRealizado.find(
-        col => col.name === 'tipo_fotografia'
-      ).options = [
-        { value: 'PANORAMICA ANTES', label: 'PANORAMICA ANTES' },
-        { value: 'PANORAMICA DESPUES', label: 'PANORAMICA DESPUES' },
-        { value: 'DETALLE', label: 'DETALLE' }
-      ]
     })
 
     /****************
@@ -584,7 +563,26 @@ export default defineComponent({
       if (esLider) return authenticationStore.user.id
       else return trabajoAsignadoStore.subtarea.empleado_responsable_id
     }
+    const tiposFotografias = ref([])
+    async function obtenerTiposFotografias() {
+      cargarVista(async () => {
+        const { result } = await new TipoFotografiaController().listar({
+          tipo_trabajo_id: trabajoAsignadoStore.subtarea.tipo_trabajo_id,
+          activo: 1
+        })
+        tiposFotografias.value = result
+        console.log(tiposFotografias.value)
 
+        configuracionColumnasTrabajoRealizado.find(
+          col => col.name === 'tipo_fotografia'
+        ).options = tiposFotografias.value.map((tipo: TipoFotografia) => ({
+          label: tipo.nombre,
+          value: tipo.id
+        }))
+      })
+
+
+    }
     async function obtenerMaterialesTarea(cliente: number) {
       cargarVista(async () => {
         const filtro = {
@@ -869,7 +867,10 @@ export default defineComponent({
       loading,
       capturarCoordenadas,
       obtenerCoordenadas,
-      coordenadas,btnObtenerCoordenadas,configuracionColumnasCoordenadas, accionesTabla,
+      coordenadas,
+      btnObtenerCoordenadas,
+      configuracionColumnasCoordenadas,
+      accionesTabla
     }
   }
 })
