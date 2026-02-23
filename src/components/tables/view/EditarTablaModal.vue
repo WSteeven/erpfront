@@ -344,12 +344,12 @@ export default defineComponent({
 
     const configuracionGeneralStore = useConfiguracionGeneralStore()
     return {
-        logoClaro: computed(
-                () => configuracionGeneralStore.configuracion?.logo_claro
-              ),
-              logoOscuro: computed(
-                () => configuracionGeneralStore.configuracion?.logo_oscuro
-              ),
+      logoClaro: computed(
+        () => configuracionGeneralStore.configuracion?.logo_claro
+      ),
+      logoOscuro: computed(
+        () => configuracionGeneralStore.configuracion?.logo_oscuro
+      ),
       abierto,
       camposFiltrados,
       abrir,

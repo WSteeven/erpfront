@@ -8,7 +8,7 @@
     >
       <q-toolbar class="bg-body rounded-header">
         <q-avatar square>
-          <img src="~assets/logo.png" />
+          <img :src="!$q.dark.isActive ? logoClaro! : logoOscuro!" alt="logo"/>
         </q-avatar>
 
         <q-toolbar-title>Seleccionar imagen</q-toolbar-title>
@@ -65,6 +65,7 @@
 import { ref, defineComponent, computed } from 'vue'
 import SelectorImagen from 'components/SelectorImagen.vue'
 import { useNotificaciones } from 'shared/notificaciones'
+import { useConfiguracionGeneralStore } from 'stores/configuracion_general';
 
 export default defineComponent({
   components: {
@@ -82,7 +83,7 @@ export default defineComponent({
     const { notificarAdvertencia } = useNotificaciones()
     const imagen = ref()
     const abierto = computed(() => props.mostrar)
-
+    const configuracionGeneralStore = useConfiguracionGeneralStore()
     function cerrarModalEntidad() {
       imagen.value = null
       emit('cerrar')
@@ -100,6 +101,12 @@ export default defineComponent({
       guardar,
       imagen,
       cerrarModalEntidad,
+      logoClaro: computed(
+        () => configuracionGeneralStore.configuracion?.logo_claro
+      ),
+      logoOscuro: computed(
+        () => configuracionGeneralStore.configuracion?.logo_oscuro
+      ),
     }
   },
 })

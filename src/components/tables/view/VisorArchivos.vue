@@ -3,7 +3,7 @@
     <q-card class="bg-body">
       <q-toolbar class="bg-body" rounded>
         <q-avatar square>
-          <img src="~assets/logo.png" />
+          <img :src="!$q.dark.isActive ? logoClaro : logoOscuro" />
         </q-avatar>
 
         <q-toolbar-title class="text-primary text-subtitle1"
@@ -48,19 +48,27 @@
 </template>
 
 <script lang="ts" setup>
-import { defineProps } from 'vue'
+import { computed } from 'vue'
 
 // Components
 import { Archivo } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/domain/Archivo'
 import { VisibleModal } from '../application/VisibleModal'
+import { useConfiguracionGeneralStore } from 'stores/configuracion_general'
 
 const props = defineProps({
   archivos: Array as () => Archivo[],
   visibleModal: {
     type: Object as () => VisibleModal,
-    required: true,
-  },
+    required: true
+  }
 })
+const configuracionGeneralStore = useConfiguracionGeneralStore()
+const logoClaro = computed(
+  () => configuracionGeneralStore.configuracion?.logo_claro
+)
+const logoOscuro = computed(
+  () => configuracionGeneralStore.configuracion?.logo_oscuro
+)
 
 const { abierto } = props.visibleModal.estadoAbierto()
 </script>

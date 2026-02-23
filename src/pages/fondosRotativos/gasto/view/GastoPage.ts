@@ -185,8 +185,6 @@ export default defineComponent({
 
     const cantidadPermitidaFactura = computed(() => {
       switch (process.env.VUE_APP_ID) {
-        case empresas.PERU:
-          return 13
         default:
           let cantidad = 17
 
@@ -209,8 +207,6 @@ export default defineComponent({
     })
     const mascaraFactura = computed(() => {
       switch (process.env.VUE_APP_ID) {
-        case empresas.PERU:
-          return 'NNNN-########'
         default:
           let mascara = '###-###-#############'
           const index = numFacturaObjeto

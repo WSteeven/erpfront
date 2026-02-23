@@ -39,9 +39,9 @@
         <div ref="refPDF">
           <div class="q-pa-md bg-white alto-fijo-hoja">
             <q-avatar square>
-              <img src="src/assets/logo.png" />
+              <img :src="!$q.dark.isActive ? logoClaro : logoOscuro " />
             </q-avatar>
-            <span class="text-h6"> CONSTRUCRED </span>
+            <span class="text-h6"> MASTERJAS </span>
 
             <div
               class="text-center text-bold mini-texto q-pt-xs q-pb-xs q-mt-md bg-grey-3"
@@ -62,13 +62,14 @@
 
 <script lang="ts" setup>
 import html2pdf from 'html2pdf.js'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { VisibleModal } from '../application/VisibleModal'
 import { ColumnConfig } from '../domain/ColumnConfig'
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 
 // Componentes
 import TableView from 'components/tables/view/TableView.vue'
+import { useConfiguracionGeneralStore } from 'stores/configuracion_general'
 
 const props = defineProps({
   configuracionColumnas: {
@@ -119,6 +120,13 @@ function imprimir() {
     .save()
     .catch((err) => console.log(err))
 }
+const configuracionGeneralStore = useConfiguracionGeneralStore()
+const logoClaro = computed(
+  () => configuracionGeneralStore.configuracion?.logo_claro
+)
+const logoOscuro = computed(
+  () => configuracionGeneralStore.configuracion?.logo_oscuro
+)
 </script>
 
 <style scoped>

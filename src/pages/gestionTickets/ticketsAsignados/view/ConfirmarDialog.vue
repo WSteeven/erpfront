@@ -3,7 +3,7 @@
     <q-card>
       <q-toolbar>
         <q-avatar square>
-          <img src="~assets/logo.png" />
+          <img :src="!$q.dark.isActive ? logoClaro : logoOscuro" />
         </q-avatar>
 
         <q-toolbar-title>{{ 'Seleccione su plantilla' }}</q-toolbar-title>
@@ -100,6 +100,7 @@
 
 <script lang="ts" setup>
 import { ComportamientoModales } from 'components/modales/application/ComportamientoModales'
+import { useConfiguracionGeneralStore } from 'stores/configuracion_general'
 import { computed } from 'vue'
 
 const props = defineProps({
@@ -126,4 +127,11 @@ function seleccionar(plantilla: keyof typeof listadoModales) {
 function cerrar() {
   emit('cerrar')
 }
+const configuracionGeneralStore = useConfiguracionGeneralStore()
+const logoClaro = computed(
+  () => configuracionGeneralStore.configuracion?.logo_claro
+)
+const logoOscuro = computed(
+  () => configuracionGeneralStore.configuracion?.logo_oscuro
+)
 </script>

@@ -8,7 +8,6 @@
     >
       <q-toolbar class="bg-body rounded-header">
         <q-avatar square>
-          <!-- <img src="~assets/logo.png" /> -->
           <img :src="!$q.dark.isActive ? logoClaro! : logoOscuro!" alt="logo"/>
         </q-avatar>
 

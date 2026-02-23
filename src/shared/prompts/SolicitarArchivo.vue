@@ -8,7 +8,7 @@
       <!-- style="width: 1000px" -->
       <q-toolbar class="bg-solid rounded-headerd borde-header-tabla">
         <q-avatar square>
-          <img src="~assets/logo.png" />
+          <img :src="!$q.dark.isActive ? logoClaro : logoOscuro" />
         </q-avatar>
 
         <q-toolbar-title>Seleccionar archivos</q-toolbar-title>
@@ -72,6 +72,7 @@ import GestorArchivos from 'components/gestorArchivos/GestorArchivos.vue'
 // Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
+import { useConfiguracionGeneralStore } from 'stores/configuracion_general'
 
 export default defineComponent({
   components: {
@@ -137,7 +138,15 @@ export default defineComponent({
       )
     })
 
+    const configuracionGeneralStore = useConfiguracionGeneralStore()
+
     return {
+      logoClaro: computed(
+        () => configuracionGeneralStore.configuracion?.logo_claro
+      ),
+      logoOscuro: computed(
+        () => configuracionGeneralStore.configuracion?.logo_oscuro
+      ),
       refArchivo,
       abierto,
       guardar,
