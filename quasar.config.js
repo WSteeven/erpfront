@@ -152,7 +152,7 @@ export default configure(function (/* ctx */) {
     },
 
     htmlVariables: {
-      title: 'FIRSTRED - JPCONSTRUCRED',
+      title: 'SISTEMA - MASTERJAS',
       description:
         'Gestiona nómina, empleados, inventario, vehiculos, proyectos y tickets desde un solo lugar.'
     },
@@ -185,7 +185,7 @@ export default configure(function (/* ctx */) {
       inspectPort: 5858,
       bundler: 'packager',
       packager: {},
-      builder: { appId: 'jpconstrucred' }
+      builder: { appId: 'masterjas' }
     },
 
     bex: { contentScripts: ['my-content-script'] }

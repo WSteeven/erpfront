@@ -28,6 +28,7 @@ import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { TipoTrabajoController } from 'gestionTrabajos/tiposTareas/infraestructure/TipoTrabajoController'
 import NoOptionComponent from 'components/NoOptionComponent.vue'
 import { tabOptionsProveedoresInternacionales } from 'config/utils_compras_proveedores'
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 
 export default defineComponent({
   components: {
@@ -66,17 +67,7 @@ export default defineComponent({
     /**
      * Métodos de filtrado para tipos de trabajo
      */
-    function filtrarTipos_trabajos(val: string, update: (fn: () => void) => void) {
-      update(() => {
-        if (val === '') {
-          tipos_trabajos.value = listadosAuxiliares.tipos_trabajos
-        } else {
-          tipos_trabajos.value = listadosAuxiliares.tipos_trabajos.filter((v: any) =>
-            v.nombre.toLowerCase().indexOf(val.toLowerCase()) > -1
-          )
-        }
-      })
-    }
+    const {filtrarLista} = useFiltrosListadosSelects(listadosAuxiliares)
 
     /****************************
      * Validaciones
@@ -141,7 +132,7 @@ export default defineComponent({
       tabDefecto,
       tabOptions: tabOptionsProveedoresInternacionales,
       tipos_trabajos,
-      filtrarTipos_trabajos,
+      filtrarTiposTrabajos: (val, update)=>filtrarLista(val, update, tipos_trabajos, 'descripcion', listadosAuxiliares.tipos_trabajos),
       btnEliminarTipoFotografia,
       filtrarListadoTipoFotografias,
       searchTable

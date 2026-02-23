@@ -215,7 +215,7 @@ export default defineComponent({
          * Init
          *******/
         alimentacion.fecha = obtenerFechaHoraActual('YYYY-MM-DD')
-        consultarSubtarea({ id: trabajoAsignadoStore.idSubtareaSeleccionada })
+        if(trabajoAsignadoStore.idSubtareaSeleccionada) consultarSubtarea({ id: trabajoAsignadoStore.idSubtareaSeleccionada })
 
         return {
             v$,

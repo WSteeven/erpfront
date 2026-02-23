@@ -314,10 +314,10 @@ export default defineComponent({
     watchEffect(() => (listado.value = props.datos))
     /* watchEffect(() => {
           // const total = props.datos.length; // Cantidad total de elementos
-          
-    
+
+
           console.log(listado.value)
-          
+
           listado.value = props.datos.map((item, index) => ({
             ...listado.value[index],
             table_index: index // Asigna un índice numérico a cada elemento
@@ -434,6 +434,7 @@ export default defineComponent({
     function guardarNuevaFila(data) {
       if (props.editarFilaLocal) listado.value.unshift(data)
       emit('guardar-fila-nueva', data)
+      console.log('se emitio el evento de guardarNuevaFila guardar-fila-nueva', data)
       limpiarFila()
     }
 
@@ -449,6 +450,7 @@ export default defineComponent({
       console.log(dataNueva)
       if (props.editarFilaLocal) listado.value[posicion] = dataNueva
       emit('guardar-fila', data)
+      console.log('se emitio el evento de guardarCambiosFila guardar-fila', data)
       limpiarFila()
     }
 

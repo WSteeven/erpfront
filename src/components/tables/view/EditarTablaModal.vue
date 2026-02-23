@@ -8,7 +8,7 @@
     <q-card flat class="bg-body rounded-card no-border">
       <q-toolbar>
         <q-avatar square>
-          <img src="~assets/logo.png" />
+          <img :src="!$q.dark.isActive ? logoClaro : logoOscuro" />
         </q-avatar>
 
         <q-toolbar-title>{{ accion }}</q-toolbar-title>
@@ -178,6 +178,7 @@ import { ColumnConfig } from '../domain/ColumnConfig'
 import SelectorImagen from 'components/SelectorImagen.vue'
 import VoiceInput from 'components/inputs/VoiceInput.vue'
 import { acciones } from 'config/utils'
+import { useConfiguracionGeneralStore } from 'stores/configuracion_general'
 
 export default defineComponent({
   components: {
@@ -341,7 +342,14 @@ export default defineComponent({
       return true
     }
 
+    const configuracionGeneralStore = useConfiguracionGeneralStore()
     return {
+        logoClaro: computed(
+                () => configuracionGeneralStore.configuracion?.logo_claro
+              ),
+              logoOscuro: computed(
+                () => configuracionGeneralStore.configuracion?.logo_oscuro
+              ),
       abierto,
       camposFiltrados,
       abrir,

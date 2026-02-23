@@ -2,7 +2,7 @@
 import { configuracionColumnasArchivoSubtarea } from '../domain/configuracionColumnasArchivoSubtarea'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { descargarArchivoUrl, formatBytes } from 'shared/utils'
+import { descargarArchivoUrl, formatBytes, normalizeUrl } from 'shared/utils'
 import { useNotificaciones } from 'shared/notificaciones'
 import { AxiosError, AxiosResponse } from 'axios'
 import { accionesTabla } from 'config/utils'
@@ -138,7 +138,7 @@ export default defineComponent({
     }
     const axios = AxiosHttpRepository.getInstance()
 
-    const ruta = `${apiConfig.URL_BASE}/${axios.getEndpoint(props.endpoint)}`
+    const ruta = normalizeUrl(apiConfig.URL_BASE, axios.getEndpoint(props.endpoint))
 
     /************
      * Funciones

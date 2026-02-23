@@ -57,20 +57,23 @@ import ActividadRealizadaSeguimientoSubtarea from '../domain/ActividadRealizadaS
 import { useBotonesTablaTicket } from 'pages/gestionTickets/tickets/application/BotonesTablaTicket'
 import { configuracionColumnasSumaMaterial } from '../domain/configuracionColumnasSumaMaterial'
 import { configuracionColumnasSolicitudAts } from '../domain/configuracionColumnasSolicitudAts'
-import { useGestionAtsApplication } from '../application/GestionAtsApplication'
+
 import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
 import { Ticket } from 'pages/gestionTickets/tickets/domain/Ticket'
 import { configuracionColumnasResumenMaterialOcupado } from '../domain/configuracionColumnasResumenMaterialOcupado'
 import { SubtareaController } from 'gestionTrabajos/subtareas/infraestructure/SubtareaController'
-import { TipoTrabajoController } from 'gestionTrabajos/tiposTareas/infraestructure/TipoTrabajoController'
-import DynamicForm from 'gestionTrabajos/subtareas/modules/dynamicForm/view/DynamicForm.vue'
+
 import { useCargandoStore } from 'stores/cargando'
 import { useQuasar } from 'quasar'
-import { PusherConnector } from 'laravel-echo/dist/connector'
 import { log } from 'console'
 import { configuracionColumnasCoordenadas } from '../domain/configuracionColumnasCoordenadas'
 import { TipoFotografiaController } from 'pages/gestionTrabajos/tiposFotografias/infraestructure/TipoFotografiaController'
 import { TipoFotografia } from 'pages/gestionTrabajos/tiposFotografias/domain/TipoFotografia'
+import TablaCoordenadas from './TablaCoordenadas.vue'
+import Coordenada from '../domain/Coordenada'
+import { TipoCoordenadaController } from 'pages/gestionTrabajos/tiposCoordenadas/infraestructure/TipoCoordenadaController'
+import { TipoCoordenada } from 'pages/gestionTrabajos/tiposCoordenadas/domain/TipoCoordenada'
+import { CoordenadaController } from '../infraestructure/CoordenadaController'
 
 export default defineComponent({
   components: {
@@ -80,9 +83,9 @@ export default defineComponent({
     TablaObservaciones,
     ArchivoSeguimiento,
     TablaFilasDinamicas,
+    TablaCoordenadas,
     VisorImagen,
-    ModalesEntidad,
-    DynamicForm
+    ModalesEntidad
   },
   props: {
     mixinModal: {
@@ -117,6 +120,19 @@ export default defineComponent({
       listar: listarActividadesRealizadas,
       cargarVista
     } = mixinActividad.useComportamiento()
+
+    const mixinCoordenadas = new ContenedorSimpleMixin(
+      Coordenada,
+      new CoordenadaController()
+    )
+    const { entidad: coordenada, listado: coordenadas } =
+      mixinCoordenadas.useReferencias()
+    const {
+      guardar: guardarCoordenada,
+      editar: editarCoordenada,
+      listar: listarCoordenadasTomadas,
+      eliminar: eliminarCoordenada
+    } = mixinCoordenadas.useComportamiento()
 
     /************
      * Variables
@@ -255,98 +271,16 @@ export default defineComponent({
     listarActividadesRealizadas({
       subtarea_id: trabajoAsignadoStore.subtarea.id
     })
+    listarCoordenadasTomadas({ subtarea_id: trabajoAsignadoStore.subtarea.id })
     obtenerFechasHistorialMaterialesUsados()
     obtenerFechasHistorialMaterialesStockUsados()
     obtenerClientesMaterialesTarea()
     obtenerClientesMaterialesEmpleado()
 
-    // Configuración de formulario dinámico
-    const configForm = ref(null)
-
-    const subtareaController = new SubtareaController()
-    const loading = ref(false)
     useCargandoStore().setQuasar(useQuasar())
 
-    const guardarDatosTecnicos = async () => {
-      try {
-        loading.value = true
-        const dataToUpdate = {
-          id: trabajoAsignadoStore.subtarea.id,
-          form_data: trabajoAsignadoStore.subtarea.form_data
-        }
-        await subtareaController.editar(dataToUpdate as any)
-        useNotificaciones().notificarCorrecto(
-          'Datos técnicos guardados correctamente'
-        )
-      } catch (error) {
-        console.error('Error guardando datos técnicos:', error)
-        useNotificaciones().notificarError('Error al guardar datos técnicos')
-      } finally {
-        loading.value = false
-      }
-    }
-    const btnObtenerCoordenadas: CustomActionTable = {
-      titulo: 'Obtener coordenadas',
-      icono: 'bi-geo-alt-fill',
-      color: 'primary',
-      accion: async () => {
-        const coordenadasObtenidas = await obtenerCoordenadas()
-        if (coordenadasObtenidas) {
-          coordenadas.value.unshift({ coordenadas: coordenadasObtenidas })
-          useNotificaciones().notificarCorrecto(
-            'Coordenadas obtenidas exitosamente'
-          )
-          // TODO: Falta colocar el objeto de coordenadas y guardar en el backend
-        } else {
-          useNotificaciones().notificarError('Error al obtener las coordenadas')
-        }
-      }
-    }
-    async function obtenerCoordenadas() {
-      try {
-        const ubicacion = await obtenerUbicacion()
-
-        const punto =
-          ubicacion.coords.latitude + ',' + ubicacion.coords.longitude
-        console.log(punto)
-
-        return punto
-      } catch (error) {
-        console.log('Error obteniendo ubicación:', error)
-      }
-    }
-    const coordenadas = ref([])
-
-    const generarDocumento = async () => {
-      if (!trabajoAsignadoStore.subtarea.id) return
-      try {
-        loading.value = true
-        const response: any = await subtareaController.generateDocument(
-          trabajoAsignadoStore.subtarea.id
-        )
-
-        const url = window.URL.createObjectURL(new Blob([response.data]))
-        const link = document.createElement('a')
-        link.href = url
-        link.setAttribute(
-          'download',
-          `documento_${trabajoAsignadoStore.subtarea.codigo_subtarea}.docx`
-        )
-        document.body.appendChild(link)
-        link.click()
-        document.body.removeChild(link)
-
-        useNotificaciones().notificarCorrecto('Documento generado exitosamente')
-      } catch (error) {
-        useNotificaciones().notificarError('Error al generar el documento')
-        console.error(error)
-      } finally {
-        loading.value = false
-      }
-    }
-
-
     onMounted(async () => {
+      obtenerTiposCoordenadas()
       await obtenerTiposFotografias()
       refArchivoSeguimiento.value.listarArchivos({
         subtarea_id: trabajoAsignadoStore.subtarea.id
@@ -580,9 +514,24 @@ export default defineComponent({
           value: tipo.id
         }))
       })
-
-
     }
+
+    const tiposCoordenadas = ref([])
+    async function obtenerTiposCoordenadas() {
+      cargarVista(async () => {
+        const { result } = await new TipoCoordenadaController().listar()
+        tiposCoordenadas.value = result
+        console.log(tiposCoordenadas.value)
+
+        configuracionColumnasCoordenadas.find(
+          col => col.name === 'tipo'
+        ).options = tiposCoordenadas.value.map((tipo: TipoCoordenada) => ({
+          label: tipo.nombre,
+          value: tipo.id
+        }))
+      })
+    }
+
     async function obtenerMaterialesTarea(cliente: number) {
       cargarVista(async () => {
         const filtro = {
@@ -702,7 +651,6 @@ export default defineComponent({
     async function descargarExcel() {
       const ruta =
         apiConfig.URL_BASE +
-        '/' +
         axios.getEndpoint(endpoints.exportExcelSeguimiento) +
         '/' +
         subtarea.id
@@ -730,7 +678,22 @@ export default defineComponent({
       actividad.subtarea = trabajoAsignadoStore.subtarea.id
       guardarActividad(actividad)
     }
+    function guardarFilaCoordenada(data) {
+      console.log('guardarFilaCoordenada', data)
 
+      coordenada.hydrate(data)
+      coordenada.subtarea = trabajoAsignadoStore.subtarea.id
+      if (data.id) editarCoordenada(coordenada)
+      else guardarCoordenada(coordenada)
+    }
+    function actualizarFilaCoordenada(data) {
+      console.log('actualizarFilaCoordenada', data)
+      coordenada.hydrate(data)
+      coordenada.subtarea = trabajoAsignadoStore.subtarea.id
+      if (data.id) editarCoordenada(coordenada)
+      else guardarCoordenada(coordenada)
+    }
+    
     function actualizarTablaMaterialesTarea() {
       clienteMaterialTarea.value = undefined
       materialesTareaTodos.value = []
@@ -821,6 +784,7 @@ export default defineComponent({
       descargarExcel,
       endpoint: endpoints.archivos_seguimientos,
       ActividadRealizadaSeguimientoSubtarea,
+      Coordenada,
       configuracionColumnasTrabajoRealizado,
       verFotografia,
       clientes,
@@ -861,16 +825,14 @@ export default defineComponent({
       actualizarTablaMaterialesTarea,
       actualizarTablaResumenMaterialesTarea,
       actualizarTablaResumenMaterialesStock,
-      configForm,
-      guardarDatosTecnicos,
-      generarDocumento,
-      loading,
+
       capturarCoordenadas,
-      obtenerCoordenadas,
       coordenadas,
-      btnObtenerCoordenadas,
       configuracionColumnasCoordenadas,
-      accionesTabla
+      accionesTabla,
+      guardarFilaCoordenada,
+      actualizarFilaCoordenada,
+      eliminarCoordenada
     }
   }
 })

@@ -1,5 +1,5 @@
 const globals = {
-  jpconstrucred: process.env.VUE_APP_ID == 'JPCONSTRUCRED',
+  isMasterjas: process.env.VUE_APP_ID == 'MASTERJAS',
 }
 
 export default globals

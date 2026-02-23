@@ -9,6 +9,7 @@ export class Cliente extends EntidadAuditable {
   requiere_fr: boolean | null
   estado: boolean
   logo_url: string|null
+  coordinadores: number[]|null
 
   constructor() {
     super()
@@ -20,5 +21,6 @@ export class Cliente extends EntidadAuditable {
     this.requiere_fr = false
     this.estado = true
     this.logo_url=null
+    this.coordinadores=null
   }
 }

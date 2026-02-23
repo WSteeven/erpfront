@@ -31,7 +31,7 @@
 
         <form @submit.prevent="resetearPassword" class="full-width q-px-lg">
           <div class="q-mb-sm">
-            <h2>Bienvenidos a JPCONSTRUCRED</h2>
+            <h2>Bienvenidos a MASTERJAS</h2>
             <span>Cambia tu contraseña</span>
           </div>
 

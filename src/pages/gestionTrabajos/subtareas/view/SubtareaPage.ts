@@ -51,7 +51,7 @@ import { CambiarEstadoSubtarea } from '../application/CambiarEstadoSubtarea'
 import { Archivo } from '../modules/gestorArchivosTrabajos/domain/Archivo'
 import { Empleado } from 'recursosHumanos/empleados/domain/Empleado'
 import { EmpleadoGrupo } from '../domain/EmpleadoGrupo'
-import { convertirNumeroPositivo, descargarArchivoUrl } from 'shared/utils'
+import { convertirNumeroPositivo, descargarArchivoUrl, normalizeUrl } from 'shared/utils'
 import { apiConfig, endpoints } from 'config/api'
 import { Subtarea } from '../domain/Subtarea'
 import { AxiosError } from 'axios'
@@ -274,7 +274,7 @@ export default defineComponent({
     const refUploader = ref()
 
     const axios = AxiosHttpRepository.getInstance()
-    const ruta = `${apiConfig.URL_BASE}/${axios.getEndpoint(endpoints.archivos_subtareas)}`
+    const ruta = normalizeUrl(apiConfig.URL_BASE, axios.getEndpoint(endpoints.archivos_subtareas))
     let idSubtarea: any
 
     async function factoryFn(files) {

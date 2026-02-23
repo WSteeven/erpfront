@@ -138,7 +138,7 @@
         >
           <!-- Boton transferir tareas -->
           <q-btn
-            v-if="mostrarTransferirTareas"
+            v-if="mostrarTransferirTareas && false"
             dense7
             unelevated
             no-caps
@@ -155,7 +155,7 @@
           </q-btn>
 
           <!-- Boton movilizacion -->
-          <q-btn
+          <q-btn v-if="false"
             dense
             unelevated
             no-caps
@@ -189,7 +189,7 @@
           </q-btn>
 
           <!-- Tickets -->
-          <q-btn
+          <q-btn v-if="false"
             dense
             unelevated
             no-caps

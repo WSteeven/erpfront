@@ -80,10 +80,6 @@ const rutasBodega: RouteRecordRaw[] = [
     name: 'detalles',
     component: () => {
       switch (process.env.VUE_APP_ID) {
-        case empresas.JPCUSTODY:
-          return import(
-            'pages/bodega/detalles_productos/view/jpcustody/DetalleProductoPage.vue'
-          )
         default:
           return import(
             'pages/bodega/detalles_productos/view/jpconstrucred/DetalleProductoPage.vue'

@@ -36,16 +36,10 @@
               map-options
             >
               <template v-slot:error>
-                <div v-for="error of v$.empresa.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+              <error-component clave="empresa" :v$="v$" />
               </template>
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
+                <no-option-component />
               </template>
             </q-select>
           </div>
@@ -54,7 +48,7 @@
             <label class="q-mb-sm block">Canton</label>
             <q-select
               v-model="cliente.canton"
-              :options="opciones_cantones"
+              :options="cantones"
               transition-show="jump-up"
               transition-hide="jump-down"
               :disable="disabled"
@@ -63,7 +57,7 @@
               outlined
               use-input
               input-debounce="0"
-              @filter="filtrarCanton"
+              @filter="filtrarCantones"
               @update:model-value="cantonSeleccionado"
               hint="Selecciona un canton para filtrar sus parroquias"
               :option-value="(v) => v.id"
@@ -72,11 +66,7 @@
               map-options
             >
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
+               <no-option-component />
               </template>
             </q-select>
           </div>
@@ -85,7 +75,7 @@
             <label class="q-mb-sm block">Parroquia</label>
             <q-select
               v-model="cliente.parroquia"
-              :options="opciones_parroquias"
+              :options="parroquias"
               transition-show="jump-up"
               transition-hide="jump-down"
               :disable="disabled"
@@ -103,16 +93,10 @@
               map-options
             >
               <template v-slot:error>
-                <div v-for="error of v$.parroquia.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="parroquia" :v$="v$" />
               </template>
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
+               <no-option-component />
               </template>
             </q-select>
           </div>
@@ -164,6 +148,47 @@
               alto="200px"
               @update:model-value="(data) => (cliente.logo_url = data)"
             />
+          </div>
+
+          <!-- Coordinadores -->
+          <div class="col-12 col-md-6">
+            <label class="q-mb-sm block"
+              >Coordinadores con acceso
+              <q-icon class="bi bi-info-circle" />
+              <q-tooltip class="bg-dark"
+                >Unicamente las personas aquí seleccionadas tendrán acceso a manejar
+                este cliente para el modulo de tareas
+              </q-tooltip>
+            </label>
+            <q-select
+              v-model="cliente.coordinadores"
+              :options="empleados"
+              transition-show="jump-up"
+              transition-hide="jump-up"
+              options-dense
+              dense
+              outlined
+              use-chips
+              use-input
+              input-debounce="0"
+              multiple
+              hint="Este campo es obligatorio"
+              :error="!!v$.coordinadores.$errors.length"
+              @filter="filtrarEmpleados"
+              @popup-show="ordenarLista(empleados, 'nombres')"
+              :disable="disabled"
+              :option-label="v => v.apellidos + ' ' + v.nombres"
+              :option-value="v => v.id"
+              emit-value
+              map-options
+            >
+              <template v-slot:no-option>
+                <no-option-component />
+              </template>
+              <template v-slot:error>
+                <error-component clave="coordinadores" :v$="v$" />
+              </template>
+            </q-select>
           </div>
         </div>
       </q-form>

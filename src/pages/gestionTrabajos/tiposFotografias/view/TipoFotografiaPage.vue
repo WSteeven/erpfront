@@ -26,9 +26,9 @@
               placeholder="Obligatorio"
               :disable="disabled"
               :error="!!v$.tipo_trabajo.$errors.length"
-              @blur="v$.tipo_trabajo.$touch"
-              @filter="filtrarTipos_trabajos"
+              @filter="filtrarTiposTrabajos"
               use-input
+              debounce="0"
               outlined
               dense
             >

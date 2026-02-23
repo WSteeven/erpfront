@@ -50,12 +50,10 @@ export default defineComponent({
 
         const obtenerLabelCliente = () => {
             switch (process.env.VUE_APP_ID) {
-                case empresas.JPCONSTRUCRED: return 'Seleccione un cliente'
-                case empresas.JPCUSTODY: return 'Cliente'
                 default: 'Seleccione un cliente'
             }
         }
-
+        
         const labelCliente = obtenerLabelCliente()
 
         cargarVista(async () => {

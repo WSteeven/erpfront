@@ -1,4 +1,4 @@
-# Quasar App (jpconstrucred)
+# Quasar App (masterjas)
 
 A Quasar Project
 

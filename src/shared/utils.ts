@@ -77,6 +77,15 @@ export function descargarArchivoUrl(url: string): void {
 }
 
 /**
+ * Normaliza una URL concatenando la base y el path, asegurándose de que haya exactamente una barra entre ellos.
+ * @param base
+ * @param path
+ * @returns
+ */
+export const normalizeUrl = (base, path) => {
+  return `${base.replace(/\/+$/, '')}/${path.replace(/^\/+/, '')}`
+}
+/**
  * Metodo generico para descargar una plantilla base(tabla:conf_plantillas) con solo el nombre que se desea obtener.
  * Debe proporcionar el nombre completo, tal como está registrado en la plantilla, caso contrario le dará un error que no existe el archivo.
  * @param {string} nombre nombre a buscar

@@ -124,7 +124,7 @@ export const useAuthenticationExternalStore = defineStore('authentication_extern
     LocalStorage.remove('token')
     LocalStorage.remove('method_access')
     await getUser()
-    document.title = 'JPCONSTRUCRED'
+    document.title = 'MASTERJAS'
   }
 
   const setUser = (userData: Postulante | null) => {

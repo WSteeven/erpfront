@@ -100,7 +100,9 @@ export default defineComponent({
       await obtenerListados({
         clientes: {
           controller: new ClienteController(),
-          params: { campos: 'id,razon_social' },
+          params: {
+            campos: 'id,razon_social',
+            coordinador: authenticationStore.user.id },
         },
         proyectos: {
           controller: new ProyectoController(),
@@ -108,14 +110,7 @@ export default defineComponent({
             campos: 'id,nombre,codigo_proyecto,cliente_id,etapas',
             finalizado: 0,
             coordinador_id: authenticationStore.esJefeTecnico ? null : authenticationStore.user.id,
-          },
-        },
-        proyectosEtapas: {
-          controller: new ProyectoController(),
-          params: {
-            campos: 'id,nombre,codigo_proyecto,cliente_id,etapas',
-            finalizado: 0,
-            filter: `etapas[responsable_id]=${authenticationStore.user.id}&etapas[activo]=1`,
+              filter: `etapas[responsable_id]=${authenticationStore.user.id}&etapas[activo]=1`,
           },
         },
         fiscalizadores: {
@@ -134,8 +129,6 @@ export default defineComponent({
         motivosPausas: new MotivoPausaController(),
         causasIntervenciones: new CausaIntervencionController(),
       })
-
-      listadosAuxiliares.proyectos = [...listadosAuxiliares.proyectos, ...listadosAuxiliares.proyectosEtapas]
     })
 
     /**********

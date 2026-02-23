@@ -7,8 +7,8 @@
     }"
   >
     <small>
-      <strong>Copyright © 2023</strong>. Todos los derechos reservados por
-      <strong>JP Construcred c. ltda.</strong>
+      <strong>Copyright © 2026</strong>. Todos los derechos reservados por
+      <strong>MASTERJAS SOLUTIONS S.A.S.</strong>
     </small>
   </div>
 </template>

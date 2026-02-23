@@ -150,7 +150,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
       roles.value = response.data.modelo.roles
       permisos.value = response.data.modelo.permisos
 
-      await listadosSistemaStore.cargarDatosLS()
+      listadosSistemaStore.cargarDatosLS()
 
       return response.data.modelo
     } catch (error: any) {
@@ -231,7 +231,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     LocalStorage.remove('method_access')
     listadosSistemaStore.limpiarLS()
     await getUser()
-    document.title = 'JPCONSTRUCRED'
+    document.title = 'MASTERJAS'
   }
 
   const setUser = (userData: Empleado | null) => {

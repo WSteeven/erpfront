@@ -173,11 +173,13 @@
         </q-select>
       </div>
     </div>
+    <div class="row justify-end">
     <button-submits
       accion="NUEVO"
       :permitirCancelar="false"
       @guardar="crear()"
     />
+    </div>
   </q-form>
 </template>
 <script src="./PermisoNuevoPage.ts"></script>

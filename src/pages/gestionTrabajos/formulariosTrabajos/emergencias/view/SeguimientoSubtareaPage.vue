@@ -70,12 +70,23 @@
           ></q-toggle>
         </div>
 
-<div class="col-12 q-mb-md" v-if="capturarCoordenadas">
-<essential-table
+        <div class="col-12 q-mb-md" v-if="capturarCoordenadas">
+            <tabla-coordenadas
+                :listado="coordenadas"
+                :configuracionColumnas="configuracionColumnasCoordenadas"
+                @guardar-fila-coordenada="(fila)=>guardarFilaCoordenada(fila)"
+                @actualizar-fila-coordenada="(fila)=>actualizarFilaCoordenada(fila)"
+                @eliminar-coordenada="(fila) => eliminarCoordenada(fila)"
+                :entidad="Coordenada"
+                :mostrarAccion1Header="permitirSubir"
+                titulo="Recolección de coordenadas"
+                />
+
+<!-- <essential-table
 :configuracionColumnas="[...configuracionColumnasCoordenadas, accionesTabla]"
 :datos="coordenadas"
 :accion1Header="btnObtenerCoordenadas"
-/>
+/> -->
           </div>
         <div class="col-12 q-mb-md">
           <br />
@@ -512,7 +523,7 @@
 
     <modales-entidad
       :comportamiento="modales"
-      :mixin-modal="mixin"
+      :mixin-modal="mixinArchivoSeguimiento"
       :confirmar-cerrar="false"
       :persistente="false"
     />

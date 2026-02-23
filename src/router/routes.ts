@@ -7,9 +7,6 @@ import rutasActivosFijos from './rutasActivosFijos'
 import rutasSSO from './rutasSSO'
 import rutasControlPersonal from './rutasControlPersonal'
 
-/* const JPCONSTRUCRED = process.env.VUE_APP_ID == empresas.JPCONSTRUCRED
-const JPCUSTODY = process.env.VUE_APP_ID == empresas.JPCUSTODY
-const CCLEDARE = process.env.VUE_APP_ID == empresas.CCLEDARE */
 import rutasFondosRotativos from './rutasFondosRotativos'
 import rutasVehiculos from './rutasVehiculos'
 import rutasSeguridad from './rutasSeguridad'

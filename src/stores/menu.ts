@@ -388,28 +388,27 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Autorizaciones',
           link: 'autorizaciones',
           icon: 'bi-check-circle',
-          can: store.can('puede.acceder.autorizaciones') && store.esActivosFijos
+          can: store.can('puede.acceder.autorizaciones')
         },
         {
           title: 'Condiciones de productos',
           link: 'condiciones',
           icon: 'bi-box-seam',
-          can: store.can('puede.acceder.condiciones') && store.esActivosFijos
+          can: store.can('puede.acceder.condiciones')
         },
         {
           title: 'Codigos de productos',
           link: 'codigos-clientes',
           icon: 'bi-upc-scan',
           can:
-            store.can('puede.acceder.codigos_clientes') && store.esActivosFijos
+            store.can('puede.acceder.codigos_clientes')
         },
         {
           title: 'Estados de transacciones',
           link: 'estados-transacciones',
           icon: 'bi-circle',
           can:
-            store.can('puede.acceder.estados_transacciones') &&
-            store.esActivosFijos
+            store.can('puede.acceder.estados_transacciones')
         },
         {
           title: 'Hilos',
@@ -426,7 +425,7 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Motivos',
           link: 'motivos',
-          can: store.can('puede.acceder.motivos') && store.esActivosFijos,
+          can: store.can('puede.acceder.motivos'),
           icon: 'bi-question-circle'
         },
         {
@@ -440,15 +439,14 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Sucursales',
           link: 'sucursales',
           icon: 'bi-building',
-          can: store.can('puede.acceder.sucursales') || store.esActivosFijos
+          can: store.can('puede.acceder.sucursales')
         },
         {
           title: 'Unidades de medida',
           link: 'unidades-medidas',
           icon: 'bi-rulers',
           can:
-            store.can('puede.acceder.unidades_medidas') && store.esActivosFijos
-          // can: true,
+            store.can('puede.acceder.unidades_medidas')
         }
       ]
     },

@@ -12,11 +12,11 @@ export class MultaConductorPusherEvent {
         const notificacionStore = this.notificacionesPusherStore
         const pusher = notificacionStore.pusher
 
-        //suscripcion al canal 
+        //suscripcion al canal
         const multaCreada = pusher.subscribe('multas-choferes-' + this.store.user.id)
         multaCreada.bind('multas-choferes-event', function (e) {
             notificacionStore.actualizar()
-            notificarCorrecto('Se ha registrado una multa de un conductor de JPConstrucred')
+            notificarCorrecto('Se ha registrado una multa de un conductor de MASTERJAS')
 
             //lanzamos la notificación push en el navegador del destinatario
             pushEventMesaggeServiceWorker({
