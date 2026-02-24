@@ -691,9 +691,9 @@ export default defineComponent({
       coordenada.hydrate(data)
       coordenada.subtarea = trabajoAsignadoStore.subtarea.id
       if (data.id) editarCoordenada(coordenada)
-      else guardarCoordenada(coordenada)
+      else guardarCoordenada(coordenada,true)
     }
-    
+
     function actualizarTablaMaterialesTarea() {
       clienteMaterialTarea.value = undefined
       materialesTareaTodos.value = []

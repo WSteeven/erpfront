@@ -23,9 +23,11 @@ import { ComportamientoModalesCliente } from '../application/ComportamientoModal
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 import { ordenarLista } from 'shared/utils'
 import { EmpleadoRoleController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoRolesController'
+import NoOptionComponent from 'components/NoOptionComponent.vue'
+import ErrorComponent from 'components/ErrorComponent.vue'
 
 export default defineComponent({
-  components: { TabLayout, LabelAbrirModal, ModalesEntidad, SelectorImagen },
+  components: { TabLayout, LabelAbrirModal, ModalesEntidad, SelectorImagen, NoOptionComponent, ErrorComponent },
   setup() {
     const mixin = new ContenedorSimpleMixin(Cliente, new ClienteController())
     const {

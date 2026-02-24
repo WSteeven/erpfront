@@ -1,7 +1,7 @@
 <template>
   <q-page padding>
     <essential-table
-      titulo="Empleados JP CONSTRUCRED C.LTDA"
+      titulo="Empleados "
       :configuracionColumnas="configuracionColumnas"
       :datos="listado"
       :permitirConsultar="false"

@@ -1,22 +1,15 @@
 // Dependencias
 import { configuracionColumnasMovilizacionSubtarea } from 'gestionTrabajos/reporteMovilizacionSubtareas/domain/configuracionColumnasMovilizacionSubtarea'
 import { configuracionColumnasArchivoSubtarea } from '../modules/gestorArchivosTrabajos/domain/configuracionColumnasArchivoSubtarea'
-import { configuracionColumnasEmpleadoGrupo } from 'gestionTrabajos/subtareas/domain/configuracionColumnasEmpleadoGrupo'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { computed, defineComponent, reactive, Ref, ref, watchEffect } from 'vue'
+import { computed, defineComponent, reactive, ref } from 'vue'
 import {
-  tiposInstalaciones,
-  tiposTareasTelconet,
-  tiposTareasNedetel,
-  regiones,
-  atenciones,
-  rolesSistema,
   acciones,
   accionesTabla,
   maskFecha,
 } from 'config/utils'
 import { useFiltrosListadosTarea } from 'tareas/application/FiltrosListadosTarea'
-import { destinosTareas, modosAsignacionTrabajo } from 'config/tareas.utils'
+import { modosAsignacionTrabajo } from 'config/tareas.utils'
 import { required, requiredIf } from 'shared/i18n-validators'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useNotificaciones } from 'shared/notificaciones'
@@ -41,15 +34,10 @@ import { ArchivoSubtareaController } from '../modules/gestorArchivosTrabajos/inf
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { TipoTrabajoController } from 'gestionTrabajos/tiposTareas/infraestructure/TipoTrabajoController'
 import { DesignadoEmpleadoResponsable } from '../application/validaciones/DesignadoEmpleadoResponsable'
-import { EmpleadoController } from 'recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { ComportamientoModalesSubtarea } from '../application/ComportamientoModalesSubtarea'
 import { GrupoController } from 'recursosHumanos/grupos/infraestructure/GrupoController'
-import { TareaController } from 'gestionTrabajos/tareas/infraestructure/TareaController'
-import { ClienteController } from 'sistema/clientes/infraestructure/ClienteController'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
-import { CambiarEstadoSubtarea } from '../application/CambiarEstadoSubtarea'
 import { Archivo } from '../modules/gestorArchivosTrabajos/domain/Archivo'
-import { Empleado } from 'recursosHumanos/empleados/domain/Empleado'
 import { EmpleadoGrupo } from '../domain/EmpleadoGrupo'
 import { convertirNumeroPositivo, descargarArchivoUrl, normalizeUrl } from 'shared/utils'
 import { apiConfig, endpoints } from 'config/api'
@@ -60,7 +48,6 @@ import { ClienteFinalController } from 'pages/gestionTrabajos/clientesFinales/in
 import { MovilizacionSubtareaController } from 'pages/gestionTrabajos/movilizacionSubtareas/infraestructure/MovilizacionSubtareaController'
 import { useCargandoStore } from 'stores/cargando'
 import { CausaIntervencionController } from 'pages/gestionTrabajos/causasIntervenciones/infraestructure/CausaIntervencionController'
-import { SubtareaController } from '../infraestructure/SubtareaController'
 
 export default defineComponent({
   components: { TabLayout, EssentialTable, ButtonSubmits, EssentialSelectableTable, LabelAbrirModal, ModalesEntidad, DesignarResponsableTrabajo, TiempoSubtarea, TablaSubtareaSuspendida, TablaSubtareaPausas },
@@ -84,7 +71,7 @@ export default defineComponent({
     * Mixin
     *********/
     const { entidad: subtarea, listadosAuxiliares, accion, listado, disabled } = props.mixinModal.useReferencias()
-    const { obtenerListados, cargarVista, consultar, guardar, editar, reestablecer, setValidador } = props.mixinModal.useComportamiento()
+    const { obtenerListados, cargarVista, consultar, guardar, reestablecer, setValidador } = props.mixinModal.useComportamiento()
     const { onBeforeGuardar, onConsultado } = props.mixinModal.useHooks()
 
     const mixinArchivo = new ContenedorSimpleMixin(Archivo, new ArchivoSubtareaController())
@@ -142,60 +129,6 @@ export default defineComponent({
     subtarea.cliente = subtareaStore.idCliente
     accion.value = subtareaStore.accion
 
-    // Configuración de formulario dinámico
-    const configForm = ref(null)
-    const tipoTrabajoController = new TipoTrabajoController()
-    const subtareaController = new SubtareaController()
-
-    const cargarConfigForm = async (idTipoTrabajo: number) => {
-      if (!idTipoTrabajo) {
-        configForm.value = null
-        return
-      }
-      try {
-        const { data } = await tipoTrabajoController.getFormConfig(idTipoTrabajo)
-        configForm.value = data.form_config
-      } catch (error) {
-        console.error('Error cargando configuración de formulario:', error)
-      }
-    }
-
-    // Cargar config si ya tiene tipo de trabajo asignado
-    if (subtarea.tipo_trabajo) {
-      cargarConfigForm(subtarea.tipo_trabajo)
-    }
-
-    // Observar cambios en tipo_trabajo
-    watchEffect(() => {
-      if (subtarea.tipo_trabajo) {
-        cargarConfigForm(subtarea.tipo_trabajo)
-      }
-    })
-
-    const generarDocumento = async () => {
-      if (!subtarea.id) return
-      try {
-        useCargandoStore().mostrarCargando()
-        const response: any = await subtareaController.generateDocument(subtarea.id)
-
-        // Crear blob y descargar
-        const url = window.URL.createObjectURL(new Blob([response.data]))
-        const link = document.createElement('a')
-        link.href = url
-        link.setAttribute('download', `documento_${subtarea.codigo_subtarea}.docx`)
-        document.body.appendChild(link)
-        link.click()
-        document.body.removeChild(link)
-
-        notificarCorrecto('Documento generado exitosamente')
-      } catch (error) {
-        notificarError('Error al generar el documento')
-        console.error(error)
-      } finally {
-        useCargandoStore().ocultarCargando()
-      }
-    }
-
     const movilizacionController = new MovilizacionSubtareaController()
 
     async function obtenerMovilizaciones() {
@@ -207,10 +140,6 @@ export default defineComponent({
      * Variables
      ************/
     const { notificarError, notificarCorrecto, notificarAdvertencia } = useNotificaciones()
-    const seleccionBusqueda = ref('por_tecnico')
-    const tecnicoSeleccionado = ref()
-    const busqueda = ref()
-    const empleadosSeleccionados: Ref<Empleado[]> = ref([])
     const clienteFinal = reactive(new ClienteFinal())
     const movilizacionesSubtarea = ref([])
 
@@ -219,39 +148,15 @@ export default defineComponent({
      **********/
     const modales = new ComportamientoModalesSubtarea()
 
-    /***************
-    * Botones tabla
-    ***************/
-    const botonEditarTrabajo: CustomActionTable = {
-      titulo: 'Editar',
-      icono: 'bi-pencil',
-      color: 'primary',
-      accion: ({ entidad }) => {
-        accion.value = acciones.editar
-        consultar(entidad)
-      },
-    }
 
     /*********
     * Filtros
     **********/
     const {
-      clientes,
-      filtrarClientes,
-      clientesFinales,
-      filtrarClientesFinales,
-      fiscalizadores,
-      filtrarFiscalizadores,
-      coordinadores,
-      filtrarCoordinadores,
-      proyectos,
-      filtrarProyectos,
       tiposTrabajos,
       filtrarTiposTrabajos,
       grupos,
-      filtrarGrupos,
       empleados,
-      filtrarEmpleados,
     } = useFiltrosListadosTarea(listadosAuxiliares, subtarea)
 
     /********
@@ -294,7 +199,7 @@ export default defineComponent({
     async function guardarDatos(subtarea: Subtarea) {
       try {
         const entidad: Subtarea = await guardar(subtarea)
-        const cambiarEstadoTrabajo = new CambiarEstadoSubtarea()
+        // const cambiarEstadoTrabajo = new CambiarEstadoSubtarea()
 
         const subtareaAux = new Subtarea()
         subtareaAux.hydrate(entidad)
@@ -393,7 +298,7 @@ export default defineComponent({
       clienteFinal.hydrate(result)
     }
 
-    function onRejected(rejectedEntries) {
+    function onRejected() {
       notificarAdvertencia('El tamaño total de los archivos no deben exceder los 10mb.')
     }
 
@@ -441,39 +346,19 @@ export default defineComponent({
       v$,
       refUploader,
       onRejected,
-      empleadosSeleccionados,
       listado,
       subtarea,
-      seleccionBusqueda,
-      tecnicoSeleccionado,
-      busqueda,
       listadosAuxiliares,
-      tiposInstalaciones,
-      tiposTareasTelconet,
-      tiposTareasNedetel,
-      fab: ref(false),
-      regiones,
-      atenciones,
       guardarDatos,
       reestablecerDatos,
       accion,
       disabled,
-      columnasEmpleado: [...configuracionColumnasEmpleadoGrupo, accionesTabla],
       columnasArchivos: [...configuracionColumnasArchivoSubtarea, accionesTabla],
-      configuracionColumnasEmpleadoGrupo,
-      modosAsignacionTrabajo,
+    //   configuracionColumnasEmpleadoGrupo,
       verificarEsVentana,
-      Empleado,
-      destinosTareas,
-      guardar,
-      editar,
-      reestablecer,
       modales,
-      subtareaStore,
       acciones,
       maskFecha,
-      accionesTabla,
-      botonEditarTrabajo,
       archivos,
       factoryFn,
       btnDescargarArchivo,
@@ -486,26 +371,11 @@ export default defineComponent({
       movilizacionesSubtarea,
       configuracionColumnasMovilizacionSubtarea,
       // Filtros
-      clientes,
-      filtrarClientes,
-      clientesFinales,
-      filtrarClientesFinales,
-      fiscalizadores,
-      filtrarFiscalizadores,
-      coordinadores,
-      filtrarCoordinadores,
-      proyectos,
-      filtrarProyectos,
       tiposTrabajos,
       filtrarTiposTrabajos,
-      grupos,
-      filtrarGrupos,
-      empleados,
-      filtrarEmpleados,
 
       ats: computed(() => subtarea.codigo_subtarea?.replace('TR', 'ATS')),
-      configForm,
-      generarDocumento
+
     }
   },
 })

@@ -14,10 +14,6 @@
                 <!-- En móvil mostramos logo pequeño y luego el encabezado -->
                 <div class="text-center q-mb-md">
                     <img :src="!$q.dark.isActive ? logoClaro : logoOscuro" alt="logo pequeño" class="top-logo lt-md" />
-                    <div class="brand-title">
-                        <span class="text-primary">FIRST</span><span class="text-secondary">RED</span>
-                    </div>
-                    <div class="text-bold text-grey-13">Enterprise Resource Planning</div>
                 </div>
 
                 <!-- ***** FORM CARD ***** -->
@@ -75,7 +71,7 @@
                         <!-- Registro -->
                         <div class="row items-center q-mt-none q-mb-md">
                             <div class="col-12 col-sm-7 text-center text-sm-right q-my-sm q-pr-sm">
-                                <small>¿Quieres ser parte de JP CONSTRUCRED?</small>
+                                <small>¿Quieres ser parte de {{nombreEmpresa}}?</small>
                             </div>
                             <div class="col-12 col-sm-5">
                                 <q-btn flat color="primary" label="Regístrate" class="full-width link-underline" no-caps

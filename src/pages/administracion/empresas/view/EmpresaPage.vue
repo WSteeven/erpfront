@@ -455,7 +455,7 @@
               class="q-mt-lg q-pt-md"
               v-model="experiencia_comercial"
               label="¿Experiencia comercial?"
-              :disable="disabled || soloLectura"
+              :disable="disabled"
               @update:model-value="
                 () =>
                   (empresa.antiguedad_proveedor = experiencia_comercial ?empresa.antiguedad_proveedor: null)

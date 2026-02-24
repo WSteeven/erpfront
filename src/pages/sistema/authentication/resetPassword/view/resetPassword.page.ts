@@ -124,7 +124,7 @@ export default defineComponent({
       ),
       logoOscuro: computed(
         () => configuracionGeneralStore.configuracion?.logo_oscuro
-      )
+      ), nombreEmpresa: computed(() => configuracionGeneralStore.configuracion?.nombre_empresa)
     }
   }
 })
