@@ -1,5 +1,5 @@
 <template>
-    <essential-table
+  <essential-table
     ref="refCoordenadas"
     :titulo="titulo"
     :configuracionColumnas="columnas"
@@ -18,64 +18,68 @@
     :modalMaximized="$q.screen.xs"
     :entidad="entidad"
     :editarFilaLocal="editarFilaLocal"
-    @guardarFilaNueva="(fila) => emit('guardar-fila-coordenada', fila)"
-    @guardarFila="(fila) => emit('actualizar-fila-coordenada', fila)"
+    @guardarFilaNueva="fila => emit('guardar-fila-coordenada', fila)"
+    @guardarFila="fila => emit('actualizar-fila-coordenada', fila)"
     :ajustar-celdas="true"
-    />
+  />
 </template>
 
 <script lang="ts" setup>
-import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
-import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
-import { CustomActionTable } from 'components/tables/domain/CustomActionTable';
-import { accionesTabla } from 'config/utils';
-import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable';
-import { Instanciable } from 'shared/entidad/domain/instanciable';
-import { useNotificaciones } from 'shared/notificaciones';
-import { Ref, watchEffect } from 'vue';
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { accionesTabla } from 'config/utils'
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
+import { Instanciable } from 'shared/entidad/domain/instanciable'
+import { useNotificaciones } from 'shared/notificaciones'
+import { Ref, watchEffect } from 'vue'
 import { ref } from 'vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
-import { obtenerUbicacion } from 'shared/utils';
+import { obtenerUbicacion } from 'shared/utils'
 
 const props = defineProps({
   listado: {
     type: Object as () => EntidadAuditable[],
-    required: true,
+    required: true
   },
   configuracionColumnas: {
     type: Object as () => ColumnConfig<EntidadAuditable>[],
-    required: true,
+    required: true
   },
   entidad: {
     type: Object as Instanciable,
-    required: true,
+    required: true
   },
   accion1: {
     type: Object as () => CustomActionTable,
-    required: false,
+    required: false
   },
   mostrarAccion1Header: {
     type: Boolean,
-    default: true,
+    default: true
   },
   editarFilaLocal: {
     type: Boolean,
-    default: true,
+    default: true
   },
   titulo: String,
   consultarCoordenadas: {
     type: Boolean,
-    default: true,
-  },
+    default: true
+  }
 })
 const refCoordenadas = ref()
-const emit = defineEmits(['actualizar-fila-coordenada', 'guardar-fila-coordenada', 'eliminar-coordenada'])
+const emit = defineEmits([
+  'actualizar-fila-coordenada',
+  'guardar-fila-coordenada',
+  'eliminar-coordenada'
+])
 
 /************
  * Variables
  ************/
 const coordenadas: Ref<any[]> = ref(props.listado)
-const { confirmar, notificarError } = useNotificaciones()
+const { confirmar, notificarCorrecto, notificarError } = useNotificaciones()
 const cargando = new StatusEssentialLoading()
 
 watchEffect(() => (coordenadas.value = props.listado))
@@ -89,17 +93,16 @@ const columnas: any = [...props.configuracionColumnas, accionesTabla]
  * Funciones
  ************/
 async function obtenerCoordenadas() {
-      try {
-        const ubicacion = await obtenerUbicacion()
+  try {
+    const ubicacion = await obtenerUbicacion()
 
-        const punto =
-          ubicacion.coords.latitude + ',' + ubicacion.coords.longitude
-        console.log(punto)
-        return ubicacion
-      } catch (error) {
-        console.log('Error obteniendo ubicación:', error)
-      }
-    }
+    const punto = ubicacion.coords.latitude + ',' + ubicacion.coords.longitude
+    console.log(punto)
+    return ubicacion
+  } catch (error) {
+    console.log('Error obteniendo ubicación:', error)
+  }
+}
 const agregarActividadRealizada: CustomActionTable = {
   titulo: 'Agregar fila',
   icono: 'bi-plus',
@@ -111,13 +114,19 @@ const agregarActividadRealizada: CustomActionTable = {
       const ubicacion = await obtenerCoordenadas()
 
       if (props.consultarCoordenadas) {
-        refCoordenadas.value.abrirModalEditar({latitud: ubicacion.coords.latitude,
-            longitud: ubicacion.coords.longitude,
-            direccion: await obtenerDireccion(ubicacion.coords.latitude, ubicacion.coords.longitude) })
+        refCoordenadas.value.abrirModalEditar({
+          latitud: ubicacion.coords.latitude,
+          longitud: ubicacion.coords.longitude,
+          direccion: await obtenerDireccion(
+            ubicacion.coords.latitude,
+            ubicacion.coords.longitude
+          )
+        })
         console.log('agregar fila')
       } else {
         refCoordenadas.value.abrirModalEditar()
       }
+      notificarCorrecto('Ubicacion obtenida: ' + ubicacion.coords.latitude + ',' + ubicacion.coords.longitude + ', Precision: ' + ubicacion.coords.accuracy + ' metros')
     } catch (e) {
       notificarError(
         'Problemas para capturar las coordenadas. Intenta nuevamente o verifica tu conexión a Internet.'
@@ -125,17 +134,16 @@ const agregarActividadRealizada: CustomActionTable = {
     } finally {
       cargando.desactivar()
     }
-  },
+  }
 }
 async function obtenerDireccion(lat: number, lng: number) {
   const response = await fetch(
     `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`
-  );
-  const data = await response.json();
-  return data.display_name;
+  )
+  const data = await response.json()
+  return data.display_name
 }
 const eliminarCoordenada = ({ posicion }) => {
-    emit('eliminar-coordenada', coordenadas.value.at(posicion))
+  emit('eliminar-coordenada', coordenadas.value.at(posicion))
 }
-
 </script>
