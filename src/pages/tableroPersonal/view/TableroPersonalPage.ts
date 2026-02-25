@@ -1,8 +1,7 @@
 // Dependencias
 import { useAuthenticationStore } from 'stores/authentication'
-import loginJson from 'src/assets/lottie/welcome.json'
+import loginJson from 'src/assets/lottie/login4.json'
 import { Ref, computed, defineComponent, onMounted, reactive, ref } from 'vue'
-import { date } from 'quasar'
 
 // Componentes
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
@@ -15,7 +14,6 @@ import { ComportamientoModalesTableroPersonal } from '../application/Comportamie
 import { TableroPersonalController } from '../infraestructure/TableroPersonalController'
 // import { SubtareaController } from 'subtareas/infraestructure/SubtareaController'
 import { TableroPersonal } from '../domain/TableroPersonal'
-import { useNotificacionStore } from 'stores/notificacion'
 import { useNotificaciones } from 'shared/notificaciones'
 import { Departamento } from 'pages/recursosHumanos/departamentos/domain/Departamento'
 import { DepartamentoController } from 'pages/recursosHumanos/departamentos/infraestructure/DepartamentoController'
@@ -206,7 +204,7 @@ export default defineComponent({
       consultarEmpleadoDepartamento,
 
       showBanner,
-      
+
     }
   },
 })
