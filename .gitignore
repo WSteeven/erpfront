@@ -18,8 +18,6 @@ node_modules
 # Capacitor related directories and files
 /src-capacitor
 
-/src-capacitor-jpcustody/www
-/src-capacitor-jpcustody/node_modules
 
 
 # BEX related directories and files

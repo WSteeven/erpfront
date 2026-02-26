@@ -337,7 +337,7 @@ export default defineComponent({
       titulo: 'Acta entrega-recepción',
       color: 'primary',
       icono: 'bi-printer',
-      visible: () => process.env.VUE_APP_ID === empresas.JPCUSTODY,
+      visible: () => false,
       accion: async ({ entidad }) => {
         transaccionStore.idTransaccion = entidad.id
         await transaccionStore.imprimirActaEntregaRecepcion()

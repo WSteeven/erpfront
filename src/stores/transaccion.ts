@@ -13,7 +13,6 @@ import {
 } from 'shared/utils'
 import { ApiError } from 'shared/error/domain/ApiError'
 import { useNotificaciones } from 'shared/notificaciones'
-import anularGastoPage from 'pages/fondosRotativos/anularGasto/view/AnularGastoPage'
 
 export const useTransaccionStore = defineStore('transaccion', () => {
   //State
