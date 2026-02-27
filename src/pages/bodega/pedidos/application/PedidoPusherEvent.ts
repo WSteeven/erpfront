@@ -20,8 +20,6 @@ export class PedidoPusherEvent {
     //suscripcion al canal del pedido creado
     const pedidoCreado = pusher.subscribe('pedidos-tracker-' + this.store.user.id)
     pedidoCreado.bind('pedido-event', function (e) {
-      console.log(e)
-      // notificacionStore.agregar(e.notificacion)
       notificacionStore.actualizar()
       notificarCorrecto('Tienes un pedido esperando ser atendido')
 
@@ -55,24 +53,14 @@ export class PedidoPusherEvent {
         notificarCorrecto('Tienes un pedido esperando ser despachado')
       })
     }
-    
+
     if(this.store.esCoordinadorBodega || this.store.esBodeguero){
       const pedidoParcial = pusher.subscribe('pedidos-parciales-BODEGA')
       pedidoParcial.bind('pedido-event', function (e) {
-        console.log(e)
         notificacionStore.agregar(e.notificacion)
         notificarAdvertencia('Tienes varios pedidos parciales pendiente de despacho')
       })
     }
-        
-    
-    // //suscripcion al canal general del service worker
-    // const canalGeneral = pusher.subscribe('mi-canal')
-    // canalGeneral.bind('eventoPersonalizado', function (e) {
-    //   console.log(e)
-    //   notificarCorrecto('ServiceWorker evento: '+e)
-    // })
-
   }
 
 }

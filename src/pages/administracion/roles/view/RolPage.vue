@@ -2,7 +2,7 @@
   <tab-layout
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
-    titulo-pagina="Motivos"
+    titulo-pagina="Roles"
   >
     <template #formulario>
       <q-form @submit.prevent>

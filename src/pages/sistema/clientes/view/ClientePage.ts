@@ -62,7 +62,8 @@ export default defineComponent({
             roles: [
               rolesSistema.coordinador,
               rolesSistema.coordinadorBackup,
-              rolesSistema.jefe_tecnico
+              rolesSistema.jefe_tecnico,
+              rolesSistema.visualizadorTareaClienteFibertics
             ]
           }
         }

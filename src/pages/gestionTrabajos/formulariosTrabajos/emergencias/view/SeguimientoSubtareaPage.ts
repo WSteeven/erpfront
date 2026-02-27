@@ -155,7 +155,7 @@ export default defineComponent({
     const columnasMaterial = permitirSubir
       ? [...configuracionColumnasMaterialOcupadoFormulario, accionesTabla]
       : configuracionColumnasMaterialOcupadoFormulario
-    const { prompt } = useNotificaciones()
+    const { prompt, notificarAdvertencia } = useNotificaciones()
     const codigoSubtarea = trabajoAsignadoStore.codigoSubtarea
     const rangoFechasHistorial = computed(() => {
       return (
@@ -310,10 +310,11 @@ export default defineComponent({
             entidad.cantidad_anterior = entidad.cantidad_utilizada ?? 0
             entidad.cantidad_utilizada = valor
             const modelo = await actualizarCantidadUtilizadaTarea(entidad)
-            // modelo.id = entidad.id
-            materialesTarea.value[posicion].total_cantidad_utilizada =
-              modelo.total_cantidad_utilizada
-            materialesTarea.value[posicion].stock_actual = modelo.stock_actual
+            if (modelo) {
+              materialesTarea.value[posicion].total_cantidad_utilizada =
+                modelo.total_cantidad_utilizada
+              materialesTarea.value[posicion].stock_actual = modelo.stock_actual
+            }
           }
         }
         prompt(config)
@@ -467,12 +468,17 @@ export default defineComponent({
         fecha: fecha_historial.value,
         cliente_id: material.cliente_id
       }
-      const ruta = axios.getEndpoint(
-        endpoints.actualizar_cantidad_utilizada_tarea,
-        params
-      )
-      const response: AxiosResponse = await axios.post(ruta)
-      return response.data.modelo
+      try {
+        const ruta = axios.getEndpoint(
+          endpoints.actualizar_cantidad_utilizada_tarea,
+          params
+        )
+        const response: AxiosResponse = await axios.post(ruta)
+
+        return response.data.modelo
+      } catch (error) {
+        notificarAdvertencia('Error al actualizar la cantidad utilizada')
+      }
     }
 
     async function actualizarCantidadUtilizadaStock(material) {
@@ -691,7 +697,7 @@ export default defineComponent({
       coordenada.hydrate(data)
       coordenada.subtarea = trabajoAsignadoStore.subtarea.id
       if (data.id) editarCoordenada(coordenada)
-      else guardarCoordenada(coordenada,true)
+      else guardarCoordenada(coordenada, true)
     }
 
     function actualizarTablaMaterialesTarea() {
