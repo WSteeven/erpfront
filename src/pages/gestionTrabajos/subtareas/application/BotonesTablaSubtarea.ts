@@ -214,7 +214,7 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: Compo
     titulo: 'Seguimiento',
     icono: 'bi-check2-square',
     color: 'indigo',
-    visible: ({ entidad }) => ![estadosTrabajos.AGENDADO, estadosTrabajos.CREADO].includes(entidad.estado) && (authenticationStore.esJefeTecnico || authenticationStore.esCoordinador || authenticationStore.esAdministrador || entidad.es_responsable || entidad.es_miembro_grupo_responsable),
+    visible: ({ entidad }) => ![estadosTrabajos.AGENDADO, estadosTrabajos.CREADO].includes(entidad.estado) && (authenticationStore.esJefeTecnico || authenticationStore.esCoordinador || authenticationStore.esAdministrador || entidad.es_responsable || entidad.es_miembro_grupo_responsable|| authenticationStore.can('puede.ver.seguimientos_subtareas')),
     accion: async ({ entidad }) => {
         console.log(entidad);
 
