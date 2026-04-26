@@ -37,8 +37,7 @@ import TablaFilasDinamicas from 'components/tables/view/TablaFilasDinamicas.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
-import SelectorImagen from 'components/SelectorImagen.vue'
-import VisorImagen from 'components/VisorImagen.vue'
+import VisorMultiplesImagenes from 'components/VisorMultiplesImagenes.vue'
 
 // Logica y controladores
 import { MotivoCanceladoTicketController } from 'pages/gestionTickets/motivosCanceladosTickets/infraestructure/MotivoCanceladoTicketController'
@@ -61,11 +60,10 @@ import { configuracionColumnasSolicitudAts } from '../domain/configuracionColumn
 import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
 import { Ticket } from 'pages/gestionTickets/tickets/domain/Ticket'
 import { configuracionColumnasResumenMaterialOcupado } from '../domain/configuracionColumnasResumenMaterialOcupado'
-import { SubtareaController } from 'gestionTrabajos/subtareas/infraestructure/SubtareaController'
+
 
 import { useCargandoStore } from 'stores/cargando'
 import { useQuasar } from 'quasar'
-import { log } from 'console'
 import { configuracionColumnasCoordenadas } from '../domain/configuracionColumnasCoordenadas'
 import { TipoFotografiaController } from 'pages/gestionTrabajos/tiposFotografias/infraestructure/TipoFotografiaController'
 import { TipoFotografia } from 'pages/gestionTrabajos/tiposFotografias/domain/TipoFotografia'
@@ -75,16 +73,16 @@ import { TipoCoordenadaController } from 'pages/gestionTrabajos/tiposCoordenadas
 import { TipoCoordenada } from 'pages/gestionTrabajos/tiposCoordenadas/domain/TipoCoordenada'
 import { CoordenadaController } from '../infraestructure/CoordenadaController'
 
+
 export default defineComponent({
   components: {
     EssentialTable,
-    SelectorImagen,
     ButtonSubmits,
     TablaObservaciones,
     ArchivoSeguimiento,
     TablaFilasDinamicas,
     TablaCoordenadas,
-    VisorImagen,
+    VisorMultiplesImagenes,
     ModalesEntidad
   },
   props: {
@@ -138,7 +136,7 @@ export default defineComponent({
      * Variables
      ************/
     const refTrabajos = ref()
-    const refVisorImagen = ref()
+    const refVisorMultiplesImagenes = ref()
     const refObservaciones = ref()
     const utilizarMateriales = ref(false)
     const existeMaterialesDevolucion = ref(false)
@@ -350,14 +348,23 @@ export default defineComponent({
         prompt(config)
       }
     }
-
+    const listaFotos = computed(() =>
+      actividadesRealizadas.value.map(
+        (item: ActividadRealizadaSeguimientoSubtarea) => ({
+          url: item.fotografia,
+          descripcion: item.trabajo_realizado,
+          fecha: item.fecha_hora
+        })
+      )
+    )
     const verFotografia: CustomActionTable = {
       titulo: 'Ver fotografía',
       icono: 'bi-image-fill',
       color: 'secondary',
       visible: ({ entidad }) => entidad.fotografia,
-      accion: async ({ entidad }) => {
-        refVisorImagen.value.abrir(entidad.fotografia)
+      accion: async ({ entidad, posicion }) => {
+
+        refVisorMultiplesImagenes.value.abrir(listaFotos.value, posicion)
       }
     }
 
@@ -755,7 +762,7 @@ export default defineComponent({
     })
 
     return {
-      refVisorImagen,
+      refVisorMultiplesImagenes,
       refTrabajos,
       refObservaciones,
       refArchivoSeguimiento,

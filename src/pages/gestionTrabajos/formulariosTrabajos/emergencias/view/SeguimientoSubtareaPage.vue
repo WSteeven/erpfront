@@ -519,7 +519,8 @@
       </div>
     </q-card>
 
-    <visor-imagen ref="refVisorImagen"></visor-imagen>
+    
+    <visor-multiples-imagenes ref="refVisorMultiplesImagenes" />
 
     <modales-entidad
       :comportamiento="modales"
