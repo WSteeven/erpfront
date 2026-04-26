@@ -116,9 +116,6 @@ const handleKeydown = (e) => {
     case 'ArrowLeft':
       anterior()
       break
-    case 'Escape':
-      visible.value = false
-      break
   }
 }
 
